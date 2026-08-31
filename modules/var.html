@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Value at Risk (VaR) — Avenir</title>
+<meta name="description" content="Module avancé sur la Value at Risk : méthodes historique, paramétrique et Monte-Carlo, Expected Shortfall, exemple chiffré, calculateur et quiz.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-active-lang="fr">
+
+<div class="progress-bar"></div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <div class="brand">
+      <a href="../index.html"><span class="logo">Avenir<b>.</b></span></a>
+      <span class="tag" data-lang="fr">Asset Management &amp; Risk</span>
+      <span class="tag" data-lang="en">Asset Management &amp; Risk</span>
+    </div>
+    <div class="spacer"></div>
+    <nav class="nav-links">
+      <a href="../index.html#parcours"><span data-lang="fr">Parcours</span><span data-lang="en">Tracks</span></a>
+      <a href="../index.html#curriculum"><span data-lang="fr">Programme</span><span data-lang="en">Curriculum</span></a>
+      <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span></a>
+    </nav>
+    <div class="controls">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-set-lang="fr">FR</button>
+        <button data-set-lang="en">EN</button>
+      </div>
+      <button id="theme-btn" class="icon-btn" aria-label="Thème">☾</button>
+      <button id="menu-btn" class="icon-btn menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap-mod">
+  <div class="module-shell">
+
+    <!-- ============ SOMMAIRE ============ -->
+    <aside class="toc">
+      <div class="toc-title" data-lang="fr">Sommaire</div>
+      <div class="toc-title" data-lang="en">Contents</div>
+      <a href="#intro"><span data-lang="fr">1. Définition</span><span data-lang="en">1. Definition</span></a>
+      <a href="#params"><span data-lang="fr">2. Paramètres clés</span><span data-lang="en">2. Key parameters</span></a>
+      <a href="#methodes"><span data-lang="fr">3. Les trois méthodes</span><span data-lang="en">3. The three methods</span></a>
+      <a href="#exemple"><span data-lang="fr">4. Exemple chiffré</span><span data-lang="en">4. Worked example</span></a>
+      <a href="#calc"><span data-lang="fr">5. Calculateur</span><span data-lang="en">5. Calculator</span></a>
+      <a href="#limites"><span data-lang="fr">6. Limites &amp; Expected Shortfall</span><span data-lang="en">6. Limits &amp; Expected Shortfall</span></a>
+      <a href="#backtest"><span data-lang="fr">7. Backtesting</span><span data-lang="en">7. Backtesting</span></a>
+      <a href="#quiz"><span data-lang="fr">8. Quiz</span><span data-lang="en">8. Quiz</span></a>
+    </aside>
+
+    <!-- ============ CONTENU ============ -->
+    <main>
+      <div class="crumbs">
+        <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span></a> ·
+        <span data-lang="fr">Risk Management</span><span data-lang="en">Risk Management</span> ·
+        <span data-lang="fr">Module 2</span><span data-lang="en">Module 2</span>
+      </div>
+
+      <div class="module-hero">
+        <span class="badge">Risk Management · 02</span>
+        <h1>Value at Risk (VaR)</h1>
+        <p class="subtitle" data-lang="fr">La mesure de référence du risque de marché : quelle perte pourrait-on subir, avec quelle probabilité, sur un horizon donné ?</p>
+        <p class="subtitle" data-lang="en">The benchmark measure of market risk: how much could we lose, with what probability, over a given horizon?</p>
+        <div class="module-meta">
+          <span data-lang="fr">⏱ Lecture ~18 min</span><span data-lang="en">⏱ ~18 min read</span>
+          <span data-lang="fr">📶 Niveau avancé</span><span data-lang="en">📶 Advanced level</span>
+          <span data-lang="fr">🎓 CFA III · FRM I</span><span data-lang="en">🎓 CFA III · FRM I</span>
+        </div>
+      </div>
+
+      <div class="objectives">
+        <h4 data-lang="fr">Objectifs d'apprentissage</h4>
+        <h4 data-lang="en">Learning objectives</h4>
+        <ul>
+          <li data-lang="fr">Définir la VaR et interpréter correctement ses trois paramètres.</li>
+          <li data-lang="en">Define VaR and correctly interpret its three parameters.</li>
+          <li data-lang="fr">Calculer la VaR par les méthodes historique, paramétrique et Monte-Carlo.</li>
+          <li data-lang="en">Compute VaR using the historical, parametric and Monte Carlo methods.</li>
+          <li data-lang="fr">Appliquer la règle de la racine du temps pour changer d'horizon.</li>
+          <li data-lang="en">Apply the square-root-of-time rule to rescale the horizon.</li>
+          <li data-lang="fr">Comprendre les limites de la VaR et le rôle de l'Expected Shortfall.</li>
+          <li data-lang="en">Understand the limits of VaR and the role of Expected Shortfall.</li>
+        </ul>
+      </div>
+
+      <div class="module-body">
+
+        <!-- 1. DÉFINITION -->
+        <h2 id="intro"><span data-lang="fr">1. Qu'est-ce que la Value at Risk ?</span><span data-lang="en">1. What is Value at Risk?</span></h2>
+
+        <p data-lang="fr">La <strong>Value at Risk (VaR)</strong> résume en un seul nombre le risque de marché d'une position ou d'un portefeuille. Elle répond à une question posée par tout comité des risques : « <em>Dans un scénario défavorable mais plausible, combien pouvons-nous perdre ?</em> »</p>
+        <p data-lang="en">The <strong>Value at Risk (VaR)</strong> compresses the market risk of a position or portfolio into a single number. It answers the question every risk committee asks: “<em>In an adverse but plausible scenario, how much could we lose?</em>”</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">Définition</span><span class="clabel" data-lang="en">Definition</span>
+          <span data-lang="fr">La VaR à un niveau de confiance <em>c</em> et sur un horizon <em>h</em> est la perte qui ne sera pas dépassée avec une probabilité <em>c</em>, sur l'horizon <em>h</em>. Formellement, si <em>L</em> est la perte, la VaR est le quantile : <strong>P(L &gt; VaR) = 1 − c</strong>.</span>
+          <span data-lang="en">VaR at a confidence level <em>c</em> over a horizon <em>h</em> is the loss that will not be exceeded with probability <em>c</em>, over horizon <em>h</em>. Formally, if <em>L</em> is the loss, VaR is the quantile such that <strong>P(L &gt; VaR) = 1 − c</strong>.</span>
+        </div>
+
+        <p data-lang="fr">Une VaR à 1 jour de <strong>293 000 €</strong> au niveau de confiance de <strong>99 %</strong> se lit ainsi : « <em>il y a 99 % de chances que la perte quotidienne ne dépasse pas 293 000 €</em> », ou de façon équivalente : « <em>en moyenne, la perte dépassera 293 000 € un jour sur cent</em> ». La VaR ne dit <strong>pas</strong> de combien on perdra ce jour-là — seulement le seuil déclencheur.</p>
+        <p data-lang="en">A 1-day VaR of <strong>€293,000</strong> at a <strong>99%</strong> confidence level reads as: “<em>there is a 99% chance the daily loss will not exceed €293,000</em>”, or equivalently: “<em>on average, the loss will exceed €293,000 on one day out of a hundred</em>”. VaR does <strong>not</strong> tell you how much you lose on that day — only the trigger threshold.</p>
+
+        <div class="callout warn">
+          <span class="clabel" data-lang="fr">Erreur fréquente</span><span class="clabel" data-lang="en">Common mistake</span>
+          <span data-lang="fr">La VaR n'est <strong>pas</strong> la perte maximale possible. C'est un quantile : la perte peut être bien plus lourde dans les 1 % de cas défavorables. C'est précisément ce que corrige l'Expected Shortfall (section 6).</span>
+          <span data-lang="en">VaR is <strong>not</strong> the maximum possible loss. It is a quantile: the loss can be far heavier in the adverse 1% of cases. This is exactly what Expected Shortfall corrects (section 6).</span>
+        </div>
+
+        <!-- 2. PARAMÈTRES -->
+        <h2 id="params"><span data-lang="fr">2. Les trois paramètres clés</span><span data-lang="en">2. The three key parameters</span></h2>
+        <p data-lang="fr">Toute VaR est définie par trois choix, à préciser systématiquement :</p>
+        <p data-lang="en">Every VaR is defined by three choices, always to be specified:</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th data-lang="fr">Paramètre</th><th data-lang="en">Parameter</th>
+                <th data-lang="fr">Rôle</th><th data-lang="en">Role</th>
+                <th data-lang="fr">Valeurs usuelles</th><th data-lang="en">Typical values</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-lang="fr"><strong>Horizon</strong> <em>h</em></td><td data-lang="en"><strong>Horizon</strong> <em>h</em></td>
+                <td data-lang="fr">Période de détention du risque</td><td data-lang="en">Holding period of the risk</td>
+                <td data-lang="fr">1 jour (trading), 10 jours (Bâle)</td><td data-lang="en">1 day (trading), 10 days (Basel)</td>
+              </tr>
+              <tr>
+                <td data-lang="fr"><strong>Confiance</strong> <em>c</em></td><td data-lang="en"><strong>Confidence</strong> <em>c</em></td>
+                <td data-lang="fr">Tolérance au risque de queue</td><td data-lang="en">Tail-risk tolerance</td>
+                <td>95 %, 99 %, 99,9 %</td>
+              </tr>
+              <tr>
+                <td data-lang="fr"><strong>Devise / base</strong></td><td data-lang="en"><strong>Currency / base</strong></td>
+                <td data-lang="fr">Unité de la perte</td><td data-lang="en">Unit of the loss</td>
+                <td data-lang="fr">€ absolu ou % du portefeuille</td><td data-lang="en">Absolute € or % of portfolio</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 data-lang="fr">Changer d'horizon : la règle de la racine du temps</h3>
+        <h3 data-lang="en">Rescaling the horizon: the square-root-of-time rule</h3>
+        <p data-lang="fr">Si les rendements sont indépendants et de même loi, la volatilité croît comme la racine du temps. On convertit donc une VaR d'un horizon à un autre par :</p>
+        <p data-lang="en">If returns are independent and identically distributed, volatility grows as the square root of time. A VaR is therefore rescaled from one horizon to another by:</p>
+
+        <div class="formula">
+          <div class="eq">VaR<sub><em>h</em></sub> = VaR<sub>1&nbsp;jour</sub> × √<em>h</em></div>
+          <div class="caption" data-lang="fr">Valable sous l'hypothèse i.i.d. et rendement moyen nul sur l'horizon.</div>
+          <div class="caption" data-lang="en">Valid under the i.i.d. assumption and zero mean return over the horizon.</div>
+        </div>
+
+        <!-- 3. MÉTHODES -->
+        <h2 id="methodes"><span data-lang="fr">3. Les trois méthodes de calcul</span><span data-lang="en">3. The three calculation methods</span></h2>
+
+        <h3 data-lang="fr">a. Méthode historique</h3>
+        <h3 data-lang="en">a. Historical method</h3>
+        <p data-lang="fr">On réévalue le portefeuille sur un échantillon de rendements passés (par exemple les 500 derniers jours), on trie les résultats du pire au meilleur, et la VaR est le quantile empirique correspondant à (1 − <em>c</em>). Aucune hypothèse de distribution n'est imposée.</p>
+        <p data-lang="en">The portfolio is revalued over a sample of past returns (say the last 500 days), results are sorted from worst to best, and VaR is the empirical quantile corresponding to (1 − <em>c</em>). No distributional assumption is imposed.</p>
+        <p data-lang="fr"><strong>Forces :</strong> capture les queues épaisses et les corrélations réelles. <strong>Faiblesses :</strong> dépend entièrement de la fenêtre choisie ; suppose que le passé récent représente le futur.</p>
+        <p data-lang="en"><strong>Strengths:</strong> captures fat tails and real correlations. <strong>Weaknesses:</strong> entirely dependent on the chosen window; assumes the recent past represents the future.</p>
+
+        <h3 data-lang="fr">b. Méthode paramétrique (variance-covariance)</h3>
+        <h3 data-lang="en">b. Parametric method (variance-covariance)</h3>
+        <p data-lang="fr">On suppose que les rendements suivent une loi normale de volatilité <em>σ</em>. La VaR se déduit alors directement du quantile de la loi normale (le <em>z-score</em>) :</p>
+        <p data-lang="en">Returns are assumed to be normally distributed with volatility <em>σ</em>. VaR then follows directly from the normal quantile (the <em>z-score</em>):</p>
+
+        <div class="formula">
+          <div class="eq">VaR = <em>V</em> × ( <em>z</em><sub><em>c</em></sub> × <em>σ</em><sub><em>h</em></sub> − <em>μ</em><sub><em>h</em></sub> )</div>
+          <div class="caption" data-lang="fr"><em>V</em> = valeur du portefeuille · <em>z</em><sub><em>c</em></sub> = quantile normal (1,645 à 95 % ; 2,326 à 99 %) · <em>σ</em><sub><em>h</em></sub>, <em>μ</em><sub><em>h</em></sub> = volatilité et rendement sur l'horizon.</div>
+          <div class="caption" data-lang="en"><em>V</em> = portfolio value · <em>z</em><sub><em>c</em></sub> = normal quantile (1.645 at 95%; 2.326 at 99%) · <em>σ</em><sub><em>h</em></sub>, <em>μ</em><sub><em>h</em></sub> = volatility and return over the horizon.</div>
+        </div>
+
+        <p data-lang="fr">En pratique, sur un horizon court, on pose souvent <em>μ</em><sub><em>h</em></sub> ≈ 0 et la formule se réduit à <strong>VaR = <em>V</em> × <em>z</em><sub><em>c</em></sub> × <em>σ</em><sub><em>h</em></sub></strong>.</p>
+        <p data-lang="en">In practice, over a short horizon, one often sets <em>μ</em><sub><em>h</em></sub> ≈ 0 and the formula reduces to <strong>VaR = <em>V</em> × <em>z</em><sub><em>c</em></sub> × <em>σ</em><sub><em>h</em></sub></strong>.</p>
+        <p data-lang="fr"><strong>Forces :</strong> rapide, transparent, facile à agréger. <strong>Faiblesses :</strong> la normalité sous-estime les queues (krachs) ; inadaptée aux portefeuilles fortement optionnels (non-linéarité).</p>
+        <p data-lang="en"><strong>Strengths:</strong> fast, transparent, easy to aggregate. <strong>Weaknesses:</strong> normality underestimates tails (crashes); unsuitable for heavily optioned portfolios (non-linearity).</p>
+
+        <h3 data-lang="fr">c. Simulation de Monte-Carlo</h3>
+        <h3 data-lang="en">c. Monte Carlo simulation</h3>
+        <p data-lang="fr">On génère des milliers de scénarios de facteurs de risque à partir d'un modèle stochastique, on réévalue le portefeuille dans chacun, puis on lit le quantile de la distribution simulée des pertes. La méthode gère la non-linéarité (options) et toute distribution choisie.</p>
+        <p data-lang="en">Thousands of risk-factor scenarios are generated from a stochastic model, the portfolio is revalued in each, and the quantile of the simulated loss distribution is read off. The method handles non-linearity (options) and any chosen distribution.</p>
+        <p data-lang="fr"><strong>Forces :</strong> la plus flexible et la plus générale. <strong>Faiblesses :</strong> coûteuse en calcul ; sensible au modèle et aux paramètres retenus (risque de modèle).</p>
+        <p data-lang="en"><strong>Strengths:</strong> the most flexible and general. <strong>Weaknesses:</strong> computationally expensive; sensitive to the chosen model and parameters (model risk).</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th data-lang="fr">Critère</th><th data-lang="en">Criterion</th>
+                <th data-lang="fr">Historique</th><th data-lang="en">Historical</th>
+                <th data-lang="fr">Paramétrique</th><th data-lang="en">Parametric</th>
+                <th>Monte-Carlo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td data-lang="fr">Hypothèse de distribution</td><td data-lang="en">Distributional assumption</td><td data-lang="fr">Aucune</td><td data-lang="en">None</td><td data-lang="fr">Normale</td><td data-lang="en">Normal</td><td data-lang="fr">Au choix</td><td data-lang="en">Any</td></tr>
+              <tr><td data-lang="fr">Non-linéarité (options)</td><td data-lang="en">Non-linearity (options)</td><td data-lang="fr">Oui</td><td data-lang="en">Yes</td><td data-lang="fr">Non</td><td data-lang="en">No</td><td data-lang="fr">Oui</td><td data-lang="en">Yes</td></tr>
+              <tr><td data-lang="fr">Coût de calcul</td><td data-lang="en">Computational cost</td><td data-lang="fr">Faible</td><td data-lang="en">Low</td><td data-lang="fr">Très faible</td><td data-lang="en">Very low</td><td data-lang="fr">Élevé</td><td data-lang="en">High</td></tr>
+              <tr><td data-lang="fr">Queues épaisses</td><td data-lang="en">Fat tails</td><td data-lang="fr">Selon l'échantillon</td><td data-lang="en">Sample-dependent</td><td data-lang="fr">Sous-estimées</td><td data-lang="en">Underestimated</td><td data-lang="fr">Selon le modèle</td><td data-lang="en">Model-dependent</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 4. EXEMPLE -->
+        <h2 id="exemple"><span data-lang="fr">4. Exemple chiffré (paramétrique)</span><span data-lang="en">4. Worked example (parametric)</span></h2>
+
+        <div class="worked">
+          <div class="whead">
+            <span data-lang="fr">📋 Énoncé — VaR paramétrique d'un portefeuille actions</span>
+            <span data-lang="en">📋 Problem — Parametric VaR of an equity portfolio</span>
+          </div>
+          <div class="wbody">
+            <p data-lang="fr">Un portefeuille vaut <strong>V = 10 000 000 €</strong>. Sa volatilité annualisée est <strong>σ = 20 %</strong>. On suppose un rendement moyen nul et une année de 252 jours de trading. Calculer la VaR à 1 jour puis à 10 jours, au niveau de confiance de <strong>99 %</strong>.</p>
+            <p data-lang="en">A portfolio is worth <strong>V = €10,000,000</strong>. Its annualised volatility is <strong>σ = 20%</strong>. Assume a zero mean return and a 252-trading-day year. Compute the 1-day and 10-day VaR at the <strong>99%</strong> confidence level.</p>
+
+            <div class="step">
+              <div class="sn" data-lang="fr">Étape 1 — Volatilité journalière</div>
+              <div class="sn" data-lang="en">Step 1 — Daily volatility</div>
+              <p data-lang="fr"><em>σ</em><sub>1j</sub> = 20 % ÷ √252 = 0,20 × 0,0630 = <strong>1,260 %</strong></p>
+              <p data-lang="en"><em>σ</em><sub>1d</sub> = 20% ÷ √252 = 0.20 × 0.0630 = <strong>1.260%</strong></p>
+            </div>
+            <div class="step">
+              <div class="sn" data-lang="fr">Étape 2 — Quantile normal à 99 %</div>
+              <div class="sn" data-lang="en">Step 2 — Normal quantile at 99%</div>
+              <p data-lang="fr"><em>z</em><sub>99 %</sub> = <strong>2,326</strong></p>
+              <p data-lang="en"><em>z</em><sub>99%</sub> = <strong>2.326</strong></p>
+            </div>
+            <div class="step">
+              <div class="sn" data-lang="fr">Étape 3 — VaR à 1 jour</div>
+              <div class="sn" data-lang="en">Step 3 — 1-day VaR</div>
+              <p data-lang="fr">VaR<sub>1j</sub> = 10 000 000 × 2,326 × 0,01260 ≈ <strong>293 000 €</strong> (2,93 % du portefeuille)</p>
+              <p data-lang="en">VaR<sub>1d</sub> = 10,000,000 × 2.326 × 0.01260 ≈ <strong>€293,000</strong> (2.93% of the portfolio)</p>
+            </div>
+            <div class="step">
+              <div class="sn" data-lang="fr">Étape 4 — Passage à 10 jours (racine du temps)</div>
+              <div class="sn" data-lang="en">Step 4 — Rescale to 10 days (square-root-of-time)</div>
+              <p data-lang="fr">VaR<sub>10j</sub> = 293 000 × √10 ≈ <strong>927 000 €</strong></p>
+              <p data-lang="en">VaR<sub>10d</sub> = 293,000 × √10 ≈ <strong>€927,000</strong></p>
+            </div>
+            <div class="callout tip" style="margin:16px 0 0">
+              <span class="clabel" data-lang="fr">Lecture</span><span class="clabel" data-lang="en">Interpretation</span>
+              <span data-lang="fr">Un jour de trading sur cent, en moyenne, ce portefeuille devrait perdre plus de 293 000 €. Vérifiez ces chiffres vous-même dans le calculateur ci-dessous.</span>
+              <span data-lang="en">On one trading day out of a hundred, on average, this portfolio should lose more than €293,000. Check these figures yourself in the calculator below.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. CALCULATEUR -->
+        <h2 id="calc"><span data-lang="fr">5. Calculateur interactif de VaR</span><span data-lang="en">5. Interactive VaR calculator</span></h2>
+        <p data-lang="fr">Faites varier les paramètres : le <em>z-score</em> est recalculé par l'inverse de la loi normale, et l'Expected Shortfall est affiché en regard de la VaR.</p>
+        <p data-lang="en">Vary the parameters: the <em>z-score</em> is recomputed from the inverse normal, and the Expected Shortfall is shown alongside VaR.</p>
+
+        <div class="calc">
+          <div class="chead">
+            <h4 data-lang="fr">Calculateur — VaR paramétrique &amp; Expected Shortfall</h4>
+            <h4 data-lang="en">Calculator — Parametric VaR &amp; Expected Shortfall</h4>
+            <p data-lang="fr">Modèle gaussien · rendement supposé nul sur l'horizon si μ = 0</p>
+            <p data-lang="en">Gaussian model · return assumed zero over horizon if μ = 0</p>
+          </div>
+          <div class="cbody">
+            <div class="inputs">
+              <label data-lang="fr">Valeur du portefeuille (€)</label>
+              <label data-lang="en">Portfolio value (€)</label>
+              <input type="number" id="v-value" value="10000000" min="0" step="100000">
+
+              <div class="row2">
+                <div>
+                  <label data-lang="fr">Volatilité annualisée</label>
+                  <label data-lang="en">Annualised volatility</label>
+                  <div class="rangewrap">
+                    <input type="range" id="v-vol" min="1" max="60" step="0.5" value="20">
+                    <output id="v-vol-out">20%</output>
+                  </div>
+                </div>
+                <div>
+                  <label data-lang="fr">Rendement annualisé μ</label>
+                  <label data-lang="en">Annualised return μ</label>
+                  <div class="rangewrap">
+                    <input type="range" id="v-mu" min="-10" max="20" step="0.5" value="0">
+                    <output id="v-mu-out">0%</output>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row2">
+                <div>
+                  <label data-lang="fr">Horizon (jours de trading)</label>
+                  <label data-lang="en">Horizon (trading days)</label>
+                  <div class="rangewrap">
+                    <input type="range" id="v-h" min="1" max="60" step="1" value="1">
+                    <output id="v-h-out">1</output>
+                  </div>
+                </div>
+                <div>
+                  <label data-lang="fr">Niveau de confiance</label>
+                  <label data-lang="en">Confidence level</label>
+                  <div class="rangewrap">
+                    <input type="range" id="v-c" min="90" max="99.9" step="0.1" value="99">
+                    <output id="v-c-out">99%</output>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="result">
+              <div class="rl" data-lang="fr">Value at Risk</div>
+              <div class="rl" data-lang="en">Value at Risk</div>
+              <div class="rv gold" id="r-var">—</div>
+              <div class="rsub" id="r-var-pct">—</div>
+              <hr>
+              <div class="rl" data-lang="fr">Expected Shortfall (CVaR)</div>
+              <div class="rl" data-lang="en">Expected Shortfall (CVaR)</div>
+              <div class="rv" id="r-es" style="font-size:26px">—</div>
+              <div class="rsub" id="r-es-pct">—</div>
+              <hr>
+              <div class="rsub" id="r-detail">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. LIMITES -->
+        <h2 id="limites"><span data-lang="fr">6. Limites de la VaR &amp; Expected Shortfall</span><span data-lang="en">6. Limits of VaR &amp; Expected Shortfall</span></h2>
+        <p data-lang="fr">La VaR souffre de deux critiques majeures. D'abord, elle est <strong>silencieuse sur la sévérité des pertes extrêmes</strong> : elle indique le seuil, jamais l'ampleur au-delà. Ensuite, elle n'est pas une mesure de risque <strong>cohérente</strong> au sens d'Artzner et al. (1999) — elle peut violer la <em>sous-additivité</em>, c'est-à-dire pénaliser la diversification dans certains cas pathologiques.</p>
+        <p data-lang="en">VaR suffers from two major criticisms. First, it is <strong>silent on the severity of extreme losses</strong>: it gives the threshold, never the magnitude beyond it. Second, it is not a <strong>coherent</strong> risk measure in the sense of Artzner et al. (1999) — it can violate <em>sub-additivity</em>, i.e. penalise diversification in certain pathological cases.</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">Expected Shortfall (ES / CVaR)</span><span class="clabel" data-lang="en">Expected Shortfall (ES / CVaR)</span>
+          <span data-lang="fr">L'Expected Shortfall est la <strong>perte moyenne conditionnelle</strong> aux cas où la VaR est dépassée : ES = E[ L | L &gt; VaR ]. Elle regarde <em>dans</em> la queue, est toujours ≥ VaR, et constitue une mesure cohérente.</span>
+          <span data-lang="en">Expected Shortfall is the <strong>average loss conditional</strong> on VaR being exceeded: ES = E[ L | L &gt; VaR ]. It looks <em>inside</em> the tail, is always ≥ VaR, and is a coherent measure.</span>
+        </div>
+
+        <div class="formula">
+          <div class="eq">ES<sub><em>c</em></sub> = <em>V</em> × <em>σ</em><sub><em>h</em></sub> × φ(<em>z</em><sub><em>c</em></sub>) ⁄ (1 − <em>c</em>) &nbsp;−&nbsp; <em>V</em> × <em>μ</em><sub><em>h</em></sub></div>
+          <div class="caption" data-lang="fr">Cas gaussien · φ = densité de la loi normale standard. À 99 %, le facteur φ(z)/(1−c) ≈ 2,67 contre z = 2,326 pour la VaR.</div>
+          <div class="caption" data-lang="en">Gaussian case · φ = standard normal density. At 99%, the factor φ(z)/(1−c) ≈ 2.67 versus z = 2.326 for VaR.</div>
+        </div>
+
+        <p data-lang="fr">C'est pour ces raisons que la réforme <strong>FRTB de Bâle</strong> a remplacé la VaR à 99 % par l'Expected Shortfall à 97,5 % comme mesure réglementaire du risque de marché.</p>
+        <p data-lang="en">For these reasons the <strong>Basel FRTB</strong> reform replaced 99% VaR with 97.5% Expected Shortfall as the regulatory market-risk measure.</p>
+
+        <!-- 7. BACKTESTING -->
+        <h2 id="backtest"><span data-lang="fr">7. Backtesting : vérifier son modèle</span><span data-lang="en">7. Backtesting: validating the model</span></h2>
+        <p data-lang="fr">Un modèle de VaR se juge sur ses <strong>exceptions</strong> — les jours où la perte réelle dépasse la VaR annoncée. À 99 %, on attend environ 2,5 exceptions par an (1 % × 250 jours). Trop d'exceptions signale un modèle qui sous-estime le risque.</p>
+        <p data-lang="en">A VaR model is judged on its <strong>exceptions</strong> — days when the realised loss exceeds the reported VaR. At 99%, one expects about 2.5 exceptions per year (1% × 250 days). Too many exceptions signals a model that underestimates risk.</p>
+        <p data-lang="fr">Le <strong>test de Kupiec</strong> (proportion d'échecs) vérifie statistiquement si le nombre d'exceptions observées est cohérent avec le niveau de confiance. Bâle formalise cela via le « <em>traffic light</em> » : zone verte (0–4 exceptions), orange (5–9), rouge (≥ 10) — chaque zone majorant le capital requis.</p>
+        <p data-lang="en">The <strong>Kupiec test</strong> (proportion of failures) statistically checks whether the observed number of exceptions is consistent with the confidence level. Basel formalises this via a “<em>traffic light</em>” system: green zone (0–4 exceptions), amber (5–9), red (≥ 10) — each zone increasing required capital.</p>
+
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">À retenir</span><span class="clabel" data-lang="en">Key takeaway</span>
+          <span data-lang="fr">La VaR est un point de départ, pas une vérité. Elle doit toujours s'accompagner d'un backtesting, d'un stress testing et d'une mesure de queue (ES).</span>
+          <span data-lang="en">VaR is a starting point, not a truth. It must always be paired with backtesting, stress testing and a tail measure (ES).</span>
+        </div>
+
+        <!-- 8. QUIZ -->
+        <h2 id="quiz"><span data-lang="fr">8. Testez vos connaissances</span><span data-lang="en">8. Test your knowledge</span></h2>
+        <div class="quiz">
+          <h4 data-lang="fr">Quiz — 3 questions</h4>
+          <h4 data-lang="en">Quiz — 3 questions</h4>
+          <p class="qsub" data-lang="fr">Cliquez sur une réponse pour voir la correction.</p>
+          <p class="qsub" data-lang="en">Click an answer to reveal the explanation.</p>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">1. Une VaR à 1 jour de 500 k€ à 95 % signifie…</div>
+            <div class="qtext" data-lang="en">1. A 1-day VaR of €500k at 95% means…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">…qu'un jour sur vingt en moyenne, la perte dépassera 500 k€.</span><span data-lang="en">…on average one day in twenty, the loss will exceed €500k.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">…que la perte maximale possible est de 500 k€.</span><span data-lang="en">…the maximum possible loss is €500k.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">…qu'on gagnera 500 k€ dans 95 % des cas.</span><span data-lang="en">…we will gain €500k in 95% of cases.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La VaR est un quantile : à 95 %, 1 − c = 5 %, soit un jour sur vingt où la perte dépasse le seuil. Elle ne borne pas la perte maximale.</span><span data-lang="en">✔ VaR is a quantile: at 95%, 1 − c = 5%, i.e. one day in twenty where the loss exceeds the threshold. It does not cap the maximum loss.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">2. Quelle méthode gère le mieux un portefeuille riche en options ?</div>
+            <div class="qtext" data-lang="en">2. Which method best handles a portfolio rich in options?</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La méthode paramétrique (variance-covariance).</span><span data-lang="en">The parametric (variance-covariance) method.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">La simulation de Monte-Carlo.</span><span data-lang="en">Monte Carlo simulation.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Aucune, la VaR est impossible avec des options.</span><span data-lang="en">None, VaR is impossible with options.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La méthode paramétrique suppose la linéarité et échoue sur les payoffs non-linéaires. Monte-Carlo réévalue chaque scénario et capture la non-linéarité.</span><span data-lang="en">✔ The parametric method assumes linearity and fails on non-linear payoffs. Monte Carlo revalues each scenario and captures non-linearity.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">3. Pourquoi Bâle (FRTB) préfère-t-il l'Expected Shortfall à la VaR ?</div>
+            <div class="qtext" data-lang="en">3. Why does Basel (FRTB) prefer Expected Shortfall over VaR?</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Parce qu'elle est plus simple à calculer.</span><span data-lang="en">Because it is simpler to compute.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Parce qu'elle mesure la sévérité dans la queue et est cohérente (sous-additive).</span><span data-lang="en">Because it measures tail severity and is coherent (sub-additive).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Parce qu'elle donne toujours un chiffre plus faible.</span><span data-lang="en">Because it always yields a smaller number.</span></button>
+            <div class="explain"><span data-lang="fr">✔ L'ES regarde la perte moyenne au-delà de la VaR et respecte la sous-additivité — elle ne pénalise pas la diversification. Elle est d'ailleurs toujours ≥ VaR.</span><span data-lang="en">✔ ES looks at the average loss beyond VaR and satisfies sub-additivity — it does not penalise diversification. It is also always ≥ VaR.</span></div>
+          </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="module-nav">
+          <a class="prev" href="../index.html#curriculum">
+            <div class="dir" data-lang="fr">← Module précédent</div>
+            <div class="dir" data-lang="en">← Previous module</div>
+            <div class="tt" data-lang="fr">1. Panorama des risques financiers</div>
+            <div class="tt" data-lang="en">1. Landscape of financial risks</div>
+          </a>
+          <a class="next" href="../index.html#curriculum">
+            <div class="dir" data-lang="fr">Module suivant →</div>
+            <div class="dir" data-lang="en">Next module →</div>
+            <div class="tt" data-lang="fr">3. Modélisation de la volatilité</div>
+            <div class="tt" data-lang="en">3. Volatility modelling</div>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap foot">
+    <div class="brand"><span class="logo">Avenir<b>.</b></span></div>
+    <p data-lang="fr">Module démo · Value at Risk · Gabarit pour les 15 autres modules</p>
+    <p data-lang="en">Demo module · Value at Risk · Template for the other 15 modules</p>
+  </div>
+</footer>
+
+<script src="../assets/script.js"></script>
+<script>
+/* Calculateur de VaR paramétrique + Expected Shortfall */
+(function () {
+  var TD = 252; // jours de trading par an
+
+  // Inverse de la loi normale standard (Acklam, 2003)
+  function invNorm(p) {
+    var a=[-3.969683028665376e+01,2.209460984245205e+02,-2.759285104469687e+02,1.383577518672690e+02,-3.066479806614716e+01,2.506628277459239e+00];
+    var b=[-5.447609879822406e+01,1.615858368580409e+02,-1.556989798598866e+02,6.680131188771972e+01,-1.328068155288572e+01];
+    var c=[-7.784894002430293e-03,-3.223964580411365e-01,-2.400758277161838e+00,-2.549732539343734e+00,4.374664141464968e+00,2.938163982698783e+00];
+    var d=[7.784695709041462e-03,3.224671290700398e-01,2.445134137142996e+00,3.754408661907416e+00];
+    var pl=0.02425, ph=1-pl, q, r;
+    if (p<pl){ q=Math.sqrt(-2*Math.log(p)); return (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1); }
+    if (p<=ph){ q=p-0.5; r=q*q; return (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1); }
+    q=Math.sqrt(-2*Math.log(1-p)); return -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);
+  }
+  function normPdf(z){ return Math.exp(-z*z/2)/Math.sqrt(2*Math.PI); }
+
+  function fmtMoney(x){
+    var lang = document.body.getAttribute("data-active-lang");
+    var loc = lang === "en" ? "en-US" : "fr-FR";
+    return new Intl.NumberFormat(loc, {style:"currency", currency:"EUR", maximumFractionDigits:0}).format(x);
+  }
+  function fmtPct(x){ return (x*100).toFixed(2).replace(".", document.body.getAttribute("data-active-lang")==="en"?".":",") + "%"; }
+
+  function $(id){ return document.getElementById(id); }
+
+  function compute(){
+    var V   = parseFloat($("v-value").value) || 0;
+    var vol = parseFloat($("v-vol").value)/100;
+    var mu  = parseFloat($("v-mu").value)/100;
+    var h   = parseInt($("v-h").value,10);
+    var c   = parseFloat($("v-c").value)/100;
+
+    $("v-vol-out").textContent = $("v-vol").value + "%";
+    $("v-mu-out").textContent  = $("v-mu").value + "%";
+    $("v-h-out").textContent   = h;
+    $("v-c-out").textContent   = $("v-c").value + "%";
+
+    var z    = invNorm(c);
+    var sigH = vol * Math.sqrt(h/TD);
+    var muH  = mu * (h/TD);
+
+    var varRatio = z*sigH - muH;
+    if (varRatio < 0) varRatio = 0;
+    var varAbs = V * varRatio;
+
+    var esRatio = sigH * normPdf(z)/(1-c) - muH;
+    if (esRatio < 0) esRatio = 0;
+    var esAbs = V * esRatio;
+
+    $("r-var").textContent     = fmtMoney(varAbs);
+    $("r-var-pct").textContent = fmtPct(varRatio) + (document.body.getAttribute("data-active-lang")==="en" ? " of portfolio" : " du portefeuille");
+    $("r-es").textContent      = fmtMoney(esAbs);
+    $("r-es-pct").textContent  = fmtPct(esRatio) + (document.body.getAttribute("data-active-lang")==="en" ? " of portfolio" : " du portefeuille");
+
+    var en = document.body.getAttribute("data-active-lang")==="en";
+    $("r-detail").textContent = (en ? "z = " : "z = ") + z.toFixed(3)
+      + "  ·  σ" + (en?"":"") + " " + (en?"over horizon = ":"sur horizon = ") + (sigH*100).toFixed(3) + "%";
+  }
+
+  ["v-value","v-vol","v-mu","v-h","v-c"].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el){ el.addEventListener("input", compute); }
+  });
+  document.querySelectorAll(".lang-toggle button").forEach(function(b){
+    b.addEventListener("click", function(){ setTimeout(compute, 0); });
+  });
+  document.addEventListener("DOMContentLoaded", compute);
+  compute();
+})();
+</script>
+</body>
+</html>
