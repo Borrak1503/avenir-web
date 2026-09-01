@@ -1,0 +1,22 @@
+[
+ {
+  "slug": "var",
+  "titles": {
+   "fr": "Value at Risk (VaR)",
+   "en": "Value at Risk (VaR)",
+   "nl": "Value at Risk (VaR)"
+  },
+  "trackAm": false,
+  "nExo": 0
+ },
+ {
+  "slug": "am1",
+  "titles": {
+   "fr": "Fondamentaux de la gestion d'actifs",
+   "en": "Foundations of asset management",
+   "nl": "Grondslagen van vermogensbeheer"
+  },
+  "trackAm": true,
+  "nExo": 6
+ }
+]
