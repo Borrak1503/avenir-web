@@ -1,0 +1,48 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { locales, ui, withBase } from '../../../i18n';
+import varMod from '../../../data/modules/var.json';
+import am1Mod from '../../../data/modules/am1.json';
+import am2Mod from '../../../data/modules/am2.json';
+import am3Mod from '../../../data/modules/am3.json';
+import am4Mod from '../../../data/modules/am4.json';
+
+const MODULES = [am1Mod, am2Mod, am3Mod, am4Mod, varMod] as any[];
+
+export function getStaticPaths() {
+  return locales.map((locale) => ({ params: { locale } }));
+}
+const { locale } = Astro.params;
+const loc = locale as string;
+const t = ui[loc as 'fr' | 'en' | 'nl'];
+const base = import.meta.env.BASE_URL;
+---
+<Base locale={locale as any} title={t.solutionsTitle} subpath="solutions/">
+  <section>
+    <div class="wrap" style="max-width:900px">
+      <div class="section-head">
+        <div class="kicker">{t.solutions}</div>
+        <h2>{t.solutionsTitle}</h2>
+        <p>{t.solutionsIntro}</p>
+      </div>
+
+      {MODULES.filter((m) => m.exercises && m.exercises.length).map((m) => (
+        <div style="margin-bottom:40px">
+          <h3 style="font-family:var(--serif);font-size:22px;border-bottom:2px solid var(--border);padding-bottom:10px">
+            <a href={`${base}${loc}/modules/${m.slug}/`}>{m.titles[loc]}</a>
+          </h3>
+          {m.exercises.map((ex: any) => (
+            <div class="exo">
+              <div class="ehead"><span class="eid">{ex.id}</span></div>
+              <div class="estatement"><strong>{t.statement} — </strong><span set:html={withBase(ex.statement[loc])} /></div>
+              <div class="ans"><strong>{t.answer} — </strong><span set:html={withBase(ex.answer[loc])} /></div>
+            </div>
+          ))}
+          <p style="margin-top:14px">
+            <a class="btn btn-outline" href={`${base}${loc}/modules/${m.slug}/`}>{t.backToModule} →</a>
+          </p>
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>
