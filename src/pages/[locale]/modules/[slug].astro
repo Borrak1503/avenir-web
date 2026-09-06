@@ -1,0 +1,48 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { locales, withBase } from '../../../i18n';
+import varMod from '../../../data/modules/var.json';
+import am1Mod from '../../../data/modules/am1.json';
+import am2Mod from '../../../data/modules/am2.json';
+import am3Mod from '../../../data/modules/am3.json';
+import am4Mod from '../../../data/modules/am4.json';
+import am5Mod from '../../../data/modules/am5.json';
+import am6Mod from '../../../data/modules/am6.json';
+import am7Mod from '../../../data/modules/am7.json';
+import am8Mod from '../../../data/modules/am8.json';
+import frm1Mod from '../../../data/modules/frm1.json';
+import frm3Mod from '../../../data/modules/frm3.json';
+import frm4Mod from '../../../data/modules/frm4.json';
+import frm5Mod from '../../../data/modules/frm5.json';
+import frm6Mod from '../../../data/modules/frm6.json';
+import frm7Mod from '../../../data/modules/frm7.json';
+import frm8Mod from '../../../data/modules/frm8.json';
+
+const MODULES: Record<string, any> = { var: varMod, am1: am1Mod, am2: am2Mod, am3: am3Mod, am4: am4Mod, am5: am5Mod, am6: am6Mod, am7: am7Mod, am8: am8Mod, frm1: frm1Mod, frm3: frm3Mod, frm4: frm4Mod, frm5: frm5Mod, frm6: frm6Mod, frm7: frm7Mod, frm8: frm8Mod };
+
+export function getStaticPaths() {
+  const slugs = ['var', 'am1', 'am2', 'am3', 'am4', 'am5', 'am6', 'am7', 'am8', 'frm1', 'frm3', 'frm4', 'frm5', 'frm6', 'frm7', 'frm8'];
+  const paths: any[] = [];
+  for (const locale of locales) {
+    for (const slug of slugs) {
+      paths.push({ params: { locale, slug } });
+    }
+  }
+  return paths;
+}
+
+const { locale, slug } = Astro.params;
+const mod = MODULES[slug as string];
+const body = withBase(mod.body[locale as string]);
+const calc: string = mod.calc || '';
+---
+<Base
+  locale={locale as any}
+  title={mod.titles[locale as string]}
+  subpath={`modules/${slug}/`}
+  trackAm={mod.trackAm}
+  progress={true}
+>
+  <Fragment set:html={body} />
+  {calc && <script is:inline set:html={calc} />}
+</Base>

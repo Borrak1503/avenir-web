@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Réglementation &amp; capital — Avenir</title>
+<meta name="description" content="Module FRM sur la réglementation bancaire : accords de Bâle I/II/III, actifs pondérés RWA, fonds propres CET1/AT1/Tier 2, ratios de capital, coussins (conservation, contracyclique, G-SIB), ratio de levier, LCR/NSFR, les trois piliers. Calculateur d'adéquation des fonds propres interactif, QCM et exercices.">
+<style>
+/* ==========================================================================
+   AVENIR — Plateforme pédagogique Asset Management & Financial Risk Management
+   Feuille de style partagée
+   ========================================================================== */
+
+:root {
+  /* Palette claire */
+  --bg:            #f6f4ef;
+  --bg-soft:       #efece4;
+  --surface:       #ffffff;
+  --surface-2:     #faf8f3;
+  --border:        #e2ddd1;
+  --ink:           #1a2230;
+  --ink-soft:      #4a5566;
+  --ink-mute:      #7a8494;
+
+  --navy:          #12294a;
+  --navy-2:        #1c3a63;
+  --gold:          #c19a3e;
+  --gold-soft:     #e7d9b0;
+  --teal:          #16706a;
+  --teal-soft:     #cfe6e2;
+  --crimson:       #9a3140;
+
+  --am:            var(--navy);   /* couleur du parcours Asset Management */
+  --am-soft:       #dbe3ef;
+  --frm:           var(--teal);   /* couleur du parcours Risk Management */
+  --frm-soft:      var(--teal-soft);
+
+  --radius:        14px;
+  --radius-sm:     9px;
+  --shadow:        0 1px 2px rgba(18,41,74,.05), 0 8px 24px rgba(18,41,74,.07);
+  --shadow-lg:     0 12px 40px rgba(18,41,74,.14);
+  --maxw:          1160px;
+
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: "SF Mono", "JetBrains Mono", "Fira Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:        #0d141f;
+    --bg-soft:   #111a28;
+    --surface:   #15202f;
+    --surface-2: #1a2637;
+    --border:    #263449;
+    --ink:       #edf1f6;
+    --ink-soft:  #b3bdcc;
+    --ink-mute:  #808ba0;
+    --navy:      #6f9bd6;
+    --navy-2:    #8bb0e0;
+    --gold:      #d8b95e;
+    --gold-soft: #40391f;
+    --teal:      #4bb3aa;
+    --teal-soft: #17332f;
+    --crimson:   #d47a86;
+    --am-soft:   #1a2c46;
+    --frm-soft:  #16332f;
+    --shadow:    0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"] {
+  --bg:        #0d141f;
+  --bg-soft:   #111a28;
+  --surface:   #15202f;
+  --surface-2: #1a2637;
+  --border:    #263449;
+  --ink:       #edf1f6;
+  --ink-soft:  #b3bdcc;
+  --ink-mute:  #808ba0;
+  --navy:      #6f9bd6;
+  --navy-2:    #8bb0e0;
+  --gold:      #d8b95e;
+  --gold-soft: #40391f;
+  --teal:      #4bb3aa;
+  --teal-soft: #17332f;
+  --crimson:   #d47a86;
+  --am-soft:   #1a2c46;
+  --frm-soft:  #16332f;
+  --shadow:    0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.5);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Bilinguisme : on masque la langue inactive */
+[data-lang] { display: none; }
+body[data-active-lang="fr"] [data-lang="fr"] { display: revert; }
+body[data-active-lang="en"] [data-lang="en"] { display: revert; }
+body[data-active-lang="nl"] [data-lang="nl"] { display: revert; }
+/* variantes en ligne */
+span[data-lang], a[data-lang], em[data-lang], strong[data-lang], code[data-lang] { display: none; }
+body[data-active-lang="fr"] span[data-lang="fr"],
+body[data-active-lang="fr"] a[data-lang="fr"],
+body[data-active-lang="fr"] em[data-lang="fr"],
+body[data-active-lang="fr"] strong[data-lang="fr"],
+body[data-active-lang="fr"] code[data-lang="fr"] { display: inline; }
+body[data-active-lang="en"] span[data-lang="en"],
+body[data-active-lang="en"] a[data-lang="en"],
+body[data-active-lang="en"] em[data-lang="en"],
+body[data-active-lang="en"] strong[data-lang="en"],
+body[data-active-lang="en"] code[data-lang="en"] { display: inline; }
+body[data-active-lang="nl"] span[data-lang="nl"],
+body[data-active-lang="nl"] a[data-lang="nl"],
+body[data-active-lang="nl"] em[data-lang="nl"],
+body[data-active-lang="nl"] strong[data-lang="nl"],
+body[data-active-lang="nl"] code[data-lang="nl"] { display: inline; }
+/* les pastilles inline-block conservent leur forme quand elles portent data-lang */
+body[data-active-lang="fr"] span.eyebrow[data-lang="fr"],
+body[data-active-lang="en"] span.eyebrow[data-lang="en"],
+body[data-active-lang="nl"] span.eyebrow[data-lang="nl"] { display: inline-block; }
+/* .callout .clabel force display:block — masquer les langues non actives et ne révéler que l'active */
+.callout .clabel[data-lang] { display: none; }
+body[data-active-lang="fr"] .callout .clabel[data-lang="fr"],
+body[data-active-lang="en"] .callout .clabel[data-lang="en"],
+body[data-active-lang="nl"] .callout .clabel[data-lang="nl"] { display: block; }
+/* garde-fou général : une règle de composant (ex. .sml-sliders label{display:block}) ne doit jamais
+   ré-afficher une langue non active. On masque toujours les langues non actives (!important). */
+body[data-active-lang="fr"] [data-lang]:not([data-lang="fr"]),
+body[data-active-lang="en"] [data-lang]:not([data-lang="en"]),
+body[data-active-lang="nl"] [data-lang]:not([data-lang="nl"]) { display: none !important; }
+
+a { color: var(--navy-2); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+/* ---------- En-tête / navigation ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.nav {
+  display: flex; align-items: center; gap: 20px;
+  height: 64px;
+}
+.brand { display: flex; align-items: baseline; gap: 10px; font-family: var(--serif); }
+.brand a { color: var(--ink); text-decoration: none; }
+.brand .logo {
+  font-size: 22px; font-weight: 700; letter-spacing: .5px;
+}
+.brand .logo b { color: var(--gold); }
+.brand .tag { font-size: 12.5px; color: var(--ink-mute); font-family: var(--sans); letter-spacing: .3px; }
+.nav .spacer { flex: 1; }
+.nav-links { display: flex; gap: 4px; }
+.nav-links a {
+  color: var(--ink-soft); font-size: 14.5px; font-weight: 500;
+  padding: 8px 12px; border-radius: 8px;
+}
+.nav-links a:hover { background: var(--bg-soft); color: var(--ink); text-decoration: none; }
+
+.controls { display: flex; align-items: center; gap: 8px; }
+.lang-toggle {
+  display: inline-flex; border: 1px solid var(--border); border-radius: 999px;
+  overflow: hidden; background: var(--surface-2);
+}
+.lang-toggle button {
+  border: 0; background: transparent; color: var(--ink-mute);
+  font: 600 13px/1 var(--sans); padding: 7px 13px; cursor: pointer;
+}
+.lang-toggle button.active { background: var(--navy); color: #fff; }
+:root[data-theme="dark"] .lang-toggle button.active,
+:root:not([data-theme="light"]) .lang-toggle button.active { color: #0d141f; }
+.icon-btn {
+  border: 1px solid var(--border); background: var(--surface-2);
+  width: 36px; height: 36px; border-radius: 999px; cursor: pointer;
+  font-size: 16px; color: var(--ink-soft); display: grid; place-items: center;
+}
+.icon-btn:hover { color: var(--ink); }
+.menu-btn { display: none; }
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative; overflow: hidden;
+  background:
+    radial-gradient(1200px 500px at 80% -10%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 60%),
+    linear-gradient(160deg, var(--navy) 0%, #0c1c34 65%, #0a1830 100%);
+  color: #eef2f8;
+}
+:root[data-theme="dark"] .hero,
+:root:not([data-theme="light"]) .hero {
+  background:
+    radial-gradient(1200px 500px at 80% -10%, rgba(216,185,94,.14), transparent 60%),
+    linear-gradient(160deg, #0b1524 0%, #0a1220 100%);
+}
+.hero .wrap { padding-top: 72px; padding-bottom: 76px; }
+.hero .eyebrow {
+  display: inline-block; font-size: 12.5px; letter-spacing: 2.2px; text-transform: uppercase;
+  color: var(--gold-soft); border: 1px solid rgba(231,217,176,.35);
+  padding: 5px 12px; border-radius: 999px; margin-bottom: 22px;
+}
+:root[data-theme="dark"] .hero .eyebrow,
+:root:not([data-theme="light"]) .hero .eyebrow { color: var(--gold); }
+.hero h1 {
+  font-family: var(--serif); font-weight: 700;
+  font-size: clamp(34px, 5.2vw, 58px); line-height: 1.08; margin: 0 0 20px;
+  max-width: 16ch;
+}
+.hero h1 .accent { color: var(--gold); }
+.hero p.lead { font-size: clamp(17px, 2.2vw, 21px); color: #cdd7e6; max-width: 60ch; margin: 0 0 32px; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; }
+.hero-stats { display: flex; gap: 40px; margin-top: 54px; flex-wrap: wrap; }
+.hero-stats .stat .n { font-family: var(--serif); font-size: 34px; color: #fff; font-weight: 700; }
+.hero-stats .stat .l { font-size: 13.5px; color: #a9b6c9; letter-spacing: .3px; }
+
+/* ---------- Boutons ---------- */
+.btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  font: 600 15px/1 var(--sans); padding: 13px 22px; border-radius: 10px;
+  cursor: pointer; border: 1px solid transparent; transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn:hover { text-decoration: none; transform: translateY(-1px); }
+.btn-gold { background: var(--gold); color: #241c05; }
+.btn-gold:hover { box-shadow: 0 8px 20px rgba(193,154,62,.35); }
+.btn-ghost { background: transparent; color: #eef2f8; border-color: rgba(255,255,255,.35); }
+.btn-ghost:hover { background: rgba(255,255,255,.08); }
+.btn-solid { background: var(--navy); color: #fff; }
+:root[data-theme="dark"] .btn-solid,
+:root:not([data-theme="light"]) .btn-solid { color: #0d141f; }
+.btn-solid:hover { box-shadow: var(--shadow); }
+.btn-outline { background: var(--surface); color: var(--ink); border-color: var(--border); }
+.btn-outline:hover { border-color: var(--navy-2); }
+
+/* ---------- Sections ---------- */
+section { padding: 66px 0; }
+.section-head { max-width: 720px; margin-bottom: 40px; }
+.section-head .kicker {
+  font-size: 12.5px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold); font-weight: 700; margin-bottom: 12px;
+}
+.section-head h2 { font-family: var(--serif); font-size: clamp(26px, 3.6vw, 38px); margin: 0 0 12px; line-height: 1.15; }
+.section-head p { color: var(--ink-soft); font-size: 18px; margin: 0; }
+
+/* ---------- Parcours (tracks) ---------- */
+.tracks { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.track {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 32px; box-shadow: var(--shadow); position: relative; overflow: hidden;
+}
+.track::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 5px; }
+.track.am::before { background: linear-gradient(var(--navy), var(--navy-2)); }
+.track.frm::before { background: linear-gradient(var(--teal), #0f5651); }
+.track .badge {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: 5px 11px; border-radius: 999px; margin-bottom: 16px;
+}
+.track.am .badge { background: var(--am-soft); color: var(--navy); }
+.track.frm .badge { background: var(--frm-soft); color: var(--teal); }
+.track h3 { font-family: var(--serif); font-size: 25px; margin: 0 0 8px; }
+.track p { color: var(--ink-soft); margin: 0 0 18px; font-size: 15.5px; }
+.track ul { list-style: none; padding: 0; margin: 0 0 22px; }
+.track ul li { padding: 7px 0 7px 26px; position: relative; font-size: 15px; border-top: 1px solid var(--border); }
+.track ul li:first-child { border-top: 0; }
+.track ul li::before {
+  content: "▸"; position: absolute; left: 4px; top: 7px; font-weight: 700;
+}
+.track.am ul li::before { color: var(--gold); }
+.track.frm ul li::before { color: var(--teal); }
+
+/* ---------- Curriculum ---------- */
+.curriculum { background: var(--bg-soft); }
+.curric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.curric-col h3 {
+  font-family: var(--serif); font-size: 22px; display: flex; align-items: center; gap: 10px;
+  padding-bottom: 14px; margin: 0 0 6px; border-bottom: 2px solid var(--border);
+}
+.curric-col.am h3 { color: var(--navy); }
+.curric-col.frm h3 { color: var(--teal); }
+.curric-col .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.curric-col.am .dot { background: var(--navy); }
+.curric-col.frm .dot { background: var(--teal); }
+.mod {
+  display: flex; gap: 15px; align-items: flex-start;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 15px 17px; margin-top: 12px; transition: border-color .15s ease, transform .15s ease;
+}
+a.mod:hover { text-decoration: none; transform: translateX(3px); box-shadow: var(--shadow); }
+.curric-col.am a.mod:hover { border-color: var(--navy-2); }
+.curric-col.frm a.mod:hover { border-color: var(--teal); }
+.mod .num {
+  flex: none; width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center;
+  font-family: var(--serif); font-weight: 700; font-size: 15px;
+}
+.curric-col.am .mod .num { background: var(--am-soft); color: var(--navy); }
+.curric-col.frm .mod .num { background: var(--frm-soft); color: var(--teal); }
+.mod .mt { font-weight: 600; font-size: 15.5px; color: var(--ink); margin: 2px 0 2px; }
+.mod .md { font-size: 13.5px; color: var(--ink-mute); line-height: 1.5; }
+.mod .chip {
+  font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+  color: var(--gold); border: 1px solid var(--gold-soft); border-radius: 999px; padding: 2px 8px;
+  margin-left: auto; align-self: center; flex: none;
+}
+
+/* ---------- Bandeau méthode ---------- */
+.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.feature { padding: 6px 4px; }
+.feature .ic { font-size: 24px; margin-bottom: 10px; }
+.feature h4 { font-size: 17px; margin: 0 0 6px; }
+.feature p { color: var(--ink-soft); font-size: 14.5px; margin: 0; }
+
+/* ---------- CTA final ---------- */
+.cta-band {
+  background: linear-gradient(160deg, var(--navy), #0b1c35);
+  color: #eef2f8; border-radius: var(--radius); padding: 46px; text-align: center;
+}
+.cta-band h2 { font-family: var(--serif); font-size: clamp(24px, 3vw, 34px); margin: 0 0 12px; }
+.cta-band p { color: #c7d2e2; max-width: 54ch; margin: 0 auto 26px; }
+
+/* ---------- Pied de page ---------- */
+.site-footer { border-top: 1px solid var(--border); background: var(--surface); padding: 40px 0; margin-top: 20px; }
+.foot { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: center; }
+.foot .brand .logo { font-size: 18px; }
+.foot p { color: var(--ink-mute); font-size: 13.5px; margin: 0; }
+
+/* ==========================================================================
+   PAGES MODULE
+   ========================================================================== */
+.module-shell { display: grid; grid-template-columns: 264px 1fr; gap: 40px; align-items: start; }
+.module-shell .wrap-mod { max-width: var(--maxw); margin: 0 auto; padding: 40px 24px 80px; }
+
+/* barre latérale sommaire */
+.toc {
+  position: sticky; top: 84px; align-self: start;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px; box-shadow: var(--shadow); max-height: calc(100vh - 110px); overflow: auto;
+}
+.toc .toc-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-mute); font-weight: 700; margin-bottom: 12px; }
+.toc a { display: block; color: var(--ink-soft); font-size: 14px; padding: 6px 10px; border-radius: 7px; border-left: 2px solid transparent; }
+.toc a:hover { background: var(--bg-soft); text-decoration: none; }
+.toc a.active { color: var(--teal); background: var(--frm-soft); border-left-color: var(--teal); font-weight: 600; }
+
+/* fil d'ariane + entête module */
+.crumbs { font-size: 13.5px; color: var(--ink-mute); margin-bottom: 14px; }
+.crumbs a { color: var(--ink-mute); }
+.module-hero { border-bottom: 1px solid var(--border); padding-bottom: 26px; margin-bottom: 34px; }
+.module-hero .badge {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: 5px 11px; border-radius: 999px;
+  background: var(--frm-soft); color: var(--teal); margin-bottom: 14px;
+}
+.module-hero h1 { font-family: var(--serif); font-size: clamp(30px, 4.4vw, 46px); line-height: 1.1; margin: 0 0 12px; }
+.module-hero .subtitle { font-size: 19px; color: var(--ink-soft); max-width: 65ch; margin: 0 0 18px; }
+.module-meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 13.5px; color: var(--ink-mute); }
+.module-meta span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* objectifs */
+.objectives {
+  background: var(--surface-2); border: 1px solid var(--border); border-left: 4px solid var(--teal);
+  border-radius: var(--radius-sm); padding: 20px 24px; margin: 0 0 40px;
+}
+.objectives h4 { margin: 0 0 10px; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); }
+.objectives ul { margin: 0; padding-left: 20px; }
+.objectives li { margin: 5px 0; color: var(--ink-soft); }
+
+/* corps du module */
+.module-body h2 {
+  font-family: var(--serif); font-size: 29px; margin: 48px 0 14px; scroll-margin-top: 84px;
+  padding-top: 6px;
+}
+.module-body h3 { font-family: var(--serif); font-size: 22px; margin: 30px 0 10px; }
+.module-body p { margin: 0 0 16px; color: var(--ink); }
+.module-body ul, .module-body ol { margin: 0 0 18px; padding-left: 26px; }
+.module-body li { margin: 6px 0; }
+.module-body strong { color: var(--ink); }
+
+/* définitions et encadrés */
+.callout {
+  border-radius: var(--radius-sm); padding: 18px 20px; margin: 24px 0; border: 1px solid var(--border);
+  background: var(--surface-2); font-size: 15.5px;
+}
+.callout .clabel { font-weight: 700; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 6px; }
+.callout.def { border-left: 4px solid var(--navy); }
+.callout.def .clabel { color: var(--navy); }
+.callout.warn { border-left: 4px solid var(--crimson); background: color-mix(in srgb, var(--crimson) 7%, var(--surface)); }
+.callout.warn .clabel { color: var(--crimson); }
+.callout.tip { border-left: 4px solid var(--gold); }
+.callout.tip .clabel { color: var(--gold); }
+
+/* formules */
+.formula {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 22px 24px; margin: 22px 0; text-align: center; box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+.formula .eq { font-family: var(--serif); font-size: 22px; color: var(--ink); }
+.formula .eq em { color: var(--teal); font-style: italic; }
+.formula .caption { font-size: 13px; color: var(--ink-mute); margin-top: 12px; }
+sub, sup { font-size: .72em; }
+
+/* tableaux */
+.table-wrap { overflow-x: auto; margin: 22px 0; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; min-width: 460px; }
+thead th { background: var(--navy); color: #fff; text-align: left; padding: 11px 14px; font-weight: 600; font-size: 13.5px; }
+:root[data-theme="dark"] thead th,
+:root:not([data-theme="light"]) thead th { color: #0d141f; }
+tbody td { padding: 10px 14px; border-top: 1px solid var(--border); }
+tbody tr:nth-child(even) td { background: var(--surface-2); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); }
+
+/* exemple travaillé */
+.worked {
+  border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 28px 0;
+}
+.worked .whead { background: var(--am-soft); color: var(--navy); padding: 12px 20px; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+.worked .wbody { padding: 20px 22px; background: var(--surface); }
+.worked .step { padding: 12px 0; border-top: 1px dashed var(--border); }
+.worked .step:first-child { border-top: 0; }
+.worked .step .sn { font-weight: 700; color: var(--teal); font-size: 13.5px; letter-spacing: .5px; }
+
+/* calculateur interactif */
+.calc {
+  border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+  background: var(--surface); overflow: hidden; margin: 30px 0;
+}
+.calc .chead { background: linear-gradient(160deg, var(--teal), #0f5651); color: #fff; padding: 16px 22px; }
+.calc .chead h4 { margin: 0; font-family: var(--serif); font-size: 20px; }
+.calc .chead p { margin: 4px 0 0; font-size: 13.5px; color: #d5eee9; }
+.calc .cbody { padding: 22px; display: grid; grid-template-columns: 1fr 300px; gap: 26px; }
+.calc .inputs label { display: block; font-size: 13.5px; font-weight: 600; color: var(--ink-soft); margin: 14px 0 6px; }
+.calc .inputs input, .calc .inputs select {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface-2); color: var(--ink); font: 500 15px var(--sans);
+}
+.calc .inputs .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.calc .rangewrap { display: flex; align-items: center; gap: 12px; }
+.calc .rangewrap input[type=range] { flex: 1; }
+.calc .rangewrap output { font-family: var(--mono); font-weight: 600; min-width: 46px; text-align: right; color: var(--teal); }
+.calc .result {
+  background: var(--navy); color: #fff; border-radius: var(--radius-sm); padding: 22px; align-self: start;
+}
+:root[data-theme="dark"] .calc .result,
+:root:not([data-theme="light"]) .calc .result { background: #0c1b32; }
+.calc .result .rl { font-size: 12.5px; text-transform: uppercase; letter-spacing: 1px; color: #9fb0c8; }
+.calc .result .rv { font-family: var(--serif); font-size: 34px; font-weight: 700; margin: 4px 0 2px; }
+.calc .result .rv.gold { color: var(--gold); }
+.calc .result .rsub { font-size: 13px; color: #b9c6d8; }
+.calc .result hr { border: 0; border-top: 1px solid rgba(255,255,255,.15); margin: 16px 0; }
+
+/* quiz */
+.quiz { border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin: 30px 0; background: var(--surface); }
+.quiz h4 { margin: 0 0 4px; font-family: var(--serif); font-size: 20px; }
+.quiz .qsub { color: var(--ink-mute); font-size: 14px; margin: 0 0 18px; }
+.q { margin: 18px 0; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.q:last-of-type { border-bottom: 0; }
+.q .qtext { font-weight: 600; margin-bottom: 12px; }
+.q .opt {
+  display: block; width: 100%; text-align: left; padding: 11px 14px; margin: 7px 0;
+  border: 1px solid var(--border); border-radius: 9px; background: var(--surface-2); color: var(--ink);
+  cursor: pointer; font: 500 15px var(--sans); transition: all .12s ease;
+}
+.q .opt:hover { border-color: var(--teal); }
+.q .opt.correct { background: color-mix(in srgb, var(--teal) 16%, var(--surface)); border-color: var(--teal); color: var(--ink); }
+.q .opt.wrong { background: color-mix(in srgb, var(--crimson) 14%, var(--surface)); border-color: var(--crimson); }
+.q .explain { display: none; margin-top: 10px; font-size: 14px; color: var(--ink-soft); background: var(--surface-2); border-radius: 8px; padding: 12px 14px; border-left: 3px solid var(--teal); }
+.q .explain.show { display: block; }
+
+/* navigation entre modules */
+.module-nav { display: flex; justify-content: space-between; gap: 16px; margin-top: 50px; flex-wrap: wrap; }
+.module-nav a {
+  flex: 1; min-width: 220px; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 20px; background: var(--surface); transition: border-color .15s ease;
+}
+.module-nav a:hover { border-color: var(--teal); text-decoration: none; }
+.module-nav .dir { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-mute); }
+.module-nav .tt { font-weight: 600; color: var(--ink); margin-top: 3px; }
+.module-nav a.next { text-align: right; }
+
+/* progression de lecture */
+.progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0; z-index: 60; transition: width .1s linear; }
+
+/* exercices chiffrés */
+.exo { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px; margin: 14px 0; background: var(--surface); box-shadow: var(--shadow); }
+.exo .ehead { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.exo .eid { font-size: 12px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--teal); }
+.exo .diff { font-size: 10.5px; letter-spacing: .5px; text-transform: uppercase; border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px; color: var(--ink-mute); }
+.exo .estatement { margin: 0 0 6px; }
+.exo details { border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 10px; }
+.exo summary { cursor: pointer; font-weight: 600; font-size: 14px; color: var(--navy-2); list-style: none; }
+.exo summary::-webkit-details-marker { display: none; }
+.exo summary::before { content: "▸ "; color: var(--gold); }
+.exo details[open] summary::before { content: "▾ "; }
+.exo .ans { font-size: 14.5px; color: var(--ink-soft); margin-top: 8px; }
+.exo .ans b { color: var(--ink); }
+
+/* ---------- Thème parcours Asset Management (navy/or) sur pages module ----------
+   Les composants module utilisent --teal / --frm-soft (couleur FRM) par défaut.
+   Sur un module du parcours Asset Management, on remappe ces variables vers le navy. */
+body.track-am { --teal: var(--navy); --frm-soft: var(--am-soft); }
+body.track-am .calc .chead { background: linear-gradient(160deg, var(--navy), #0a1830); }
+body.track-am .module-hero .badge,
+body.track-am .worked .whead { background: var(--am-soft); color: var(--navy); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 940px) {
+  .module-shell { grid-template-columns: 1fr; }
+  .toc { display: none; }
+  .calc .cbody { grid-template-columns: 1fr; }
+}
+@media (max-width: 820px) {
+  .tracks, .curric-grid, .features { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .menu-btn { display: grid; }
+  .hero-stats { gap: 26px; }
+}
+
+/* ---------- Bibliographie & sources ---------- */
+.biblio { border-top: 2px solid var(--border); margin-top: 50px; padding-top: 8px; }
+.biblio .bcol { margin: 0 0 22px; }
+.biblio h4 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--ink-mute); margin: 0 0 10px; }
+.biblio ol, .biblio ul { margin: 0; padding-left: 22px; }
+.biblio li { font-size: 14px; color: var(--ink-soft); line-height: 1.65; margin: 8px 0; }
+.biblio li em { color: var(--ink); font-style: italic; }
+.biblio a { color: var(--navy-2); text-decoration: none; border-bottom: 1px solid var(--border); }
+.biblio a:hover { border-color: var(--navy-2); }
+.formula .caption.src, .src { color: var(--ink-mute); font-style: italic; font-size: 12.5px; }
+
+</style>
+</head>
+<body data-active-lang="fr">
+
+<div class="progress-bar"></div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <div class="brand">
+      <a href="../index.html"><span class="logo">Avenir<b>.</b></span></a>
+      <span class="tag">Asset Management &amp; Risk</span>
+    </div>
+    <div class="spacer"></div>
+    <nav class="nav-links">
+      <a href="../index.html#parcours"><span data-lang="fr">Parcours</span><span data-lang="en">Tracks</span><span data-lang="nl">Trajecten</span></a>
+      <a href="../index.html#curriculum"><span data-lang="fr">Programme</span><span data-lang="en">Curriculum</span><span data-lang="nl">Programma</span></a>
+      <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a>
+    </nav>
+    <div class="controls">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-set-lang="fr">FR</button>
+        <button data-set-lang="en">EN</button>
+        <button data-set-lang="nl">NL</button>
+      </div>
+      <button id="theme-btn" class="icon-btn" aria-label="Thème">☾</button>
+      <button id="menu-btn" class="icon-btn menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap-mod">
+  <div class="module-shell">
+
+    <aside class="toc">
+      <div class="toc-title" data-lang="fr">Sommaire</div>
+      <div class="toc-title" data-lang="en">Contents</div>
+      <div class="toc-title" data-lang="nl">Inhoud</div>
+      <a href="#pourquoi"><span data-lang="fr">1. Pourquoi réguler ?</span><span data-lang="en">1. Why regulate?</span><span data-lang="nl">1. Waarom reguleren?</span></a>
+      <a href="#bale"><span data-lang="fr">2. Bâle I, II, III</span><span data-lang="en">2. Basel I, II, III</span><span data-lang="nl">2. Bazel I, II, III</span></a>
+      <a href="#rwa"><span data-lang="fr">3. Les actifs pondérés (RWA)</span><span data-lang="en">3. Risk-weighted assets (RWA)</span><span data-lang="nl">3. Risicogewogen activa (RWA)</span></a>
+      <a href="#fondspropres"><span data-lang="fr">4. Fonds propres &amp; ratios</span><span data-lang="en">4. Capital &amp; ratios</span><span data-lang="nl">4. Kapitaal &amp; ratio's</span></a>
+      <a href="#coussins"><span data-lang="fr">5. Coussins &amp; levier</span><span data-lang="en">5. Buffers &amp; leverage</span><span data-lang="nl">5. Buffers &amp; hefboom</span></a>
+      <a href="#piliers"><span data-lang="fr">6. Liquidité &amp; les 3 piliers</span><span data-lang="en">6. Liquidity &amp; the 3 pillars</span><span data-lang="nl">6. Liquiditeit &amp; de 3 pijlers</span></a>
+      <a href="#retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></a>
+      <a href="#qcm"><span data-lang="fr">8. QCM (15)</span><span data-lang="en">8. MCQ (15)</span><span data-lang="nl">8. MCV (15)</span></a>
+      <a href="#exercices"><span data-lang="fr">9. Exercices</span><span data-lang="en">9. Exercises</span><span data-lang="nl">9. Oefeningen</span></a>
+      <a href="#biblio"><span data-lang="fr">Sources</span><span data-lang="en">Sources</span><span data-lang="nl">Bronnen</span></a>
+    </aside>
+
+    <main>
+      <div class="crumbs">
+        <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a> ·
+        <span>Financial Risk Management</span> ·
+        <span data-lang="fr">Module 8</span><span data-lang="en">Module 8</span><span data-lang="nl">Module 8</span>
+      </div>
+
+      <div class="module-hero">
+        <span class="badge">Risk Management · 08</span>
+        <h1 data-lang="fr">Réglementation &amp; capital</h1>
+        <h1 data-lang="en">Regulation &amp; capital</h1>
+        <h1 data-lang="nl">Regelgeving &amp; kapitaal</h1>
+        <p class="subtitle" data-lang="fr">Tous les risques des modules précédents convergent ici : combien de fonds propres une banque doit-elle détenir pour survivre ? Des accords de Bâle aux actifs pondérés et aux ratios CET1, la grammaire prudentielle qui gouverne la finance mondiale.</p>
+        <p class="subtitle" data-lang="en">All the risks of the previous modules converge here: how much capital must a bank hold to survive? From the Basel Accords to risk-weighted assets and CET1 ratios, the prudential grammar that governs global finance.</p>
+        <p class="subtitle" data-lang="nl">Alle risico's van de vorige modules komen hier samen: hoeveel kapitaal moet een bank aanhouden om te overleven? Van de Bazel-akkoorden tot risicogewogen activa en CET1-ratio's, de prudentiële grammatica die de wereldwijde financiën bestuurt.</p>
+        <div class="module-meta">
+          <span data-lang="fr">⏱ Lecture ~31 min</span><span data-lang="en">⏱ ~31 min read</span><span data-lang="nl">⏱ ~31 min lezen</span>
+          <span data-lang="fr">📶 Niveau intermédiaire+</span><span data-lang="en">📶 Intermediate+ level</span><span data-lang="nl">📶 Gemiddeld+ niveau</span>
+          <span>🎓 FRM I</span>
+        </div>
+      </div>
+
+      <div class="objectives">
+        <h4 data-lang="fr">Objectifs d'apprentissage</h4>
+        <h4 data-lang="en">Learning objectives</h4>
+        <h4 data-lang="nl">Leerdoelen</h4>
+        <ul>
+          <li data-lang="fr">Expliquer pourquoi les banques sont régulées et le rôle du Comité de Bâle.</li>
+          <li data-lang="en">Explain why banks are regulated and the role of the Basel Committee.</li>
+          <li data-lang="nl">Uitleggen waarom banken gereguleerd worden en de rol van het Bazels Comité.</li>
+          <li data-lang="fr">Retracer l'évolution Bâle I → II → III et ce que chaque accord a apporté.</li>
+          <li data-lang="en">Trace the evolution Basel I → II → III and what each accord brought.</li>
+          <li data-lang="nl">De evolutie Bazel I → II → III en wat elk akkoord bracht schetsen.</li>
+          <li data-lang="fr">Calculer les actifs pondérés (RWA) et les ratios de fonds propres.</li>
+          <li data-lang="en">Compute risk-weighted assets (RWA) and capital ratios.</li>
+          <li data-lang="nl">Risicogewogen activa (RWA) en kapitaalratio's berekenen.</li>
+          <li data-lang="fr">Distinguer CET1, Tier 1, capital total et les coussins de capital.</li>
+          <li data-lang="en">Distinguish CET1, Tier 1, total capital and the capital buffers.</li>
+          <li data-lang="nl">CET1, Tier 1, totaal kapitaal en de kapitaalbuffers onderscheiden.</li>
+          <li data-lang="fr">Situer le ratio de levier, la LCR/NSFR et les trois piliers.</li>
+          <li data-lang="en">Place the leverage ratio, LCR/NSFR and the three pillars.</li>
+          <li data-lang="nl">De hefboomratio, LCR/NSFR en de drie pijlers situeren.</li>
+        </ul>
+      </div>
+
+      <div class="module-body">
+
+        <!-- 1. POURQUOI RÉGULER -->
+        <h2 id="pourquoi"><span data-lang="fr">1. Pourquoi réguler les banques ?</span><span data-lang="en">1. Why regulate banks?</span><span data-lang="nl">1. Waarom banken reguleren?</span></h2>
+        <p data-lang="fr">Une banque est spéciale : elle transforme des dépôts <em>liquides</em> et à court terme en prêts <em>illiquides</em> et à long terme, avec très peu de fonds propres en face. Cette fragilité intrinsèque, couplée au risque de <strong>contagion</strong> (la faillite d'une banque en entraîne d'autres) et à l'aléa moral du <strong>« too big to fail »</strong>, justifie une régulation qu'aucune autre industrie ne connaît. Son cœur : imposer un <strong>matelas de fonds propres</strong> suffisant pour absorber les pertes — la synthèse de tous les risques étudiés jusqu'ici.</p>
+        <p data-lang="en">A bank is special: it transforms <em>liquid</em>, short-term deposits into <em>illiquid</em>, long-term loans, backed by very little capital. This intrinsic fragility, combined with <strong>contagion</strong> risk (one bank's failure drags down others) and the moral hazard of <strong>“too big to fail”</strong>, justifies a regulation no other industry faces. Its core: impose a <strong>capital cushion</strong> large enough to absorb losses — the synthesis of every risk studied so far.</p>
+        <p data-lang="nl">Een bank is bijzonder: ze transformeert <em>liquide</em>, kortlopende deposito's in <em>illiquide</em>, langlopende leningen, gedekt door zeer weinig kapitaal. Deze intrinsieke kwetsbaarheid, gecombineerd met <strong>besmettings</strong>risico (het falen van één bank sleept andere mee) en het moreel risico van <strong>“too big to fail”</strong>, rechtvaardigt een regulering die geen andere sector kent. De kern: een <strong>kapitaalbuffer</strong> opleggen groot genoeg om verliezen op te vangen — de synthese van elk tot nu toe bestudeerd risico.</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">Qui écrit les règles ?</span><span class="clabel" data-lang="en">Who writes the rules?</span><span class="clabel" data-lang="nl">Wie schrijft de regels?</span>
+          <span data-lang="fr">Le <strong>Comité de Bâle</strong> (BCBS), hébergé par la Banque des règlements internationaux (BRI) à Bâle, publie les <strong>accords de Bâle</strong>. Ce ne sont pas des lois : ce sont des <em>standards</em> que chaque juridiction transpose dans son droit — en Europe via le règlement <strong>CRR</strong> et la directive <strong>CRD</strong>, appliqués par la BCE et les autorités nationales. Le Comité fixe le <em>quoi</em> ; le législateur local rend le <em>comment</em> contraignant.</span>
+          <span data-lang="en">The <strong>Basel Committee</strong> (BCBS), hosted by the Bank for International Settlements (BIS) in Basel, publishes the <strong>Basel Accords</strong>. These are not laws: they are <em>standards</em> each jurisdiction transposes into its own law — in Europe via the <strong>CRR</strong> regulation and <strong>CRD</strong> directive, enforced by the ECB and national authorities. The Committee sets the <em>what</em>; the local legislator makes the <em>how</em> binding.</span>
+          <span data-lang="nl">Het <strong>Bazels Comité</strong> (BCBS), gehuisvest door de Bank voor Internationale Betalingen (BIS) in Bazel, publiceert de <strong>Bazel-akkoorden</strong>. Dit zijn geen wetten: het zijn <em>standaarden</em> die elke jurisdictie omzet in eigen recht — in Europa via de <strong>CRR</strong>-verordening en <strong>CRD</strong>-richtlijn, gehandhaafd door de ECB en nationale autoriteiten. Het Comité bepaalt het <em>wat</em>; de lokale wetgever maakt het <em>hoe</em> bindend.</span>
+        </div>
+
+        <!-- 2. BÂLE I II III -->
+        <h2 id="bale"><span data-lang="fr">2. Bâle I, II, III : trois générations</span><span data-lang="en">2. Basel I, II, III: three generations</span><span data-lang="nl">2. Bazel I, II, III: drie generaties</span></h2>
+        <p data-lang="fr">La réglementation s'est construite par couches, chaque crise révélant les failles de la précédente.</p>
+        <p data-lang="en">Regulation was built in layers, each crisis exposing the flaws of the previous one.</p>
+        <p data-lang="nl">De regelgeving werd in lagen gebouwd, elke crisis legde de gebreken van de vorige bloot.</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th data-lang="fr">Accord</th><th data-lang="en">Accord</th><th data-lang="nl">Akkoord</th>
+                <th data-lang="fr">Année</th><th data-lang="en">Year</th><th data-lang="nl">Jaar</th>
+                <th data-lang="fr">Apport principal</th><th data-lang="en">Main contribution</th><th data-lang="nl">Belangrijkste bijdrage</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Bâle I</td><td>Basel I</td><td>Bazel I</td>
+                <td>1988</td><td>1988</td><td>1988</td>
+                <td data-lang="fr">Premier ratio de capital (8 % des RWA) ; pondérations simples du risque de crédit.</td><td data-lang="en">First capital ratio (8% of RWA); simple credit-risk weights.</td><td data-lang="nl">Eerste kapitaalratio (8% van RWA); eenvoudige kredietrisicowegingen.</td>
+              </tr>
+              <tr>
+                <td>Bâle II</td><td>Basel II</td><td>Bazel II</td>
+                <td>2004</td><td>2004</td><td>2004</td>
+                <td data-lang="fr">Pondérations sensibles au risque (notations, modèles internes) ; risque opérationnel ; les 3 piliers.</td><td data-lang="en">Risk-sensitive weights (ratings, internal models); operational risk; the 3 pillars.</td><td data-lang="nl">Risicogevoelige wegingen (ratings, interne modellen); operationeel risico; de 3 pijlers.</td>
+              </tr>
+              <tr>
+                <td>Bâle III</td><td>Basel III</td><td>Bazel III</td>
+                <td>2010→</td><td>2010→</td><td>2010→</td>
+                <td data-lang="fr">Plus de capital et de meilleure qualité ; coussins ; ratio de levier ; LCR/NSFR. Réponse à 2008.</td><td data-lang="en">More and higher-quality capital; buffers; leverage ratio; LCR/NSFR. Response to 2008.</td><td data-lang="nl">Meer en hoogwaardiger kapitaal; buffers; hefboomratio; LCR/NSFR. Antwoord op 2008.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p data-lang="fr">Bâle I était fruste : un prêt à une multinationale AAA et un prêt à une PME risquée pesaient pareil (100 %), incitant à ne garder que les actifs les plus rentables à pondération égale. Bâle II a corrigé cela en liant le capital au <em>vrai</em> risque — mais sa dépendance aux modèles internes et aux notations a amplifié la crise de 2008. Bâle III, la réponse, a musclé le tout : plus de capital, de meilleure qualité, avec des garde-fous simples (levier, liquidité) contre le contournement des modèles.</p>
+        <p data-lang="en">Basel I was crude: a loan to a AAA multinational and a loan to a risky SME weighed the same (100%), encouraging banks to keep only the most profitable assets at equal weight. Basel II fixed this by tying capital to <em>true</em> risk — but its reliance on internal models and ratings amplified the 2008 crisis. Basel III, the response, strengthened everything: more capital, higher quality, with simple backstops (leverage, liquidity) against model gaming.</p>
+        <p data-lang="nl">Bazel I was grof: een lening aan een AAA-multinational en een lening aan een risicovolle kmo wogen even zwaar (100%), wat banken aanzette enkel de meest rendabele activa bij gelijke weging te houden. Bazel II corrigeerde dit door kapitaal te koppelen aan het <em>echte</em> risico — maar de afhankelijkheid van interne modellen en ratings versterkte de crisis van 2008. Bazel III, het antwoord, versterkte alles: meer kapitaal, hogere kwaliteit, met eenvoudige vangrails (hefboom, liquiditeit) tegen het omzeilen van modellen.</p>
+
+        <!-- 3. RWA -->
+        <h2 id="rwa"><span data-lang="fr">3. Les actifs pondérés du risque (RWA)</span><span data-lang="en">3. Risk-weighted assets (RWA)</span><span data-lang="nl">3. Risicogewogen activa (RWA)</span></h2>
+        <p data-lang="fr">Le concept-clé de toute la régulation. Plutôt que d'exiger du capital contre le <em>total</em> des actifs, Bâle le fait contre les actifs <strong>pondérés par leur risque</strong> : chaque actif est multiplié par un coefficient reflétant sa dangerosité, puis on somme. Un actif sûr consomme peu de capital ; un actif risqué, beaucoup.</p>
+        <p data-lang="en">The key concept of all regulation. Rather than requiring capital against <em>total</em> assets, Basel does so against assets <strong>weighted by their risk</strong>: each asset is multiplied by a coefficient reflecting its riskiness, then summed. A safe asset consumes little capital; a risky asset, a lot.</p>
+        <p data-lang="nl">Het sleutelconcept van alle regulering. In plaats van kapitaal te eisen tegen de <em>totale</em> activa, doet Bazel dat tegen activa <strong>gewogen naar hun risico</strong>: elk actief wordt vermenigvuldigd met een coëfficiënt die de risicograad weerspiegelt, dan gesommeerd. Een veilig actief verbruikt weinig kapitaal; een risicovol actief, veel.</p>
+
+        <div class="formula">
+          <div class="eq">RWA = Σ<sub>i</sub> ( <span data-lang="fr">exposition</span><span data-lang="en">exposure</span><span data-lang="nl">blootstelling</span><sub>i</sub> × <span data-lang="fr">pondération</span><span data-lang="en">risk weight</span><span data-lang="nl">risicoweging</span><sub>i</sub> )</div>
+          <div class="caption" data-lang="fr">Exemples de pondérations (approche standard) : cash et dette souveraine notée AAA→AA ≈ <strong>0 %</strong> ; prêt immobilier résidentiel ≈ <strong>35 %</strong> ; prêt aux entreprises ≈ <strong>100 %</strong> ; certaines expositions à haut risque &gt; 100 %. Ex. : 100 de cash (0 %) + 200 de prêts immo (35 %) + 300 de prêts corpo (100 %) → RWA = 0 + 70 + 300 = <strong>370</strong>.</div>
+          <div class="caption" data-lang="en">Example weights (standardised approach): cash and AAA→AA sovereign debt ≈ <strong>0%</strong>; residential mortgage ≈ <strong>35%</strong>; corporate loan ≈ <strong>100%</strong>; some high-risk exposures &gt; 100%. E.g. 100 cash (0%) + 200 mortgages (35%) + 300 corporate loans (100%) → RWA = 0 + 70 + 300 = <strong>370</strong>.</div>
+          <div class="caption" data-lang="nl">Voorbeeldwegingen (standaardbenadering): cash en AAA→AA-soevereine schuld ≈ <strong>0%</strong>; residentiële hypotheek ≈ <strong>35%</strong>; bedrijfslening ≈ <strong>100%</strong>; sommige hoogrisico-blootstellingen &gt; 100%. Bv. 100 cash (0%) + 200 hypotheken (35%) + 300 bedrijfsleningen (100%) → RWA = 0 + 70 + 300 = <strong>370</strong>.</div>
+          <div class="caption src">Réf. — BCBS, Bâle II/III (approche standard &amp; IRB)</div>
+        </div>
+
+        <p data-lang="fr">Les RWA couvrent les trois grandes familles de risque des modules précédents : risque de <strong>crédit</strong> (le plus gros poste), risque de <strong>marché</strong> (portefeuille de négociation, via VaR/ES et FRTB) et risque <strong>opérationnel</strong>. Le total des RWA est le <em>dénominateur</em> de tous les ratios de capital.</p>
+        <p data-lang="en">RWA cover the three big risk families of the previous modules: <strong>credit</strong> risk (the largest bucket), <strong>market</strong> risk (trading book, via VaR/ES and FRTB) and <strong>operational</strong> risk. Total RWA is the <em>denominator</em> of every capital ratio.</p>
+        <p data-lang="nl">RWA dekken de drie grote risicofamilies van de vorige modules: <strong>krediet</strong>risico (de grootste post), <strong>markt</strong>risico (handelsboek, via VaR/ES en FRTB) en <strong>operationeel</strong> risico. De totale RWA is de <em>noemer</em> van elke kapitaalratio.</p>
+
+        <!-- 4. FONDS PROPRES + INTERACTIF -->
+        <h2 id="fondspropres"><span data-lang="fr">4. Fonds propres &amp; ratios de capital</span><span data-lang="en">4. Capital &amp; capital ratios</span><span data-lang="nl">4. Kapitaal &amp; kapitaalratio's</span></h2>
+        <p data-lang="fr">Tous les fonds propres ne se valent pas. Bâle les classe par <strong>capacité à absorber les pertes</strong>, du meilleur au moins bon : le <strong>CET1</strong> (Common Equity Tier 1 : actions ordinaires + résultats mis en réserve) est le plus solide ; l'<strong>AT1</strong> (Additional Tier 1) et le <strong>Tier 2</strong> complètent avec des instruments hybrides et de la dette subordonnée. Les ratios rapportent chaque niveau aux RWA.</p>
+        <p data-lang="en">Not all capital is equal. Basel ranks it by <strong>loss-absorbing capacity</strong>, best to worst: <strong>CET1</strong> (Common Equity Tier 1: common shares + retained earnings) is the strongest; <strong>AT1</strong> (Additional Tier 1) and <strong>Tier 2</strong> add hybrid instruments and subordinated debt. Ratios divide each level by RWA.</p>
+        <p data-lang="nl">Niet alle kapitaal is gelijk. Bazel rangschikt het naar <strong>verliesabsorberend vermogen</strong>, best tot slechtst: <strong>CET1</strong> (Common Equity Tier 1: gewone aandelen + ingehouden winst) is het sterkst; <strong>AT1</strong> (Additional Tier 1) en <strong>Tier 2</strong> vullen aan met hybride instrumenten en achtergestelde schuld. Ratio's delen elk niveau door de RWA.</p>
+
+        <div class="formula">
+          <div class="eq"><span data-lang="fr">Ratio CET1</span><span data-lang="en">CET1 ratio</span><span data-lang="nl">CET1-ratio</span> = CET1 / RWA ≥ 4,5 % &nbsp;·&nbsp; <span data-lang="fr">Ratio Tier 1</span><span data-lang="en">Tier 1 ratio</span><span data-lang="nl">Tier 1-ratio</span> ≥ 6 % &nbsp;·&nbsp; <span data-lang="fr">Ratio total</span><span data-lang="en">Total ratio</span><span data-lang="nl">Totale ratio</span> ≥ 8 %</div>
+          <div class="caption" data-lang="fr">Minima « durs » de Bâle III (Pilier 1). Tier 1 = CET1 + AT1 ; capital total = Tier 1 + Tier 2. Au-dessus de ces minima s'empilent les coussins (§5), qui doivent être couverts par du CET1.</div>
+          <div class="caption" data-lang="en">Basel III “hard” minimums (Pillar 1). Tier 1 = CET1 + AT1; total capital = Tier 1 + Tier 2. On top of these minimums sit the buffers (§5), which must be met with CET1.</div>
+          <div class="caption" data-lang="nl">Bazel III “harde” minima (Pijler 1). Tier 1 = CET1 + AT1; totaal kapitaal = Tier 1 + Tier 2. Bovenop deze minima stapelen de buffers (§5), die met CET1 gedekt moeten worden.</div>
+          <div class="caption src">Réf. — BCBS, Bâle III (2010/2017)</div>
+        </div>
+
+        <p data-lang="fr">Le calculateur ci-dessous compose un bilan bancaire simplifié et vérifie l'adéquation des fonds propres. Réglez le CET1, l'AT1, le Tier 2, les RWA et le coussin contracyclique, et observez les quatre ratios face à leurs exigences (minimum + coussin de conservation de 2,5 % + contracyclique). Les barres <span style="color:var(--teal);font-weight:700">teal</span> respectent l'exigence, les <span style="color:var(--crimson);font-weight:700">crimson</span> la violent. Notez comment une hausse des RWA (des actifs plus risqués) fait chuter tous les ratios <em>à capital inchangé</em>.</p>
+        <p data-lang="en">The calculator below composes a simplified bank balance sheet and checks capital adequacy. Set CET1, AT1, Tier 2, RWA and the countercyclical buffer, and watch the four ratios against their requirements (minimum + 2.5% conservation buffer + countercyclical). <span style="color:var(--teal);font-weight:700">Teal</span> bars meet the requirement, <span style="color:var(--crimson);font-weight:700">crimson</span> breach it. Notice how rising RWA (riskier assets) drops every ratio <em>with capital unchanged</em>.</p>
+        <p data-lang="nl">De calculator hieronder stelt een vereenvoudigde bankbalans samen en controleert de kapitaaltoereikendheid. Stel CET1, AT1, Tier 2, RWA en de contracyclische buffer in, en observeer de vier ratio's tegenover hun vereisten (minimum + 2,5% conserveringsbuffer + contracyclisch). <span style="color:var(--teal);font-weight:700">Teal</span> balken voldoen aan de vereiste, <span style="color:var(--crimson);font-weight:700">crimson</span> schenden ze. Merk op hoe stijgende RWA (risicovollere activa) elke ratio doet dalen <em>bij ongewijzigd kapitaal</em>.</p>
+
+        <style>
+          #cap-chart { width:100%; height:auto; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; }
+          #cap-chart .axis { stroke:var(--ink-mute); stroke-width:1.4; }
+          #cap-chart .tick { fill:var(--ink-mute); font-size:10px; font-family:var(--sans); }
+          #cap-chart .lab { fill:var(--ink-soft); font-size:11px; font-family:var(--sans); font-weight:700; }
+          .cap-sliders { display:grid; grid-template-columns:repeat(3,1fr); gap:12px 18px; margin-bottom:16px; }
+          .cap-sliders label { display:block; font-size:12.5px; font-weight:600; color:var(--ink-soft); margin-bottom:4px; }
+          .cap-out { margin-top:14px; font-size:14.5px; color:var(--ink-soft); display:flex; gap:22px; flex-wrap:wrap; align-items:center; }
+          .cap-out b { color:var(--ink); font-family:var(--mono); }
+          .cap-verdict { font-weight:700; padding:3px 12px; border-radius:20px; }
+          @media (max-width:640px){ .cap-sliders { grid-template-columns:1fr 1fr; } }
+        </style>
+
+        <div class="calc">
+          <div class="chead">
+            <h4 data-lang="fr">Calculateur d'adéquation des fonds propres (Bâle III)</h4>
+            <h4 data-lang="en">Capital adequacy calculator (Basel III)</h4>
+            <h4 data-lang="nl">Kapitaaltoereikendheidscalculator (Bazel III)</h4>
+            <p data-lang="fr">Montants en Md€ · exposition de levier fixée à 250 Md€</p>
+            <p data-lang="en">Amounts in €bn · leverage exposure fixed at €250bn</p>
+            <p data-lang="nl">Bedragen in mld€ · hefboomblootstelling vast op 250 mld€</p>
+          </div>
+          <div class="cbody" style="display:block">
+            <div class="cap-sliders">
+              <div>
+                <label>CET1 (Md€)</label>
+                <div class="rangewrap"><input type="range" id="cap-cet1" min="4" max="20" step="0.5" value="12"><output id="cap-cet1-o">12</output></div>
+              </div>
+              <div>
+                <label>AT1 (Md€)</label>
+                <div class="rangewrap"><input type="range" id="cap-at1" min="0" max="6" step="0.5" value="2"><output id="cap-at1-o">2</output></div>
+              </div>
+              <div>
+                <label>Tier 2 (Md€)</label>
+                <div class="rangewrap"><input type="range" id="cap-t2" min="0" max="8" step="0.5" value="3"><output id="cap-t2-o">3</output></div>
+              </div>
+              <div>
+                <label>RWA (Md€)</label>
+                <div class="rangewrap"><input type="range" id="cap-rwa" min="60" max="160" step="5" value="100"><output id="cap-rwa-o">100</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Coussin contracyclique</span><span data-lang="en">Countercyclical buffer</span><span data-lang="nl">Contracyclische buffer</span></label>
+                <div class="rangewrap"><input type="range" id="cap-ccb" min="0" max="2.5" step="0.5" value="0"><output id="cap-ccb-o">0%</output></div>
+              </div>
+            </div>
+
+            <svg id="cap-chart" viewBox="0 0 520 260" role="img" aria-label="Ratios de fonds propres vs exigences réglementaires"></svg>
+
+            <div class="cap-out">
+              <span>CET1 : <b id="cap-cet1r">—</b></span>
+              <span>Tier 1 : <b id="cap-t1r">—</b></span>
+              <span>Total : <b id="cap-totr">—</b></span>
+              <span><span data-lang="fr">Levier</span><span data-lang="en">Leverage</span><span data-lang="nl">Hefboom</span> : <b id="cap-levr">—</b></span>
+              <span class="cap-verdict" id="cap-verdict">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. COUSSINS & LEVIER -->
+        <h2 id="coussins"><span data-lang="fr">5. Coussins de capital &amp; ratio de levier</span><span data-lang="en">5. Capital buffers &amp; leverage ratio</span><span data-lang="nl">5. Kapitaalbuffers &amp; hefboomratio</span></h2>
+        <p data-lang="fr">Au-dessus des minima « durs », Bâle III empile des <strong>coussins</strong> en CET1. Le <strong>coussin de conservation</strong> (2,5 %) est permanent : l'entamer n'est pas une faillite, mais déclenche des <em>restrictions sur les distributions</em> (dividendes, bonus, rachats d'actions) — une incitation puissante à ne pas y toucher. Le <strong>coussin contracyclique</strong> (0 à 2,5 %, activé par le régulateur en haut de cycle) freine l'euphorie du crédit. Les banques systémiques (<strong>G-SIB</strong>) portent une surcharge supplémentaire, prix de leur « too big to fail ».</p>
+        <p data-lang="en">Above the “hard” minimums, Basel III stacks <strong>buffers</strong> in CET1. The <strong>conservation buffer</strong> (2.5%) is permanent: dipping into it is not failure, but triggers <em>restrictions on distributions</em> (dividends, bonuses, buybacks) — a powerful incentive to leave it untouched. The <strong>countercyclical buffer</strong> (0 to 2.5%, switched on by the regulator at the top of the cycle) leans against credit euphoria. Systemic banks (<strong>G-SIBs</strong>) carry an extra surcharge, the price of their “too big to fail”.</p>
+        <p data-lang="nl">Boven de “harde” minima stapelt Bazel III <strong>buffers</strong> in CET1. De <strong>conserveringsbuffer</strong> (2,5%) is permanent: erin duiken is geen faillissement, maar activeert <em>beperkingen op uitkeringen</em> (dividenden, bonussen, inkopen) — een krachtige prikkel om er niet aan te komen. De <strong>contracyclische buffer</strong> (0 tot 2,5%, ingeschakeld door de toezichthouder bovenaan de cyclus) remt kredieteuforie. Systeembanken (<strong>G-SIB's</strong>) dragen een extra toeslag, de prijs van hun “too big to fail”.</p>
+
+        <div class="callout warn">
+          <span class="clabel" data-lang="fr">Le ratio de levier : le garde-fou anti-triche</span><span class="clabel" data-lang="en">The leverage ratio: the anti-gaming backstop</span><span class="clabel" data-lang="nl">De hefboomratio: de anti-manipulatie-vangrail</span>
+          <span data-lang="fr">Tous les ratios ci-dessus reposent sur les RWA — donc sur des <em>modèles</em> qui peuvent sous-estimer le risque (ou pousser tout le monde vers des actifs « à faible pondération » qui se révèlent dangereux, comme la dette souveraine grecque avant 2010). Le <strong>ratio de levier</strong> = Tier 1 / exposition totale (non pondérée) ≥ <strong>3 %</strong> est un garde-fou <em>indépendant du risque</em> : quoi que disent les modèles, une banque ne peut pas s'endetter plus de ~33 fois ses fonds propres. Simple, brutal, difficile à contourner — la leçon de 2008.</span>
+          <span data-lang="en">All the ratios above rest on RWA — hence on <em>models</em> that can understate risk (or herd everyone into “low-weight” assets that prove dangerous, like Greek sovereign debt before 2010). The <strong>leverage ratio</strong> = Tier 1 / total (unweighted) exposure ≥ <strong>3%</strong> is a <em>risk-independent</em> backstop: whatever the models say, a bank cannot borrow more than ~33× its capital. Simple, blunt, hard to game — the lesson of 2008.</span>
+          <span data-lang="nl">Alle bovenstaande ratio's steunen op RWA — dus op <em>modellen</em> die het risico kunnen onderschatten (of iedereen naar “laaggewogen” activa drijven die gevaarlijk blijken, zoals Griekse staatsschuld vóór 2010). De <strong>hefboomratio</strong> = Tier 1 / totale (ongewogen) blootstelling ≥ <strong>3%</strong> is een <em>risico-onafhankelijke</em> vangrail: wat de modellen ook zeggen, een bank kan niet meer dan ~33× haar kapitaal lenen. Eenvoudig, bot, moeilijk te omzeilen — de les van 2008.</span>
+        </div>
+
+        <!-- 6. LIQUIDITÉ & PILIERS -->
+        <h2 id="piliers"><span data-lang="fr">6. Liquidité &amp; les trois piliers</span><span data-lang="en">6. Liquidity &amp; the three pillars</span><span data-lang="nl">6. Liquiditeit &amp; de drie pijlers</span></h2>
+        <p data-lang="fr">Bâle III a ajouté un volet <strong>liquidité</strong> (vu au module 7), absent des accords précédents : la <strong>LCR</strong> (survivre à 30 jours de stress de financement) et la <strong>NSFR</strong> (financement stable sur un an). Car en 2008, des banques bien capitalisées ont coulé faute de liquidité — le capital ne suffit pas.</p>
+        <p data-lang="en">Basel III added a <strong>liquidity</strong> leg (seen in module 7), absent from earlier accords: the <strong>LCR</strong> (survive 30 days of funding stress) and the <strong>NSFR</strong> (stable funding over one year). Because in 2008, well-capitalised banks sank for lack of liquidity — capital is not enough.</p>
+        <p data-lang="nl">Bazel III voegde een <strong>liquiditeits</strong>luik toe (gezien in module 7), afwezig in eerdere akkoorden: de <strong>LCR</strong> (30 dagen financieringsstress overleven) en de <strong>NSFR</strong> (stabiele financiering over een jaar). Want in 2008 zonken goed gekapitaliseerde banken bij gebrek aan liquiditeit — kapitaal volstaat niet.</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">Les trois piliers de Bâle</span><span class="clabel" data-lang="en">The three pillars of Basel</span><span class="clabel" data-lang="nl">De drie pijlers van Bazel</span>
+          <span data-lang="fr">Depuis Bâle II, l'édifice repose sur <strong>trois piliers</strong>. <strong>Pilier 1 — exigences minimales</strong> : les ratios de capital et de liquidité calculés selon des règles précises (crédit, marché, opérationnel). <strong>Pilier 2 — surveillance prudentielle</strong> : le superviseur évalue les risques non couverts par le Pilier 1 et peut exiger un capital <em>supplémentaire</em> (processus ICAAP/SREP). <strong>Pilier 3 — discipline de marché</strong> : la banque <em>publie</em> ses risques et ratios, pour que les investisseurs la sanctionnent. Capital, contrôle, transparence : les trois se complètent.</span>
+          <span data-lang="en">Since Basel II, the edifice rests on <strong>three pillars</strong>. <strong>Pillar 1 — minimum requirements</strong>: capital and liquidity ratios computed by precise rules (credit, market, operational). <strong>Pillar 2 — supervisory review</strong>: the supervisor assesses risks not covered by Pillar 1 and can require <em>additional</em> capital (ICAAP/SREP process). <strong>Pillar 3 — market discipline</strong>: the bank <em>discloses</em> its risks and ratios, so investors can sanction it. Capital, control, transparency: the three complement each other.</span>
+          <span data-lang="nl">Sinds Bazel II rust het bouwwerk op <strong>drie pijlers</strong>. <strong>Pijler 1 — minimumvereisten</strong>: kapitaal- en liquiditeitsratio's berekend volgens precieze regels (krediet, markt, operationeel). <strong>Pijler 2 — prudentieel toezicht</strong>: de toezichthouder beoordeelt risico's niet gedekt door Pijler 1 en kan <em>bijkomend</em> kapitaal eisen (ICAAP/SREP-proces). <strong>Pijler 3 — marktdiscipline</strong>: de bank <em>publiceert</em> haar risico's en ratio's, zodat beleggers haar kunnen sanctioneren. Kapitaal, controle, transparantie: de drie vullen elkaar aan.</span>
+        </div>
+
+        <!-- 7. À RETENIR -->
+        <h2 id="retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></h2>
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">L'essentiel</span><span class="clabel" data-lang="en">The essentials</span><span class="clabel" data-lang="nl">De kern</span>
+          <span data-lang="fr">Les banques sont régulées car fragiles et systémiques ; le Comité de Bâle (BRI) fixe des standards transposés en droit local (CRR/CRD en Europe). Bâle I (1988) a créé le ratio de 8 % ; Bâle II (2004) l'a rendu sensible au risque et a posé les 3 piliers ; Bâle III (2010→), réponse à 2008, a musclé capital, coussins, levier et liquidité. Les RWA = Σ expositions × pondérations sont le dénominateur commun. Les fonds propres se classent CET1 &gt; AT1 &gt; Tier 2 ; minima : CET1 ≥ 4,5 %, Tier 1 ≥ 6 %, total ≥ 8 %, plus un coussin de conservation de 2,5 % (CET1) et un coussin contracyclique de 0–2,5 %. Le ratio de levier (Tier 1 / exposition ≥ 3 %) est un garde-fou indépendant des modèles. La LCR/NSFR ajoutent la liquidité. Les 3 piliers : exigences minimales, surveillance, discipline de marché.</span>
+          <span data-lang="en">Banks are regulated because they are fragile and systemic; the Basel Committee (BIS) sets standards transposed into local law (CRR/CRD in Europe). Basel I (1988) created the 8% ratio; Basel II (2004) made it risk-sensitive and laid the 3 pillars; Basel III (2010→), the response to 2008, strengthened capital, buffers, leverage and liquidity. RWA = Σ exposures × weights are the common denominator. Capital ranks CET1 &gt; AT1 &gt; Tier 2; minimums: CET1 ≥ 4.5%, Tier 1 ≥ 6%, total ≥ 8%, plus a 2.5% conservation buffer (CET1) and a 0–2.5% countercyclical buffer. The leverage ratio (Tier 1 / exposure ≥ 3%) is a model-independent backstop. LCR/NSFR add liquidity. The 3 pillars: minimum requirements, supervision, market discipline.</span>
+          <span data-lang="nl">Banken worden gereguleerd omdat ze fragiel en systemisch zijn; het Bazels Comité (BIS) stelt standaarden vast omgezet in lokaal recht (CRR/CRD in Europa). Bazel I (1988) creëerde de 8%-ratio; Bazel II (2004) maakte hem risicogevoelig en legde de 3 pijlers; Bazel III (2010→), het antwoord op 2008, versterkte kapitaal, buffers, hefboom en liquiditeit. RWA = Σ blootstellingen × wegingen zijn de gemeenschappelijke noemer. Kapitaal rangschikt CET1 &gt; AT1 &gt; Tier 2; minima: CET1 ≥ 4,5%, Tier 1 ≥ 6%, totaal ≥ 8%, plus een conserveringsbuffer van 2,5% (CET1) en een contracyclische buffer van 0–2,5%. De hefboomratio (Tier 1 / blootstelling ≥ 3%) is een modelonafhankelijke vangrail. LCR/NSFR voegen liquiditeit toe. De 3 pijlers: minimumvereisten, toezicht, marktdiscipline.</span>
+        </div>
+
+        <!-- 8. QCM -->
+        <h2 id="qcm"><span data-lang="fr">8. QCM — 15 questions</span><span data-lang="en">8. MCQ — 15 questions</span><span data-lang="nl">8. MCV — 15 vragen</span></h2>
+        <div class="quiz">
+          <h4 data-lang="fr">Auto-évaluation</h4><h4 data-lang="en">Self-assessment</h4><h4 data-lang="nl">Zelfevaluatie</h4>
+          <p class="qsub" data-lang="fr">Cliquez sur une réponse : la bonne s'affiche en vert et la justification apparaît.</p>
+          <p class="qsub" data-lang="en">Click an answer: the correct one turns green and the justification appears.</p>
+          <p class="qsub" data-lang="nl">Klik op een antwoord: het juiste kleurt groen en de verantwoording verschijnt.</p>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">1. Les accords de Bâle sont publiés par…</div>
+            <div class="qtext" data-lang="en">1. The Basel Accords are published by…</div>
+            <div class="qtext" data-lang="nl">1. De Bazel-akkoorden worden gepubliceerd door…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le Fonds monétaire international.</span><span data-lang="en">The International Monetary Fund.</span><span data-lang="nl">Het Internationaal Monetair Fonds.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le Comité de Bâle (BCBS), hébergé par la BRI.</span><span data-lang="en">The Basel Committee (BCBS), hosted by the BIS.</span><span data-lang="nl">Het Bazels Comité (BCBS), gehuisvest door de BIS.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les agences de notation.</span><span data-lang="en">The rating agencies.</span><span data-lang="nl">De ratingbureaus.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le BCBS (BRI, Bâle) publie les standards ; ils deviennent contraignants via le droit local (CRR/CRD en Europe).</span><span data-lang="en">✔ The BCBS (BIS, Basel) publishes the standards; they become binding via local law (CRR/CRD in Europe).</span><span data-lang="nl">✔ Het BCBS (BIS, Bazel) publiceert de standaarden; ze worden bindend via lokaal recht (CRR/CRD in Europa).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">2. Les « actifs pondérés du risque » (RWA) se calculent en…</div>
+            <div class="qtext" data-lang="en">2. “Risk-weighted assets” (RWA) are computed by…</div>
+            <div class="qtext" data-lang="nl">2. “Risicogewogen activa” (RWA) worden berekend door…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Multipliant chaque exposition par une pondération de risque, puis en sommant.</span><span data-lang="en">Multiplying each exposure by a risk weight, then summing.</span><span data-lang="nl">Elke blootstelling met een risicoweging te vermenigvuldigen, dan te sommeren.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Additionnant simplement tous les actifs.</span><span data-lang="en">Simply summing all assets.</span><span data-lang="nl">Simpelweg alle activa op te tellen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Divisant le capital par les actifs.</span><span data-lang="en">Dividing capital by assets.</span><span data-lang="nl">Kapitaal door activa te delen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ RWA = Σ (exposition × pondération). Un actif sûr (cash 0 %) consomme peu de capital, un prêt corpo (100 %) beaucoup.</span><span data-lang="en">✔ RWA = Σ (exposure × weight). A safe asset (cash 0%) consumes little capital, a corporate loan (100%) a lot.</span><span data-lang="nl">✔ RWA = Σ (blootstelling × weging). Een veilig actief (cash 0%) verbruikt weinig kapitaal, een bedrijfslening (100%) veel.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">3. Un ratio de capital réglementaire se définit comme…</div>
+            <div class="qtext" data-lang="en">3. A regulatory capital ratio is defined as…</div>
+            <div class="qtext" data-lang="nl">3. Een reglementaire kapitaalratio wordt gedefinieerd als…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">RWA / capital.</span><span data-lang="en">RWA / capital.</span><span data-lang="nl">RWA / kapitaal.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Capital / total des actifs.</span><span data-lang="en">Capital / total assets.</span><span data-lang="nl">Kapitaal / totale activa.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Capital / RWA.</span><span data-lang="en">Capital / RWA.</span><span data-lang="nl">Kapitaal / RWA.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Ratio = fonds propres (d'un certain niveau) ÷ actifs pondérés du risque. Les RWA sont le dénominateur commun.</span><span data-lang="en">✔ Ratio = capital (of a given level) ÷ risk-weighted assets. RWA are the common denominator.</span><span data-lang="nl">✔ Ratio = kapitaal (van een bepaald niveau) ÷ risicogewogen activa. RWA zijn de gemeenschappelijke noemer.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">4. Le CET1 (Common Equity Tier 1) est constitué avant tout de…</div>
+            <div class="qtext" data-lang="en">4. CET1 (Common Equity Tier 1) consists chiefly of…</div>
+            <div class="qtext" data-lang="nl">4. CET1 (Common Equity Tier 1) bestaat vooral uit…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Dette subordonnée à long terme.</span><span data-lang="en">Long-term subordinated debt.</span><span data-lang="nl">Langlopende achtergestelde schuld.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Actions ordinaires + résultats mis en réserve.</span><span data-lang="en">Common shares + retained earnings.</span><span data-lang="nl">Gewone aandelen + ingehouden winst.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Dépôts de la clientèle.</span><span data-lang="en">Customer deposits.</span><span data-lang="nl">Klantendeposito's.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le CET1 est le capital de la plus haute qualité (absorbe les pertes en premier). AT1 et Tier 2 sont des instruments de moindre qualité.</span><span data-lang="en">✔ CET1 is the highest-quality capital (absorbs losses first). AT1 and Tier 2 are lower-quality instruments.</span><span data-lang="nl">✔ CET1 is het hoogwaardigste kapitaal (absorbeert verliezen eerst). AT1 en Tier 2 zijn instrumenten van lagere kwaliteit.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">5. Le ratio CET1 minimum de Bâle III (hors coussins) est de…</div>
+            <div class="qtext" data-lang="en">5. The Basel III minimum CET1 ratio (excluding buffers) is…</div>
+            <div class="qtext" data-lang="nl">5. De Bazel III-minimum CET1-ratio (exclusief buffers) is…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">4,5 %.</span><span data-lang="en">4.5%.</span><span data-lang="nl">4,5%.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">8 %.</span><span data-lang="en">8%.</span><span data-lang="nl">8%.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">2 %.</span><span data-lang="en">2%.</span><span data-lang="nl">2%.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Minima Bâle III : CET1 4,5 %, Tier 1 6 %, total 8 %. Le 8 % est le ratio de capital <em>total</em>, pas le CET1.</span><span data-lang="en">✔ Basel III minimums: CET1 4.5%, Tier 1 6%, total 8%. The 8% is the <em>total</em> capital ratio, not CET1.</span><span data-lang="nl">✔ Bazel III-minima: CET1 4,5%, Tier 1 6%, totaal 8%. De 8% is de <em>totale</em> kapitaalratio, niet CET1.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">6. Le ratio de capital total minimum de Bâle III est de…</div>
+            <div class="qtext" data-lang="en">6. The Basel III minimum total capital ratio is…</div>
+            <div class="qtext" data-lang="nl">6. De Bazel III-minimum totale kapitaalratio is…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">4,5 %.</span><span data-lang="en">4.5%.</span><span data-lang="nl">4,5%.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">10,5 %.</span><span data-lang="en">10.5%.</span><span data-lang="nl">10,5%.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">8 % (hors coussins).</span><span data-lang="en">8% (excluding buffers).</span><span data-lang="nl">8% (exclusief buffers).</span></button>
+            <div class="explain"><span data-lang="fr">✔ 8 % de capital total (Tier 1 + Tier 2). Avec le coussin de conservation de 2,5 %, l'exigence effective monte à 10,5 %.</span><span data-lang="en">✔ 8% total capital (Tier 1 + Tier 2). With the 2.5% conservation buffer, the effective requirement rises to 10.5%.</span><span data-lang="nl">✔ 8% totaal kapitaal (Tier 1 + Tier 2). Met de conserveringsbuffer van 2,5% stijgt de effectieve vereiste naar 10,5%.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">7. Le coussin de conservation de capital (2,5 %) doit être constitué de…</div>
+            <div class="qtext" data-lang="en">7. The capital conservation buffer (2.5%) must be made of…</div>
+            <div class="qtext" data-lang="nl">7. De kapitaalconserveringsbuffer (2,5%) moet bestaan uit…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Dette subordonnée (Tier 2).</span><span data-lang="en">Subordinated debt (Tier 2).</span><span data-lang="nl">Achtergestelde schuld (Tier 2).</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">CET1, au-dessus des minima.</span><span data-lang="en">CET1, on top of the minimums.</span><span data-lang="nl">CET1, bovenop de minima.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Liquidités uniquement.</span><span data-lang="en">Cash only.</span><span data-lang="nl">Enkel cash.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le coussin s'ajoute en CET1. L'entamer n'est pas illégal mais déclenche des restrictions sur dividendes et bonus.</span><span data-lang="en">✔ The buffer is added in CET1. Dipping into it is not illegal but triggers restrictions on dividends and bonuses.</span><span data-lang="nl">✔ De buffer wordt in CET1 toegevoegd. Erin duiken is niet illegaal maar activeert beperkingen op dividenden en bonussen.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">8. Le coussin contracyclique sert à…</div>
+            <div class="qtext" data-lang="en">8. The countercyclical buffer serves to…</div>
+            <div class="qtext" data-lang="nl">8. De contracyclische buffer dient om…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Constituer du capital supplémentaire en haut de cycle, pour freiner l'excès de crédit.</span><span data-lang="en">Build extra capital at the top of the cycle, to lean against excess credit.</span><span data-lang="nl">Extra kapitaal op te bouwen bovenaan de cyclus, om overmatig krediet te temperen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Réduire les impôts des banques.</span><span data-lang="en">Reduce banks' taxes.</span><span data-lang="nl">De belastingen van banken te verlagen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Remplacer le ratio de levier.</span><span data-lang="en">Replace the leverage ratio.</span><span data-lang="nl">De hefboomratio te vervangen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ 0 à 2,5 %, activé par le régulateur quand le crédit s'emballe ; relâché en récession pour soutenir le prêt. Il « respire » avec le cycle.</span><span data-lang="en">✔ 0 to 2.5%, switched on by the regulator when credit booms; released in recession to support lending. It “breathes” with the cycle.</span><span data-lang="nl">✔ 0 tot 2,5%, ingeschakeld door de toezichthouder wanneer krediet oploopt; losgelaten in recessie om kredietverlening te steunen. Het “ademt” met de cyclus.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">9. Le ratio de levier de Bâle III (Tier 1 / exposition totale) a pour but de…</div>
+            <div class="qtext" data-lang="en">9. Basel III's leverage ratio (Tier 1 / total exposure) aims to…</div>
+            <div class="qtext" data-lang="nl">9. Bazel III's hefboomratio (Tier 1 / totale blootstelling) beoogt…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Remplacer entièrement les ratios pondérés.</span><span data-lang="en">Fully replace the risk-weighted ratios.</span><span data-lang="nl">De risicogewogen ratio's volledig te vervangen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Mesurer la liquidité à 30 jours.</span><span data-lang="en">Measure 30-day liquidity.</span><span data-lang="nl">De 30-daagse liquiditeit te meten.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Fournir un garde-fou indépendant des modèles de RWA.</span><span data-lang="en">Provide a backstop independent of RWA models.</span><span data-lang="nl">Een vangrail te bieden onafhankelijk van RWA-modellen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Non pondéré (≥ 3 %), il limite l'endettement total quoi que disent les modèles de RWA — anti-triche. Il complète, sans remplacer, les ratios pondérés.</span><span data-lang="en">✔ Unweighted (≥ 3%), it caps total leverage whatever the RWA models say — anti-gaming. It complements, not replaces, the risk-weighted ratios.</span><span data-lang="nl">✔ Ongewogen (≥ 3%), het beperkt de totale hefboom wat de RWA-modellen ook zeggen — anti-manipulatie. Het vult de risicogewogen ratio's aan, vervangt ze niet.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">10. Par rapport à Bâle II, Bâle III a surtout…</div>
+            <div class="qtext" data-lang="en">10. Compared with Basel II, Basel III mainly…</div>
+            <div class="qtext" data-lang="nl">10. Vergeleken met Bazel II heeft Bazel III vooral…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Réduit les exigences de capital.</span><span data-lang="en">Reduced capital requirements.</span><span data-lang="nl">De kapitaalvereisten verlaagd.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Augmenté la quantité et la qualité du capital, et ajouté coussins, levier et liquidité.</span><span data-lang="en">Increased the amount and quality of capital, and added buffers, leverage and liquidity.</span><span data-lang="nl">De hoeveelheid en kwaliteit van het kapitaal verhoogd, en buffers, hefboom en liquiditeit toegevoegd.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Supprimé les RWA.</span><span data-lang="en">Abolished RWA.</span><span data-lang="nl">De RWA afgeschaft.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Réponse à 2008 : plus de CET1, coussins, ratio de levier, LCR/NSFR. Bâle II avait sous-capitalisé les banques et trop fait confiance aux modèles.</span><span data-lang="en">✔ Response to 2008: more CET1, buffers, leverage ratio, LCR/NSFR. Basel II had undercapitalised banks and over-trusted models.</span><span data-lang="nl">✔ Antwoord op 2008: meer CET1, buffers, hefboomratio, LCR/NSFR. Bazel II had banken ondergekapitaliseerd en te veel op modellen vertrouwd.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">11. Pourquoi Bâle pondère-t-il les actifs plutôt que d'utiliser leur total brut ?</div>
+            <div class="qtext" data-lang="en">11. Why does Basel weight assets rather than use their gross total?</div>
+            <div class="qtext" data-lang="nl">11. Waarom weegt Bazel activa in plaats van hun brutototaal te gebruiken?</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Pour aligner le capital exigé sur le risque réel de chaque actif.</span><span data-lang="en">To align required capital with each asset's actual risk.</span><span data-lang="nl">Om het vereiste kapitaal af te stemmen op het werkelijke risico van elk actief.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Pour simplifier les calculs.</span><span data-lang="en">To simplify the calculations.</span><span data-lang="nl">Om de berekeningen te vereenvoudigen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Pour ignorer le risque de crédit.</span><span data-lang="en">To ignore credit risk.</span><span data-lang="nl">Om het kredietrisico te negeren.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Un actif sûr (bon du Trésor) devrait exiger moins de capital qu'un prêt risqué. La pondération relie capital et risque — l'apport de Bâle II. (Mais elle dépend de modèles, d'où le levier en garde-fou.)</span><span data-lang="en">✔ A safe asset (T-bill) should require less capital than a risky loan. Weighting links capital to risk — Basel II's contribution. (But it relies on models, hence the leverage backstop.)</span><span data-lang="nl">✔ Een veilig actief (schatkistpapier) zou minder kapitaal moeten vereisen dan een risicovolle lening. Weging verbindt kapitaal en risico — de bijdrage van Bazel II. (Maar het steunt op modellen, vandaar de hefboom-vangrail.)</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">12. La LCR et la NSFR, introduites par Bâle III, concernent…</div>
+            <div class="qtext" data-lang="en">12. The LCR and NSFR, introduced by Basel III, concern…</div>
+            <div class="qtext" data-lang="nl">12. De LCR en NSFR, ingevoerd door Bazel III, betreffen…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le capital, pas la liquidité.</span><span data-lang="en">Capital, not liquidity.</span><span data-lang="nl">Kapitaal, niet liquiditeit.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les dividendes des actionnaires.</span><span data-lang="en">Shareholder dividends.</span><span data-lang="nl">Dividenden van aandeelhouders.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">La liquidité : survivre à 30 jours (LCR) et financement stable sur 1 an (NSFR).</span><span data-lang="en">Liquidity: surviving 30 days (LCR) and stable funding over 1 year (NSFR).</span><span data-lang="nl">Liquiditeit: 30 dagen overleven (LCR) en stabiele financiering over 1 jaar (NSFR).</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le capital ne protège pas de l'illiquidité : Bâle III a ajouté deux ratios de liquidité (court terme LCR, structurel NSFR), leçon de 2008.</span><span data-lang="en">✔ Capital does not protect from illiquidity: Basel III added two liquidity ratios (short-term LCR, structural NSFR), the lesson of 2008.</span><span data-lang="nl">✔ Kapitaal beschermt niet tegen illiquiditeit: Bazel III voegde twee liquiditeitsratio's toe (kortetermijn LCR, structureel NSFR), de les van 2008.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">13. Dans l'architecture de Bâle, le « Pilier 2 » désigne…</div>
+            <div class="qtext" data-lang="en">13. In Basel's architecture, “Pillar 2” refers to…</div>
+            <div class="qtext" data-lang="nl">13. In Bazels architectuur verwijst “Pijler 2” naar…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les exigences minimales de capital.</span><span data-lang="en">The minimum capital requirements.</span><span data-lang="nl">De minimumkapitaalvereisten.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">La surveillance prudentielle (le superviseur peut exiger un capital supplémentaire).</span><span data-lang="en">Supervisory review (the supervisor can require extra capital).</span><span data-lang="nl">Prudentieel toezicht (de toezichthouder kan extra kapitaal eisen).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La publication d'informations au marché.</span><span data-lang="en">Disclosure to the market.</span><span data-lang="nl">Openbaarmaking aan de markt.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Pilier 1 = exigences minimales ; Pilier 2 = surveillance (ICAAP/SREP, capital additionnel) ; Pilier 3 = discipline de marché (transparence).</span><span data-lang="en">✔ Pillar 1 = minimum requirements; Pillar 2 = supervision (ICAAP/SREP, add-on capital); Pillar 3 = market discipline (disclosure).</span><span data-lang="nl">✔ Pijler 1 = minimumvereisten; Pijler 2 = toezicht (ICAAP/SREP, add-on kapitaal); Pijler 3 = marktdiscipline (transparantie).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">14. Une surcharge de capital pour les banques « G-SIB » vise à…</div>
+            <div class="qtext" data-lang="en">14. A capital surcharge for “G-SIB” banks aims to…</div>
+            <div class="qtext" data-lang="nl">14. Een kapitaaltoeslag voor “G-SIB”-banken beoogt…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Exiger plus de capital des banques systémiques (« too big to fail »).</span><span data-lang="en">Require more capital from systemic banks (“too big to fail”).</span><span data-lang="nl">Meer kapitaal te eisen van systeembanken (“too big to fail”).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Récompenser les banques les plus rentables.</span><span data-lang="en">Reward the most profitable banks.</span><span data-lang="nl">De meest rendabele banken te belonen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Réduire leurs obligations de reporting.</span><span data-lang="en">Reduce their reporting obligations.</span><span data-lang="nl">Hun rapportageverplichtingen te verminderen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Les G-SIB (globally systemically important banks) portent une surcharge en CET1 : plus leur faillite menacerait le système, plus elles doivent être capitalisées.</span><span data-lang="en">✔ G-SIBs (globally systemically important banks) carry a CET1 surcharge: the more their failure would threaten the system, the more capitalised they must be.</span><span data-lang="nl">✔ G-SIB's (globally systemically important banks) dragen een CET1-toeslag: hoe meer hun falen het systeem zou bedreigen, hoe meer gekapitaliseerd ze moeten zijn.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">15. À capital inchangé, une banque qui alourdit son bilan en actifs risqués verra son ratio CET1…</div>
+            <div class="qtext" data-lang="en">15. With capital unchanged, a bank that loads up on riskier assets will see its CET1 ratio…</div>
+            <div class="qtext" data-lang="nl">15. Bij ongewijzigd kapitaal zal een bank die zich vollaadt met risicovollere activa haar CET1-ratio zien…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Augmenter.</span><span data-lang="en">Rise.</span><span data-lang="nl">Stijgen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Rester identique.</span><span data-lang="en">Stay the same.</span><span data-lang="nl">Gelijk blijven.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Baisser, car les RWA (le dénominateur) augmentent.</span><span data-lang="en">Fall, because RWA (the denominator) increase.</span><span data-lang="nl">Dalen, omdat de RWA (de noemer) stijgen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Ratio = CET1 / RWA. Plus d'actifs risqués ⇒ RWA plus élevés ⇒ ratio plus faible, même sans perte de capital. Le dénominateur compte autant que le numérateur.</span><span data-lang="en">✔ Ratio = CET1 / RWA. More risky assets ⇒ higher RWA ⇒ lower ratio, even with no capital loss. The denominator matters as much as the numerator.</span><span data-lang="nl">✔ Ratio = CET1 / RWA. Meer risicovolle activa ⇒ hogere RWA ⇒ lagere ratio, zelfs zonder kapitaalverlies. De noemer telt evenveel als de teller.</span></div>
+          </div>
+        </div>
+
+        <!-- 9. EXERCICES -->
+        <h2 id="exercices"><span data-lang="fr">9. Exercices chiffrés</span><span data-lang="en">9. Numerical exercises</span><span data-lang="nl">9. Cijferoefeningen</span></h2>
+        <p data-lang="fr">Réponses courtes à révéler ; corrigés détaillés sur la page « Solutions ».</p>
+        <p data-lang="en">Short answers to reveal; full solutions on the “Solutions” page.</p>
+        <p data-lang="nl">Korte antwoorden te onthullen; uitgewerkte oplossingen op de “Oplossingen”-pagina.</p>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice CAP-1</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Une banque a un CET1 de 9 Md€ et des RWA de 120 Md€. Calculez son ratio CET1. Respecte-t-il le minimum de 4,5 % ?</p>
+          <p class="estatement" data-lang="en">A bank has CET1 of €9bn and RWA of €120bn. Compute its CET1 ratio. Does it meet the 4.5% minimum?</p>
+          <p class="estatement" data-lang="nl">Een bank heeft CET1 van €9mld en RWA van €120mld. Bereken de CET1-ratio. Voldoet ze aan het minimum van 4,5%?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Ratio CET1 = 9 / 120 = <b>7,5 %</b> &gt; 4,5 % → minimum respecté (et au-dessus du 7 % minimum + coussin de conservation).</div>
+            <div class="ans" data-lang="en">CET1 ratio = 9 / 120 = <b>7.5%</b> &gt; 4.5% → minimum met (and above the 7% minimum + conservation buffer).</div>
+            <div class="ans" data-lang="nl">CET1-ratio = 9 / 120 = <b>7,5%</b> &gt; 4,5% → minimum gehaald (en boven de 7% minimum + conserveringsbuffer).</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice CAP-2</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Une banque détient 100 de cash (pondération 0 %), 200 de prêts immobiliers (35 %) et 300 de prêts aux entreprises (100 %). Calculez les RWA.</p>
+          <p class="estatement" data-lang="en">A bank holds 100 in cash (0% weight), 200 in mortgages (35%) and 300 in corporate loans (100%). Compute the RWA.</p>
+          <p class="estatement" data-lang="nl">Een bank heeft 100 cash (0% weging), 200 hypotheken (35%) en 300 bedrijfsleningen (100%). Bereken de RWA.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">RWA = 100×0 + 200×0,35 + 300×1,00 = 0 + 70 + 300 = <b>370</b>.</div>
+            <div class="ans" data-lang="en">RWA = 100×0 + 200×0.35 + 300×1.00 = 0 + 70 + 300 = <b>370</b>.</div>
+            <div class="ans" data-lang="nl">RWA = 100×0 + 200×0,35 + 300×1,00 = 0 + 70 + 300 = <b>370</b>.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice CAP-3</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">CET1 = 6, AT1 = 1, Tier 2 = 2 (Md€) ; RWA = 90. Calculez le ratio de capital total. Respecte-t-il le minimum de 8 % ? Et l'exigence avec coussin de conservation (10,5 %) ?</p>
+          <p class="estatement" data-lang="en">CET1 = 6, AT1 = 1, Tier 2 = 2 (€bn); RWA = 90. Compute the total capital ratio. Does it meet the 8% minimum? And the requirement with the conservation buffer (10.5%)?</p>
+          <p class="estatement" data-lang="nl">CET1 = 6, AT1 = 1, Tier 2 = 2 (mld€); RWA = 90. Bereken de totale kapitaalratio. Voldoet ze aan het minimum van 8%? En aan de vereiste met conserveringsbuffer (10,5%)?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Capital total = 6+1+2 = 9. Ratio = 9/90 = <b>10 %</b>. &gt; 8 % (minimum dur) ✔ mais &lt; 10,5 % : le coussin de conservation est <b>entamé</b> → restrictions sur dividendes/bonus.</div>
+            <div class="ans" data-lang="en">Total capital = 6+1+2 = 9. Ratio = 9/90 = <b>10%</b>. &gt; 8% (hard minimum) ✔ but &lt; 10.5%: the conservation buffer is <b>breached</b> → restrictions on dividends/bonuses.</div>
+            <div class="ans" data-lang="nl">Totaal kapitaal = 6+1+2 = 9. Ratio = 9/90 = <b>10%</b>. &gt; 8% (hard minimum) ✔ maar &lt; 10,5%: de conserveringsbuffer is <b>aangetast</b> → beperkingen op dividenden/bonussen.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice CAP-4</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Capital Tier 1 = 15 Md€, exposition totale de levier = 450 Md€. Calculez le ratio de levier. Respecte-t-il le minimum de 3 % ?</p>
+          <p class="estatement" data-lang="en">Tier 1 capital = €15bn, total leverage exposure = €450bn. Compute the leverage ratio. Does it meet the 3% minimum?</p>
+          <p class="estatement" data-lang="nl">Tier 1-kapitaal = €15mld, totale hefboomblootstelling = €450mld. Bereken de hefboomratio. Voldoet ze aan het minimum van 3%?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Ratio de levier = 15 / 450 = <b>3,33 %</b> &gt; 3 % → respecté (mais avec peu de marge : ~30× de levier).</div>
+            <div class="ans" data-lang="en">Leverage ratio = 15 / 450 = <b>3.33%</b> &gt; 3% → met (but with little margin: ~30× leverage).</div>
+            <div class="ans" data-lang="nl">Hefboomratio = 15 / 450 = <b>3,33%</b> &gt; 3% → gehaald (maar met weinig marge: ~30× hefboom).</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice CAP-5</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Une banque a un CET1 de 10 Md€ et des RWA de 100 Md€. Elle réoriente son bilan vers des actifs plus risqués, portant les RWA à 125 Md€ (capital inchangé). Que devient son ratio CET1 ?</p>
+          <p class="estatement" data-lang="en">A bank has CET1 of €10bn and RWA of €100bn. It shifts its book toward riskier assets, raising RWA to €125bn (capital unchanged). What happens to its CET1 ratio?</p>
+          <p class="estatement" data-lang="nl">Een bank heeft CET1 van €10mld en RWA van €100mld. Ze verschuift haar boek naar risicovollere activa, waardoor de RWA naar €125mld stijgen (kapitaal ongewijzigd). Wat gebeurt er met de CET1-ratio?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Avant : 10/100 = <b>10 %</b>. Après : 10/125 = <b>8 %</b>. Même capital, ratio en baisse : c'est l'effet du dénominateur (RWA). Pour restaurer 10 %, il faudrait lever 2,5 Md€ de CET1.</div>
+            <div class="ans" data-lang="en">Before: 10/100 = <b>10%</b>. After: 10/125 = <b>8%</b>. Same capital, lower ratio: the denominator (RWA) effect. To restore 10%, the bank would need to raise €2.5bn of CET1.</div>
+            <div class="ans" data-lang="nl">Voor: 10/100 = <b>10%</b>. Na: 10/125 = <b>8%</b>. Zelfde kapitaal, lagere ratio: het noemereffect (RWA). Om 10% te herstellen, zou de bank €2,5mld CET1 moeten ophalen.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice CAP-6</span><span class="diff" data-lang="fr">Réflexion</span><span class="diff" data-lang="en">Conceptual</span><span class="diff" data-lang="nl">Reflectie</span></div>
+          <p class="estatement" data-lang="fr">Pourquoi Bâle III conserve-t-il les ratios pondérés (RWA) tout en ajoutant un ratio de levier non pondéré ? Ne font-ils pas doublon ?</p>
+          <p class="estatement" data-lang="en">Why does Basel III keep the risk-weighted (RWA) ratios while adding a non-weighted leverage ratio? Aren't they redundant?</p>
+          <p class="estatement" data-lang="nl">Waarom behoudt Bazel III de risicogewogen (RWA) ratio's terwijl het een niet-gewogen hefboomratio toevoegt? Zijn ze niet overbodig?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Non, ils sont <b>complémentaires</b>. Les ratios RWA sont <b>sensibles au risque</b> (efficaces : peu de capital pour un actif sûr) mais <b>manipulables</b> — les modèles internes peuvent sous-estimer le risque, ou tout le monde se rue sur des actifs « faible pondération » qui se révèlent dangereux. Le ratio de levier est un <b>garde-fou simple et non manipulable</b> qui plafonne l'endettement total quoi qu'en disent les modèles. Ensemble, ils équilibrent sensibilité au risque et résistance au contournement.</div>
+            <div class="ans" data-lang="en">No, they are <b>complementary</b>. The RWA ratios are <b>risk-sensitive</b> (efficient: little capital for a safe asset) but <b>gameable</b> — internal models can understate risk, or everyone piles into “low-weight” assets that prove dangerous. The leverage ratio is a <b>simple, non-gameable backstop</b> that caps total leverage whatever the models say. Together they balance risk sensitivity and resistance to gaming.</div>
+            <div class="ans" data-lang="nl">Nee, ze zijn <b>complementair</b>. De RWA-ratio's zijn <b>risicogevoelig</b> (efficiënt: weinig kapitaal voor een veilig actief) maar <b>manipuleerbaar</b> — interne modellen kunnen het risico onderschatten, of iedereen stort zich op “laaggewogen” activa die gevaarlijk blijken. De hefboomratio is een <b>eenvoudige, niet-manipuleerbare vangrail</b> die de totale hefboom begrenst wat de modellen ook zeggen. Samen balanceren ze risicogevoeligheid en weerstand tegen manipulatie.</div>
+          </details>
+        </div>
+
+        <section class="biblio">
+          <h2 id="biblio"><span data-lang="fr">Bibliographie &amp; pour aller plus loin</span><span data-lang="en">Bibliography &amp; further reading</span><span data-lang="nl">Bibliografie &amp; verder lezen</span></h2>
+          <div class="bcol">
+            <h4 data-lang="fr">Références</h4><h4 data-lang="en">References</h4><h4 data-lang="nl">Referenties</h4>
+            <ol>
+      <li>Basel Committee on Banking Supervision (1988). <em>International Convergence of Capital Measurement and Capital Standards</em> (Basel I). BIS.</li>
+      <li>Basel Committee on Banking Supervision (2006). <em>Basel II: International Convergence of Capital Measurement and Capital Standards — A Revised Framework</em>. BIS. <a href="https://www.bis.org/publ/bcbs128.htm" target="_blank" rel="noopener">bis.org/publ/bcbs128</a></li>
+      <li>Basel Committee on Banking Supervision (2011). <em>Basel III: A global regulatory framework for more resilient banks and banking systems</em> (rev.). BIS. <a href="https://www.bis.org/publ/bcbs189.htm" target="_blank" rel="noopener">bis.org/publ/bcbs189</a></li>
+      <li>Basel Committee on Banking Supervision (2017). <em>Basel III: Finalising post-crisis reforms</em> (d424). BIS. <a href="https://www.bis.org/bcbs/publ/d424.htm" target="_blank" rel="noopener">bis.org/bcbs/publ/d424</a></li>
+      <li>Basel Committee on Banking Supervision (2014). <em>Basel III leverage ratio framework and disclosure requirements</em>. BIS.</li>
+      <li>Admati, A. &amp; Hellwig, M. (2013). <em>The Bankers' New Clothes: What's Wrong with Banking and What to Do about It</em>. Princeton University Press.</li>
+      <li>Hull, J. C. (2018). <em>Risk Management and Financial Institutions</em> (5th ed.), Basel chapters. Wiley.</li>
+            </ol>
+          </div>
+          <div class="bcol">
+            <h4 data-lang="fr">Pour aller plus loin</h4><h4 data-lang="en">Further reading</h4><h4 data-lang="nl">Verder lezen</h4>
+            <ul>
+      <li>BIS — <a href="https://www.bis.org/basel_framework/" target="_blank" rel="noopener">Basel Framework</a> (texte consolidé).</li>
+      <li>EBA — <a href="https://www.eba.europa.eu" target="_blank" rel="noopener">CRR/CRD</a> · ECB Banking Supervision (SREP).</li>
+      <li>Investopedia — <a href="https://www.investopedia.com/terms/b/basel_iii.asp" target="_blank" rel="noopener">Basel III</a> · <a href="https://www.investopedia.com/terms/c/common-equity-tier-1-cet1.asp" target="_blank" rel="noopener">CET1</a> · <a href="https://www.investopedia.com/terms/r/riskweightedassets.asp" target="_blank" rel="noopener">RWA</a> · <a href="https://www.investopedia.com/terms/l/leverageratio.asp" target="_blank" rel="noopener">Leverage Ratio</a>.</li>
+            </ul>
+          </div>
+        </section>
+
+        <div class="module-nav">
+          <a class="prev" href="frm7-stress-testing.html">
+            <div class="dir" data-lang="fr">← Module précédent</div><div class="dir" data-lang="en">← Previous module</div><div class="dir" data-lang="nl">← Vorige module</div>
+            <div class="tt" data-lang="fr">7. Stress testing &amp; scénarios</div><div class="tt" data-lang="en">7. Stress testing &amp; scenarios</div><div class="tt" data-lang="nl">7. Stresstesten &amp; scenario's</div>
+          </a>
+          <a class="next" href="../index.html#curriculum">
+            <div class="dir" data-lang="fr">Fin du parcours ✓</div><div class="dir" data-lang="en">End of track ✓</div><div class="dir" data-lang="nl">Einde traject ✓</div>
+            <div class="tt" data-lang="fr">Retour au programme</div><div class="tt" data-lang="en">Back to curriculum</div><div class="tt" data-lang="nl">Terug naar programma</div>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap foot">
+    <div class="brand"><span class="logo">Avenir<b>.</b></span></div>
+    <p data-lang="fr">Financial Risk Management · Module 8 · Réglementation &amp; capital</p>
+    <p data-lang="en">Financial Risk Management · Module 8 · Regulation &amp; capital</p>
+    <p data-lang="nl">Financial Risk Management · Module 8 · Regelgeving &amp; kapitaal</p>
+  </div>
+</footer>
+
+<script>
+/* ==========================================================================
+   AVENIR — Scripts partagés
+   Sélecteur de langue FR/EN, thème clair/sombre, sommaire actif, quiz
+   ========================================================================== */
+(function () {
+  "use strict";
+
+  var LS_LANG = "avenir-lang";
+  var LS_THEME = "avenir-theme";
+
+  function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  /* ---------- Langue ---------- */
+  function detectLang() {
+    var saved = safeGet(LS_LANG);
+    if (saved === "fr" || saved === "en" || saved === "nl") return saved;
+    var nav = (navigator.language || "fr").toLowerCase();
+    if (nav.indexOf("nl") === 0) return "nl";
+    if (nav.indexOf("en") === 0) return "en";
+    return "fr";
+  }
+
+  function setLang(lang) {
+    document.body.setAttribute("data-active-lang", lang);
+    document.documentElement.setAttribute("lang", lang);
+    safeSet(LS_LANG, lang);
+    document.querySelectorAll(".lang-toggle button").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-set-lang") === lang);
+    });
+  }
+
+  /* ---------- Thème ---------- */
+  function detectTheme() {
+    var saved = safeGet(LS_THEME);
+    if (saved === "light" || saved === "dark") return saved;
+    return null; // suit le système
+  }
+
+  function applyTheme(theme) {
+    if (theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      safeSet(LS_THEME, theme);
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+    updateThemeIcon();
+  }
+
+  function currentTheme() {
+    var attr = document.documentElement.getAttribute("data-theme");
+    if (attr) return attr;
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  function updateThemeIcon() {
+    var btn = document.getElementById("theme-btn");
+    if (btn) btn.textContent = currentTheme() === "dark" ? "☀" : "☾";
+  }
+
+  /* ---------- Initialisation ---------- */
+  document.addEventListener("DOMContentLoaded", function () {
+    setLang(detectLang());
+    applyTheme(detectTheme());
+
+    document.querySelectorAll(".lang-toggle button").forEach(function (b) {
+      b.addEventListener("click", function () { setLang(b.getAttribute("data-set-lang")); });
+    });
+
+    var themeBtn = document.getElementById("theme-btn");
+    if (themeBtn) themeBtn.addEventListener("click", function () {
+      applyTheme(currentTheme() === "dark" ? "light" : "dark");
+    });
+
+    var menuBtn = document.getElementById("menu-btn");
+    var navLinks = document.querySelector(".nav-links");
+    if (menuBtn && navLinks) menuBtn.addEventListener("click", function () {
+      var open = navLinks.style.display === "flex";
+      navLinks.style.display = open ? "" : "flex";
+      navLinks.style.position = "absolute";
+      navLinks.style.flexDirection = "column";
+      navLinks.style.top = "64px";
+      navLinks.style.right = "16px";
+      navLinks.style.background = "var(--surface)";
+      navLinks.style.border = "1px solid var(--border)";
+      navLinks.style.borderRadius = "12px";
+      navLinks.style.padding = "8px";
+      navLinks.style.boxShadow = "var(--shadow-lg)";
+    });
+
+    /* Sommaire actif + barre de progression (pages module) */
+    var toc = document.querySelector(".toc");
+    var bar = document.querySelector(".progress-bar");
+    if (toc || bar) {
+      var headings = Array.prototype.slice.call(document.querySelectorAll(".module-body h2[id]"));
+      var links = toc ? Array.prototype.slice.call(toc.querySelectorAll("a")) : [];
+      var onScroll = function () {
+        if (bar) {
+          var h = document.documentElement;
+          var pct = h.scrollTop / (h.scrollHeight - h.clientHeight);
+          bar.style.width = Math.max(0, Math.min(1, pct)) * 100 + "%";
+        }
+        if (headings.length && links.length) {
+          var pos = window.scrollY + 120, current = headings[0].id;
+          headings.forEach(function (hd) { if (hd.offsetTop <= pos) current = hd.id; });
+          links.forEach(function (a) {
+            a.classList.toggle("active", a.getAttribute("href") === "#" + current);
+          });
+        }
+      };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    }
+  });
+
+  /* ---------- Quiz (exposé globalement pour les onclick) ---------- */
+  window.avenirAnswer = function (btn, correct) {
+    var q = btn.closest(".q");
+    if (q.getAttribute("data-done") === "1") return;
+    q.setAttribute("data-done", "1");
+    var opts = q.querySelectorAll(".opt");
+    opts.forEach(function (o) { o.disabled = true; });
+    if (correct) {
+      btn.classList.add("correct");
+    } else {
+      btn.classList.add("wrong");
+      opts.forEach(function (o) { if (o.getAttribute("data-correct") === "1") o.classList.add("correct"); });
+    }
+    var ex = q.querySelector(".explain");
+    if (ex) ex.classList.add("show");
+  };
+})();
+
+</script>
+<script>
+/* Calculateur d'adéquation des fonds propres (Bâle III) */
+(function () {
+  var svg = document.getElementById("cap-chart");
+  if (!svg) return;
+  var LEV_EXP = 250; // exposition de levier (Md€), fixe
+  function v(id){ return parseFloat(document.getElementById(id).value); }
+  function setT(id,t){ var e=document.getElementById(id); if(e) e.textContent=t; }
+  function al(){ return document.body.getAttribute("data-active-lang")||"fr"; }
+
+  function draw(){
+    var cet1=v("cap-cet1"), at1=v("cap-at1"), t2=v("cap-t2"), rwa=v("cap-rwa"), ccb=v("cap-ccb");
+    setT("cap-cet1-o",cet1); setT("cap-at1-o",at1); setT("cap-t2-o",t2); setT("cap-rwa-o",rwa); setT("cap-ccb-o",ccb+"%");
+    var cet1r=cet1/rwa*100, t1r=(cet1+at1)/rwa*100, totr=(cet1+at1+t2)/rwa*100, levr=(cet1+at1)/LEV_EXP*100;
+    var reqCet1=4.5+2.5+ccb, reqT1=6+2.5+ccb, reqTot=8+2.5+ccb, reqLev=3;
+    setT("cap-cet1r",cet1r.toFixed(1)+"%"); setT("cap-t1r",t1r.toFixed(1)+"%"); setT("cap-totr",totr.toFixed(1)+"%"); setT("cap-levr",levr.toFixed(1)+"%");
+    var pass = cet1r>=reqCet1 && t1r>=reqT1 && totr>=reqTot && levr>=reqLev;
+    var vEl=document.getElementById("cap-verdict");
+    if (vEl){
+      vEl.textContent = pass ? (al()==="en"?"✓ Compliant":(al()==="nl"?"✓ Conform":"✓ Conforme"))
+                             : (al()==="en"?"✗ Below requirement":(al()==="nl"?"✗ Onder de vereiste":"✗ Sous le seuil"));
+      vEl.style.background = pass ? "rgba(47,143,106,0.18)" : "rgba(178,58,72,0.18)";
+      vEl.style.color = pass ? "#2f8f6a" : "var(--crimson)";
+    }
+
+    var labs = al()==="en" ? ["CET1","Tier 1","Total","Leverage"]
+             : al()==="nl" ? ["CET1","Tier 1","Totaal","Hefboom"]
+             : ["CET1","Tier 1","Total","Levier"];
+    var vals=[cet1r,t1r,totr,levr], reqs=[reqCet1,reqT1,reqTot,reqLev];
+
+    var W=520,H=260,L=30,R=16,T=16,B=34, pw=W-L-R, ph=H-T-B;
+    var ymax=0; for (var i=0;i<vals.length;i++){ ymax=Math.max(ymax,vals[i],reqs[i]); } ymax*=1.18;
+    function py(val){ return T + (1-val/ymax)*ph; }
+    var n=vals.length, slot=pw/n, bw=slot*0.46;
+
+    var g="";
+    // grille horizontale légère
+    for (var gy=0; gy<=ymax; gy+=5){ var yy=py(gy); g+='<line x1="'+L+'" y1="'+yy.toFixed(1)+'" x2="'+(L+pw)+'" y2="'+yy.toFixed(1)+'" stroke="var(--border)" stroke-width="0.7"/>'; g+='<text class="tick" x="'+(L-4)+'" y="'+(yy+3).toFixed(1)+'" text-anchor="end">'+gy+'%</text>'; }
+    for (var b2=0;b2<n;b2++){
+      var cx=L+slot*b2+slot/2, val=vals[b2], req=reqs[b2];
+      var ok=val>=req;
+      var yTop=py(val), y0=py(0);
+      g+='<rect x="'+(cx-bw/2).toFixed(1)+'" y="'+yTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(y0-yTop).toFixed(1)+'" rx="2" fill="'+(ok?"var(--teal)":"var(--crimson)")+'" opacity="0.75"/>';
+      // valeur
+      g+='<text class="tick" x="'+cx.toFixed(1)+'" y="'+(yTop-5).toFixed(1)+'" text-anchor="middle" fill="var(--ink-soft)">'+val.toFixed(1)+'%</text>';
+      // ligne d'exigence
+      var ry=py(req);
+      g+='<line x1="'+(cx-bw/2-4).toFixed(1)+'" y1="'+ry.toFixed(1)+'" x2="'+(cx+bw/2+4).toFixed(1)+'" y2="'+ry.toFixed(1)+'" stroke="var(--gold)" stroke-width="2" stroke-dasharray="4 2"/>';
+      // label
+      g+='<text class="lab" x="'+cx.toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+labs[b2]+'</text>';
+    }
+    // ligne de base
+    g+='<line class="axis" x1="'+L+'" y1="'+py(0).toFixed(1)+'" x2="'+(L+pw)+'" y2="'+py(0).toFixed(1)+'"/>';
+    // légende exigence
+    g+='<text class="tick" x="'+(L+pw)+'" y="'+(T+8)+'" text-anchor="end" fill="var(--gold)">'+ (al()==="en"?"— required":(al()==="nl"?"— vereist":"— exigence")) +'</text>';
+    svg.innerHTML=g;
+  }
+
+  ["cap-cet1","cap-at1","cap-t2","cap-rwa","cap-ccb"].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener("input", draw); });
+  document.querySelectorAll("[data-set-lang]").forEach(function(b){ b.addEventListener("click", function(){ setTimeout(draw,10); }); });
+  document.addEventListener("DOMContentLoaded", draw);
+  draw();
+})();
+</script>
+</body>
+</html>

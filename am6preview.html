@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestion active vs passive — Avenir</title>
+<meta name="description" content="Module gestion active vs passive : efficience des marchés (EMH), indiciel et ETF, arithmétique de Sharpe, poids des coûts, tracking error, comparateur actif/passif interactif, QCM et exercices.">
+<style>
+/* ==========================================================================
+   AVENIR — Plateforme pédagogique Asset Management & Financial Risk Management
+   Feuille de style partagée
+   ========================================================================== */
+
+:root {
+  /* Palette claire */
+  --bg:            #f6f4ef;
+  --bg-soft:       #efece4;
+  --surface:       #ffffff;
+  --surface-2:     #faf8f3;
+  --border:        #e2ddd1;
+  --ink:           #1a2230;
+  --ink-soft:      #4a5566;
+  --ink-mute:      #7a8494;
+
+  --navy:          #12294a;
+  --navy-2:        #1c3a63;
+  --gold:          #c19a3e;
+  --gold-soft:     #e7d9b0;
+  --teal:          #16706a;
+  --teal-soft:     #cfe6e2;
+  --crimson:       #9a3140;
+
+  --am:            var(--navy);   /* couleur du parcours Asset Management */
+  --am-soft:       #dbe3ef;
+  --frm:           var(--teal);   /* couleur du parcours Risk Management */
+  --frm-soft:      var(--teal-soft);
+
+  --radius:        14px;
+  --radius-sm:     9px;
+  --shadow:        0 1px 2px rgba(18,41,74,.05), 0 8px 24px rgba(18,41,74,.07);
+  --shadow-lg:     0 12px 40px rgba(18,41,74,.14);
+  --maxw:          1160px;
+
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: "SF Mono", "JetBrains Mono", "Fira Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:        #0d141f;
+    --bg-soft:   #111a28;
+    --surface:   #15202f;
+    --surface-2: #1a2637;
+    --border:    #263449;
+    --ink:       #edf1f6;
+    --ink-soft:  #b3bdcc;
+    --ink-mute:  #808ba0;
+    --navy:      #6f9bd6;
+    --navy-2:    #8bb0e0;
+    --gold:      #d8b95e;
+    --gold-soft: #40391f;
+    --teal:      #4bb3aa;
+    --teal-soft: #17332f;
+    --crimson:   #d47a86;
+    --am-soft:   #1a2c46;
+    --frm-soft:  #16332f;
+    --shadow:    0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"] {
+  --bg:        #0d141f;
+  --bg-soft:   #111a28;
+  --surface:   #15202f;
+  --surface-2: #1a2637;
+  --border:    #263449;
+  --ink:       #edf1f6;
+  --ink-soft:  #b3bdcc;
+  --ink-mute:  #808ba0;
+  --navy:      #6f9bd6;
+  --navy-2:    #8bb0e0;
+  --gold:      #d8b95e;
+  --gold-soft: #40391f;
+  --teal:      #4bb3aa;
+  --teal-soft: #17332f;
+  --crimson:   #d47a86;
+  --am-soft:   #1a2c46;
+  --frm-soft:  #16332f;
+  --shadow:    0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.5);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Bilinguisme : on masque la langue inactive */
+[data-lang] { display: none; }
+body[data-active-lang="fr"] [data-lang="fr"] { display: revert; }
+body[data-active-lang="en"] [data-lang="en"] { display: revert; }
+body[data-active-lang="nl"] [data-lang="nl"] { display: revert; }
+/* variantes en ligne */
+span[data-lang], a[data-lang], em[data-lang], strong[data-lang], code[data-lang] { display: none; }
+body[data-active-lang="fr"] span[data-lang="fr"],
+body[data-active-lang="fr"] a[data-lang="fr"],
+body[data-active-lang="fr"] em[data-lang="fr"],
+body[data-active-lang="fr"] strong[data-lang="fr"],
+body[data-active-lang="fr"] code[data-lang="fr"] { display: inline; }
+body[data-active-lang="en"] span[data-lang="en"],
+body[data-active-lang="en"] a[data-lang="en"],
+body[data-active-lang="en"] em[data-lang="en"],
+body[data-active-lang="en"] strong[data-lang="en"],
+body[data-active-lang="en"] code[data-lang="en"] { display: inline; }
+body[data-active-lang="nl"] span[data-lang="nl"],
+body[data-active-lang="nl"] a[data-lang="nl"],
+body[data-active-lang="nl"] em[data-lang="nl"],
+body[data-active-lang="nl"] strong[data-lang="nl"],
+body[data-active-lang="nl"] code[data-lang="nl"] { display: inline; }
+/* les pastilles inline-block conservent leur forme quand elles portent data-lang */
+body[data-active-lang="fr"] span.eyebrow[data-lang="fr"],
+body[data-active-lang="en"] span.eyebrow[data-lang="en"],
+body[data-active-lang="nl"] span.eyebrow[data-lang="nl"] { display: inline-block; }
+/* .callout .clabel force display:block — masquer les langues non actives et ne révéler que l'active */
+.callout .clabel[data-lang] { display: none; }
+body[data-active-lang="fr"] .callout .clabel[data-lang="fr"],
+body[data-active-lang="en"] .callout .clabel[data-lang="en"],
+body[data-active-lang="nl"] .callout .clabel[data-lang="nl"] { display: block; }
+/* garde-fou général : une règle de composant (ex. .sml-sliders label{display:block}) ne doit jamais
+   ré-afficher une langue non active. On masque toujours les langues non actives (!important). */
+body[data-active-lang="fr"] [data-lang]:not([data-lang="fr"]),
+body[data-active-lang="en"] [data-lang]:not([data-lang="en"]),
+body[data-active-lang="nl"] [data-lang]:not([data-lang="nl"]) { display: none !important; }
+
+a { color: var(--navy-2); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+/* ---------- En-tête / navigation ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.nav {
+  display: flex; align-items: center; gap: 20px;
+  height: 64px;
+}
+.brand { display: flex; align-items: baseline; gap: 10px; font-family: var(--serif); }
+.brand a { color: var(--ink); text-decoration: none; }
+.brand .logo {
+  font-size: 22px; font-weight: 700; letter-spacing: .5px;
+}
+.brand .logo b { color: var(--gold); }
+.brand .tag { font-size: 12.5px; color: var(--ink-mute); font-family: var(--sans); letter-spacing: .3px; }
+.nav .spacer { flex: 1; }
+.nav-links { display: flex; gap: 4px; }
+.nav-links a {
+  color: var(--ink-soft); font-size: 14.5px; font-weight: 500;
+  padding: 8px 12px; border-radius: 8px;
+}
+.nav-links a:hover { background: var(--bg-soft); color: var(--ink); text-decoration: none; }
+
+.controls { display: flex; align-items: center; gap: 8px; }
+.lang-toggle {
+  display: inline-flex; border: 1px solid var(--border); border-radius: 999px;
+  overflow: hidden; background: var(--surface-2);
+}
+.lang-toggle button {
+  border: 0; background: transparent; color: var(--ink-mute);
+  font: 600 13px/1 var(--sans); padding: 7px 13px; cursor: pointer;
+}
+.lang-toggle button.active { background: var(--navy); color: #fff; }
+:root[data-theme="dark"] .lang-toggle button.active,
+:root:not([data-theme="light"]) .lang-toggle button.active { color: #0d141f; }
+.icon-btn {
+  border: 1px solid var(--border); background: var(--surface-2);
+  width: 36px; height: 36px; border-radius: 999px; cursor: pointer;
+  font-size: 16px; color: var(--ink-soft); display: grid; place-items: center;
+}
+.icon-btn:hover { color: var(--ink); }
+.menu-btn { display: none; }
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative; overflow: hidden;
+  background:
+    radial-gradient(1200px 500px at 80% -10%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 60%),
+    linear-gradient(160deg, var(--navy) 0%, #0c1c34 65%, #0a1830 100%);
+  color: #eef2f8;
+}
+:root[data-theme="dark"] .hero,
+:root:not([data-theme="light"]) .hero {
+  background:
+    radial-gradient(1200px 500px at 80% -10%, rgba(216,185,94,.14), transparent 60%),
+    linear-gradient(160deg, #0b1524 0%, #0a1220 100%);
+}
+.hero .wrap { padding-top: 72px; padding-bottom: 76px; }
+.hero .eyebrow {
+  display: inline-block; font-size: 12.5px; letter-spacing: 2.2px; text-transform: uppercase;
+  color: var(--gold-soft); border: 1px solid rgba(231,217,176,.35);
+  padding: 5px 12px; border-radius: 999px; margin-bottom: 22px;
+}
+:root[data-theme="dark"] .hero .eyebrow,
+:root:not([data-theme="light"]) .hero .eyebrow { color: var(--gold); }
+.hero h1 {
+  font-family: var(--serif); font-weight: 700;
+  font-size: clamp(34px, 5.2vw, 58px); line-height: 1.08; margin: 0 0 20px;
+  max-width: 16ch;
+}
+.hero h1 .accent { color: var(--gold); }
+.hero p.lead { font-size: clamp(17px, 2.2vw, 21px); color: #cdd7e6; max-width: 60ch; margin: 0 0 32px; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; }
+.hero-stats { display: flex; gap: 40px; margin-top: 54px; flex-wrap: wrap; }
+.hero-stats .stat .n { font-family: var(--serif); font-size: 34px; color: #fff; font-weight: 700; }
+.hero-stats .stat .l { font-size: 13.5px; color: #a9b6c9; letter-spacing: .3px; }
+
+/* ---------- Boutons ---------- */
+.btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  font: 600 15px/1 var(--sans); padding: 13px 22px; border-radius: 10px;
+  cursor: pointer; border: 1px solid transparent; transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn:hover { text-decoration: none; transform: translateY(-1px); }
+.btn-gold { background: var(--gold); color: #241c05; }
+.btn-gold:hover { box-shadow: 0 8px 20px rgba(193,154,62,.35); }
+.btn-ghost { background: transparent; color: #eef2f8; border-color: rgba(255,255,255,.35); }
+.btn-ghost:hover { background: rgba(255,255,255,.08); }
+.btn-solid { background: var(--navy); color: #fff; }
+:root[data-theme="dark"] .btn-solid,
+:root:not([data-theme="light"]) .btn-solid { color: #0d141f; }
+.btn-solid:hover { box-shadow: var(--shadow); }
+.btn-outline { background: var(--surface); color: var(--ink); border-color: var(--border); }
+.btn-outline:hover { border-color: var(--navy-2); }
+
+/* ---------- Sections ---------- */
+section { padding: 66px 0; }
+.section-head { max-width: 720px; margin-bottom: 40px; }
+.section-head .kicker {
+  font-size: 12.5px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold); font-weight: 700; margin-bottom: 12px;
+}
+.section-head h2 { font-family: var(--serif); font-size: clamp(26px, 3.6vw, 38px); margin: 0 0 12px; line-height: 1.15; }
+.section-head p { color: var(--ink-soft); font-size: 18px; margin: 0; }
+
+/* ---------- Parcours (tracks) ---------- */
+.tracks { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.track {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 32px; box-shadow: var(--shadow); position: relative; overflow: hidden;
+}
+.track::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 5px; }
+.track.am::before { background: linear-gradient(var(--navy), var(--navy-2)); }
+.track.frm::before { background: linear-gradient(var(--teal), #0f5651); }
+.track .badge {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: 5px 11px; border-radius: 999px; margin-bottom: 16px;
+}
+.track.am .badge { background: var(--am-soft); color: var(--navy); }
+.track.frm .badge { background: var(--frm-soft); color: var(--teal); }
+.track h3 { font-family: var(--serif); font-size: 25px; margin: 0 0 8px; }
+.track p { color: var(--ink-soft); margin: 0 0 18px; font-size: 15.5px; }
+.track ul { list-style: none; padding: 0; margin: 0 0 22px; }
+.track ul li { padding: 7px 0 7px 26px; position: relative; font-size: 15px; border-top: 1px solid var(--border); }
+.track ul li:first-child { border-top: 0; }
+.track ul li::before {
+  content: "▸"; position: absolute; left: 4px; top: 7px; font-weight: 700;
+}
+.track.am ul li::before { color: var(--gold); }
+.track.frm ul li::before { color: var(--teal); }
+
+/* ---------- Curriculum ---------- */
+.curriculum { background: var(--bg-soft); }
+.curric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.curric-col h3 {
+  font-family: var(--serif); font-size: 22px; display: flex; align-items: center; gap: 10px;
+  padding-bottom: 14px; margin: 0 0 6px; border-bottom: 2px solid var(--border);
+}
+.curric-col.am h3 { color: var(--navy); }
+.curric-col.frm h3 { color: var(--teal); }
+.curric-col .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.curric-col.am .dot { background: var(--navy); }
+.curric-col.frm .dot { background: var(--teal); }
+.mod {
+  display: flex; gap: 15px; align-items: flex-start;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 15px 17px; margin-top: 12px; transition: border-color .15s ease, transform .15s ease;
+}
+a.mod:hover { text-decoration: none; transform: translateX(3px); box-shadow: var(--shadow); }
+.curric-col.am a.mod:hover { border-color: var(--navy-2); }
+.curric-col.frm a.mod:hover { border-color: var(--teal); }
+.mod .num {
+  flex: none; width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center;
+  font-family: var(--serif); font-weight: 700; font-size: 15px;
+}
+.curric-col.am .mod .num { background: var(--am-soft); color: var(--navy); }
+.curric-col.frm .mod .num { background: var(--frm-soft); color: var(--teal); }
+.mod .mt { font-weight: 600; font-size: 15.5px; color: var(--ink); margin: 2px 0 2px; }
+.mod .md { font-size: 13.5px; color: var(--ink-mute); line-height: 1.5; }
+.mod .chip {
+  font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+  color: var(--gold); border: 1px solid var(--gold-soft); border-radius: 999px; padding: 2px 8px;
+  margin-left: auto; align-self: center; flex: none;
+}
+
+/* ---------- Bandeau méthode ---------- */
+.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.feature { padding: 6px 4px; }
+.feature .ic { font-size: 24px; margin-bottom: 10px; }
+.feature h4 { font-size: 17px; margin: 0 0 6px; }
+.feature p { color: var(--ink-soft); font-size: 14.5px; margin: 0; }
+
+/* ---------- CTA final ---------- */
+.cta-band {
+  background: linear-gradient(160deg, var(--navy), #0b1c35);
+  color: #eef2f8; border-radius: var(--radius); padding: 46px; text-align: center;
+}
+.cta-band h2 { font-family: var(--serif); font-size: clamp(24px, 3vw, 34px); margin: 0 0 12px; }
+.cta-band p { color: #c7d2e2; max-width: 54ch; margin: 0 auto 26px; }
+
+/* ---------- Pied de page ---------- */
+.site-footer { border-top: 1px solid var(--border); background: var(--surface); padding: 40px 0; margin-top: 20px; }
+.foot { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: center; }
+.foot .brand .logo { font-size: 18px; }
+.foot p { color: var(--ink-mute); font-size: 13.5px; margin: 0; }
+
+/* ==========================================================================
+   PAGES MODULE
+   ========================================================================== */
+.module-shell { display: grid; grid-template-columns: 264px 1fr; gap: 40px; align-items: start; }
+.module-shell .wrap-mod { max-width: var(--maxw); margin: 0 auto; padding: 40px 24px 80px; }
+
+/* barre latérale sommaire */
+.toc {
+  position: sticky; top: 84px; align-self: start;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px; box-shadow: var(--shadow); max-height: calc(100vh - 110px); overflow: auto;
+}
+.toc .toc-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-mute); font-weight: 700; margin-bottom: 12px; }
+.toc a { display: block; color: var(--ink-soft); font-size: 14px; padding: 6px 10px; border-radius: 7px; border-left: 2px solid transparent; }
+.toc a:hover { background: var(--bg-soft); text-decoration: none; }
+.toc a.active { color: var(--teal); background: var(--frm-soft); border-left-color: var(--teal); font-weight: 600; }
+
+/* fil d'ariane + entête module */
+.crumbs { font-size: 13.5px; color: var(--ink-mute); margin-bottom: 14px; }
+.crumbs a { color: var(--ink-mute); }
+.module-hero { border-bottom: 1px solid var(--border); padding-bottom: 26px; margin-bottom: 34px; }
+.module-hero .badge {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: 5px 11px; border-radius: 999px;
+  background: var(--frm-soft); color: var(--teal); margin-bottom: 14px;
+}
+.module-hero h1 { font-family: var(--serif); font-size: clamp(30px, 4.4vw, 46px); line-height: 1.1; margin: 0 0 12px; }
+.module-hero .subtitle { font-size: 19px; color: var(--ink-soft); max-width: 65ch; margin: 0 0 18px; }
+.module-meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 13.5px; color: var(--ink-mute); }
+.module-meta span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* objectifs */
+.objectives {
+  background: var(--surface-2); border: 1px solid var(--border); border-left: 4px solid var(--teal);
+  border-radius: var(--radius-sm); padding: 20px 24px; margin: 0 0 40px;
+}
+.objectives h4 { margin: 0 0 10px; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); }
+.objectives ul { margin: 0; padding-left: 20px; }
+.objectives li { margin: 5px 0; color: var(--ink-soft); }
+
+/* corps du module */
+.module-body h2 {
+  font-family: var(--serif); font-size: 29px; margin: 48px 0 14px; scroll-margin-top: 84px;
+  padding-top: 6px;
+}
+.module-body h3 { font-family: var(--serif); font-size: 22px; margin: 30px 0 10px; }
+.module-body p { margin: 0 0 16px; color: var(--ink); }
+.module-body ul, .module-body ol { margin: 0 0 18px; padding-left: 26px; }
+.module-body li { margin: 6px 0; }
+.module-body strong { color: var(--ink); }
+
+/* définitions et encadrés */
+.callout {
+  border-radius: var(--radius-sm); padding: 18px 20px; margin: 24px 0; border: 1px solid var(--border);
+  background: var(--surface-2); font-size: 15.5px;
+}
+.callout .clabel { font-weight: 700; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 6px; }
+.callout.def { border-left: 4px solid var(--navy); }
+.callout.def .clabel { color: var(--navy); }
+.callout.warn { border-left: 4px solid var(--crimson); background: color-mix(in srgb, var(--crimson) 7%, var(--surface)); }
+.callout.warn .clabel { color: var(--crimson); }
+.callout.tip { border-left: 4px solid var(--gold); }
+.callout.tip .clabel { color: var(--gold); }
+
+/* formules */
+.formula {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 22px 24px; margin: 22px 0; text-align: center; box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+.formula .eq { font-family: var(--serif); font-size: 22px; color: var(--ink); }
+.formula .eq em { color: var(--teal); font-style: italic; }
+.formula .caption { font-size: 13px; color: var(--ink-mute); margin-top: 12px; }
+sub, sup { font-size: .72em; }
+
+/* tableaux */
+.table-wrap { overflow-x: auto; margin: 22px 0; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; min-width: 460px; }
+thead th { background: var(--navy); color: #fff; text-align: left; padding: 11px 14px; font-weight: 600; font-size: 13.5px; }
+:root[data-theme="dark"] thead th,
+:root:not([data-theme="light"]) thead th { color: #0d141f; }
+tbody td { padding: 10px 14px; border-top: 1px solid var(--border); }
+tbody tr:nth-child(even) td { background: var(--surface-2); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); }
+
+/* exemple travaillé */
+.worked {
+  border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 28px 0;
+}
+.worked .whead { background: var(--am-soft); color: var(--navy); padding: 12px 20px; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+.worked .wbody { padding: 20px 22px; background: var(--surface); }
+.worked .step { padding: 12px 0; border-top: 1px dashed var(--border); }
+.worked .step:first-child { border-top: 0; }
+.worked .step .sn { font-weight: 700; color: var(--teal); font-size: 13.5px; letter-spacing: .5px; }
+
+/* calculateur interactif */
+.calc {
+  border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+  background: var(--surface); overflow: hidden; margin: 30px 0;
+}
+.calc .chead { background: linear-gradient(160deg, var(--teal), #0f5651); color: #fff; padding: 16px 22px; }
+.calc .chead h4 { margin: 0; font-family: var(--serif); font-size: 20px; }
+.calc .chead p { margin: 4px 0 0; font-size: 13.5px; color: #d5eee9; }
+.calc .cbody { padding: 22px; display: grid; grid-template-columns: 1fr 300px; gap: 26px; }
+.calc .inputs label { display: block; font-size: 13.5px; font-weight: 600; color: var(--ink-soft); margin: 14px 0 6px; }
+.calc .inputs input, .calc .inputs select {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface-2); color: var(--ink); font: 500 15px var(--sans);
+}
+.calc .inputs .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.calc .rangewrap { display: flex; align-items: center; gap: 12px; }
+.calc .rangewrap input[type=range] { flex: 1; }
+.calc .rangewrap output { font-family: var(--mono); font-weight: 600; min-width: 46px; text-align: right; color: var(--teal); }
+.calc .result {
+  background: var(--navy); color: #fff; border-radius: var(--radius-sm); padding: 22px; align-self: start;
+}
+:root[data-theme="dark"] .calc .result,
+:root:not([data-theme="light"]) .calc .result { background: #0c1b32; }
+.calc .result .rl { font-size: 12.5px; text-transform: uppercase; letter-spacing: 1px; color: #9fb0c8; }
+.calc .result .rv { font-family: var(--serif); font-size: 34px; font-weight: 700; margin: 4px 0 2px; }
+.calc .result .rv.gold { color: var(--gold); }
+.calc .result .rsub { font-size: 13px; color: #b9c6d8; }
+.calc .result hr { border: 0; border-top: 1px solid rgba(255,255,255,.15); margin: 16px 0; }
+
+/* quiz */
+.quiz { border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin: 30px 0; background: var(--surface); }
+.quiz h4 { margin: 0 0 4px; font-family: var(--serif); font-size: 20px; }
+.quiz .qsub { color: var(--ink-mute); font-size: 14px; margin: 0 0 18px; }
+.q { margin: 18px 0; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.q:last-of-type { border-bottom: 0; }
+.q .qtext { font-weight: 600; margin-bottom: 12px; }
+.q .opt {
+  display: block; width: 100%; text-align: left; padding: 11px 14px; margin: 7px 0;
+  border: 1px solid var(--border); border-radius: 9px; background: var(--surface-2); color: var(--ink);
+  cursor: pointer; font: 500 15px var(--sans); transition: all .12s ease;
+}
+.q .opt:hover { border-color: var(--teal); }
+.q .opt.correct { background: color-mix(in srgb, var(--teal) 16%, var(--surface)); border-color: var(--teal); color: var(--ink); }
+.q .opt.wrong { background: color-mix(in srgb, var(--crimson) 14%, var(--surface)); border-color: var(--crimson); }
+.q .explain { display: none; margin-top: 10px; font-size: 14px; color: var(--ink-soft); background: var(--surface-2); border-radius: 8px; padding: 12px 14px; border-left: 3px solid var(--teal); }
+.q .explain.show { display: block; }
+
+/* navigation entre modules */
+.module-nav { display: flex; justify-content: space-between; gap: 16px; margin-top: 50px; flex-wrap: wrap; }
+.module-nav a {
+  flex: 1; min-width: 220px; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 20px; background: var(--surface); transition: border-color .15s ease;
+}
+.module-nav a:hover { border-color: var(--teal); text-decoration: none; }
+.module-nav .dir { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-mute); }
+.module-nav .tt { font-weight: 600; color: var(--ink); margin-top: 3px; }
+.module-nav a.next { text-align: right; }
+
+/* progression de lecture */
+.progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0; z-index: 60; transition: width .1s linear; }
+
+/* exercices chiffrés */
+.exo { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px; margin: 14px 0; background: var(--surface); box-shadow: var(--shadow); }
+.exo .ehead { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.exo .eid { font-size: 12px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--teal); }
+.exo .diff { font-size: 10.5px; letter-spacing: .5px; text-transform: uppercase; border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px; color: var(--ink-mute); }
+.exo .estatement { margin: 0 0 6px; }
+.exo details { border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 10px; }
+.exo summary { cursor: pointer; font-weight: 600; font-size: 14px; color: var(--navy-2); list-style: none; }
+.exo summary::-webkit-details-marker { display: none; }
+.exo summary::before { content: "▸ "; color: var(--gold); }
+.exo details[open] summary::before { content: "▾ "; }
+.exo .ans { font-size: 14.5px; color: var(--ink-soft); margin-top: 8px; }
+.exo .ans b { color: var(--ink); }
+
+/* ---------- Thème parcours Asset Management (navy/or) sur pages module ----------
+   Les composants module utilisent --teal / --frm-soft (couleur FRM) par défaut.
+   Sur un module du parcours Asset Management, on remappe ces variables vers le navy. */
+body.track-am { --teal: var(--navy); --frm-soft: var(--am-soft); }
+body.track-am .calc .chead { background: linear-gradient(160deg, var(--navy), #0a1830); }
+body.track-am .module-hero .badge,
+body.track-am .worked .whead { background: var(--am-soft); color: var(--navy); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 940px) {
+  .module-shell { grid-template-columns: 1fr; }
+  .toc { display: none; }
+  .calc .cbody { grid-template-columns: 1fr; }
+}
+@media (max-width: 820px) {
+  .tracks, .curric-grid, .features { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .menu-btn { display: grid; }
+  .hero-stats { gap: 26px; }
+}
+
+/* ---------- Bibliographie & sources ---------- */
+.biblio { border-top: 2px solid var(--border); margin-top: 50px; padding-top: 8px; }
+.biblio .bcol { margin: 0 0 22px; }
+.biblio h4 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--ink-mute); margin: 0 0 10px; }
+.biblio ol, .biblio ul { margin: 0; padding-left: 22px; }
+.biblio li { font-size: 14px; color: var(--ink-soft); line-height: 1.65; margin: 8px 0; }
+.biblio li em { color: var(--ink); font-style: italic; }
+.biblio a { color: var(--navy-2); text-decoration: none; border-bottom: 1px solid var(--border); }
+.biblio a:hover { border-color: var(--navy-2); }
+.formula .caption.src, .src { color: var(--ink-mute); font-style: italic; font-size: 12.5px; }
+
+</style>
+</head>
+<body data-active-lang="fr" class="track-am">
+
+<div class="progress-bar"></div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <div class="brand">
+      <a href="../index.html"><span class="logo">Avenir<b>.</b></span></a>
+      <span class="tag">Asset Management &amp; Risk</span>
+    </div>
+    <div class="spacer"></div>
+    <nav class="nav-links">
+      <a href="../index.html#parcours"><span data-lang="fr">Parcours</span><span data-lang="en">Tracks</span><span data-lang="nl">Trajecten</span></a>
+      <a href="../index.html#curriculum"><span data-lang="fr">Programme</span><span data-lang="en">Curriculum</span><span data-lang="nl">Programma</span></a>
+      <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a>
+    </nav>
+    <div class="controls">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-set-lang="fr">FR</button>
+        <button data-set-lang="en">EN</button>
+        <button data-set-lang="nl">NL</button>
+      </div>
+      <button id="theme-btn" class="icon-btn" aria-label="Thème">☾</button>
+      <button id="menu-btn" class="icon-btn menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap-mod">
+  <div class="module-shell">
+
+    <aside class="toc">
+      <div class="toc-title" data-lang="fr">Sommaire</div>
+      <div class="toc-title" data-lang="en">Contents</div>
+      <div class="toc-title" data-lang="nl">Inhoud</div>
+      <a href="#pari"><span data-lang="fr">1. Peut-on battre le marché ?</span><span data-lang="en">1. Can you beat the market?</span><span data-lang="nl">1. Kun je de markt verslaan?</span></a>
+      <a href="#emh"><span data-lang="fr">2. L'efficience des marchés</span><span data-lang="en">2. Market efficiency</span><span data-lang="nl">2. Marktefficiëntie</span></a>
+      <a href="#actif-passif"><span data-lang="fr">3. Actif vs passif</span><span data-lang="en">3. Active vs passive</span><span data-lang="nl">3. Actief vs passief</span></a>
+      <a href="#arithmetique"><span data-lang="fr">4. L'arithmétique de Sharpe</span><span data-lang="en">4. Sharpe's arithmetic</span><span data-lang="nl">4. Sharpes rekenkunde</span></a>
+      <a href="#couts"><span data-lang="fr">5. Le poids des coûts</span><span data-lang="en">5. The weight of costs</span><span data-lang="nl">5. Het gewicht van kosten</span></a>
+      <a href="#indiciel"><span data-lang="fr">6. Indiciel, ETF &amp; tracking error</span><span data-lang="en">6. Indexing, ETFs &amp; tracking error</span><span data-lang="nl">6. Indexeren, ETF's &amp; tracking error</span></a>
+      <a href="#verdict"><span data-lang="fr">7. Le paradoxe &amp; le verdict</span><span data-lang="en">7. The paradox &amp; the verdict</span><span data-lang="nl">7. De paradox &amp; het oordeel</span></a>
+      <a href="#qcm"><span data-lang="fr">8. QCM (15)</span><span data-lang="en">8. MCQ (15)</span><span data-lang="nl">8. MCV (15)</span></a>
+      <a href="#exercices"><span data-lang="fr">9. Exercices</span><span data-lang="en">9. Exercises</span><span data-lang="nl">9. Oefeningen</span></a>
+      <a href="#biblio"><span data-lang="fr">Sources</span><span data-lang="en">Sources</span><span data-lang="nl">Bronnen</span></a>
+    </aside>
+
+    <main>
+      <div class="crumbs">
+        <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a> ·
+        <span>Asset Management</span> ·
+        <span data-lang="fr">Module 6</span><span data-lang="en">Module 6</span><span data-lang="nl">Module 6</span>
+      </div>
+
+      <div class="module-hero">
+        <span class="badge">Asset Management · 06</span>
+        <h1 data-lang="fr">Gestion active vs passive</h1>
+        <h1 data-lang="en">Active vs passive management</h1>
+        <h1 data-lang="nl">Actief vs passief beheer</h1>
+        <p class="subtitle" data-lang="fr">Le débat le plus consequential de la gestion : essayer de battre le marché, ou l'acheter à bas coût ? Une réponse gouvernée par l'efficience — et par l'arithmétique.</p>
+        <p class="subtitle" data-lang="en">The most consequential debate in asset management: try to beat the market, or buy it cheaply? An answer governed by efficiency — and by arithmetic.</p>
+        <p class="subtitle" data-lang="nl">Het meest ingrijpende debat in vermogensbeheer: proberen de markt te verslaan, of hem goedkoop kopen? Een antwoord bepaald door efficiëntie — en door rekenkunde.</p>
+        <div class="module-meta">
+          <span data-lang="fr">⏱ Lecture ~28 min</span><span data-lang="en">⏱ ~28 min read</span><span data-lang="nl">⏱ ~28 min lezen</span>
+          <span data-lang="fr">📶 Niveau intermédiaire</span><span data-lang="en">📶 Intermediate level</span><span data-lang="nl">📶 Gemiddeld niveau</span>
+          <span>🎓 CFA I–II</span>
+        </div>
+      </div>
+
+      <div class="objectives">
+        <h4 data-lang="fr">Objectifs d'apprentissage</h4>
+        <h4 data-lang="en">Learning objectives</h4>
+        <h4 data-lang="nl">Leerdoelen</h4>
+        <ul>
+          <li data-lang="fr">Énoncer l'hypothèse d'efficience des marchés et ses trois formes.</li>
+          <li data-lang="en">State the efficient market hypothesis and its three forms.</li>
+          <li data-lang="nl">De efficiënte-markthypothese en haar drie vormen benoemen.</li>
+          <li data-lang="fr">Distinguer gestion active et passive et leurs philosophies.</li>
+          <li data-lang="en">Distinguish active and passive management and their philosophies.</li>
+          <li data-lang="nl">Actief en passief beheer en hun filosofieën onderscheiden.</li>
+          <li data-lang="fr">Expliquer l'arithmétique de Sharpe et le poids des coûts sur le long terme.</li>
+          <li data-lang="en">Explain Sharpe's arithmetic and the weight of costs over the long run.</li>
+          <li data-lang="nl">Sharpes rekenkunde en het gewicht van kosten op lange termijn uitleggen.</li>
+          <li data-lang="fr">Comprendre indiciel, ETF, tracking error et le paradoxe de Grossman-Stiglitz.</li>
+          <li data-lang="en">Understand indexing, ETFs, tracking error and the Grossman-Stiglitz paradox.</li>
+          <li data-lang="nl">Indexeren, ETF's, tracking error en de Grossman-Stiglitz-paradox begrijpen.</li>
+        </ul>
+      </div>
+
+      <div class="module-body">
+
+        <!-- 1. LE PARI -->
+        <h2 id="pari"><span data-lang="fr">1. Peut-on battre le marché ?</span><span data-lang="en">1. Can you beat the market?</span><span data-lang="nl">1. Kun je de markt verslaan?</span></h2>
+        <p data-lang="fr">Le module précédent a montré que l'allocation domine le résultat. Reste une question : à l'intérieur de chaque classe, faut-il <strong>sélectionner</strong> les meilleurs titres (gestion active) ou simplement <strong>détenir tout le marché</strong> à moindre coût (gestion passive) ? La réponse dépend d'une idée : à quel point les prix reflètent-ils déjà toute l'information disponible ?</p>
+        <p data-lang="en">The previous module showed that allocation dominates the outcome. One question remains: within each class, should you <strong>select</strong> the best securities (active management) or simply <strong>hold the whole market</strong> at low cost (passive management)? The answer hinges on one idea: how fully do prices already reflect all available information?</p>
+        <p data-lang="nl">De vorige module toonde dat allocatie de uitkomst domineert. Eén vraag blijft: moet men binnen elke klasse de beste effecten <strong>selecteren</strong> (actief beheer) of gewoon <strong>de hele markt aanhouden</strong> tegen lage kosten (passief beheer)? Het antwoord draait om één idee: hoe volledig weerspiegelen prijzen al alle beschikbare informatie?</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">L'idée-clé</span><span class="clabel" data-lang="en">The key idea</span><span class="clabel" data-lang="nl">Het kernidee</span>
+          <span data-lang="fr">Si les prix intègrent déjà toute l'information, chercher les titres « mal évalués » est un effort largement vain — et coûteux. La gestion passive fait le pari inverse de la gestion active : plutôt que de battre le marché, <strong>l'égaler à bas coût</strong>, en sachant que les coûts, eux, sont certains.</span>
+          <span data-lang="en">If prices already embed all information, hunting for “mispriced” securities is largely futile — and costly. Passive management makes the opposite bet to active: rather than beat the market, <strong>match it cheaply</strong>, knowing that costs, at least, are certain.</span>
+          <span data-lang="nl">Als prijzen al alle informatie bevatten, is jagen op “verkeerd geprijsde” effecten grotendeels vergeefs — en duur. Passief beheer maakt de omgekeerde weddenschap van actief: in plaats van de markt te verslaan, hem <strong>goedkoop evenaren</strong>, wetende dat de kosten wél zeker zijn.</span>
+        </div>
+
+        <!-- 2. EMH -->
+        <h2 id="emh"><span data-lang="fr">2. L'efficience des marchés (EMH)</span><span data-lang="en">2. Market efficiency (EMH)</span><span data-lang="nl">2. Marktefficiëntie (EMH)</span></h2>
+        <p data-lang="fr">L'<strong>hypothèse d'efficience des marchés</strong> (Fama, 1970) affirme que les prix reflètent l'information disponible, si vite qu'on ne peut espérer en tirer un profit systématique. Fama en distingue trois formes, selon l'information supposée déjà intégrée :</p>
+        <p data-lang="en">The <strong>efficient market hypothesis</strong> (Fama, 1970) holds that prices reflect available information so quickly that no systematic profit can be expected from it. Fama distinguishes three forms, by the information assumed already embedded:</p>
+        <p data-lang="nl">De <strong>efficiënte-markthypothese</strong> (Fama, 1970) stelt dat prijzen de beschikbare informatie zo snel weerspiegelen dat er geen systematische winst uit te verwachten valt. Fama onderscheidt drie vormen, naar de informatie die verondersteld al is verwerkt:</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th data-lang="fr">Forme</th><th data-lang="en">Form</th><th data-lang="nl">Vorm</th>
+                <th data-lang="fr">Information intégrée</th><th data-lang="en">Information embedded</th><th data-lang="nl">Verwerkte informatie</th>
+                <th data-lang="fr">Ce qui devient vain</th><th data-lang="en">What becomes futile</th><th data-lang="nl">Wat vergeefs wordt</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-lang="fr">Faible</td><td data-lang="en">Weak</td><td data-lang="nl">Zwak</td>
+                <td data-lang="fr">Les prix passés</td><td data-lang="en">Past prices</td><td data-lang="nl">Historische koersen</td>
+                <td data-lang="fr">L'analyse technique</td><td data-lang="en">Technical analysis</td><td data-lang="nl">Technische analyse</td>
+              </tr>
+              <tr>
+                <td data-lang="fr">Semi-forte</td><td data-lang="en">Semi-strong</td><td data-lang="nl">Halfsterk</td>
+                <td data-lang="fr">Toute l'information publique</td><td data-lang="en">All public information</td><td data-lang="nl">Alle publieke informatie</td>
+                <td data-lang="fr">L'analyse fondamentale (sur info publique)</td><td data-lang="en">Fundamental analysis (on public info)</td><td data-lang="nl">Fundamentele analyse (op publieke info)</td>
+              </tr>
+              <tr>
+                <td data-lang="fr">Forte</td><td data-lang="en">Strong</td><td data-lang="nl">Sterk</td>
+                <td data-lang="fr">Toute l'information, même privée</td><td data-lang="en">All information, even private</td><td data-lang="nl">Alle informatie, zelfs private</td>
+                <td data-lang="fr">Même le délit d'initié</td><td data-lang="en">Even insider trading</td><td data-lang="nl">Zelfs handel met voorkennis</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p data-lang="fr">La forme <strong>semi-forte</strong> est la plus débattue : elle est largement (mais imparfaitement) soutenue par les données. La forme <strong>forte</strong> est empiriquement rejetée — les initiés <em>peuvent</em> profiter d'informations privées, raison pour laquelle c'est illégal. Aucun marché n'est parfaitement efficient ; la vraie question est le <em>degré</em>.</p>
+        <p data-lang="en">The <strong>semi-strong</strong> form is the most debated: it is broadly (but imperfectly) supported by the data. The <strong>strong</strong> form is empirically rejected — insiders <em>can</em> profit from private information, which is exactly why it is illegal. No market is perfectly efficient; the real question is the <em>degree</em>.</p>
+        <p data-lang="nl">De <strong>halfsterke</strong> vorm is het meest bediscussieerd: hij wordt breed (maar onvolmaakt) gesteund door de data. De <strong>sterke</strong> vorm wordt empirisch verworpen — insiders <em>kunnen</em> profiteren van private informatie, precies daarom is het illegaal. Geen enkele markt is volmaakt efficiënt; de echte vraag is de <em>graad</em>.</p>
+
+        <div class="formula">
+          <div class="eq"><span data-lang="fr">Prix ≈ toute l'information disponible, intégrée « instantanément »</span><span data-lang="en">Price ≈ all available information, embedded “instantly”</span><span data-lang="nl">Prijs ≈ alle beschikbare informatie, “ogenblikkelijk” verwerkt</span></div>
+          <div class="caption src">Réf. — Fama (1970)</div>
+        </div>
+
+        <!-- 3. ACTIF VS PASSIF -->
+        <h2 id="actif-passif"><span data-lang="fr">3. Actif vs passif : deux philosophies</span><span data-lang="en">3. Active vs passive: two philosophies</span><span data-lang="nl">3. Actief vs passief: twee filosofieën</span></h2>
+        <p data-lang="fr">La <strong>gestion active</strong> cherche à surperformer un indice de référence par la sélection de titres et/ou le market timing. Elle parie que le marché se trompe assez souvent pour que l'analyse paie — après frais. La <strong>gestion passive</strong> renonce à ce pari : elle réplique un indice (le marché) au coût le plus bas possible, acceptant le rendement du marché, ni plus ni moins.</p>
+        <p data-lang="en"><strong>Active management</strong> seeks to outperform a benchmark through security selection and/or market timing. It bets that the market is wrong often enough for analysis to pay — after fees. <strong>Passive management</strong> gives up that bet: it replicates an index (the market) at the lowest possible cost, accepting the market's return, no more, no less.</p>
+        <p data-lang="nl"><strong>Actief beheer</strong> tracht een benchmark te verslaan via effectenselectie en/of market timing. Het wedt dat de markt vaak genoeg fout zit opdat analyse loont — na kosten. <strong>Passief beheer</strong> geeft die weddenschap op: het repliceert een index (de markt) tegen de laagst mogelijke kosten en aanvaardt het marktrendement, niet meer, niet minder.</p>
+
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">Le compromis</span><span class="clabel" data-lang="en">The trade-off</span><span class="clabel" data-lang="nl">De afweging</span>
+          <span data-lang="fr">Actif : espoir de surperformance, mais frais élevés, risque de sous-performance et de dérive de style. Passif : rendement du marché garanti (moins un coût minime), transparence, mais aucune chance de « faire mieux ». Le choix dépend de la conviction qu'on a — ou non — d'identifier des gérants réellement talentueux à l'avance.</span>
+          <span data-lang="en">Active: hope of out-performance, but high fees, risk of under-performance and style drift. Passive: the market's return guaranteed (less a tiny cost), transparency, but no chance to “do better”. The choice depends on how confident you are — or not — of identifying genuinely skilled managers in advance.</span>
+          <span data-lang="nl">Actief: hoop op outperformance, maar hoge kosten, risico op underperformance en stijldrift. Passief: het marktrendement gegarandeerd (min een minieme kost), transparantie, maar geen kans om “beter te doen”. De keuze hangt af van hoe zeker je bent — of niet — om écht getalenteerde beheerders vooraf te herkennen.</span>
+        </div>
+
+        <!-- 4. ARITHMÉTIQUE DE SHARPE -->
+        <h2 id="arithmetique"><span data-lang="fr">4. L'arithmétique de Sharpe</span><span data-lang="en">4. Sharpe's arithmetic</span><span data-lang="nl">4. Sharpes rekenkunde</span></h2>
+        <p data-lang="fr">William Sharpe (1991) livre l'argument le plus imparable du débat, purement comptable — indépendant de toute théorie de l'efficience. Puisque l'ensemble des investisseurs détient l'ensemble du marché, la performance <strong>moyenne</strong>, avant frais, de tous les euros gérés <em>activement</em> est <strong>exactement égale</strong> à celle des euros gérés <em>passivement</em> : les deux détiennent, en agrégat, le même marché.</p>
+        <p data-lang="en">William Sharpe (1991) delivers the debate's most unassailable argument, purely accounting — independent of any efficiency theory. Since all investors together hold the entire market, the <strong>average</strong> return, before fees, of every <em>actively</em> managed dollar <strong>exactly equals</strong> that of every <em>passively</em> managed dollar: in aggregate, both hold the same market.</p>
+        <p data-lang="nl">William Sharpe (1991) levert het meest onweerlegbare argument van het debat, puur boekhoudkundig — los van elke efficiëntietheorie. Aangezien alle beleggers samen de hele markt aanhouden, is het <strong>gemiddelde</strong> rendement, vóór kosten, van elke <em>actief</em> beheerde euro <strong>exact gelijk</strong> aan dat van elke <em>passief</em> beheerde euro: in aggregaat houden beide dezelfde markt aan.</p>
+
+        <div class="formula">
+          <div class="eq"><span data-lang="fr">Actif (moyenne, brut) = Passif (brut) &nbsp;⟹&nbsp; Actif (moyenne, net) &lt; Passif (net)</span><span data-lang="en">Active (average, gross) = Passive (gross) &nbsp;⟹&nbsp; Active (average, net) &lt; Passive (net)</span><span data-lang="nl">Actief (gemiddelde, bruto) = Passief (bruto) &nbsp;⟹&nbsp; Actief (gemiddelde, netto) &lt; Passief (netto)</span></div>
+          <div class="caption" data-lang="fr">Avant frais, la gestion active est un jeu à somme nulle contre le marché ; après ses frais plus élevés, le gérant actif moyen sous-performe nécessairement le passif.</div>
+          <div class="caption" data-lang="en">Before fees, active management is a zero-sum game against the market; after its higher fees, the average active manager necessarily underperforms passive.</div>
+          <div class="caption" data-lang="nl">Vóór kosten is actief beheer een nulsomspel tegen de markt; na de hogere kosten presteert de gemiddelde actieve beheerder noodzakelijk onder passief.</div>
+          <div class="caption src">Réf. — Sharpe (1991)</div>
+        </div>
+
+        <p data-lang="fr">La conclusion est implacable : <strong>le gérant actif moyen sous-performe l'indice, du montant de ses frais supplémentaires</strong>. Cela ne dit pas qu'<em>aucun</em> gérant ne peut gagner — certains battent le marché — mais que, collectivement, ils ne le peuvent pas, et qu'identifier les gagnants futurs est extrêmement difficile. Les études de persistance (voir SPIVA) confirment qu'une majorité de fonds actifs sous-performent leur indice sur longue période.</p>
+        <p data-lang="en">The conclusion is inescapable: <strong>the average active manager underperforms the index by the amount of their extra fees</strong>. This does not say that <em>no</em> manager can win — some do beat the market — but that, collectively, they cannot, and that identifying future winners is extremely hard. Persistence studies (see SPIVA) confirm that a majority of active funds underperform their index over long horizons.</p>
+        <p data-lang="nl">De conclusie is onontkoombaar: <strong>de gemiddelde actieve beheerder presteert onder de index, met het bedrag van zijn extra kosten</strong>. Dit zegt niet dat <em>geen enkele</em> beheerder kan winnen — sommigen verslaan de markt — maar dat ze het collectief niet kunnen, en dat toekomstige winnaars herkennen extreem moeilijk is. Persistentiestudies (zie SPIVA) bevestigen dat een meerderheid van actieve fondsen op lange termijn onder hun index presteert.</p>
+
+        <!-- 5. COÛTS + CALC -->
+        <h2 id="couts"><span data-lang="fr">5. Le poids des coûts</span><span data-lang="en">5. The weight of costs</span><span data-lang="nl">5. Het gewicht van kosten</span></h2>
+        <p data-lang="fr">Une différence de frais qui paraît minime — 1 % par an contre 0,1 % — devient énorme une fois <strong>composée</strong> sur des décennies. Chaque euro de frais est prélevé <em>et</em> ne compose plus jamais : c'est un manque à gagner qui grossit exponentiellement. C'est l'argument le plus concret en faveur du passif.</p>
+        <p data-lang="en">A fee difference that looks tiny — 1% a year versus 0.1% — becomes enormous once <strong>compounded</strong> over decades. Every euro of fees is taken <em>and</em> never compounds again: a shortfall that grows exponentially. This is the most concrete argument for passive.</p>
+        <p data-lang="nl">Een kostenverschil dat minuscuul lijkt — 1% per jaar tegenover 0,1% — wordt enorm zodra het over decennia wordt <strong>samengesteld</strong>. Elke euro aan kosten wordt afgenomen <em>en</em> stelt zich nooit meer samen: een tekort dat exponentieel groeit. Dit is het meest concrete argument vóór passief.</p>
+
+        <p data-lang="fr">Comparez ci-dessous un fonds passif à bas coût et un fonds actif plus cher. Réglez le rendement brut du marché, les frais de chacun et l'<em>alpha brut</em> que le gérant actif parvient (ou non) à générer avant frais. La courbe montre l'écart de richesse qui se creuse dans le temps.</p>
+        <p data-lang="en">Compare below a low-cost passive fund and a pricier active fund. Set the market's gross return, each fund's fees and the <em>gross alpha</em> the active manager does (or does not) generate before fees. The curve shows the wealth gap widening over time.</p>
+        <p data-lang="nl">Vergelijk hieronder een goedkoop passief fonds en een duurder actief fonds. Stel het brutomarktrendement in, de kosten van elk fonds en de <em>bruto-alfa</em> die de actieve beheerder al dan niet vóór kosten genereert. De curve toont de vermogenskloof die door de tijd groeit.</p>
+
+        <style>
+          #fd-chart { width:100%; height:auto; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; }
+          #fd-chart .grid { stroke:var(--border); stroke-width:1; }
+          #fd-chart .axis { stroke:var(--ink-mute); stroke-width:1.4; }
+          #fd-chart .cp { fill:none; stroke:var(--navy); stroke-width:2.6; }
+          #fd-chart .ca { fill:none; stroke:var(--gold); stroke-width:2.6; }
+          #fd-chart .tick { fill:var(--ink-mute); font-size:10px; font-family:var(--sans); }
+          #fd-chart .alab { fill:var(--ink-soft); font-size:11px; font-family:var(--sans); font-weight:600; }
+          .fd-sliders { display:grid; grid-template-columns:repeat(3,1fr); gap:12px 18px; margin-bottom:18px; }
+          .fd-sliders label { display:block; font-size:12.5px; font-weight:600; color:var(--ink-soft); margin-bottom:4px; }
+          .fd-out { margin-top:14px; font-size:14.5px; color:var(--ink-soft); display:flex; gap:22px; flex-wrap:wrap; }
+          .fd-out b { color:var(--ink); font-family:var(--mono); }
+          .fd-key { display:flex; gap:18px; flex-wrap:wrap; font-size:12.5px; color:var(--ink-soft); margin-top:8px; }
+          .fd-key span { display:inline-flex; align-items:center; gap:6px; }
+          .fd-key i { width:14px; height:3px; border-radius:2px; display:inline-block; }
+          @media (max-width:640px){ .fd-sliders { grid-template-columns:1fr 1fr; } }
+        </style>
+
+        <div class="calc">
+          <div class="chead">
+            <h4 data-lang="fr">Comparateur actif / passif — érosion des frais</h4>
+            <h4 data-lang="en">Active / passive comparator — fee erosion</h4>
+            <h4 data-lang="nl">Actief / passief-vergelijker — kostenerosie</h4>
+            <p data-lang="fr">Placement de 10 000 € · rendements &amp; frais en % annuels</p>
+            <p data-lang="en">€10,000 investment · returns &amp; fees in annual %</p>
+            <p data-lang="nl">Belegging van €10.000 · rendementen &amp; kosten in jaarlijkse %</p>
+          </div>
+          <div class="cbody" style="display:block">
+            <div class="fd-sliders">
+              <div>
+                <label><span data-lang="fr">Horizon (années)</span><span data-lang="en">Horizon (years)</span><span data-lang="nl">Horizon (jaren)</span></label>
+                <div class="rangewrap"><input type="range" id="fd-n" min="5" max="40" step="1" value="30"><output id="fd-n-o">30</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Rendement brut marché</span><span data-lang="en">Gross market return</span><span data-lang="nl">Brutomarktrendement</span></label>
+                <div class="rangewrap"><input type="range" id="fd-g" min="2" max="10" step="0.5" value="6"><output id="fd-g-o">6%</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Alpha brut du gérant actif</span><span data-lang="en">Active manager gross alpha</span><span data-lang="nl">Bruto-alfa actieve beheerder</span></label>
+                <div class="rangewrap"><input type="range" id="fd-a" min="-2" max="2" step="0.1" value="0"><output id="fd-a-o">0.0%</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Frais fonds passif</span><span data-lang="en">Passive fund fee</span><span data-lang="nl">Kosten passief fonds</span></label>
+                <div class="rangewrap"><input type="range" id="fd-fp" min="0.02" max="0.5" step="0.02" value="0.1"><output id="fd-fp-o">0.10%</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Frais fonds actif</span><span data-lang="en">Active fund fee</span><span data-lang="nl">Kosten actief fonds</span></label>
+                <div class="rangewrap"><input type="range" id="fd-fa" min="0.3" max="2.5" step="0.1" value="1.0"><output id="fd-fa-o">1.00%</output></div>
+              </div>
+            </div>
+
+            <svg id="fd-chart" viewBox="0 0 520 300" role="img" aria-label="Richesse actif vs passif"></svg>
+            <div class="fd-key">
+              <span><i style="background:var(--navy)"></i><span data-lang="fr">Fonds passif</span><span data-lang="en">Passive fund</span><span data-lang="nl">Passief fonds</span></span>
+              <span><i style="background:var(--gold)"></i><span data-lang="fr">Fonds actif</span><span data-lang="en">Active fund</span><span data-lang="nl">Actief fonds</span></span>
+            </div>
+
+            <div class="fd-out">
+              <span><span data-lang="fr">Richesse finale — passif :</span><span data-lang="en">Final wealth — passive:</span><span data-lang="nl">Eindvermogen — passief:</span> <b id="fd-vp">—</b></span>
+              <span><span data-lang="fr">actif :</span><span data-lang="en">active:</span><span data-lang="nl">actief:</span> <b id="fd-va">—</b></span>
+              <span><span data-lang="fr">Écart :</span><span data-lang="en">Gap:</span><span data-lang="nl">Verschil:</span> <b id="fd-gap">—</b></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. INDICIEL / ETF -->
+        <h2 id="indiciel"><span data-lang="fr">6. Indiciel, ETF &amp; tracking error</span><span data-lang="en">6. Indexing, ETFs &amp; tracking error</span><span data-lang="nl">6. Indexeren, ETF's &amp; tracking error</span></h2>
+        <p data-lang="fr">La gestion passive se met en œuvre via des <strong>fonds indiciels</strong> et des <strong>ETF</strong> (fonds cotés en bourse) qui répliquent un indice — S&amp;P 500, MSCI World… — pour quelques points de base par an. L'ETF ajoute la négociabilité en continu comme une action. La qualité de réplication se mesure par la <strong>tracking error</strong> : l'écart-type de la différence de rendement entre le fonds et son indice. Une faible tracking error signale une réplication fidèle.</p>
+        <p data-lang="en">Passive management is implemented through <strong>index funds</strong> and <strong>ETFs</strong> (exchange-traded funds) that replicate an index — S&amp;P 500, MSCI World… — for a few basis points a year. The ETF adds continuous tradability like a stock. Replication quality is measured by <strong>tracking error</strong>: the standard deviation of the return difference between the fund and its index. A low tracking error signals faithful replication.</p>
+        <p data-lang="nl">Passief beheer wordt uitgevoerd via <strong>indexfondsen</strong> en <strong>ETF's</strong> (beursgenoteerde fondsen) die een index repliceren — S&amp;P 500, MSCI World… — voor enkele basispunten per jaar. De ETF voegt continue verhandelbaarheid toe zoals een aandeel. De replicatiekwaliteit wordt gemeten met de <strong>tracking error</strong>: de standaardafwijking van het rendementsverschil tussen het fonds en zijn index. Een lage tracking error wijst op getrouwe replicatie.</p>
+
+        <div class="callout warn">
+          <span class="clabel" data-lang="fr">Le « closet indexing »</span><span class="clabel" data-lang="en">“Closet indexing”</span><span class="clabel" data-lang="nl">“Closet indexing”</span>
+          <span data-lang="fr">Certains fonds « actifs » collent en réalité de très près à leur indice (faible tracking error) tout en facturant des frais actifs élevés : c'est le <em>closet indexing</em>. L'investisseur paie cher pour, en pratique, un quasi-indice. À l'inverse, un fonds réellement actif doit assumer une tracking error notable — sinon il ne peut, par construction, surperformer.</span>
+          <span data-lang="en">Some “active” funds in fact hug their index closely (low tracking error) while charging high active fees: this is <em>closet indexing</em>. The investor pays dearly for what is, in practice, a near-index. Conversely, a genuinely active fund must accept notable tracking error — otherwise it cannot, by construction, outperform.</span>
+          <span data-lang="nl">Sommige “actieve” fondsen kleven in werkelijkheid dicht tegen hun index aan (lage tracking error) terwijl ze hoge actieve kosten aanrekenen: dat is <em>closet indexing</em>. De belegger betaalt duur voor wat in de praktijk een quasi-index is. Omgekeerd moet een écht actief fonds een merkbare tracking error aanvaarden — anders kan het per definitie niet outperformen.</span>
+        </div>
+
+        <!-- 7. VERDICT -->
+        <h2 id="verdict"><span data-lang="fr">7. Le paradoxe &amp; le verdict</span><span data-lang="en">7. The paradox &amp; the verdict</span><span data-lang="nl">7. De paradox &amp; het oordeel</span></h2>
+        <p data-lang="fr">Si tout le monde devenait passif, plus personne n'analyserait les titres — et les prix cesseraient de refléter l'information. C'est le <strong>paradoxe de Grossman-Stiglitz (1980)</strong> : un marché parfaitement efficient ne peut exister, car alors nul ne serait incité à produire l'information qui le rend efficient. Il faut donc <em>un peu</em> de gestion active pour maintenir l'efficience — les gérants actifs sont, collectivement, ceux qui « paient » pour découvrir les prix.</p>
+        <p data-lang="en">If everyone went passive, no one would analyse securities — and prices would stop reflecting information. This is the <strong>Grossman-Stiglitz paradox (1980)</strong>: a perfectly efficient market cannot exist, because then no one would be rewarded for producing the information that makes it efficient. So <em>some</em> active management is needed to sustain efficiency — active managers are, collectively, those who “pay” for price discovery.</p>
+        <p data-lang="nl">Als iedereen passief werd, zou niemand nog effecten analyseren — en prijzen zouden ophouden informatie te weerspiegelen. Dit is de <strong>Grossman-Stiglitz-paradox (1980)</strong>: een volmaakt efficiënte markt kan niet bestaan, want dan zou niemand worden beloond voor het produceren van de informatie die hem efficiënt maakt. Er is dus <em>enige</em> actieve gestie nodig om efficiëntie in stand te houden — actieve beheerders zijn, collectief, degenen die “betalen” voor prijsvorming.</p>
+
+        <p data-lang="fr">Le verdict pratique est nuancé. Sur les marchés très efficients et très suivis (grandes actions américaines), il est très difficile de justifier des frais actifs élevés : le passif y domine. Sur des segments moins efficients (petites capitalisations, marchés émergents, dette en difficulté), un gérant compétent a davantage de chances d'ajouter de la valeur. Beaucoup d'investisseurs adoptent une approche « cœur-satellite » : un cœur passif à bas coût, complété de quelques paris actifs ciblés.</p>
+        <p data-lang="en">The practical verdict is nuanced. In highly efficient, heavily-covered markets (large US equities), high active fees are very hard to justify: passive dominates. In less efficient segments (small caps, emerging markets, distressed debt), a skilled manager has a better chance of adding value. Many investors adopt a “core-satellite” approach: a low-cost passive core, complemented by a few targeted active bets.</p>
+        <p data-lang="nl">Het praktische oordeel is genuanceerd. In zeer efficiënte, druk gevolgde markten (grote Amerikaanse aandelen) zijn hoge actieve kosten erg moeilijk te rechtvaardigen: passief domineert. In minder efficiënte segmenten (smallcaps, opkomende markten, distressed debt) heeft een bekwame beheerder meer kans waarde toe te voegen. Veel beleggers hanteren een “core-satellite”-aanpak: een goedkope passieve kern, aangevuld met enkele gerichte actieve weddenschappen.</p>
+
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">À retenir</span><span class="clabel" data-lang="en">Key takeaway</span><span class="clabel" data-lang="nl">Onthoud</span>
+          <span data-lang="fr">L'efficience (EMH, 3 formes) fixe l'espoir de battre le marché ; l'arithmétique de Sharpe garantit que le gérant actif moyen sous-performe le passif après frais ; les coûts composés creusent l'écart sur le long terme. Le passif (indiciel, ETF, faible tracking error) domine sur les marchés efficients ; l'actif garde un rôle là où l'inefficience — et le talent — existent. Le paradoxe de Grossman-Stiglitz rappelle qu'il faut un minimum d'actif pour que les prix restent informatifs.</span>
+          <span data-lang="en">Efficiency (EMH, 3 forms) sets the hope of beating the market; Sharpe's arithmetic guarantees the average active manager underperforms passive after fees; compounded costs widen the gap over the long run. Passive (indexing, ETFs, low tracking error) dominates in efficient markets; active keeps a role where inefficiency — and skill — exist. The Grossman-Stiglitz paradox reminds us that a minimum of active is needed for prices to stay informative.</span>
+          <span data-lang="nl">Efficiëntie (EMH, 3 vormen) bepaalt de hoop de markt te verslaan; Sharpes rekenkunde garandeert dat de gemiddelde actieve beheerder na kosten onder passief presteert; samengestelde kosten vergroten de kloof op lange termijn. Passief (indexeren, ETF's, lage tracking error) domineert in efficiënte markten; actief houdt een rol waar inefficiëntie — en talent — bestaan. De Grossman-Stiglitz-paradox herinnert eraan dat een minimum aan actief nodig is opdat prijzen informatief blijven.</span>
+        </div>
+
+        <!-- 8. QCM -->
+        <h2 id="qcm"><span data-lang="fr">8. QCM — 15 questions</span><span data-lang="en">8. MCQ — 15 questions</span><span data-lang="nl">8. MCV — 15 vragen</span></h2>
+        <div class="quiz">
+          <h4 data-lang="fr">Auto-évaluation</h4><h4 data-lang="en">Self-assessment</h4><h4 data-lang="nl">Zelfevaluatie</h4>
+          <p class="qsub" data-lang="fr">Cliquez sur une réponse : la bonne s'affiche en vert et la justification apparaît.</p>
+          <p class="qsub" data-lang="en">Click an answer: the correct one turns green and the justification appears.</p>
+          <p class="qsub" data-lang="nl">Klik op een antwoord: het juiste kleurt groen en de verantwoording verschijnt.</p>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">1. L'hypothèse d'efficience des marchés affirme que les prix…</div>
+            <div class="qtext" data-lang="en">1. The efficient market hypothesis holds that prices…</div>
+            <div class="qtext" data-lang="nl">1. De efficiënte-markthypothese stelt dat prijzen…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Montent toujours à long terme.</span><span data-lang="en">Always rise in the long run.</span><span data-lang="nl">Op lange termijn altijd stijgen.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Reflètent rapidement l'information disponible.</span><span data-lang="en">Quickly reflect available information.</span><span data-lang="nl">De beschikbare informatie snel weerspiegelen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Sont fixés par le régulateur.</span><span data-lang="en">Are set by the regulator.</span><span data-lang="nl">Door de toezichthouder worden bepaald.</span></button>
+            <div class="explain"><span data-lang="fr">✔ L'EMH (Fama, 1970) : les prix intègrent l'information si vite qu'on ne peut en tirer un profit systématique.</span><span data-lang="en">✔ The EMH (Fama, 1970): prices embed information so fast that no systematic profit can be drawn from it.</span><span data-lang="nl">✔ De EMH (Fama, 1970): prijzen verwerken informatie zo snel dat er geen systematische winst uit te halen valt.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">2. La forme <em>faible</em> de l'efficience rend vaine…</div>
+            <div class="qtext" data-lang="en">2. The <em>weak</em> form of efficiency makes futile…</div>
+            <div class="qtext" data-lang="nl">2. De <em>zwakke</em> vorm van efficiëntie maakt vergeefs…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">L'analyse technique (basée sur les prix passés).</span><span data-lang="en">Technical analysis (based on past prices).</span><span data-lang="nl">Technische analyse (op basis van historische koersen).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Toute forme d'investissement.</span><span data-lang="en">All forms of investing.</span><span data-lang="nl">Elke vorm van beleggen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La diversification.</span><span data-lang="en">Diversification.</span><span data-lang="nl">Diversificatie.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Forme faible = les prix passés sont déjà intégrés ; l'analyse technique ne peut donc rien prédire d'exploitable.</span><span data-lang="en">✔ Weak form = past prices are already embedded; technical analysis can predict nothing exploitable.</span><span data-lang="nl">✔ Zwakke vorm = historische koersen zijn al verwerkt; technische analyse kan niets bruikbaars voorspellen.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">3. La forme <em>semi-forte</em> intègre…</div>
+            <div class="qtext" data-lang="en">3. The <em>semi-strong</em> form embeds…</div>
+            <div class="qtext" data-lang="nl">3. De <em>halfsterke</em> vorm verwerkt…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Seulement les prix passés.</span><span data-lang="en">Only past prices.</span><span data-lang="nl">Enkel historische koersen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">L'information privée des initiés.</span><span data-lang="en">Insiders' private information.</span><span data-lang="nl">Private informatie van insiders.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Toute l'information publique.</span><span data-lang="en">All public information.</span><span data-lang="nl">Alle publieke informatie.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Semi-forte = toute l'info publique est intégrée : l'analyse fondamentale sur données publiques ne suffit plus à surperformer.</span><span data-lang="en">✔ Semi-strong = all public info is embedded: fundamental analysis on public data no longer suffices to outperform.</span><span data-lang="nl">✔ Halfsterk = alle publieke info is verwerkt: fundamentele analyse op publieke data volstaat niet meer om te outperformen.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">4. La forme <em>forte</em> de l'efficience est…</div>
+            <div class="qtext" data-lang="en">4. The <em>strong</em> form of efficiency is…</div>
+            <div class="qtext" data-lang="nl">4. De <em>sterke</em> vorm van efficiëntie is…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Parfaitement vérifiée partout.</span><span data-lang="en">Perfectly verified everywhere.</span><span data-lang="nl">Overal perfect geverifieerd.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Empiriquement rejetée (les initiés peuvent profiter d'info privée).</span><span data-lang="en">Empirically rejected (insiders can profit from private info).</span><span data-lang="nl">Empirisch verworpen (insiders kunnen profiteren van private info).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Sans rapport avec l'information.</span><span data-lang="en">Unrelated to information.</span><span data-lang="nl">Los van informatie.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La forme forte (prix intégrant même l'info privée) est démentie par les faits — d'où l'interdiction du délit d'initié.</span><span data-lang="en">✔ The strong form (prices embedding even private info) is contradicted by the facts — hence the ban on insider trading.</span><span data-lang="nl">✔ De sterke vorm (prijzen die zelfs private info bevatten) wordt door de feiten weersproken — vandaar het verbod op handel met voorkennis.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">5. La gestion passive vise à…</div>
+            <div class="qtext" data-lang="en">5. Passive management aims to…</div>
+            <div class="qtext" data-lang="nl">5. Passief beheer beoogt…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Répliquer un indice au coût le plus bas.</span><span data-lang="en">Replicate an index at the lowest cost.</span><span data-lang="nl">Een index tegen de laagste kost te repliceren.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Sélectionner les meilleurs titres.</span><span data-lang="en">Select the best securities.</span><span data-lang="nl">De beste effecten te selecteren.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Faire du market timing.</span><span data-lang="en">Do market timing.</span><span data-lang="nl">Aan market timing te doen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le passif accepte le rendement du marché (moins un coût minime) au lieu de tenter de le battre.</span><span data-lang="en">✔ Passive accepts the market's return (less a tiny cost) instead of trying to beat it.</span><span data-lang="nl">✔ Passief aanvaardt het marktrendement (min een minieme kost) in plaats van het te willen verslaan.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">6. Selon l'arithmétique de Sharpe (1991), avant frais, le rendement moyen des gérants actifs est…</div>
+            <div class="qtext" data-lang="en">6. Per Sharpe's arithmetic (1991), before fees, the average active manager's return is…</div>
+            <div class="qtext" data-lang="nl">6. Volgens Sharpes rekenkunde (1991) is, vóór kosten, het gemiddelde rendement van actieve beheerders…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Systématiquement supérieur.</span><span data-lang="en">Systematically higher.</span><span data-lang="nl">Systematisch hoger.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Toujours négatif.</span><span data-lang="en">Always negative.</span><span data-lang="nl">Altijd negatief.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Égal à celui du marché (donc du passif).</span><span data-lang="en">Equal to the market's (hence to passive).</span><span data-lang="nl">Gelijk aan dat van de markt (dus aan passief).</span></button>
+            <div class="explain"><span data-lang="fr">✔ En agrégat, les actifs détiennent le marché : leur rendement brut moyen = le marché. C'est un pur argument comptable.</span><span data-lang="en">✔ In aggregate, active investors hold the market: their average gross return = the market. A pure accounting argument.</span><span data-lang="nl">✔ In aggregaat houden actieve beleggers de markt aan: hun gemiddelde brutorendement = de markt. Een puur boekhoudkundig argument.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">7. Il en découle qu'après frais, le gérant actif moyen…</div>
+            <div class="qtext" data-lang="en">7. It follows that after fees, the average active manager…</div>
+            <div class="qtext" data-lang="nl">7. Daaruit volgt dat na kosten de gemiddelde actieve beheerder…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Surperforme toujours.</span><span data-lang="en">Always outperforms.</span><span data-lang="nl">Altijd outperformt.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Sous-performe le passif, du montant de ses frais supplémentaires.</span><span data-lang="en">Underperforms passive by the amount of extra fees.</span><span data-lang="nl">Onder passief presteert, met het bedrag van de extra kosten.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Fait exactement jeu égal.</span><span data-lang="en">Exactly ties.</span><span data-lang="nl">Precies gelijk eindigt.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Même rendement brut mais frais plus élevés ⟹ rendement net moyen inférieur. Certains gagnent, mais pas la moyenne.</span><span data-lang="en">✔ Same gross return but higher fees ⟹ lower average net return. Some win, but not the average.</span><span data-lang="nl">✔ Zelfde brutorendement maar hogere kosten ⟹ lager gemiddeld nettorendement. Sommigen winnen, maar niet het gemiddelde.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">8. Pourquoi un écart de frais de 1 % vs 0,1 % est-il énorme sur 30 ans ?</div>
+            <div class="qtext" data-lang="en">8. Why is a fee gap of 1% vs 0.1% enormous over 30 years?</div>
+            <div class="qtext" data-lang="nl">8. Waarom is een kostenverschil van 1% vs 0,1% enorm over 30 jaar?</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Les frais prélevés ne composent plus : l'écart croît exponentiellement.</span><span data-lang="en">Fees taken no longer compound: the gap grows exponentially.</span><span data-lang="nl">Afgenomen kosten stellen zich niet meer samen: de kloof groeit exponentieel.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les frais sont remboursés à la fin.</span><span data-lang="en">Fees are refunded at the end.</span><span data-lang="nl">Kosten worden aan het eind terugbetaald.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Ils n'ont aucun effet cumulé.</span><span data-lang="en">They have no cumulative effect.</span><span data-lang="nl">Ze hebben geen cumulatief effect.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Chaque euro de frais est perdu <em>et</em> ne compose plus jamais ; sur des décennies, l'effet est massif.</span><span data-lang="en">✔ Every euro of fees is lost <em>and</em> never compounds again; over decades, the effect is massive.</span><span data-lang="nl">✔ Elke euro aan kosten is verloren <em>en</em> stelt zich nooit meer samen; over decennia is het effect enorm.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">9. Un ETF (fonds coté) se distingue d'un fonds indiciel classique par…</div>
+            <div class="qtext" data-lang="en">9. An ETF differs from a classic index fund by…</div>
+            <div class="qtext" data-lang="nl">9. Een ETF verschilt van een klassiek indexfonds door…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">L'absence totale de frais.</span><span data-lang="en">The total absence of fees.</span><span data-lang="nl">De volledige afwezigheid van kosten.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une garantie de surperformance.</span><span data-lang="en">A guarantee of outperformance.</span><span data-lang="nl">Een garantie op outperformance.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Sa négociabilité en continu en bourse, comme une action.</span><span data-lang="en">Its continuous tradability on the exchange, like a stock.</span><span data-lang="nl">De continue verhandelbaarheid op de beurs, zoals een aandeel.</span></button>
+            <div class="explain"><span data-lang="fr">✔ L'ETF se négocie en continu comme une action ; les deux répliquent un indice à bas coût (mais non nul).</span><span data-lang="en">✔ The ETF trades continuously like a stock; both replicate an index at low (but non-zero) cost.</span><span data-lang="nl">✔ De ETF wordt continu verhandeld zoals een aandeel; beide repliceren een index tegen lage (maar niet-nul) kost.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">10. La tracking error mesure…</div>
+            <div class="qtext" data-lang="en">10. Tracking error measures…</div>
+            <div class="qtext" data-lang="nl">10. Tracking error meet…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le rendement absolu du fonds.</span><span data-lang="en">The fund's absolute return.</span><span data-lang="nl">Het absolute rendement van het fonds.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">L'écart-type de la différence de rendement fonds − indice.</span><span data-lang="en">The standard deviation of the fund − index return difference.</span><span data-lang="nl">De standaardafwijking van het rendementsverschil fonds − index.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les frais de courtage.</span><span data-lang="en">Brokerage fees.</span><span data-lang="nl">Makelaarskosten.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Faible tracking error = réplication fidèle de l'indice ; un fonds réellement actif en a nécessairement une plus élevée.</span><span data-lang="en">✔ Low tracking error = faithful replication; a genuinely active fund necessarily has a higher one.</span><span data-lang="nl">✔ Lage tracking error = getrouwe replicatie; een écht actief fonds heeft er noodzakelijk een hogere.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">11. Le « closet indexing » désigne un fonds qui…</div>
+            <div class="qtext" data-lang="en">11. “Closet indexing” refers to a fund that…</div>
+            <div class="qtext" data-lang="nl">11. “Closet indexing” verwijst naar een fonds dat…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Colle à son indice tout en facturant des frais actifs.</span><span data-lang="en">Hugs its index while charging active fees.</span><span data-lang="nl">Dicht tegen zijn index aankleeft terwijl het actieve kosten aanrekent.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Ne détient que du monétaire.</span><span data-lang="en">Holds only cash.</span><span data-lang="nl">Enkel cash aanhoudt.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Prend des risques extrêmes.</span><span data-lang="en">Takes extreme risks.</span><span data-lang="nl">Extreme risico's neemt.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le closet indexer facture cher pour un quasi-indice (faible tracking error) : le pire rapport qualité-prix.</span><span data-lang="en">✔ The closet indexer charges dearly for a near-index (low tracking error): the worst value for money.</span><span data-lang="nl">✔ De closet indexer rekent duur aan voor een quasi-index (lage tracking error): de slechtste prijs-kwaliteit.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">12. Le paradoxe de Grossman-Stiglitz (1980) énonce que…</div>
+            <div class="qtext" data-lang="en">12. The Grossman-Stiglitz paradox (1980) states that…</div>
+            <div class="qtext" data-lang="nl">12. De Grossman-Stiglitz-paradox (1980) stelt dat…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les marchés sont toujours parfaitement efficients.</span><span data-lang="en">Markets are always perfectly efficient.</span><span data-lang="nl">Markten altijd volmaakt efficiënt zijn.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La gestion active est inutile.</span><span data-lang="en">Active management is useless.</span><span data-lang="nl">Actief beheer nutteloos is.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Un marché parfaitement efficient ne peut exister.</span><span data-lang="en">A perfectly efficient market cannot exist.</span><span data-lang="nl">Een volmaakt efficiënte markt niet kan bestaan.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Si tout était déjà dans les prix, nul ne serait incité à collecter l'information — il faut donc un peu d'actif pour l'efficience.</span><span data-lang="en">✔ If everything were already in prices, no one would be rewarded to gather information — so some active is needed for efficiency.</span><span data-lang="nl">✔ Als alles al in de prijzen zat, zou niemand beloond worden om informatie te verzamelen — dus is enig actief nodig voor efficiëntie.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">13. Sur quel type de marché la gestion active a-t-elle le plus de chances d'ajouter de la valeur ?</div>
+            <div class="qtext" data-lang="en">13. In which type of market is active management most likely to add value?</div>
+            <div class="qtext" data-lang="nl">13. In welk type markt heeft actief beheer de meeste kans waarde toe te voegen?</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les grandes actions américaines très suivies.</span><span data-lang="en">Heavily-covered large US equities.</span><span data-lang="nl">Druk gevolgde grote Amerikaanse aandelen.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Les segments moins efficients (small caps, émergents).</span><span data-lang="en">Less efficient segments (small caps, emerging).</span><span data-lang="nl">Minder efficiënte segmenten (smallcaps, opkomend).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Aucun marché, jamais.</span><span data-lang="en">No market, ever.</span><span data-lang="nl">Geen enkele markt, nooit.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Là où l'information est moins bien intégrée, un gérant compétent a plus d'occasions ; sur les grandes caps efficientes, c'est très dur.</span><span data-lang="en">✔ Where information is less fully embedded, a skilled manager has more opportunities; in efficient large caps it is very hard.</span><span data-lang="nl">✔ Waar informatie minder volledig verwerkt is, heeft een bekwame beheerder meer kansen; in efficiënte largecaps is het erg moeilijk.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">14. L'approche « cœur-satellite » consiste à…</div>
+            <div class="qtext" data-lang="en">14. The “core-satellite” approach consists of…</div>
+            <div class="qtext" data-lang="nl">14. De “core-satellite”-aanpak bestaat uit…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Un cœur passif à bas coût + quelques paris actifs ciblés.</span><span data-lang="en">A low-cost passive core + a few targeted active bets.</span><span data-lang="nl">Een goedkope passieve kern + enkele gerichte actieve weddenschappen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">100 % gestion active.</span><span data-lang="en">100% active management.</span><span data-lang="nl">100% actief beheer.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Ne détenir que du monétaire.</span><span data-lang="en">Holding only cash.</span><span data-lang="nl">Enkel cash aanhouden.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Cœur-satellite = base indicielle bon marché, complétée de paris actifs limités là où l'inefficience le justifie.</span><span data-lang="en">✔ Core-satellite = a cheap index base, complemented by limited active bets where inefficiency justifies it.</span><span data-lang="nl">✔ Core-satellite = een goedkope indexbasis, aangevuld met beperkte actieve weddenschappen waar inefficiëntie het rechtvaardigt.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">15. « Certains gérants battent le marché, donc l'actif est meilleur. » Quelle est la faille ?</div>
+            <div class="qtext" data-lang="en">15. “Some managers beat the market, so active is better.” What is the flaw?</div>
+            <div class="qtext" data-lang="nl">15. “Sommige beheerders verslaan de markt, dus actief is beter.” Wat is de fout?</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Aucune : l'actif est toujours meilleur.</span><span data-lang="en">None: active is always better.</span><span data-lang="nl">Geen: actief is altijd beter.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le passif n'existe pas vraiment.</span><span data-lang="en">Passive doesn't really exist.</span><span data-lang="nl">Passief bestaat niet echt.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Les identifier <em>à l'avance</em> est très difficile ; la moyenne, elle, sous-performe.</span><span data-lang="en">Identifying them <em>in advance</em> is very hard; the average still underperforms.</span><span data-lang="nl">Ze <em>vooraf</em> herkennen is erg moeilijk; het gemiddelde presteert toch onder.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Que certains gagnent est une évidence statistique ; le problème est de les choisir <em>avant</em>, et la persistance de la surperformance est faible.</span><span data-lang="en">✔ That some win is a statistical given; the problem is picking them <em>before</em>, and the persistence of outperformance is weak.</span><span data-lang="nl">✔ Dat sommigen winnen is een statistisch gegeven; het probleem is ze <em>vooraf</em> kiezen, en de persistentie van outperformance is zwak.</span></div>
+          </div>
+        </div>
+
+        <!-- 9. EXERCICES -->
+        <h2 id="exercices"><span data-lang="fr">9. Exercices chiffrés</span><span data-lang="en">9. Numerical exercises</span><span data-lang="nl">9. Cijferoefeningen</span></h2>
+        <p data-lang="fr">Réponses courtes à révéler ; corrigés détaillés sur la future page « Solutions ».</p>
+        <p data-lang="en">Short answers to reveal; full solutions on the upcoming “Solutions” page.</p>
+        <p data-lang="nl">Korte antwoorden te onthullen; uitgewerkte oplossingen op de toekomstige “Oplossingen”-pagina.</p>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM6-1</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Rendement brut du marché 6 %. Fonds passif : frais 0,1 %. Fonds actif : frais 1 %, sans alpha. Quel rendement net chacun, et l'écart en points ?</p>
+          <p class="estatement" data-lang="en">Gross market return 6%. Passive fund: 0.1% fee. Active fund: 1% fee, no alpha. What net return each, and the gap in points?</p>
+          <p class="estatement" data-lang="nl">Brutomarktrendement 6%. Passief fonds: kost 0,1%. Actief fonds: kost 1%, geen alfa. Welk nettorendement elk, en het verschil in punten?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Passif : 6 − 0,1 = <b>5,9 %</b> ; actif : 6 − 1 = <b>5,0 %</b>. Écart = <b>0,9 pt</b> par an, en faveur du passif (car alpha nul).</div>
+            <div class="ans" data-lang="en">Passive: 6 − 0.1 = <b>5.9%</b>; active: 6 − 1 = <b>5.0%</b>. Gap = <b>0.9 pt</b> per year, favouring passive (zero alpha).</div>
+            <div class="ans" data-lang="nl">Passief: 6 − 0,1 = <b>5,9%</b>; actief: 6 − 1 = <b>5,0%</b>. Verschil = <b>0,9 pt</b> per jaar, in het voordeel van passief (nul-alfa).</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM6-2</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Placement de 10 000 € sur 20 ans. Passif net 5,85 %, actif net 4,8 % (sans alpha). Comparez la richesse finale.</p>
+          <p class="estatement" data-lang="en">€10,000 invested for 20 years. Passive net 5.85%, active net 4.8% (no alpha). Compare final wealth.</p>
+          <p class="estatement" data-lang="nl">€10.000 belegd over 20 jaar. Passief netto 5,85%, actief netto 4,8% (geen alfa). Vergelijk het eindvermogen.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Passif : 10 000×1,0585²⁰ ≈ <b>31 200 €</b> ; actif : 10 000×1,048²⁰ ≈ <b>25 500 €</b>. Écart ≈ <b>5 700 €</b> — pour ~1 pt de frais annuels.</div>
+            <div class="ans" data-lang="en">Passive: 10,000×1.0585²⁰ ≈ <b>€31,200</b>; active: 10,000×1.048²⁰ ≈ <b>€25,500</b>. Gap ≈ <b>€5,700</b> — for ~1 pt of annual fees.</div>
+            <div class="ans" data-lang="nl">Passief: 10.000×1,0585²⁰ ≈ <b>€31.200</b>; actief: 10.000×1,048²⁰ ≈ <b>€25.500</b>. Verschil ≈ <b>€5.700</b> — voor ~1 pt jaarlijkse kosten.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM6-3</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Frais actif 1,2 %, frais passif 0,15 %. Quel alpha brut minimal le gérant actif doit-il produire pour simplement égaler le passif ?</p>
+          <p class="estatement" data-lang="en">Active fee 1.2%, passive fee 0.15%. What minimum gross alpha must the active manager produce just to match passive?</p>
+          <p class="estatement" data-lang="nl">Actieve kost 1,2%, passieve kost 0,15%. Welke minimale bruto-alfa moet de actieve beheerder leveren om passief slechts te evenaren?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Il doit couvrir l'écart de frais : α ≥ 1,2 − 0,15 = <b>1,05 %</b> par an, <em>avant</em> frais, juste pour faire jeu égal — et davantage pour surperformer.</div>
+            <div class="ans" data-lang="en">He must cover the fee gap: α ≥ 1.2 − 0.15 = <b>1.05%</b> per year, <em>before</em> fees, just to tie — and more to outperform.</div>
+            <div class="ans" data-lang="nl">Hij moet het kostenverschil dekken: α ≥ 1,2 − 0,15 = <b>1,05%</b> per jaar, <em>vóór</em> kosten, enkel om gelijk te spelen — en meer om te outperformen.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM6-4</span><span class="diff" data-lang="fr">Réflexion</span><span class="diff" data-lang="en">Conceptual</span><span class="diff" data-lang="nl">Reflectie</span></div>
+          <p class="estatement" data-lang="fr">Expliquez, avec l'arithmétique de Sharpe, pourquoi il est <em>impossible</em> que les gérants actifs, en moyenne, battent le passif après frais.</p>
+          <p class="estatement" data-lang="en">Explain, with Sharpe's arithmetic, why it is <em>impossible</em> for active managers, on average, to beat passive after fees.</p>
+          <p class="estatement" data-lang="nl">Leg met Sharpes rekenkunde uit waarom het <em>onmogelijk</em> is dat actieve beheerders gemiddeld passief na kosten verslaan.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Actifs et passifs détiennent ensemble le marché ⟹ même rendement brut moyen. Comme les frais actifs sont plus élevés, le rendement <b>net</b> moyen des actifs est nécessairement inférieur. C'est comptable, pas empirique.</div>
+            <div class="ans" data-lang="en">Active and passive together hold the market ⟹ same average gross return. Since active fees are higher, the average <b>net</b> return of active is necessarily lower. It's accounting, not empirical.</div>
+            <div class="ans" data-lang="nl">Actief en passief houden samen de markt aan ⟹ zelfde gemiddelde brutorendement. Omdat actieve kosten hoger zijn, is het gemiddelde <b>netto</b>rendement van actief noodzakelijk lager. Boekhoudkundig, niet empirisch.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM6-5</span><span class="diff" data-lang="fr">Réflexion</span><span class="diff" data-lang="en">Conceptual</span><span class="diff" data-lang="nl">Reflectie</span></div>
+          <p class="estatement" data-lang="fr">Un analyste étudie les rapports publics d'une entreprise pour dénicher une action sous-évaluée. Sous quelle forme d'efficience son effort est-il déjà vain, et pourquoi ?</p>
+          <p class="estatement" data-lang="en">An analyst studies a company's public filings to find an undervalued stock. Under which form of efficiency is this effort already futile, and why?</p>
+          <p class="estatement" data-lang="nl">Een analist bestudeert de publieke rapporten van een bedrijf om een ondergewaardeerd aandeel te vinden. Onder welke vorm van efficiëntie is die inspanning al vergeefs, en waarom?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Sous la forme <b>semi-forte</b> : toute l'information publique (dont les rapports) est déjà dans le prix. L'analyse fondamentale sur données publiques ne procure alors aucun avantage.</div>
+            <div class="ans" data-lang="en">Under the <b>semi-strong</b> form: all public information (including filings) is already in the price. Fundamental analysis on public data then gives no edge.</div>
+            <div class="ans" data-lang="nl">Onder de <b>halfsterke</b> vorm: alle publieke informatie (incl. rapporten) zit al in de prijs. Fundamentele analyse op publieke data geeft dan geen voordeel.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM6-6</span><span class="diff" data-lang="fr">Réflexion</span><span class="diff" data-lang="en">Conceptual</span><span class="diff" data-lang="nl">Reflectie</span></div>
+          <p class="estatement" data-lang="fr">Un fonds facture 1,3 % de frais mais affiche une tracking error de 0,4 % contre son indice. Que dénoncez-vous, et quel est le problème pour l'investisseur ?</p>
+          <p class="estatement" data-lang="en">A fund charges 1.3% in fees but shows a tracking error of 0.4% against its index. What do you flag, and what is the problem for the investor?</p>
+          <p class="estatement" data-lang="nl">Een fonds rekent 1,3% kosten aan maar toont een tracking error van 0,4% tegenover zijn index. Wat kaart je aan, en wat is het probleem voor de belegger?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Du <b>closet indexing</b> : une tracking error si faible signale un quasi-indice, mais facturé au prix de l'actif. L'investisseur paie 1,3 % pour, en pratique, le rendement de l'indice moins ces frais.</div>
+            <div class="ans" data-lang="en"><b>Closet indexing</b>: such low tracking error signals a near-index, but charged at active price. The investor pays 1.3% for, in practice, the index return minus those fees.</div>
+            <div class="ans" data-lang="nl"><b>Closet indexing</b>: zo'n lage tracking error wijst op een quasi-index, maar tegen actieve prijs. De belegger betaalt 1,3% voor, in de praktijk, het indexrendement min die kosten.</div>
+          </details>
+        </div>
+
+        <section class="biblio">
+          <h2 id="biblio"><span data-lang="fr">Bibliographie &amp; pour aller plus loin</span><span data-lang="en">Bibliography &amp; further reading</span><span data-lang="nl">Bibliografie &amp; verder lezen</span></h2>
+          <div class="bcol">
+            <h4 data-lang="fr">Références</h4><h4 data-lang="en">References</h4><h4 data-lang="nl">Referenties</h4>
+            <ol>
+      <li>Fama, E. F. (1970). Efficient Capital Markets: A Review of Theory and Empirical Work. <em>The Journal of Finance</em>, 25(2), 383–417. <a href="https://doi.org/10.2307/2325486" target="_blank" rel="noopener">doi.org/10.2307/2325486</a></li>
+      <li>Grossman, S. J. &amp; Stiglitz, J. E. (1980). On the Impossibility of Informationally Efficient Markets. <em>The American Economic Review</em>, 70(3), 393–408.</li>
+      <li>Sharpe, W. F. (1991). The Arithmetic of Active Management. <em>Financial Analysts Journal</em>, 47(1), 7–9. <a href="https://doi.org/10.2469/faj.v47.n1.7" target="_blank" rel="noopener">doi.org/10.2469/faj.v47.n1.7</a></li>
+      <li>Jensen, M. C. (1968). The Performance of Mutual Funds in the Period 1945–1964. <em>The Journal of Finance</em>, 23(2), 389–416. <a href="https://doi.org/10.1111/j.1540-6261.1968.tb00815.x" target="_blank" rel="noopener">doi.org/10.1111/j.1540-6261.1968.tb00815.x</a></li>
+      <li>Malkiel, B. G. (2019). <em>A Random Walk Down Wall Street</em> (12th ed.). W. W. Norton.</li>
+      <li>Bogle, J. C. (2010). <em>Common Sense on Mutual Funds</em> (10th anniv. ed.). Wiley.</li>
+            </ol>
+          </div>
+          <div class="bcol">
+            <h4 data-lang="fr">Pour aller plus loin</h4><h4 data-lang="en">Further reading</h4><h4 data-lang="nl">Verder lezen</h4>
+            <ul>
+      <li>S&amp;P Dow Jones Indices — <a href="https://www.spglobal.com/spdji/en/research-insights/spiva/" target="_blank" rel="noopener">SPIVA Scorecards</a> (actif vs indice, données récurrentes).</li>
+      <li>CFA Institute — <a href="https://www.cfainstitute.org" target="_blank" rel="noopener">cfainstitute.org</a> (Market Efficiency, Passive/Active).</li>
+      <li>Investopedia — <a href="https://www.investopedia.com/terms/e/efficientmarkethypothesis.asp" target="_blank" rel="noopener">EMH</a> · <a href="https://www.investopedia.com/terms/e/etf.asp" target="_blank" rel="noopener">ETF</a> · <a href="https://www.investopedia.com/terms/t/trackingerror.asp" target="_blank" rel="noopener">Tracking Error</a>.</li>
+            </ul>
+          </div>
+        </section>
+
+        <div class="module-nav">
+          <a class="prev" href="am5-construction-allocation.html">
+            <div class="dir" data-lang="fr">← Module précédent</div><div class="dir" data-lang="en">← Previous module</div><div class="dir" data-lang="nl">← Vorige module</div>
+            <div class="tt" data-lang="fr">5. Construction &amp; allocation</div><div class="tt" data-lang="en">5. Construction &amp; allocation</div><div class="tt" data-lang="nl">5. Constructie &amp; allocatie</div>
+          </a>
+          <a class="next" href="../index.html#curriculum">
+            <div class="dir" data-lang="fr">Module suivant →</div><div class="dir" data-lang="en">Next module →</div><div class="dir" data-lang="nl">Volgende module →</div>
+            <div class="tt" data-lang="fr">7. Performance &amp; attribution</div><div class="tt" data-lang="en">7. Performance &amp; attribution</div><div class="tt" data-lang="nl">7. Prestatie &amp; attributie</div>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap foot">
+    <div class="brand"><span class="logo">Avenir<b>.</b></span></div>
+    <p data-lang="fr">Asset Management · Module 6 · Gestion active vs passive</p>
+    <p data-lang="en">Asset Management · Module 6 · Active vs passive management</p>
+    <p data-lang="nl">Asset Management · Module 6 · Actief vs passief beheer</p>
+  </div>
+</footer>
+
+<script>
+/* ==========================================================================
+   AVENIR — Scripts partagés
+   Sélecteur de langue FR/EN, thème clair/sombre, sommaire actif, quiz
+   ========================================================================== */
+(function () {
+  "use strict";
+
+  var LS_LANG = "avenir-lang";
+  var LS_THEME = "avenir-theme";
+
+  function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  /* ---------- Langue ---------- */
+  function detectLang() {
+    var saved = safeGet(LS_LANG);
+    if (saved === "fr" || saved === "en" || saved === "nl") return saved;
+    var nav = (navigator.language || "fr").toLowerCase();
+    if (nav.indexOf("nl") === 0) return "nl";
+    if (nav.indexOf("en") === 0) return "en";
+    return "fr";
+  }
+
+  function setLang(lang) {
+    document.body.setAttribute("data-active-lang", lang);
+    document.documentElement.setAttribute("lang", lang);
+    safeSet(LS_LANG, lang);
+    document.querySelectorAll(".lang-toggle button").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-set-lang") === lang);
+    });
+  }
+
+  /* ---------- Thème ---------- */
+  function detectTheme() {
+    var saved = safeGet(LS_THEME);
+    if (saved === "light" || saved === "dark") return saved;
+    return null; // suit le système
+  }
+
+  function applyTheme(theme) {
+    if (theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      safeSet(LS_THEME, theme);
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+    updateThemeIcon();
+  }
+
+  function currentTheme() {
+    var attr = document.documentElement.getAttribute("data-theme");
+    if (attr) return attr;
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  function updateThemeIcon() {
+    var btn = document.getElementById("theme-btn");
+    if (btn) btn.textContent = currentTheme() === "dark" ? "☀" : "☾";
+  }
+
+  /* ---------- Initialisation ---------- */
+  document.addEventListener("DOMContentLoaded", function () {
+    setLang(detectLang());
+    applyTheme(detectTheme());
+
+    document.querySelectorAll(".lang-toggle button").forEach(function (b) {
+      b.addEventListener("click", function () { setLang(b.getAttribute("data-set-lang")); });
+    });
+
+    var themeBtn = document.getElementById("theme-btn");
+    if (themeBtn) themeBtn.addEventListener("click", function () {
+      applyTheme(currentTheme() === "dark" ? "light" : "dark");
+    });
+
+    var menuBtn = document.getElementById("menu-btn");
+    var navLinks = document.querySelector(".nav-links");
+    if (menuBtn && navLinks) menuBtn.addEventListener("click", function () {
+      var open = navLinks.style.display === "flex";
+      navLinks.style.display = open ? "" : "flex";
+      navLinks.style.position = "absolute";
+      navLinks.style.flexDirection = "column";
+      navLinks.style.top = "64px";
+      navLinks.style.right = "16px";
+      navLinks.style.background = "var(--surface)";
+      navLinks.style.border = "1px solid var(--border)";
+      navLinks.style.borderRadius = "12px";
+      navLinks.style.padding = "8px";
+      navLinks.style.boxShadow = "var(--shadow-lg)";
+    });
+
+    /* Sommaire actif + barre de progression (pages module) */
+    var toc = document.querySelector(".toc");
+    var bar = document.querySelector(".progress-bar");
+    if (toc || bar) {
+      var headings = Array.prototype.slice.call(document.querySelectorAll(".module-body h2[id]"));
+      var links = toc ? Array.prototype.slice.call(toc.querySelectorAll("a")) : [];
+      var onScroll = function () {
+        if (bar) {
+          var h = document.documentElement;
+          var pct = h.scrollTop / (h.scrollHeight - h.clientHeight);
+          bar.style.width = Math.max(0, Math.min(1, pct)) * 100 + "%";
+        }
+        if (headings.length && links.length) {
+          var pos = window.scrollY + 120, current = headings[0].id;
+          headings.forEach(function (hd) { if (hd.offsetTop <= pos) current = hd.id; });
+          links.forEach(function (a) {
+            a.classList.toggle("active", a.getAttribute("href") === "#" + current);
+          });
+        }
+      };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    }
+  });
+
+  /* ---------- Quiz (exposé globalement pour les onclick) ---------- */
+  window.avenirAnswer = function (btn, correct) {
+    var q = btn.closest(".q");
+    if (q.getAttribute("data-done") === "1") return;
+    q.setAttribute("data-done", "1");
+    var opts = q.querySelectorAll(".opt");
+    opts.forEach(function (o) { o.disabled = true; });
+    if (correct) {
+      btn.classList.add("correct");
+    } else {
+      btn.classList.add("wrong");
+      opts.forEach(function (o) { if (o.getAttribute("data-correct") === "1") o.classList.add("correct"); });
+    }
+    var ex = q.querySelector(".explain");
+    if (ex) ex.classList.add("show");
+  };
+})();
+
+</script>
+<script>
+/* Comparateur actif / passif — érosion des frais */
+(function () {
+  var svg = document.getElementById("fd-chart");
+  if (!svg) return;
+  function v(id){ return parseFloat(document.getElementById(id).value); }
+  function setT(id,t){ var e=document.getElementById(id); if(e) e.textContent=t; }
+  function activeLang(){ return document.body.getAttribute("data-active-lang") || "fr"; }
+  function fmt(x){ var l=activeLang(); return Math.round(x).toLocaleString(l==="en"?"en-US":(l==="nl"?"nl-BE":"fr-FR"))+" €"; }
+
+  function draw() {
+    var N=v("fd-n"), g=v("fd-g"), a=v("fd-a"), fp=v("fd-fp"), fa=v("fd-fa");
+    setT("fd-n-o", v("fd-n")); setT("fd-g-o", v("fd-g")+"%"); setT("fd-a-o", v("fd-a").toFixed(1)+"%");
+    setT("fd-fp-o", v("fd-fp").toFixed(2)+"%"); setT("fd-fa-o", v("fd-fa").toFixed(2)+"%");
+
+    var P0=10000;
+    var rp=(g-fp)/100, ra=(g+a-fa)/100;
+    var vp=P0*Math.pow(1+rp,N), va=P0*Math.pow(1+ra,N);
+    setT("fd-vp", fmt(vp)); setT("fd-va", fmt(va));
+    var gap=vp-va;
+    setT("fd-gap", (gap>=0?"+":"−")+fmt(Math.abs(gap)).replace("-","")+" ("+(vp>0?((gap/vp)*100).toFixed(0):0)+"%)");
+
+    var W=520,H=300,L=58,R=16,T=14,B=30, pw=W-L-R, ph=H-T-B;
+    var ymax=Math.max(vp,va,P0)*1.08;
+    function px(i){ return L + i/N*pw; }
+    function py(y){ return T + (1 - y/ymax)*ph; }
+
+    var gg="";
+    for (var k=0;k<=4;k++){ var yv=ymax*k/4, Y=py(yv);
+      gg+='<line class="grid" x1="'+L+'" y1="'+Y+'" x2="'+(L+pw)+'" y2="'+Y+'"/>';
+      gg+='<text class="tick" x="'+(L-6)+'" y="'+(Y+3)+'" text-anchor="end">'+Math.round(yv/1000)+'k</text>';
+    }
+    var nx=Math.min(N,8);
+    for (var m=0;m<=nx;m++){ var iv=Math.round(N*m/nx), X=px(iv);
+      gg+='<text class="tick" x="'+X+'" y="'+(T+ph+13)+'" text-anchor="middle">'+iv+'</text>';
+    }
+    gg+='<line class="axis" x1="'+L+'" y1="'+(T+ph)+'" x2="'+(L+pw)+'" y2="'+(T+ph)+'"/>';
+    gg+='<line class="axis" x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+(T+ph)+'"/>';
+
+    function path(rate){ var s=""; for (var i=0;i<=N;i++){ var y=P0*Math.pow(1+rate,i); s+=(i===0?"M":"L")+px(i).toFixed(1)+","+py(y).toFixed(1)+" "; } return s.trim(); }
+    gg+='<path class="cp" d="'+path(rp)+'"/>';
+    gg+='<path class="ca" d="'+path(ra)+'"/>';
+
+    gg+='<text class="alab" x="'+(L+pw/2)+'" y="'+(H-2)+'" text-anchor="middle">'+(activeLang()==="en"?"years":(activeLang()==="nl"?"jaren":"années"))+'</text>';
+    svg.innerHTML=gg;
+  }
+
+  ["fd-n","fd-g","fd-a","fd-fp","fd-fa"].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener("input", draw); });
+  document.querySelectorAll("[data-set-lang]").forEach(function(b){ b.addEventListener("click", function(){ setTimeout(draw,10); }); });
+  document.addEventListener("DOMContentLoaded", draw);
+  draw();
+})();
+</script>
+</body>
+</html>
