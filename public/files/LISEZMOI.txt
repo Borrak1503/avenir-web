@@ -1,0 +1,14 @@
+DOSSIER DES FICHIERS TÉLÉCHARGEABLES
+=====================================
+Dépose ici tes fichiers Excel (.xlsx), PDF (.pdf), Word (.docx), etc.
+Ils seront servis à l'adresse :  https://borrak1503.github.io/avenir-web/files/<nom-du-fichier>
+
+Dans un module, on les lie avec le jeton @@BASE@@ (résolu automatiquement au build) :
+  <a href="@@BASE@@files/mon-fichier.xlsx" download>Télécharger</a>
+
+Noms de fichiers attendus par le sous-module « Actions » (AM-4·A) — à déposer quand prêts :
+  - am4-actions-fiche.pdf        (fiche de synthèse)
+  - am4-actions-donnees.xlsx     (données / exercices)
+
+Le sous-module fonctionne même sans les fichiers : les liens renverront un 404
+tant que les fichiers ne sont pas déposés, sans casser la page.
