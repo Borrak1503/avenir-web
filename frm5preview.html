@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dérivés &amp; les Greeks — Avenir</title>
+<meta name="description" content="Module FRM sur les options et les Greeks : payoffs, valeur intrinsèque et temps, Black-Scholes-Merton, delta/gamma/vega/theta/rho, couverture en delta, parité call-put. Calculateur Black-Scholes interactif, QCM et exercices.">
+<style>
+/* ==========================================================================
+   AVENIR — Plateforme pédagogique Asset Management & Financial Risk Management
+   Feuille de style partagée
+   ========================================================================== */
+
+:root {
+  /* Palette claire */
+  --bg:            #f6f4ef;
+  --bg-soft:       #efece4;
+  --surface:       #ffffff;
+  --surface-2:     #faf8f3;
+  --border:        #e2ddd1;
+  --ink:           #1a2230;
+  --ink-soft:      #4a5566;
+  --ink-mute:      #7a8494;
+
+  --navy:          #12294a;
+  --navy-2:        #1c3a63;
+  --gold:          #c19a3e;
+  --gold-soft:     #e7d9b0;
+  --teal:          #16706a;
+  --teal-soft:     #cfe6e2;
+  --crimson:       #9a3140;
+
+  --am:            var(--navy);   /* couleur du parcours Asset Management */
+  --am-soft:       #dbe3ef;
+  --frm:           var(--teal);   /* couleur du parcours Risk Management */
+  --frm-soft:      var(--teal-soft);
+
+  --radius:        14px;
+  --radius-sm:     9px;
+  --shadow:        0 1px 2px rgba(18,41,74,.05), 0 8px 24px rgba(18,41,74,.07);
+  --shadow-lg:     0 12px 40px rgba(18,41,74,.14);
+  --maxw:          1160px;
+
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: "SF Mono", "JetBrains Mono", "Fira Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:        #0d141f;
+    --bg-soft:   #111a28;
+    --surface:   #15202f;
+    --surface-2: #1a2637;
+    --border:    #263449;
+    --ink:       #edf1f6;
+    --ink-soft:  #b3bdcc;
+    --ink-mute:  #808ba0;
+    --navy:      #6f9bd6;
+    --navy-2:    #8bb0e0;
+    --gold:      #d8b95e;
+    --gold-soft: #40391f;
+    --teal:      #4bb3aa;
+    --teal-soft: #17332f;
+    --crimson:   #d47a86;
+    --am-soft:   #1a2c46;
+    --frm-soft:  #16332f;
+    --shadow:    0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"] {
+  --bg:        #0d141f;
+  --bg-soft:   #111a28;
+  --surface:   #15202f;
+  --surface-2: #1a2637;
+  --border:    #263449;
+  --ink:       #edf1f6;
+  --ink-soft:  #b3bdcc;
+  --ink-mute:  #808ba0;
+  --navy:      #6f9bd6;
+  --navy-2:    #8bb0e0;
+  --gold:      #d8b95e;
+  --gold-soft: #40391f;
+  --teal:      #4bb3aa;
+  --teal-soft: #17332f;
+  --crimson:   #d47a86;
+  --am-soft:   #1a2c46;
+  --frm-soft:  #16332f;
+  --shadow:    0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.5);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Bilinguisme : on masque la langue inactive */
+[data-lang] { display: none; }
+body[data-active-lang="fr"] [data-lang="fr"] { display: revert; }
+body[data-active-lang="en"] [data-lang="en"] { display: revert; }
+body[data-active-lang="nl"] [data-lang="nl"] { display: revert; }
+/* variantes en ligne */
+span[data-lang], a[data-lang], em[data-lang], strong[data-lang], code[data-lang] { display: none; }
+body[data-active-lang="fr"] span[data-lang="fr"],
+body[data-active-lang="fr"] a[data-lang="fr"],
+body[data-active-lang="fr"] em[data-lang="fr"],
+body[data-active-lang="fr"] strong[data-lang="fr"],
+body[data-active-lang="fr"] code[data-lang="fr"] { display: inline; }
+body[data-active-lang="en"] span[data-lang="en"],
+body[data-active-lang="en"] a[data-lang="en"],
+body[data-active-lang="en"] em[data-lang="en"],
+body[data-active-lang="en"] strong[data-lang="en"],
+body[data-active-lang="en"] code[data-lang="en"] { display: inline; }
+body[data-active-lang="nl"] span[data-lang="nl"],
+body[data-active-lang="nl"] a[data-lang="nl"],
+body[data-active-lang="nl"] em[data-lang="nl"],
+body[data-active-lang="nl"] strong[data-lang="nl"],
+body[data-active-lang="nl"] code[data-lang="nl"] { display: inline; }
+/* les pastilles inline-block conservent leur forme quand elles portent data-lang */
+body[data-active-lang="fr"] span.eyebrow[data-lang="fr"],
+body[data-active-lang="en"] span.eyebrow[data-lang="en"],
+body[data-active-lang="nl"] span.eyebrow[data-lang="nl"] { display: inline-block; }
+/* .callout .clabel force display:block — masquer les langues non actives et ne révéler que l'active */
+.callout .clabel[data-lang] { display: none; }
+body[data-active-lang="fr"] .callout .clabel[data-lang="fr"],
+body[data-active-lang="en"] .callout .clabel[data-lang="en"],
+body[data-active-lang="nl"] .callout .clabel[data-lang="nl"] { display: block; }
+/* garde-fou général : une règle de composant (ex. .sml-sliders label{display:block}) ne doit jamais
+   ré-afficher une langue non active. On masque toujours les langues non actives (!important). */
+body[data-active-lang="fr"] [data-lang]:not([data-lang="fr"]),
+body[data-active-lang="en"] [data-lang]:not([data-lang="en"]),
+body[data-active-lang="nl"] [data-lang]:not([data-lang="nl"]) { display: none !important; }
+
+a { color: var(--navy-2); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+/* ---------- En-tête / navigation ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.nav {
+  display: flex; align-items: center; gap: 20px;
+  height: 64px;
+}
+.brand { display: flex; align-items: baseline; gap: 10px; font-family: var(--serif); }
+.brand a { color: var(--ink); text-decoration: none; }
+.brand .logo {
+  font-size: 22px; font-weight: 700; letter-spacing: .5px;
+}
+.brand .logo b { color: var(--gold); }
+.brand .tag { font-size: 12.5px; color: var(--ink-mute); font-family: var(--sans); letter-spacing: .3px; }
+.nav .spacer { flex: 1; }
+.nav-links { display: flex; gap: 4px; }
+.nav-links a {
+  color: var(--ink-soft); font-size: 14.5px; font-weight: 500;
+  padding: 8px 12px; border-radius: 8px;
+}
+.nav-links a:hover { background: var(--bg-soft); color: var(--ink); text-decoration: none; }
+
+.controls { display: flex; align-items: center; gap: 8px; }
+.lang-toggle {
+  display: inline-flex; border: 1px solid var(--border); border-radius: 999px;
+  overflow: hidden; background: var(--surface-2);
+}
+.lang-toggle button {
+  border: 0; background: transparent; color: var(--ink-mute);
+  font: 600 13px/1 var(--sans); padding: 7px 13px; cursor: pointer;
+}
+.lang-toggle button.active { background: var(--navy); color: #fff; }
+:root[data-theme="dark"] .lang-toggle button.active,
+:root:not([data-theme="light"]) .lang-toggle button.active { color: #0d141f; }
+.icon-btn {
+  border: 1px solid var(--border); background: var(--surface-2);
+  width: 36px; height: 36px; border-radius: 999px; cursor: pointer;
+  font-size: 16px; color: var(--ink-soft); display: grid; place-items: center;
+}
+.icon-btn:hover { color: var(--ink); }
+.menu-btn { display: none; }
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative; overflow: hidden;
+  background:
+    radial-gradient(1200px 500px at 80% -10%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 60%),
+    linear-gradient(160deg, var(--navy) 0%, #0c1c34 65%, #0a1830 100%);
+  color: #eef2f8;
+}
+:root[data-theme="dark"] .hero,
+:root:not([data-theme="light"]) .hero {
+  background:
+    radial-gradient(1200px 500px at 80% -10%, rgba(216,185,94,.14), transparent 60%),
+    linear-gradient(160deg, #0b1524 0%, #0a1220 100%);
+}
+.hero .wrap { padding-top: 72px; padding-bottom: 76px; }
+.hero .eyebrow {
+  display: inline-block; font-size: 12.5px; letter-spacing: 2.2px; text-transform: uppercase;
+  color: var(--gold-soft); border: 1px solid rgba(231,217,176,.35);
+  padding: 5px 12px; border-radius: 999px; margin-bottom: 22px;
+}
+:root[data-theme="dark"] .hero .eyebrow,
+:root:not([data-theme="light"]) .hero .eyebrow { color: var(--gold); }
+.hero h1 {
+  font-family: var(--serif); font-weight: 700;
+  font-size: clamp(34px, 5.2vw, 58px); line-height: 1.08; margin: 0 0 20px;
+  max-width: 16ch;
+}
+.hero h1 .accent { color: var(--gold); }
+.hero p.lead { font-size: clamp(17px, 2.2vw, 21px); color: #cdd7e6; max-width: 60ch; margin: 0 0 32px; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; }
+.hero-stats { display: flex; gap: 40px; margin-top: 54px; flex-wrap: wrap; }
+.hero-stats .stat .n { font-family: var(--serif); font-size: 34px; color: #fff; font-weight: 700; }
+.hero-stats .stat .l { font-size: 13.5px; color: #a9b6c9; letter-spacing: .3px; }
+
+/* ---------- Boutons ---------- */
+.btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  font: 600 15px/1 var(--sans); padding: 13px 22px; border-radius: 10px;
+  cursor: pointer; border: 1px solid transparent; transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn:hover { text-decoration: none; transform: translateY(-1px); }
+.btn-gold { background: var(--gold); color: #241c05; }
+.btn-gold:hover { box-shadow: 0 8px 20px rgba(193,154,62,.35); }
+.btn-ghost { background: transparent; color: #eef2f8; border-color: rgba(255,255,255,.35); }
+.btn-ghost:hover { background: rgba(255,255,255,.08); }
+.btn-solid { background: var(--navy); color: #fff; }
+:root[data-theme="dark"] .btn-solid,
+:root:not([data-theme="light"]) .btn-solid { color: #0d141f; }
+.btn-solid:hover { box-shadow: var(--shadow); }
+.btn-outline { background: var(--surface); color: var(--ink); border-color: var(--border); }
+.btn-outline:hover { border-color: var(--navy-2); }
+
+/* ---------- Sections ---------- */
+section { padding: 66px 0; }
+.section-head { max-width: 720px; margin-bottom: 40px; }
+.section-head .kicker {
+  font-size: 12.5px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold); font-weight: 700; margin-bottom: 12px;
+}
+.section-head h2 { font-family: var(--serif); font-size: clamp(26px, 3.6vw, 38px); margin: 0 0 12px; line-height: 1.15; }
+.section-head p { color: var(--ink-soft); font-size: 18px; margin: 0; }
+
+/* ---------- Parcours (tracks) ---------- */
+.tracks { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.track {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 32px; box-shadow: var(--shadow); position: relative; overflow: hidden;
+}
+.track::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 5px; }
+.track.am::before { background: linear-gradient(var(--navy), var(--navy-2)); }
+.track.frm::before { background: linear-gradient(var(--teal), #0f5651); }
+.track .badge {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: 5px 11px; border-radius: 999px; margin-bottom: 16px;
+}
+.track.am .badge { background: var(--am-soft); color: var(--navy); }
+.track.frm .badge { background: var(--frm-soft); color: var(--teal); }
+.track h3 { font-family: var(--serif); font-size: 25px; margin: 0 0 8px; }
+.track p { color: var(--ink-soft); margin: 0 0 18px; font-size: 15.5px; }
+.track ul { list-style: none; padding: 0; margin: 0 0 22px; }
+.track ul li { padding: 7px 0 7px 26px; position: relative; font-size: 15px; border-top: 1px solid var(--border); }
+.track ul li:first-child { border-top: 0; }
+.track ul li::before {
+  content: "▸"; position: absolute; left: 4px; top: 7px; font-weight: 700;
+}
+.track.am ul li::before { color: var(--gold); }
+.track.frm ul li::before { color: var(--teal); }
+
+/* ---------- Curriculum ---------- */
+.curriculum { background: var(--bg-soft); }
+.curric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.curric-col h3 {
+  font-family: var(--serif); font-size: 22px; display: flex; align-items: center; gap: 10px;
+  padding-bottom: 14px; margin: 0 0 6px; border-bottom: 2px solid var(--border);
+}
+.curric-col.am h3 { color: var(--navy); }
+.curric-col.frm h3 { color: var(--teal); }
+.curric-col .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.curric-col.am .dot { background: var(--navy); }
+.curric-col.frm .dot { background: var(--teal); }
+.mod {
+  display: flex; gap: 15px; align-items: flex-start;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 15px 17px; margin-top: 12px; transition: border-color .15s ease, transform .15s ease;
+}
+a.mod:hover { text-decoration: none; transform: translateX(3px); box-shadow: var(--shadow); }
+.curric-col.am a.mod:hover { border-color: var(--navy-2); }
+.curric-col.frm a.mod:hover { border-color: var(--teal); }
+.mod .num {
+  flex: none; width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center;
+  font-family: var(--serif); font-weight: 700; font-size: 15px;
+}
+.curric-col.am .mod .num { background: var(--am-soft); color: var(--navy); }
+.curric-col.frm .mod .num { background: var(--frm-soft); color: var(--teal); }
+.mod .mt { font-weight: 600; font-size: 15.5px; color: var(--ink); margin: 2px 0 2px; }
+.mod .md { font-size: 13.5px; color: var(--ink-mute); line-height: 1.5; }
+.mod .chip {
+  font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+  color: var(--gold); border: 1px solid var(--gold-soft); border-radius: 999px; padding: 2px 8px;
+  margin-left: auto; align-self: center; flex: none;
+}
+
+/* ---------- Bandeau méthode ---------- */
+.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.feature { padding: 6px 4px; }
+.feature .ic { font-size: 24px; margin-bottom: 10px; }
+.feature h4 { font-size: 17px; margin: 0 0 6px; }
+.feature p { color: var(--ink-soft); font-size: 14.5px; margin: 0; }
+
+/* ---------- CTA final ---------- */
+.cta-band {
+  background: linear-gradient(160deg, var(--navy), #0b1c35);
+  color: #eef2f8; border-radius: var(--radius); padding: 46px; text-align: center;
+}
+.cta-band h2 { font-family: var(--serif); font-size: clamp(24px, 3vw, 34px); margin: 0 0 12px; }
+.cta-band p { color: #c7d2e2; max-width: 54ch; margin: 0 auto 26px; }
+
+/* ---------- Pied de page ---------- */
+.site-footer { border-top: 1px solid var(--border); background: var(--surface); padding: 40px 0; margin-top: 20px; }
+.foot { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: center; }
+.foot .brand .logo { font-size: 18px; }
+.foot p { color: var(--ink-mute); font-size: 13.5px; margin: 0; }
+
+/* ==========================================================================
+   PAGES MODULE
+   ========================================================================== */
+.module-shell { display: grid; grid-template-columns: 264px 1fr; gap: 40px; align-items: start; }
+.module-shell .wrap-mod { max-width: var(--maxw); margin: 0 auto; padding: 40px 24px 80px; }
+
+/* barre latérale sommaire */
+.toc {
+  position: sticky; top: 84px; align-self: start;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px; box-shadow: var(--shadow); max-height: calc(100vh - 110px); overflow: auto;
+}
+.toc .toc-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-mute); font-weight: 700; margin-bottom: 12px; }
+.toc a { display: block; color: var(--ink-soft); font-size: 14px; padding: 6px 10px; border-radius: 7px; border-left: 2px solid transparent; }
+.toc a:hover { background: var(--bg-soft); text-decoration: none; }
+.toc a.active { color: var(--teal); background: var(--frm-soft); border-left-color: var(--teal); font-weight: 600; }
+
+/* fil d'ariane + entête module */
+.crumbs { font-size: 13.5px; color: var(--ink-mute); margin-bottom: 14px; }
+.crumbs a { color: var(--ink-mute); }
+.module-hero { border-bottom: 1px solid var(--border); padding-bottom: 26px; margin-bottom: 34px; }
+.module-hero .badge {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: 5px 11px; border-radius: 999px;
+  background: var(--frm-soft); color: var(--teal); margin-bottom: 14px;
+}
+.module-hero h1 { font-family: var(--serif); font-size: clamp(30px, 4.4vw, 46px); line-height: 1.1; margin: 0 0 12px; }
+.module-hero .subtitle { font-size: 19px; color: var(--ink-soft); max-width: 65ch; margin: 0 0 18px; }
+.module-meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 13.5px; color: var(--ink-mute); }
+.module-meta span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* objectifs */
+.objectives {
+  background: var(--surface-2); border: 1px solid var(--border); border-left: 4px solid var(--teal);
+  border-radius: var(--radius-sm); padding: 20px 24px; margin: 0 0 40px;
+}
+.objectives h4 { margin: 0 0 10px; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); }
+.objectives ul { margin: 0; padding-left: 20px; }
+.objectives li { margin: 5px 0; color: var(--ink-soft); }
+
+/* corps du module */
+.module-body h2 {
+  font-family: var(--serif); font-size: 29px; margin: 48px 0 14px; scroll-margin-top: 84px;
+  padding-top: 6px;
+}
+.module-body h3 { font-family: var(--serif); font-size: 22px; margin: 30px 0 10px; }
+.module-body p { margin: 0 0 16px; color: var(--ink); }
+.module-body ul, .module-body ol { margin: 0 0 18px; padding-left: 26px; }
+.module-body li { margin: 6px 0; }
+.module-body strong { color: var(--ink); }
+
+/* définitions et encadrés */
+.callout {
+  border-radius: var(--radius-sm); padding: 18px 20px; margin: 24px 0; border: 1px solid var(--border);
+  background: var(--surface-2); font-size: 15.5px;
+}
+.callout .clabel { font-weight: 700; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 6px; }
+.callout.def { border-left: 4px solid var(--navy); }
+.callout.def .clabel { color: var(--navy); }
+.callout.warn { border-left: 4px solid var(--crimson); background: color-mix(in srgb, var(--crimson) 7%, var(--surface)); }
+.callout.warn .clabel { color: var(--crimson); }
+.callout.tip { border-left: 4px solid var(--gold); }
+.callout.tip .clabel { color: var(--gold); }
+
+/* formules */
+.formula {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 22px 24px; margin: 22px 0; text-align: center; box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+.formula .eq { font-family: var(--serif); font-size: 22px; color: var(--ink); }
+.formula .eq em { color: var(--teal); font-style: italic; }
+.formula .caption { font-size: 13px; color: var(--ink-mute); margin-top: 12px; }
+sub, sup { font-size: .72em; }
+
+/* tableaux */
+.table-wrap { overflow-x: auto; margin: 22px 0; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; min-width: 460px; }
+thead th { background: var(--navy); color: #fff; text-align: left; padding: 11px 14px; font-weight: 600; font-size: 13.5px; }
+:root[data-theme="dark"] thead th,
+:root:not([data-theme="light"]) thead th { color: #0d141f; }
+tbody td { padding: 10px 14px; border-top: 1px solid var(--border); }
+tbody tr:nth-child(even) td { background: var(--surface-2); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); }
+
+/* exemple travaillé */
+.worked {
+  border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 28px 0;
+}
+.worked .whead { background: var(--am-soft); color: var(--navy); padding: 12px 20px; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+.worked .wbody { padding: 20px 22px; background: var(--surface); }
+.worked .step { padding: 12px 0; border-top: 1px dashed var(--border); }
+.worked .step:first-child { border-top: 0; }
+.worked .step .sn { font-weight: 700; color: var(--teal); font-size: 13.5px; letter-spacing: .5px; }
+
+/* calculateur interactif */
+.calc {
+  border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+  background: var(--surface); overflow: hidden; margin: 30px 0;
+}
+.calc .chead { background: linear-gradient(160deg, var(--teal), #0f5651); color: #fff; padding: 16px 22px; }
+.calc .chead h4 { margin: 0; font-family: var(--serif); font-size: 20px; }
+.calc .chead p { margin: 4px 0 0; font-size: 13.5px; color: #d5eee9; }
+.calc .cbody { padding: 22px; display: grid; grid-template-columns: 1fr 300px; gap: 26px; }
+.calc .inputs label { display: block; font-size: 13.5px; font-weight: 600; color: var(--ink-soft); margin: 14px 0 6px; }
+.calc .inputs input, .calc .inputs select {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface-2); color: var(--ink); font: 500 15px var(--sans);
+}
+.calc .inputs .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.calc .rangewrap { display: flex; align-items: center; gap: 12px; }
+.calc .rangewrap input[type=range] { flex: 1; }
+.calc .rangewrap output { font-family: var(--mono); font-weight: 600; min-width: 46px; text-align: right; color: var(--teal); }
+.calc .result {
+  background: var(--navy); color: #fff; border-radius: var(--radius-sm); padding: 22px; align-self: start;
+}
+:root[data-theme="dark"] .calc .result,
+:root:not([data-theme="light"]) .calc .result { background: #0c1b32; }
+.calc .result .rl { font-size: 12.5px; text-transform: uppercase; letter-spacing: 1px; color: #9fb0c8; }
+.calc .result .rv { font-family: var(--serif); font-size: 34px; font-weight: 700; margin: 4px 0 2px; }
+.calc .result .rv.gold { color: var(--gold); }
+.calc .result .rsub { font-size: 13px; color: #b9c6d8; }
+.calc .result hr { border: 0; border-top: 1px solid rgba(255,255,255,.15); margin: 16px 0; }
+
+/* quiz */
+.quiz { border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin: 30px 0; background: var(--surface); }
+.quiz h4 { margin: 0 0 4px; font-family: var(--serif); font-size: 20px; }
+.quiz .qsub { color: var(--ink-mute); font-size: 14px; margin: 0 0 18px; }
+.q { margin: 18px 0; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.q:last-of-type { border-bottom: 0; }
+.q .qtext { font-weight: 600; margin-bottom: 12px; }
+.q .opt {
+  display: block; width: 100%; text-align: left; padding: 11px 14px; margin: 7px 0;
+  border: 1px solid var(--border); border-radius: 9px; background: var(--surface-2); color: var(--ink);
+  cursor: pointer; font: 500 15px var(--sans); transition: all .12s ease;
+}
+.q .opt:hover { border-color: var(--teal); }
+.q .opt.correct { background: color-mix(in srgb, var(--teal) 16%, var(--surface)); border-color: var(--teal); color: var(--ink); }
+.q .opt.wrong { background: color-mix(in srgb, var(--crimson) 14%, var(--surface)); border-color: var(--crimson); }
+.q .explain { display: none; margin-top: 10px; font-size: 14px; color: var(--ink-soft); background: var(--surface-2); border-radius: 8px; padding: 12px 14px; border-left: 3px solid var(--teal); }
+.q .explain.show { display: block; }
+
+/* navigation entre modules */
+.module-nav { display: flex; justify-content: space-between; gap: 16px; margin-top: 50px; flex-wrap: wrap; }
+.module-nav a {
+  flex: 1; min-width: 220px; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 20px; background: var(--surface); transition: border-color .15s ease;
+}
+.module-nav a:hover { border-color: var(--teal); text-decoration: none; }
+.module-nav .dir { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-mute); }
+.module-nav .tt { font-weight: 600; color: var(--ink); margin-top: 3px; }
+.module-nav a.next { text-align: right; }
+
+/* progression de lecture */
+.progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0; z-index: 60; transition: width .1s linear; }
+
+/* exercices chiffrés */
+.exo { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px; margin: 14px 0; background: var(--surface); box-shadow: var(--shadow); }
+.exo .ehead { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.exo .eid { font-size: 12px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--teal); }
+.exo .diff { font-size: 10.5px; letter-spacing: .5px; text-transform: uppercase; border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px; color: var(--ink-mute); }
+.exo .estatement { margin: 0 0 6px; }
+.exo details { border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 10px; }
+.exo summary { cursor: pointer; font-weight: 600; font-size: 14px; color: var(--navy-2); list-style: none; }
+.exo summary::-webkit-details-marker { display: none; }
+.exo summary::before { content: "▸ "; color: var(--gold); }
+.exo details[open] summary::before { content: "▾ "; }
+.exo .ans { font-size: 14.5px; color: var(--ink-soft); margin-top: 8px; }
+.exo .ans b { color: var(--ink); }
+
+/* ---------- Thème parcours Asset Management (navy/or) sur pages module ----------
+   Les composants module utilisent --teal / --frm-soft (couleur FRM) par défaut.
+   Sur un module du parcours Asset Management, on remappe ces variables vers le navy. */
+body.track-am { --teal: var(--navy); --frm-soft: var(--am-soft); }
+body.track-am .calc .chead { background: linear-gradient(160deg, var(--navy), #0a1830); }
+body.track-am .module-hero .badge,
+body.track-am .worked .whead { background: var(--am-soft); color: var(--navy); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 940px) {
+  .module-shell { grid-template-columns: 1fr; }
+  .toc { display: none; }
+  .calc .cbody { grid-template-columns: 1fr; }
+}
+@media (max-width: 820px) {
+  .tracks, .curric-grid, .features { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .menu-btn { display: grid; }
+  .hero-stats { gap: 26px; }
+}
+
+/* ---------- Bibliographie & sources ---------- */
+.biblio { border-top: 2px solid var(--border); margin-top: 50px; padding-top: 8px; }
+.biblio .bcol { margin: 0 0 22px; }
+.biblio h4 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--ink-mute); margin: 0 0 10px; }
+.biblio ol, .biblio ul { margin: 0; padding-left: 22px; }
+.biblio li { font-size: 14px; color: var(--ink-soft); line-height: 1.65; margin: 8px 0; }
+.biblio li em { color: var(--ink); font-style: italic; }
+.biblio a { color: var(--navy-2); text-decoration: none; border-bottom: 1px solid var(--border); }
+.biblio a:hover { border-color: var(--navy-2); }
+.formula .caption.src, .src { color: var(--ink-mute); font-style: italic; font-size: 12.5px; }
+
+</style>
+</head>
+<body data-active-lang="fr">
+
+<div class="progress-bar"></div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <div class="brand">
+      <a href="../index.html"><span class="logo">Avenir<b>.</b></span></a>
+      <span class="tag">Asset Management &amp; Risk</span>
+    </div>
+    <div class="spacer"></div>
+    <nav class="nav-links">
+      <a href="../index.html#parcours"><span data-lang="fr">Parcours</span><span data-lang="en">Tracks</span><span data-lang="nl">Trajecten</span></a>
+      <a href="../index.html#curriculum"><span data-lang="fr">Programme</span><span data-lang="en">Curriculum</span><span data-lang="nl">Programma</span></a>
+      <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a>
+    </nav>
+    <div class="controls">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-set-lang="fr">FR</button>
+        <button data-set-lang="en">EN</button>
+        <button data-set-lang="nl">NL</button>
+      </div>
+      <button id="theme-btn" class="icon-btn" aria-label="Thème">☾</button>
+      <button id="menu-btn" class="icon-btn menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap-mod">
+  <div class="module-shell">
+
+    <aside class="toc">
+      <div class="toc-title" data-lang="fr">Sommaire</div>
+      <div class="toc-title" data-lang="en">Contents</div>
+      <div class="toc-title" data-lang="nl">Inhoud</div>
+      <a href="#derives"><span data-lang="fr">1. Dérivés &amp; options</span><span data-lang="en">1. Derivatives &amp; options</span><span data-lang="nl">1. Derivaten &amp; opties</span></a>
+      <a href="#payoff"><span data-lang="fr">2. Payoff &amp; valeur</span><span data-lang="en">2. Payoff &amp; value</span><span data-lang="nl">2. Payoff &amp; waarde</span></a>
+      <a href="#bs"><span data-lang="fr">3. Black-Scholes-Merton</span><span data-lang="en">3. Black-Scholes-Merton</span><span data-lang="nl">3. Black-Scholes-Merton</span></a>
+      <a href="#greeks"><span data-lang="fr">4. Les Greeks</span><span data-lang="en">4. The Greeks</span><span data-lang="nl">4. De Greeks</span></a>
+      <a href="#hedging"><span data-lang="fr">5. La couverture en delta</span><span data-lang="en">5. Delta hedging</span><span data-lang="nl">5. Delta-hedging</span></a>
+      <a href="#parite"><span data-lang="fr">6. Parité call-put</span><span data-lang="en">6. Put-call parity</span><span data-lang="nl">6. Put-call-pariteit</span></a>
+      <a href="#retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></a>
+      <a href="#qcm"><span data-lang="fr">8. QCM (15)</span><span data-lang="en">8. MCQ (15)</span><span data-lang="nl">8. MCV (15)</span></a>
+      <a href="#exercices"><span data-lang="fr">9. Exercices</span><span data-lang="en">9. Exercises</span><span data-lang="nl">9. Oefeningen</span></a>
+      <a href="#biblio"><span data-lang="fr">Sources</span><span data-lang="en">Sources</span><span data-lang="nl">Bronnen</span></a>
+    </aside>
+
+    <main>
+      <div class="crumbs">
+        <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a> ·
+        <span>Financial Risk Management</span> ·
+        <span data-lang="fr">Module 5</span><span data-lang="en">Module 5</span><span data-lang="nl">Module 5</span>
+      </div>
+
+      <div class="module-hero">
+        <span class="badge">Risk Management · 05</span>
+        <h1 data-lang="fr">Dérivés &amp; les Greeks</h1>
+        <h1 data-lang="en">Derivatives &amp; the Greeks</h1>
+        <h1 data-lang="nl">Derivaten &amp; de Greeks</h1>
+        <p class="subtitle" data-lang="fr">Une option est un pari asymétrique dont le risque n'est jamais constant. Les Greeks — delta, gamma, vega, theta, rho — décomposent ce risque en ses cinq dimensions, et disent au trader comment se couvrir dynamiquement.</p>
+        <p class="subtitle" data-lang="en">An option is an asymmetric bet whose risk is never constant. The Greeks — delta, gamma, vega, theta, rho — decompose that risk into its five dimensions, and tell the trader how to hedge dynamically.</p>
+        <p class="subtitle" data-lang="nl">Een optie is een asymmetrische weddenschap waarvan het risico nooit constant is. De Greeks — delta, gamma, vega, theta, rho — ontbinden dat risico in zijn vijf dimensies, en vertellen de trader hoe dynamisch af te dekken.</p>
+        <div class="module-meta">
+          <span data-lang="fr">⏱ Lecture ~32 min</span><span data-lang="en">⏱ ~32 min read</span><span data-lang="nl">⏱ ~32 min lezen</span>
+          <span data-lang="fr">📶 Niveau avancé</span><span data-lang="en">📶 Advanced level</span><span data-lang="nl">📶 Gevorderd niveau</span>
+          <span>🎓 FRM I</span>
+        </div>
+      </div>
+
+      <div class="objectives">
+        <h4 data-lang="fr">Objectifs d'apprentissage</h4>
+        <h4 data-lang="en">Learning objectives</h4>
+        <h4 data-lang="nl">Leerdoelen</h4>
+        <ul>
+          <li data-lang="fr">Décrire le payoff d'un call et d'un put, et décomposer prix = valeur intrinsèque + valeur temps.</li>
+          <li data-lang="en">Describe the payoff of a call and a put, and split price = intrinsic value + time value.</li>
+          <li data-lang="nl">De payoff van een call en een put beschrijven, en prijs = intrinsieke waarde + tijdswaarde opsplitsen.</li>
+          <li data-lang="fr">Énoncer les hypothèses de Black-Scholes-Merton et le rôle de N(d₁), N(d₂).</li>
+          <li data-lang="en">State the Black-Scholes-Merton assumptions and the role of N(d₁), N(d₂).</li>
+          <li data-lang="nl">De aannames van Black-Scholes-Merton benoemen en de rol van N(d₁), N(d₂).</li>
+          <li data-lang="fr">Définir et interpréter delta, gamma, vega, theta et rho.</li>
+          <li data-lang="en">Define and interpret delta, gamma, vega, theta and rho.</li>
+          <li data-lang="nl">Delta, gamma, vega, theta en rho definiëren en interpreteren.</li>
+          <li data-lang="fr">Construire une couverture en delta et comprendre pourquoi elle doit être dynamique (gamma).</li>
+          <li data-lang="en">Build a delta hedge and understand why it must be dynamic (gamma).</li>
+          <li data-lang="nl">Een delta-hedge bouwen en begrijpen waarom ze dynamisch moet zijn (gamma).</li>
+          <li data-lang="fr">Appliquer la parité call-put pour relier le prix d'un call et d'un put.</li>
+          <li data-lang="en">Apply put-call parity to link the price of a call and a put.</li>
+          <li data-lang="nl">Put-call-pariteit toepassen om de prijs van een call en een put te verbinden.</li>
+        </ul>
+      </div>
+
+      <div class="module-body">
+
+        <!-- 1. DÉRIVÉS & OPTIONS -->
+        <h2 id="derives"><span data-lang="fr">1. Les dérivés &amp; le rôle des options</span><span data-lang="en">1. Derivatives &amp; the role of options</span><span data-lang="nl">1. Derivaten &amp; de rol van opties</span></h2>
+        <p data-lang="fr">Un <strong>produit dérivé</strong> est un contrat dont la valeur <em>dérive</em> de celle d'un sous-jacent (action, indice, taux, matière première). Les <strong>forwards</strong> et <strong>futures</strong> figent un prix d'échange futur ; les <strong>swaps</strong> échangent des flux ; les <strong>options</strong> confèrent un <em>droit</em>, non une obligation. C'est cette asymétrie qui rend l'option à la fois puissante et délicate à couvrir.</p>
+        <p data-lang="en">A <strong>derivative</strong> is a contract whose value <em>derives</em> from that of an underlying (stock, index, rate, commodity). <strong>Forwards</strong> and <strong>futures</strong> lock a future exchange price; <strong>swaps</strong> exchange flows; <strong>options</strong> confer a <em>right</em>, not an obligation. It is this asymmetry that makes an option both powerful and delicate to hedge.</p>
+        <p data-lang="nl">Een <strong>derivaat</strong> is een contract waarvan de waarde <em>afgeleid</em> is van die van een onderliggende waarde (aandeel, index, rente, grondstof). <strong>Forwards</strong> en <strong>futures</strong> leggen een toekomstige ruilprijs vast; <strong>swaps</strong> ruilen stromen; <strong>opties</strong> verlenen een <em>recht</em>, geen verplichting. Het is deze asymmetrie die een optie zowel krachtig als lastig af te dekken maakt.</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">Call &amp; put, en une phrase</span><span class="clabel" data-lang="en">Call &amp; put, in one line</span><span class="clabel" data-lang="nl">Call &amp; put, in één zin</span>
+          <span data-lang="fr">Un <strong>call</strong> donne le droit d'<em>acheter</em> le sous-jacent au prix d'exercice (strike) K ; un <strong>put</strong>, le droit de <em>vendre</em> à K. L'acheteur paie une <strong>prime</strong> et détient le droit (perte limitée à la prime, gain potentiellement illimité pour un call) ; le vendeur encaisse la prime et subit l'obligation symétrique (gain limité à la prime, perte potentiellement lourde). Options <em>européennes</em> : exerçables à l'échéance seulement ; <em>américaines</em> : à tout moment.</span>
+          <span data-lang="en">A <strong>call</strong> gives the right to <em>buy</em> the underlying at the strike K; a <strong>put</strong>, the right to <em>sell</em> at K. The buyer pays a <strong>premium</strong> and holds the right (loss capped at the premium, potentially unlimited gain for a call); the seller pockets the premium and bears the symmetric obligation (gain capped at the premium, potentially heavy loss). <em>European</em> options: exercisable only at maturity; <em>American</em>: at any time.</span>
+          <span data-lang="nl">Een <strong>call</strong> geeft het recht om de onderliggende waarde te <em>kopen</em> tegen de uitoefenprijs K; een <strong>put</strong>, het recht om te <em>verkopen</em> tegen K. De koper betaalt een <strong>premie</strong> en houdt het recht (verlies beperkt tot de premie, potentieel onbeperkte winst voor een call); de verkoper int de premie en draagt de symmetrische verplichting (winst beperkt tot de premie, potentieel zwaar verlies). <em>Europese</em> opties: enkel uitoefenbaar op vervaldag; <em>Amerikaanse</em>: op elk moment.</span>
+        </div>
+
+        <!-- 2. PAYOFF & VALEUR -->
+        <h2 id="payoff"><span data-lang="fr">2. Payoff &amp; valeur d'une option</span><span data-lang="en">2. An option's payoff &amp; value</span><span data-lang="nl">2. Payoff &amp; waarde van een optie</span></h2>
+        <p data-lang="fr">À l'échéance, tout est simple : un call vaut <strong>max(S − K, 0)</strong>, un put <strong>max(K − S, 0)</strong> — le fameux profil en « crosse de hockey ». Avant l'échéance, en revanche, l'option vaut <em>plus</em> que ce payoff immédiat, car il reste une chance que le cours bouge en sa faveur. On décompose donc le prix en deux morceaux.</p>
+        <p data-lang="en">At expiry, all is simple: a call is worth <strong>max(S − K, 0)</strong>, a put <strong>max(K − S, 0)</strong> — the famous “hockey stick” profile. Before expiry, however, the option is worth <em>more</em> than this immediate payoff, because there remains a chance the price moves in its favour. So the price splits into two pieces.</p>
+        <p data-lang="nl">Op vervaldag is alles eenvoudig: een call is <strong>max(S − K, 0)</strong> waard, een put <strong>max(K − S, 0)</strong> — het beroemde “hockeystick”-profiel. Vóór vervaldag is de optie echter <em>meer</em> waard dan deze onmiddellijke payoff, want er blijft een kans dat de koers in haar voordeel beweegt. Dus splitst de prijs zich in twee stukken.</p>
+
+        <div class="formula">
+          <div class="eq"><span data-lang="fr">Prix de l'option</span><span data-lang="en">Option price</span><span data-lang="nl">Optieprijs</span> = <span data-lang="fr">valeur intrinsèque</span><span data-lang="en">intrinsic value</span><span data-lang="nl">intrinsieke waarde</span> + <span data-lang="fr">valeur temps</span><span data-lang="en">time value</span><span data-lang="nl">tijdswaarde</span></div>
+          <div class="caption" data-lang="fr">La <strong>valeur intrinsèque</strong> = ce qu'on gagnerait à exercer tout de suite (max(S−K,0) pour un call). La <strong>valeur temps</strong> = le supplément payé pour l'incertitude restante ; elle est maximale « à la monnaie » (S ≈ K) et fond à zéro à l'échéance. On dit qu'une option est <em>dans</em> (ITM), <em>à</em> (ATM) ou <em>hors de la monnaie</em> (OTM).</div>
+          <div class="caption" data-lang="en">The <strong>intrinsic value</strong> = what you'd gain by exercising right now (max(S−K,0) for a call). The <strong>time value</strong> = the extra paid for the remaining uncertainty; it is greatest “at the money” (S ≈ K) and melts to zero at expiry. An option is said to be <em>in</em> (ITM), <em>at</em> (ATM) or <em>out of the money</em> (OTM).</div>
+          <div class="caption" data-lang="nl">De <strong>intrinsieke waarde</strong> = wat je zou winnen door nu uit te oefenen (max(S−K,0) voor een call). De <strong>tijdswaarde</strong> = het extra betaalde voor de resterende onzekerheid; ze is maximaal “at the money” (S ≈ K) en smelt naar nul op vervaldag. Een optie is <em>in</em> (ITM), <em>at</em> (ATM) of <em>out of the money</em> (OTM).</div>
+          <div class="caption src">Réf. — Hull (2018), Options, Futures &amp; Other Derivatives</div>
+        </div>
+
+        <!-- 3. BLACK-SCHOLES -->
+        <h2 id="bs"><span data-lang="fr">3. Black-Scholes-Merton</span><span data-lang="en">3. Black-Scholes-Merton</span><span data-lang="nl">3. Black-Scholes-Merton</span></h2>
+        <p data-lang="fr">En 1973, Black, Scholes et Merton donnent une formule fermée pour le prix d'une option européenne — l'un des résultats les plus influents de la finance (Nobel 1997 pour Scholes et Merton). L'idée-clé est révolutionnaire : on peut <strong>répliquer</strong> l'option par un portefeuille dynamique d'actions et de cash, donc son prix ne dépend <em>pas</em> du rendement espéré du sous-jacent, mais seulement de sa <strong>volatilité</strong>.</p>
+        <p data-lang="en">In 1973, Black, Scholes and Merton gave a closed-form formula for a European option's price — one of the most influential results in finance (Nobel 1997 for Scholes and Merton). The key idea is revolutionary: the option can be <strong>replicated</strong> by a dynamic portfolio of stock and cash, so its price does <em>not</em> depend on the underlying's expected return, only on its <strong>volatility</strong>.</p>
+        <p data-lang="nl">In 1973 gaven Black, Scholes en Merton een gesloten formule voor de prijs van een Europese optie — een van de invloedrijkste resultaten in de financiën (Nobelprijs 1997 voor Scholes en Merton). Het kernidee is revolutionair: de optie kan worden <strong>gerepliceerd</strong> door een dynamische portefeuille van aandelen en cash, zodat haar prijs <em>niet</em> afhangt van het verwachte rendement van de onderliggende waarde, enkel van haar <strong>volatiliteit</strong>.</p>
+
+        <div class="formula">
+          <div class="eq">C = S·N(d₁) − K·e<sup>−rT</sup>·N(d₂)</div>
+          <div class="eq">d₁ = [ ln(S/K) + (r + σ²/2)·T ] / (σ√T) &nbsp;·&nbsp; d₂ = d₁ − σ√T</div>
+          <div class="caption" data-lang="fr">N(·) = fonction de répartition de la loi normale. N(d₂) ≈ probabilité (risque-neutre) que le call finisse dans la monnaie ; N(d₁) = delta du call. Hypothèses : volatilité et taux constants, prix log-normaux, pas d'arbitrage, marché continu et liquide, pas de coûts ni de dividendes (dans la version de base).</div>
+          <div class="caption" data-lang="en">N(·) = the normal cumulative distribution. N(d₂) ≈ the (risk-neutral) probability the call ends in the money; N(d₁) = the call's delta. Assumptions: constant volatility and rate, lognormal prices, no arbitrage, continuous and liquid market, no costs or dividends (in the base version).</div>
+          <div class="caption" data-lang="nl">N(·) = de cumulatieve normale verdeling. N(d₂) ≈ de (risico-neutrale) kans dat de call in the money eindigt; N(d₁) = de delta van de call. Aannames: constante volatiliteit en rente, lognormale prijzen, geen arbitrage, continue en liquide markt, geen kosten of dividenden (in de basisversie).</div>
+          <div class="caption src">Réf. — Black &amp; Scholes (1973) ; Merton (1973)</div>
+        </div>
+
+        <p data-lang="fr">Ces hypothèses sont fausses dans le détail (la volatilité n'est pas constante — cf. le smile du module précédent), mais la formule reste le <em>langage commun</em> du marché : on y « lit » les prix en termes de volatilité implicite. Ses dérivées partielles portent des noms de lettres grecques : les <strong>Greeks</strong>.</p>
+        <p data-lang="en">These assumptions are false in detail (volatility is not constant — see the smile in the previous module), but the formula remains the market's <em>common language</em>: prices are “read” through it in terms of implied volatility. Its partial derivatives carry Greek-letter names: the <strong>Greeks</strong>.</p>
+        <p data-lang="nl">Deze aannames zijn in detail onjuist (volatiliteit is niet constant — zie de smile in de vorige module), maar de formule blijft de <em>gemeenschappelijke taal</em> van de markt: prijzen worden erdoor “gelezen” in termen van impliciete volatiliteit. Haar partiële afgeleiden dragen Griekse-letternamen: de <strong>Greeks</strong>.</p>
+
+        <!-- 4. LES GREEKS + INTERACTIF -->
+        <h2 id="greeks"><span data-lang="fr">4. Les Greeks</span><span data-lang="en">4. The Greeks</span><span data-lang="nl">4. De Greeks</span></h2>
+        <p data-lang="fr">Chaque Greek mesure la sensibilité du prix de l'option à <em>un</em> facteur, toutes choses égales par ailleurs. Ensemble, ils forment le tableau de bord du risque d'un livre d'options.</p>
+        <p data-lang="en">Each Greek measures the option price's sensitivity to <em>one</em> factor, all else equal. Together they form the risk dashboard of an options book.</p>
+        <p data-lang="nl">Elke Greek meet de gevoeligheid van de optieprijs voor <em>één</em> factor, ceteris paribus. Samen vormen ze het risicodashboard van een optieboek.</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th data-lang="fr">Greek</th><th data-lang="en">Greek</th><th data-lang="nl">Greek</th>
+                <th data-lang="fr">Mesure la sensibilité à…</th><th data-lang="en">Measures sensitivity to…</th><th data-lang="nl">Meet gevoeligheid voor…</th>
+                <th data-lang="fr">Intuition</th><th data-lang="en">Intuition</th><th data-lang="nl">Intuïtie</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Delta (Δ)</td><td>Delta (Δ)</td><td>Delta (Δ)</td>
+                <td data-lang="fr">Prix du sous-jacent (∂V/∂S)</td><td data-lang="en">Underlying price (∂V/∂S)</td><td data-lang="nl">Prijs onderliggende (∂V/∂S)</td>
+                <td data-lang="fr">Pente de la courbe ; entre 0 et 1 pour un call. ATM ≈ 0,5.</td><td data-lang="en">Slope of the curve; between 0 and 1 for a call. ATM ≈ 0.5.</td><td data-lang="nl">Helling van de curve; tussen 0 en 1 voor een call. ATM ≈ 0,5.</td>
+              </tr>
+              <tr>
+                <td>Gamma (Γ)</td><td>Gamma (Γ)</td><td>Gamma (Γ)</td>
+                <td data-lang="fr">Variation du delta (∂²V/∂S²)</td><td data-lang="en">Change in delta (∂²V/∂S²)</td><td data-lang="nl">Verandering van delta (∂²V/∂S²)</td>
+                <td data-lang="fr">Courbure ; maximale ATM et près de l'échéance. Force le rééquilibrage.</td><td data-lang="en">Curvature; greatest ATM and near expiry. Forces rebalancing.</td><td data-lang="nl">Kromming; maximaal ATM en nabij vervaldag. Dwingt herbalancering af.</td>
+              </tr>
+              <tr>
+                <td>Vega (ν)</td><td>Vega (ν)</td><td>Vega (ν)</td>
+                <td data-lang="fr">Volatilité (∂V/∂σ)</td><td data-lang="en">Volatility (∂V/∂σ)</td><td data-lang="nl">Volatiliteit (∂V/∂σ)</td>
+                <td data-lang="fr">Positive pour une option longue ; maximale ATM, échéance longue.</td><td data-lang="en">Positive for a long option; greatest ATM, long maturity.</td><td data-lang="nl">Positief voor een longpositie; maximaal ATM, lange looptijd.</td>
+              </tr>
+              <tr>
+                <td>Theta (Θ)</td><td>Theta (Θ)</td><td>Theta (Θ)</td>
+                <td data-lang="fr">Écoulement du temps (∂V/∂t)</td><td data-lang="en">Passage of time (∂V/∂t)</td><td data-lang="nl">Tijdsverloop (∂V/∂t)</td>
+                <td data-lang="fr">Négatif pour une option longue : l'option « saigne » chaque jour.</td><td data-lang="en">Negative for a long option: the option “bleeds” each day.</td><td data-lang="nl">Negatief voor een longpositie: de optie “bloedt” elke dag.</td>
+              </tr>
+              <tr>
+                <td>Rho (ρ)</td><td>Rho (ρ)</td><td>Rho (ρ)</td>
+                <td data-lang="fr">Taux d'intérêt (∂V/∂r)</td><td data-lang="en">Interest rate (∂V/∂r)</td><td data-lang="nl">Rente (∂V/∂r)</td>
+                <td data-lang="fr">Positif pour un call, négatif pour un put ; secondaire à court terme.</td><td data-lang="en">Positive for a call, negative for a put; secondary short-term.</td><td data-lang="nl">Positief voor een call, negatief voor een put; secundair op korte termijn.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p data-lang="fr">Le graphe ci-dessous trace, pour un call, le <span style="color:var(--crimson);font-weight:700">payoff à l'échéance</span> (la crosse de hockey) et la <span style="color:var(--teal);font-weight:700">valeur actuelle</span> selon Black-Scholes. L'écart <em>vertical</em> entre les deux est la valeur temps ; la <span style="color:var(--gold);font-weight:700">tangente</span> à la courbe de valeur est le <strong>delta</strong>. Faites varier le cours, le strike, la volatilité et l'échéance, et observez les cinq Greeks changer.</p>
+        <p data-lang="en">The chart below plots, for a call, the <span style="color:var(--crimson);font-weight:700">payoff at expiry</span> (the hockey stick) and the <span style="color:var(--teal);font-weight:700">current value</span> per Black-Scholes. The <em>vertical</em> gap between them is the time value; the <span style="color:var(--gold);font-weight:700">tangent</span> to the value curve is the <strong>delta</strong>. Vary the spot, strike, volatility and maturity, and watch the five Greeks change.</p>
+        <p data-lang="nl">De grafiek hieronder tekent, voor een call, de <span style="color:var(--crimson);font-weight:700">payoff op vervaldag</span> (de hockeystick) en de <span style="color:var(--teal);font-weight:700">huidige waarde</span> volgens Black-Scholes. De <em>verticale</em> kloof ertussen is de tijdswaarde; de <span style="color:var(--gold);font-weight:700">raaklijn</span> aan de waardecurve is de <strong>delta</strong>. Varieer de koers, de strike, de volatiliteit en de looptijd, en observeer de vijf Greeks veranderen.</p>
+
+        <style>
+          #grk-chart { width:100%; height:auto; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; }
+          #grk-chart .axis { stroke:var(--ink-mute); stroke-width:1.4; }
+          #grk-chart .tick { fill:var(--ink-mute); font-size:10px; font-family:var(--sans); }
+          #grk-chart .lab { fill:var(--ink-soft); font-size:11px; font-family:var(--sans); font-weight:700; }
+          .grk-sliders { display:grid; grid-template-columns:repeat(2,1fr); gap:12px 18px; margin-bottom:16px; }
+          .grk-sliders label { display:block; font-size:12.5px; font-weight:600; color:var(--ink-soft); margin-bottom:4px; }
+          .grk-out { margin-top:14px; font-size:14px; color:var(--ink-soft); display:flex; gap:20px; flex-wrap:wrap; }
+          .grk-out b { color:var(--ink); font-family:var(--mono); }
+          @media (max-width:640px){ .grk-sliders { grid-template-columns:1fr; } }
+        </style>
+
+        <div class="calc">
+          <div class="chead">
+            <h4 data-lang="fr">Calculateur Black-Scholes — call &amp; Greeks</h4>
+            <h4 data-lang="en">Black-Scholes calculator — call &amp; Greeks</h4>
+            <h4 data-lang="nl">Black-Scholes-calculator — call &amp; Greeks</h4>
+            <p data-lang="fr">Option d'achat européenne · taux sans risque r = 2 % · sans dividende</p>
+            <p data-lang="en">European call option · risk-free rate r = 2% · no dividend</p>
+            <p data-lang="nl">Europese calloptie · risicovrije rente r = 2% · geen dividend</p>
+          </div>
+          <div class="cbody" style="display:block">
+            <div class="grk-sliders">
+              <div>
+                <label><span data-lang="fr">Cours du sous-jacent (S)</span><span data-lang="en">Underlying spot (S)</span><span data-lang="nl">Koers onderliggende (S)</span></label>
+                <div class="rangewrap"><input type="range" id="grk-s" min="50" max="150" step="1" value="100"><output id="grk-s-o">100</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Prix d'exercice (K)</span><span data-lang="en">Strike (K)</span><span data-lang="nl">Uitoefenprijs (K)</span></label>
+                <div class="rangewrap"><input type="range" id="grk-k" min="70" max="130" step="1" value="100"><output id="grk-k-o">100</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Volatilité (σ)</span><span data-lang="en">Volatility (σ)</span><span data-lang="nl">Volatiliteit (σ)</span></label>
+                <div class="rangewrap"><input type="range" id="grk-v" min="5" max="60" step="1" value="25"><output id="grk-v-o">25%</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Échéance (T, années)</span><span data-lang="en">Maturity (T, years)</span><span data-lang="nl">Looptijd (T, jaren)</span></label>
+                <div class="rangewrap"><input type="range" id="grk-t" min="0.1" max="2" step="0.1" value="1"><output id="grk-t-o">1.0</output></div>
+              </div>
+            </div>
+
+            <svg id="grk-chart" viewBox="0 0 520 260" role="img" aria-label="Valeur d'un call et payoff selon Black-Scholes"></svg>
+
+            <div class="grk-out">
+              <span><span data-lang="fr">Prix du call :</span><span data-lang="en">Call price:</span><span data-lang="nl">Callprijs:</span> <b id="grk-price">—</b></span>
+              <span>Delta : <b id="grk-delta">—</b></span>
+              <span>Gamma : <b id="grk-gamma">—</b></span>
+              <span><span data-lang="fr">Vega (par 1 %) :</span><span data-lang="en">Vega (per 1%):</span><span data-lang="nl">Vega (per 1%):</span> <b id="grk-vega">—</b></span>
+              <span><span data-lang="fr">Theta (par jour) :</span><span data-lang="en">Theta (per day):</span><span data-lang="nl">Theta (per dag):</span> <b id="grk-theta">—</b></span>
+              <span><span data-lang="fr">Rho (par 1 %) :</span><span data-lang="en">Rho (per 1%):</span><span data-lang="nl">Rho (per 1%):</span> <b id="grk-rho">—</b></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. HEDGING -->
+        <h2 id="hedging"><span data-lang="fr">5. La couverture en delta (delta hedging)</span><span data-lang="en">5. Delta hedging</span><span data-lang="nl">5. Delta-hedging</span></h2>
+        <p data-lang="fr">Un vendeur d'options est exposé : si le sous-jacent bouge, sa position perd. La parade fondatrice de Black-Scholes est la <strong>couverture en delta</strong> : détenir Δ unités du sous-jacent par option vendue, de sorte que les petites variations de S se compensent. Le portefeuille combiné est alors <strong>delta-neutre</strong> : insensible, <em>au premier ordre</em>, aux mouvements du sous-jacent.</p>
+        <p data-lang="en">An option seller is exposed: if the underlying moves, the position loses. Black-Scholes' founding remedy is <strong>delta hedging</strong>: hold Δ units of the underlying per option sold, so that small moves in S cancel out. The combined portfolio is then <strong>delta-neutral</strong>: insensitive, <em>to first order</em>, to underlying moves.</p>
+        <p data-lang="nl">Een optieverkoper is blootgesteld: als de onderliggende waarde beweegt, verliest de positie. Black-Scholes' grondremedie is <strong>delta-hedging</strong>: houd Δ eenheden van de onderliggende waarde per verkochte optie aan, zodat kleine bewegingen in S elkaar opheffen. De gecombineerde portefeuille is dan <strong>delta-neutraal</strong>: ongevoelig, <em>in eerste orde</em>, voor bewegingen van de onderliggende waarde.</p>
+
+        <div class="callout warn">
+          <span class="clabel" data-lang="fr">Pourquoi la couverture doit être dynamique</span><span class="clabel" data-lang="en">Why hedging must be dynamic</span><span class="clabel" data-lang="nl">Waarom hedging dynamisch moet zijn</span>
+          <span data-lang="fr">Le delta n'est neutre qu'un <em>instant</em> : dès que S bouge, le delta change (c'est le <strong>gamma</strong>), et la couverture se déséquilibre. Il faut donc <strong>réajuster en continu</strong> — acheter quand ça monte, vendre quand ça baisse. Ce rééquilibrage a un coût, exactement compensé, en théorie, par le <strong>theta</strong> : l'acheteur d'option est « long gamma » (il profite des grands mouvements) mais paie du theta (le temps qui passe) ; le vendeur est « short gamma » et encaisse le theta. C'est l'arbitrage central de la gestion d'un livre d'options : <em>gamma contre theta</em>.</span>
+          <span data-lang="en">Delta is neutral only for an <em>instant</em>: as soon as S moves, delta changes (that is <strong>gamma</strong>), and the hedge drifts off. So one must <strong>rebalance continuously</strong> — buy as it rises, sell as it falls. This rebalancing has a cost, in theory exactly offset by <strong>theta</strong>: the option buyer is “long gamma” (profiting from large moves) but pays theta (the passage of time); the seller is “short gamma” and collects theta. This is the central trade-off of running an options book: <em>gamma versus theta</em>.</span>
+          <span data-lang="nl">Delta is slechts een <em>ogenblik</em> neutraal: zodra S beweegt, verandert delta (dat is <strong>gamma</strong>), en de hedge loopt scheef. Men moet dus <strong>continu herbalanceren</strong> — kopen als het stijgt, verkopen als het daalt. Deze herbalancering heeft een kost, in theorie exact gecompenseerd door <strong>theta</strong>: de optiekoper is “long gamma” (profiteert van grote bewegingen) maar betaalt theta (het tijdsverloop); de verkoper is “short gamma” en int theta. Dit is de centrale afweging van het beheren van een optieboek: <em>gamma versus theta</em>.</span>
+        </div>
+
+        <!-- 6. PARITÉ CALL-PUT -->
+        <h2 id="parite"><span data-lang="fr">6. La parité call-put</span><span data-lang="en">6. Put-call parity</span><span data-lang="nl">6. Put-call-pariteit</span></h2>
+        <p data-lang="fr">Une relation d'<strong>arbitrage</strong> — sans aucun modèle — lie le prix d'un call et d'un put de même strike et échéance. Elle découle du fait que deux portefeuilles au même payoff final doivent avoir le même prix aujourd'hui.</p>
+        <p data-lang="en">An <strong>arbitrage</strong> relation — with no model at all — links the price of a call and a put of the same strike and maturity. It follows from the fact that two portfolios with the same final payoff must have the same price today.</p>
+        <p data-lang="nl">Een <strong>arbitrage</strong>relatie — zonder enig model — verbindt de prijs van een call en een put met dezelfde strike en looptijd. Ze volgt uit het feit dat twee portefeuilles met dezelfde eindpayoff vandaag dezelfde prijs moeten hebben.</p>
+
+        <div class="formula">
+          <div class="eq">C − P = S − K·e<sup>−rT</sup></div>
+          <div class="caption" data-lang="fr">Détenir un call et vendre un put (même K, même T) reproduit exactement une position à terme sur le sous-jacent. Si l'égalité est violée, un arbitragiste encaisse un profit sans risque — donc elle tient sur les marchés liquides. Utile pour déduire le prix d'un put à partir de celui du call (et vice-versa).</div>
+          <div class="caption" data-lang="en">Holding a call and selling a put (same K, same T) exactly replicates a forward position on the underlying. If the equality is violated, an arbitrageur pockets a riskless profit — so it holds on liquid markets. Handy to derive a put's price from the call's (and vice-versa).</div>
+          <div class="caption" data-lang="nl">Een call houden en een put verkopen (zelfde K, zelfde T) repliceert exact een termijnpositie op de onderliggende waarde. Als de gelijkheid wordt geschonden, strijkt een arbitrageur een risicoloze winst op — dus ze houdt stand op liquide markten. Handig om de prijs van een put af te leiden uit die van de call (en omgekeerd).</div>
+          <div class="caption src">Réf. — Stoll (1969) ; Hull (2018)</div>
+        </div>
+
+        <!-- 7. À RETENIR -->
+        <h2 id="retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></h2>
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">L'essentiel</span><span class="clabel" data-lang="en">The essentials</span><span class="clabel" data-lang="nl">De kern</span>
+          <span data-lang="fr">Un call/put donne le droit d'acheter/vendre à K ; son payoff à l'échéance est max(S−K,0) / max(K−S,0). Avant l'échéance, prix = valeur intrinsèque + valeur temps (maximale ATM). Black-Scholes (1973) price une option européenne par réplication : le rendement espéré disparaît, seule compte la volatilité ; C = S·N(d₁) − K·e^(−rT)·N(d₂). Les Greeks décomposent le risque : delta (∂/∂S, la pente), gamma (∂²/∂S², la courbure), vega (∂/∂σ), theta (∂/∂t, le temps qui passe), rho (∂/∂r). La couverture en delta neutralise le sous-jacent au premier ordre, mais le gamma impose un rééquilibrage dynamique dont le coût est le theta (long gamma ⇔ paie du theta). Enfin, la parité call-put C − P = S − K·e^(−rT) relie les deux par arbitrage.</span>
+          <span data-lang="en">A call/put gives the right to buy/sell at K; its payoff at expiry is max(S−K,0) / max(K−S,0). Before expiry, price = intrinsic value + time value (greatest ATM). Black-Scholes (1973) prices a European option by replication: expected return drops out, only volatility matters; C = S·N(d₁) − K·e^(−rT)·N(d₂). The Greeks decompose risk: delta (∂/∂S, the slope), gamma (∂²/∂S², the curvature), vega (∂/∂σ), theta (∂/∂t, the passage of time), rho (∂/∂r). Delta hedging neutralises the underlying to first order, but gamma forces dynamic rebalancing whose cost is theta (long gamma ⇔ pays theta). Finally, put-call parity C − P = S − K·e^(−rT) links the two by arbitrage.</span>
+          <span data-lang="nl">Een call/put geeft het recht te kopen/verkopen tegen K; de payoff op vervaldag is max(S−K,0) / max(K−S,0). Vóór vervaldag: prijs = intrinsieke waarde + tijdswaarde (maximaal ATM). Black-Scholes (1973) prijst een Europese optie door replicatie: het verwachte rendement valt weg, enkel volatiliteit telt; C = S·N(d₁) − K·e^(−rT)·N(d₂). De Greeks ontbinden het risico: delta (∂/∂S, de helling), gamma (∂²/∂S², de kromming), vega (∂/∂σ), theta (∂/∂t, het tijdsverloop), rho (∂/∂r). Delta-hedging neutraliseert de onderliggende waarde in eerste orde, maar gamma dwingt dynamische herbalancering af waarvan de kost theta is (long gamma ⇔ betaalt theta). Ten slotte verbindt put-call-pariteit C − P = S − K·e^(−rT) de twee via arbitrage.</span>
+        </div>
+
+        <!-- 8. QCM -->
+        <h2 id="qcm"><span data-lang="fr">8. QCM — 15 questions</span><span data-lang="en">8. MCQ — 15 questions</span><span data-lang="nl">8. MCV — 15 vragen</span></h2>
+        <div class="quiz">
+          <h4 data-lang="fr">Auto-évaluation</h4><h4 data-lang="en">Self-assessment</h4><h4 data-lang="nl">Zelfevaluatie</h4>
+          <p class="qsub" data-lang="fr">Cliquez sur une réponse : la bonne s'affiche en vert et la justification apparaît.</p>
+          <p class="qsub" data-lang="en">Click an answer: the correct one turns green and the justification appears.</p>
+          <p class="qsub" data-lang="nl">Klik op een antwoord: het juiste kleurt groen en de verantwoording verschijnt.</p>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">1. Un call donne à son détenteur le droit de…</div>
+            <div class="qtext" data-lang="en">1. A call gives its holder the right to…</div>
+            <div class="qtext" data-lang="nl">1. Een call geeft de houder het recht om…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Vendre le sous-jacent au prix d'exercice.</span><span data-lang="en">Sell the underlying at the strike.</span><span data-lang="nl">De onderliggende waarde te verkopen tegen de uitoefenprijs.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Recevoir un dividende garanti.</span><span data-lang="en">Receive a guaranteed dividend.</span><span data-lang="nl">Een gegarandeerd dividend te ontvangen.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Acheter le sous-jacent au prix d'exercice.</span><span data-lang="en">Buy the underlying at the strike.</span><span data-lang="nl">De onderliggende waarde te kopen tegen de uitoefenprijs.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Call = droit (non obligation) d'acheter à K. Le put est le droit de vendre.</span><span data-lang="en">✔ Call = right (not obligation) to buy at K. The put is the right to sell.</span><span data-lang="nl">✔ Call = recht (geen plicht) om te kopen tegen K. De put is het recht om te verkopen.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">2. Le payoff à l'échéance d'un call de strike K est…</div>
+            <div class="qtext" data-lang="en">2. The payoff at expiry of a call with strike K is…</div>
+            <div class="qtext" data-lang="nl">2. De payoff op vervaldag van een call met strike K is…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">max(K − S, 0).</span><span data-lang="en">max(K − S, 0).</span><span data-lang="nl">max(K − S, 0).</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">max(S − K, 0).</span><span data-lang="en">max(S − K, 0).</span><span data-lang="nl">max(S − K, 0).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">S − K, quel qu'en soit le signe.</span><span data-lang="en">S − K, whatever its sign.</span><span data-lang="nl">S − K, ongeacht het teken.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le détenteur n'exerce que si S &gt; K ; sinon il laisse expirer. D'où max(S−K, 0), le profil en crosse de hockey.</span><span data-lang="en">✔ The holder exercises only if S &gt; K; otherwise lets it expire. Hence max(S−K, 0), the hockey-stick profile.</span><span data-lang="nl">✔ De houder oefent enkel uit als S &gt; K; anders laat hij vervallen. Vandaar max(S−K, 0), het hockeystick-profiel.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">3. Un call cote 8 € alors que S = 105 et K = 100. Sa valeur temps est de…</div>
+            <div class="qtext" data-lang="en">3. A call trades at €8 while S = 105 and K = 100. Its time value is…</div>
+            <div class="qtext" data-lang="nl">3. Een call noteert €8 terwijl S = 105 en K = 100. De tijdswaarde is…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">3 € (8 − valeur intrinsèque 5).</span><span data-lang="en">€3 (8 − intrinsic value 5).</span><span data-lang="nl">€3 (8 − intrinsieke waarde 5).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">8 € (tout est valeur temps).</span><span data-lang="en">€8 (all time value).</span><span data-lang="nl">€8 (alles tijdswaarde).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">5 €.</span><span data-lang="en">€5.</span><span data-lang="nl">€5.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Valeur intrinsèque = max(105−100, 0) = 5 ; valeur temps = prix − intrinsèque = 8 − 5 = 3 €.</span><span data-lang="en">✔ Intrinsic value = max(105−100, 0) = 5; time value = price − intrinsic = 8 − 5 = €3.</span><span data-lang="nl">✔ Intrinsieke waarde = max(105−100, 0) = 5; tijdswaarde = prijs − intrinsiek = 8 − 5 = €3.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">4. Un call est « dans la monnaie » (ITM) lorsque…</div>
+            <div class="qtext" data-lang="en">4. A call is “in the money” (ITM) when…</div>
+            <div class="qtext" data-lang="nl">4. Een call is “in the money” (ITM) wanneer…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">S &lt; K.</span><span data-lang="en">S &lt; K.</span><span data-lang="nl">S &lt; K.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">S = K exactement.</span><span data-lang="en">S = K exactly.</span><span data-lang="nl">S = K precies.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">S &gt; K.</span><span data-lang="en">S &gt; K.</span><span data-lang="nl">S &gt; K.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Un call a de la valeur intrinsèque quand le cours dépasse le strike (S &gt; K). À S = K il est « à la monnaie » (ATM).</span><span data-lang="en">✔ A call has intrinsic value when the spot exceeds the strike (S &gt; K). At S = K it is “at the money” (ATM).</span><span data-lang="nl">✔ Een call heeft intrinsieke waarde wanneer de koers de strike overschrijdt (S &gt; K). Bij S = K is hij “at the money” (ATM).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">5. Une propriété remarquable de la formule de Black-Scholes est que le prix ne dépend pas…</div>
+            <div class="qtext" data-lang="en">5. A remarkable property of the Black-Scholes formula is that the price does not depend on…</div>
+            <div class="qtext" data-lang="nl">5. Een opmerkelijke eigenschap van de Black-Scholes-formule is dat de prijs niet afhangt van…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">De la volatilité du sous-jacent.</span><span data-lang="en">The underlying's volatility.</span><span data-lang="nl">De volatiliteit van de onderliggende waarde.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Du rendement espéré du sous-jacent.</span><span data-lang="en">The expected return of the underlying.</span><span data-lang="nl">Het verwachte rendement van de onderliggende waarde.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Du prix d'exercice.</span><span data-lang="en">The strike price.</span><span data-lang="nl">De uitoefenprijs.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Grâce à la réplication (couverture en delta), le rendement espéré disparaît : seule compte la volatilité. C'est la valorisation risque-neutre.</span><span data-lang="en">✔ Thanks to replication (delta hedging), the expected return drops out: only volatility matters. This is risk-neutral valuation.</span><span data-lang="nl">✔ Dankzij replicatie (delta-hedging) valt het verwachte rendement weg: enkel volatiliteit telt. Dit is risico-neutrale waardering.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">6. Le delta d'une option mesure la sensibilité de son prix à…</div>
+            <div class="qtext" data-lang="en">6. An option's delta measures the sensitivity of its price to…</div>
+            <div class="qtext" data-lang="nl">6. De delta van een optie meet de gevoeligheid van de prijs voor…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le cours du sous-jacent (∂V/∂S).</span><span data-lang="en">The underlying's price (∂V/∂S).</span><span data-lang="nl">De koers van de onderliggende waarde (∂V/∂S).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La volatilité.</span><span data-lang="en">Volatility.</span><span data-lang="nl">Volatiliteit.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le temps qui passe.</span><span data-lang="en">The passage of time.</span><span data-lang="nl">Het tijdsverloop.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Delta = ∂V/∂S, la pente de la courbe de valeur. Pour un call, il est compris entre 0 et 1 ; ATM ≈ 0,5.</span><span data-lang="en">✔ Delta = ∂V/∂S, the slope of the value curve. For a call it is between 0 and 1; ATM ≈ 0.5.</span><span data-lang="nl">✔ Delta = ∂V/∂S, de helling van de waardecurve. Voor een call ligt hij tussen 0 en 1; ATM ≈ 0,5.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">7. Le delta d'un call à la monnaie (ATM) est proche de…</div>
+            <div class="qtext" data-lang="en">7. The delta of an at-the-money (ATM) call is close to…</div>
+            <div class="qtext" data-lang="nl">7. De delta van een at-the-money (ATM) call ligt dicht bij…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">0.</span><span data-lang="en">0.</span><span data-lang="nl">0.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">1.</span><span data-lang="en">1.</span><span data-lang="nl">1.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">0,5.</span><span data-lang="en">0.5.</span><span data-lang="nl">0,5.</span></button>
+            <div class="explain"><span data-lang="fr">✔ À la monnaie, il y a ≈ 50 % de chances de finir ITM : le delta d'un call ATM avoisine 0,5. Profondément ITM → 1 ; OTM → 0.</span><span data-lang="en">✔ At the money, there is ≈ 50% chance of finishing ITM: an ATM call's delta is near 0.5. Deep ITM → 1; OTM → 0.</span><span data-lang="nl">✔ At the money is er ≈ 50% kans om ITM te eindigen: de delta van een ATM-call is bijna 0,5. Diep ITM → 1; OTM → 0.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">8. Le gamma mesure…</div>
+            <div class="qtext" data-lang="en">8. Gamma measures…</div>
+            <div class="qtext" data-lang="nl">8. Gamma meet…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La sensibilité au taux d'intérêt.</span><span data-lang="en">The sensitivity to the interest rate.</span><span data-lang="nl">De gevoeligheid voor de rente.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">La vitesse de variation du delta (∂²V/∂S²).</span><span data-lang="en">The rate of change of delta (∂²V/∂S²).</span><span data-lang="nl">De veranderingssnelheid van delta (∂²V/∂S²).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La valeur intrinsèque.</span><span data-lang="en">The intrinsic value.</span><span data-lang="nl">De intrinsieke waarde.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Gamma = ∂²V/∂S² = variation du delta quand S bouge. Il est maximal à la monnaie et près de l'échéance ; c'est lui qui impose de réajuster la couverture.</span><span data-lang="en">✔ Gamma = ∂²V/∂S² = change in delta as S moves. It peaks at the money and near expiry; it is what forces re-hedging.</span><span data-lang="nl">✔ Gamma = ∂²V/∂S² = verandering van delta als S beweegt. Het piekt at the money en nabij vervaldag; het dwingt het her-hedgen af.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">9. Le vega d'une position longue en options est…</div>
+            <div class="qtext" data-lang="en">9. The vega of a long option position is…</div>
+            <div class="qtext" data-lang="nl">9. De vega van een longpositie in opties is…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Positif : la hausse de volatilité augmente la valeur de l'option.</span><span data-lang="en">Positive: a rise in volatility increases the option's value.</span><span data-lang="nl">Positief: een stijging van de volatiliteit verhoogt de waarde van de optie.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Négatif (on perd si la vol monte).</span><span data-lang="en">Negative (you lose if vol rises).</span><span data-lang="nl">Negatief (je verliest als de vol stijgt).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Toujours nul.</span><span data-lang="en">Always zero.</span><span data-lang="nl">Altijd nul.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Plus de volatilité ⇒ plus de chances de grands mouvements favorables ⇒ option plus chère. Le détenteur (long) a un vega positif ; il est maximal ATM et pour les longues échéances.</span><span data-lang="en">✔ More volatility ⇒ more chance of large favourable moves ⇒ costlier option. The holder (long) has positive vega; it peaks ATM and for long maturities.</span><span data-lang="nl">✔ Meer volatiliteit ⇒ meer kans op grote gunstige bewegingen ⇒ duurdere optie. De houder (long) heeft positieve vega; ze piekt ATM en bij lange looptijden.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">10. Le theta d'une option longue est en général…</div>
+            <div class="qtext" data-lang="en">10. The theta of a long option is generally…</div>
+            <div class="qtext" data-lang="nl">10. De theta van een longoptie is doorgaans…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Positif : l'option gagne de la valeur avec le temps.</span><span data-lang="en">Positive: the option gains value over time.</span><span data-lang="nl">Positief: de optie wint waarde met de tijd.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Nul dans tous les cas.</span><span data-lang="en">Zero in all cases.</span><span data-lang="nl">Nul in alle gevallen.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Négatif : la valeur temps s'érode à l'approche de l'échéance.</span><span data-lang="en">Negative: time value erodes as expiry approaches.</span><span data-lang="nl">Negatief: tijdswaarde erodeert naarmate vervaldag nadert.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Toutes choses égales, une option perd de la valeur temps chaque jour : le theta d'une position longue est négatif (« l'option saigne »).</span><span data-lang="en">✔ All else equal, an option loses time value each day: a long position's theta is negative (“the option bleeds”).</span><span data-lang="nl">✔ Ceteris paribus verliest een optie elke dag tijdswaarde: de theta van een longpositie is negatief (“de optie bloedt”).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">11. « Être delta-neutre » signifie que le portefeuille est, au premier ordre…</div>
+            <div class="qtext" data-lang="en">11. Being “delta-neutral” means the portfolio is, to first order…</div>
+            <div class="qtext" data-lang="nl">11. “Delta-neutraal” zijn betekent dat de portefeuille, in eerste orde…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Insensible à la volatilité.</span><span data-lang="en">Insensitive to volatility.</span><span data-lang="nl">Ongevoelig is voor volatiliteit.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Insensible aux petits mouvements du sous-jacent.</span><span data-lang="en">Insensitive to small moves of the underlying.</span><span data-lang="nl">Ongevoelig is voor kleine bewegingen van de onderliggende waarde.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Garanti sans perte jusqu'à l'échéance.</span><span data-lang="en">Guaranteed loss-free until expiry.</span><span data-lang="nl">Verlies-vrij gegarandeerd tot vervaldag.</span></button>
+            <div class="explain"><span data-lang="fr">✔ On détient −Δ de sous-jacent par option pour annuler la sensibilité à S. Mais ce n'est vrai qu'un instant : le gamma déforme le delta dès que S bouge.</span><span data-lang="en">✔ You hold −Δ of the underlying per option to cancel sensitivity to S. But it holds only for an instant: gamma reshapes delta as soon as S moves.</span><span data-lang="nl">✔ Je houdt −Δ van de onderliggende waarde per optie om de gevoeligheid voor S te neutraliseren. Maar het geldt slechts een ogenblik: gamma hervormt delta zodra S beweegt.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">12. Pourquoi une couverture en delta doit-elle être réajustée dans le temps ?</div>
+            <div class="qtext" data-lang="en">12. Why must a delta hedge be readjusted over time?</div>
+            <div class="qtext" data-lang="nl">12. Waarom moet een delta-hedge in de tijd worden bijgesteld?</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Parce que le delta change quand S bouge (gamma).</span><span data-lang="en">Because delta changes as S moves (gamma).</span><span data-lang="nl">Omdat delta verandert als S beweegt (gamma).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Parce que le strike change.</span><span data-lang="en">Because the strike changes.</span><span data-lang="nl">Omdat de strike verandert.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Parce que le taux sans risque est aléatoire.</span><span data-lang="en">Because the risk-free rate is random.</span><span data-lang="nl">Omdat de risicovrije rente willekeurig is.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le gamma fait varier le delta au fil des mouvements : la couverture doit être dynamique (acheter en hausse, vendre en baisse), à un coût mesuré par le theta.</span><span data-lang="en">✔ Gamma makes delta vary as prices move: the hedge must be dynamic (buy on the way up, sell on the way down), at a cost measured by theta.</span><span data-lang="nl">✔ Gamma laat delta variëren naarmate de koers beweegt: de hedge moet dynamisch zijn (kopen bij stijging, verkopen bij daling), tegen een kost gemeten door theta.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">13. Le compromis central de la gestion d'un livre d'options oppose…</div>
+            <div class="qtext" data-lang="en">13. The central trade-off of running an options book pits…</div>
+            <div class="qtext" data-lang="nl">13. De centrale afweging bij het beheren van een optieboek stelt tegenover elkaar…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le delta contre le rho.</span><span data-lang="en">Delta against rho.</span><span data-lang="nl">Delta tegen rho.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le vega contre le delta.</span><span data-lang="en">Vega against delta.</span><span data-lang="nl">Vega tegen delta.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le gamma contre le theta.</span><span data-lang="en">Gamma against theta.</span><span data-lang="nl">Gamma tegen theta.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Être long gamma (profiter des grands mouvements) coûte du theta (le temps qui passe) ; être short gamma encaisse le theta mais souffre des grands mouvements. C'est l'arbitrage-clé.</span><span data-lang="en">✔ Being long gamma (profiting from large moves) costs theta (the passage of time); being short gamma collects theta but suffers on large moves. That is the key trade-off.</span><span data-lang="nl">✔ Long gamma zijn (profiteren van grote bewegingen) kost theta (het tijdsverloop); short gamma int theta maar lijdt bij grote bewegingen. Dat is de kernafweging.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">14. La parité call-put s'écrit…</div>
+            <div class="qtext" data-lang="en">14. Put-call parity is written…</div>
+            <div class="qtext" data-lang="nl">14. Put-call-pariteit wordt geschreven…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">C + P = S + K.</span><span data-lang="en">C + P = S + K.</span><span data-lang="nl">C + P = S + K.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">C − P = S − K·e<sup>−rT</sup>.</span><span data-lang="en">C − P = S − K·e<sup>−rT</sup>.</span><span data-lang="nl">C − P = S − K·e<sup>−rT</sup>.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">C × P = S × K.</span><span data-lang="en">C × P = S × K.</span><span data-lang="nl">C × P = S × K.</span></button>
+            <div class="explain"><span data-lang="fr">✔ C − P = S − K·e^(−rT) : détenir un call et vendre un put (même K, T) réplique un forward. Une violation crée un arbitrage.</span><span data-lang="en">✔ C − P = S − K·e^(−rT): holding a call and selling a put (same K, T) replicates a forward. A violation creates an arbitrage.</span><span data-lang="nl">✔ C − P = S − K·e^(−rT): een call houden en een put verkopen (zelfde K, T) repliceert een forward. Een schending creëert arbitrage.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">15. Un call vaut 8, S = 100, K = 100, r = 2 %, T = 1 an. Par la parité, le put vaut environ…</div>
+            <div class="qtext" data-lang="en">15. A call is worth 8, S = 100, K = 100, r = 2%, T = 1 year. By parity, the put is worth about…</div>
+            <div class="qtext" data-lang="nl">15. Een call is 8 waard, S = 100, K = 100, r = 2%, T = 1 jaar. Volgens de pariteit is de put ongeveer waard…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">≈ 6,0.</span><span data-lang="en">≈ 6.0.</span><span data-lang="nl">≈ 6,0.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">≈ 10,0.</span><span data-lang="en">≈ 10.0.</span><span data-lang="nl">≈ 10,0.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">≈ 8,0.</span><span data-lang="en">≈ 8.0.</span><span data-lang="nl">≈ 8,0.</span></button>
+            <div class="explain"><span data-lang="fr">✔ P = C − S + K·e^(−rT) = 8 − 100 + 100×e^(−0,02) = 8 − 100 + 98,02 ≈ 6,0.</span><span data-lang="en">✔ P = C − S + K·e^(−rT) = 8 − 100 + 100×e^(−0.02) = 8 − 100 + 98.02 ≈ 6.0.</span><span data-lang="nl">✔ P = C − S + K·e^(−rT) = 8 − 100 + 100×e^(−0,02) = 8 − 100 + 98,02 ≈ 6,0.</span></div>
+          </div>
+        </div>
+
+        <!-- 9. EXERCICES -->
+        <h2 id="exercices"><span data-lang="fr">9. Exercices chiffrés</span><span data-lang="en">9. Numerical exercises</span><span data-lang="nl">9. Cijferoefeningen</span></h2>
+        <p data-lang="fr">Réponses courtes à révéler ; corrigés détaillés sur la page « Solutions ».</p>
+        <p data-lang="en">Short answers to reveal; full solutions on the “Solutions” page.</p>
+        <p data-lang="nl">Korte antwoorden te onthullen; uitgewerkte oplossingen op de “Oplossingen”-pagina.</p>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice GRK-1</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Vous détenez un call de strike 100 payé 4 €. À l'échéance, S = 110. Quel est le payoff, puis le profit net ?</p>
+          <p class="estatement" data-lang="en">You hold a call struck at 100, paid €4. At expiry, S = 110. What is the payoff, then the net profit?</p>
+          <p class="estatement" data-lang="nl">U houdt een call met strike 100, betaald €4. Op vervaldag, S = 110. Wat is de payoff, dan de nettowinst?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Payoff = max(110−100, 0) = <b>10 €</b>. Profit net = 10 − 4 = <b>6 €</b>.</div>
+            <div class="ans" data-lang="en">Payoff = max(110−100, 0) = <b>€10</b>. Net profit = 10 − 4 = <b>€6</b>.</div>
+            <div class="ans" data-lang="nl">Payoff = max(110−100, 0) = <b>€10</b>. Nettowinst = 10 − 4 = <b>€6</b>.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice GRK-2</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Un call cote 8 €, avec S = 105 et K = 100. Décomposez le prix en valeur intrinsèque et valeur temps.</p>
+          <p class="estatement" data-lang="en">A call trades at €8, with S = 105 and K = 100. Split the price into intrinsic value and time value.</p>
+          <p class="estatement" data-lang="nl">Een call noteert €8, met S = 105 en K = 100. Splits de prijs in intrinsieke waarde en tijdswaarde.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Valeur intrinsèque = max(105−100, 0) = <b>5 €</b> ; valeur temps = 8 − 5 = <b>3 €</b>.</div>
+            <div class="ans" data-lang="en">Intrinsic value = max(105−100, 0) = <b>€5</b>; time value = 8 − 5 = <b>€3</b>.</div>
+            <div class="ans" data-lang="nl">Intrinsieke waarde = max(105−100, 0) = <b>€5</b>; tijdswaarde = 8 − 5 = <b>€3</b>.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice GRK-3</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Vous êtes vendeur de 10 000 calls (delta 0,6 chacun). Combien d'actions du sous-jacent devez-vous détenir pour être delta-neutre ?</p>
+          <p class="estatement" data-lang="en">You are short 10,000 calls (delta 0.6 each). How many shares of the underlying must you hold to be delta-neutral?</p>
+          <p class="estatement" data-lang="nl">U bent short 10.000 calls (delta 0,6 elk). Hoeveel aandelen van de onderliggende waarde moet u aanhouden om delta-neutraal te zijn?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Position delta des calls vendus = −10 000 × 0,6 = −6 000. Pour neutraliser, il faut <b>acheter 6 000 actions</b> (delta +6 000).</div>
+            <div class="ans" data-lang="en">Delta position of the sold calls = −10,000 × 0.6 = −6,000. To neutralise, <b>buy 6,000 shares</b> (delta +6,000).</div>
+            <div class="ans" data-lang="nl">Deltapositie van de verkochte calls = −10.000 × 0,6 = −6.000. Om te neutraliseren, <b>koop 6.000 aandelen</b> (delta +6.000).</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice GRK-4</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Un call a un delta de 0,5 et un gamma de 0,04. Le sous-jacent monte de 2 €. Estimez la variation du prix de l'option (au 2ᵉ ordre).</p>
+          <p class="estatement" data-lang="en">A call has delta 0.5 and gamma 0.04. The underlying rises €2. Estimate the change in the option's price (to second order).</p>
+          <p class="estatement" data-lang="nl">Een call heeft delta 0,5 en gamma 0,04. De onderliggende waarde stijgt €2. Schat de verandering van de optieprijs (in tweede orde).</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">ΔV ≈ Δ·ΔS + ½·Γ·(ΔS)² = 0,5×2 + ½×0,04×2² = 1 + 0,08 = <b>1,08 €</b>. Le gamma ajoute la courbure (+0,08).</div>
+            <div class="ans" data-lang="en">ΔV ≈ Δ·ΔS + ½·Γ·(ΔS)² = 0.5×2 + ½×0.04×2² = 1 + 0.08 = <b>€1.08</b>. Gamma adds the curvature (+0.08).</div>
+            <div class="ans" data-lang="nl">ΔV ≈ Δ·ΔS + ½·Γ·(ΔS)² = 0,5×2 + ½×0,04×2² = 1 + 0,08 = <b>€1,08</b>. Gamma voegt de kromming toe (+0,08).</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice GRK-5</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">S = 100, K = 100, r = 2 %, T = 1 an, et le call vaut 8. Par la parité call-put, quel est le prix du put ?</p>
+          <p class="estatement" data-lang="en">S = 100, K = 100, r = 2%, T = 1 year, and the call is worth 8. By put-call parity, what is the put's price?</p>
+          <p class="estatement" data-lang="nl">S = 100, K = 100, r = 2%, T = 1 jaar, en de call is 8 waard. Volgens put-call-pariteit, wat is de prijs van de put?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">P = C − S + K·e<sup>−rT</sup> = 8 − 100 + 100×e<sup>−0,02</sup> = 8 − 100 + 98,02 = <b>6,02 €</b>.</div>
+            <div class="ans" data-lang="en">P = C − S + K·e<sup>−rT</sup> = 8 − 100 + 100×e<sup>−0.02</sup> = 8 − 100 + 98.02 = <b>€6.02</b>.</div>
+            <div class="ans" data-lang="nl">P = C − S + K·e<sup>−rT</sup> = 8 − 100 + 100×e<sup>−0,02</sup> = 8 − 100 + 98,02 = <b>€6,02</b>.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice GRK-6</span><span class="diff" data-lang="fr">Réflexion</span><span class="diff" data-lang="en">Conceptual</span><span class="diff" data-lang="nl">Reflectie</span></div>
+          <p class="estatement" data-lang="fr">Toutes choses égales par ailleurs, une option longue perd de la valeur avec le temps. Quel Greek décrit cela, et pourquoi le détenteur l'accepte-t-il ?</p>
+          <p class="estatement" data-lang="en">All else equal, a long option loses value as time passes. Which Greek describes this, and why does the holder accept it?</p>
+          <p class="estatement" data-lang="nl">Ceteris paribus verliest een longoptie waarde met de tijd. Welke Greek beschrijft dit, en waarom aanvaardt de houder het?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">C'est le <b>theta</b> (négatif pour une position longue) : la valeur temps s'érode vers l'échéance. Le détenteur l'accepte car il est « long gamma » : il paie ce theta comme un « loyer » en échange de la convexité — la capacité de profiter des grands mouvements du sous-jacent.</div>
+            <div class="ans" data-lang="en">It is <b>theta</b> (negative for a long position): time value erodes toward expiry. The holder accepts it because they are “long gamma”: they pay this theta as “rent” in exchange for convexity — the ability to profit from large moves of the underlying.</div>
+            <div class="ans" data-lang="nl">Het is <b>theta</b> (negatief voor een longpositie): tijdswaarde erodeert naar vervaldag. De houder aanvaardt het omdat hij “long gamma” is: hij betaalt deze theta als “huur” in ruil voor convexiteit — het vermogen te profiteren van grote bewegingen van de onderliggende waarde.</div>
+          </details>
+        </div>
+
+        <section class="biblio">
+          <h2 id="biblio"><span data-lang="fr">Bibliographie &amp; pour aller plus loin</span><span data-lang="en">Bibliography &amp; further reading</span><span data-lang="nl">Bibliografie &amp; verder lezen</span></h2>
+          <div class="bcol">
+            <h4 data-lang="fr">Références</h4><h4 data-lang="en">References</h4><h4 data-lang="nl">Referenties</h4>
+            <ol>
+      <li>Black, F. &amp; Scholes, M. (1973). The Pricing of Options and Corporate Liabilities. <em>Journal of Political Economy</em>, 81(3), 637–654. <a href="https://doi.org/10.1086/260062" target="_blank" rel="noopener">doi:10.1086/260062</a></li>
+      <li>Merton, R. C. (1973). Theory of Rational Option Pricing. <em>Bell Journal of Economics and Management Science</em>, 4(1), 141–183. <a href="https://doi.org/10.2307/3003143" target="_blank" rel="noopener">doi:10.2307/3003143</a></li>
+      <li>Cox, J. C., Ross, S. A. &amp; Rubinstein, M. (1979). Option Pricing: A Simplified Approach. <em>Journal of Financial Economics</em>, 7(3), 229–263. <a href="https://doi.org/10.1016/0304-405X(79)90015-1" target="_blank" rel="noopener">doi:10.1016/0304-405X(79)90015-1</a></li>
+      <li>Stoll, H. R. (1969). The Relationship between Put and Call Option Prices. <em>Journal of Finance</em>, 24(5), 801–824. <a href="https://doi.org/10.1111/j.1540-6261.1969.tb01694.x" target="_blank" rel="noopener">doi:10.1111/j.1540-6261.1969.tb01694.x</a></li>
+      <li>Hull, J. C. (2021). <em>Options, Futures, and Other Derivatives</em> (11th ed.). Pearson.</li>
+      <li>Natenberg, S. (1994). <em>Option Volatility and Pricing</em> (2nd ed.). McGraw-Hill.</li>
+      <li>Taleb, N. N. (1997). <em>Dynamic Hedging: Managing Vanilla and Exotic Options</em>. Wiley.</li>
+            </ol>
+          </div>
+          <div class="bcol">
+            <h4 data-lang="fr">Pour aller plus loin</h4><h4 data-lang="en">Further reading</h4><h4 data-lang="nl">Verder lezen</h4>
+            <ul>
+      <li>CFA Institute — <a href="https://www.cfainstitute.org" target="_blank" rel="noopener">Derivatives</a> (options, Greeks, couverture).</li>
+      <li>CBOE — <a href="https://www.cboe.com/education/" target="_blank" rel="noopener">Options Education</a> (Greeks, stratégies).</li>
+      <li>Investopedia — <a href="https://www.investopedia.com/terms/g/greeks.asp" target="_blank" rel="noopener">Option Greeks</a> · <a href="https://www.investopedia.com/terms/b/blackscholes.asp" target="_blank" rel="noopener">Black-Scholes</a> · <a href="https://www.investopedia.com/terms/d/deltahedging.asp" target="_blank" rel="noopener">Delta Hedging</a> · <a href="https://www.investopedia.com/terms/p/putcallparity.asp" target="_blank" rel="noopener">Put-Call Parity</a>.</li>
+            </ul>
+          </div>
+        </section>
+
+        <div class="module-nav">
+          <a class="prev" href="frm4-taux-duration.html">
+            <div class="dir" data-lang="fr">← Module précédent</div><div class="dir" data-lang="en">← Previous module</div><div class="dir" data-lang="nl">← Vorige module</div>
+            <div class="tt" data-lang="fr">4. Risque de taux &amp; duration</div><div class="tt" data-lang="en">4. Interest-rate risk &amp; duration</div><div class="tt" data-lang="nl">4. Renterisico &amp; duration</div>
+          </a>
+          <a class="next" href="../index.html#curriculum">
+            <div class="dir" data-lang="fr">Module suivant →</div><div class="dir" data-lang="en">Next module →</div><div class="dir" data-lang="nl">Volgende module →</div>
+            <div class="tt" data-lang="fr">6. Risque de crédit</div><div class="tt" data-lang="en">6. Credit risk</div><div class="tt" data-lang="nl">6. Kredietrisico</div>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap foot">
+    <div class="brand"><span class="logo">Avenir<b>.</b></span></div>
+    <p data-lang="fr">Financial Risk Management · Module 5 · Dérivés &amp; les Greeks</p>
+    <p data-lang="en">Financial Risk Management · Module 5 · Derivatives &amp; the Greeks</p>
+    <p data-lang="nl">Financial Risk Management · Module 5 · Derivaten &amp; de Greeks</p>
+  </div>
+</footer>
+
+<script>
+/* ==========================================================================
+   AVENIR — Scripts partagés
+   Sélecteur de langue FR/EN, thème clair/sombre, sommaire actif, quiz
+   ========================================================================== */
+(function () {
+  "use strict";
+
+  var LS_LANG = "avenir-lang";
+  var LS_THEME = "avenir-theme";
+
+  function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  /* ---------- Langue ---------- */
+  function detectLang() {
+    var saved = safeGet(LS_LANG);
+    if (saved === "fr" || saved === "en" || saved === "nl") return saved;
+    var nav = (navigator.language || "fr").toLowerCase();
+    if (nav.indexOf("nl") === 0) return "nl";
+    if (nav.indexOf("en") === 0) return "en";
+    return "fr";
+  }
+
+  function setLang(lang) {
+    document.body.setAttribute("data-active-lang", lang);
+    document.documentElement.setAttribute("lang", lang);
+    safeSet(LS_LANG, lang);
+    document.querySelectorAll(".lang-toggle button").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-set-lang") === lang);
+    });
+  }
+
+  /* ---------- Thème ---------- */
+  function detectTheme() {
+    var saved = safeGet(LS_THEME);
+    if (saved === "light" || saved === "dark") return saved;
+    return null; // suit le système
+  }
+
+  function applyTheme(theme) {
+    if (theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      safeSet(LS_THEME, theme);
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+    updateThemeIcon();
+  }
+
+  function currentTheme() {
+    var attr = document.documentElement.getAttribute("data-theme");
+    if (attr) return attr;
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  function updateThemeIcon() {
+    var btn = document.getElementById("theme-btn");
+    if (btn) btn.textContent = currentTheme() === "dark" ? "☀" : "☾";
+  }
+
+  /* ---------- Initialisation ---------- */
+  document.addEventListener("DOMContentLoaded", function () {
+    setLang(detectLang());
+    applyTheme(detectTheme());
+
+    document.querySelectorAll(".lang-toggle button").forEach(function (b) {
+      b.addEventListener("click", function () { setLang(b.getAttribute("data-set-lang")); });
+    });
+
+    var themeBtn = document.getElementById("theme-btn");
+    if (themeBtn) themeBtn.addEventListener("click", function () {
+      applyTheme(currentTheme() === "dark" ? "light" : "dark");
+    });
+
+    var menuBtn = document.getElementById("menu-btn");
+    var navLinks = document.querySelector(".nav-links");
+    if (menuBtn && navLinks) menuBtn.addEventListener("click", function () {
+      var open = navLinks.style.display === "flex";
+      navLinks.style.display = open ? "" : "flex";
+      navLinks.style.position = "absolute";
+      navLinks.style.flexDirection = "column";
+      navLinks.style.top = "64px";
+      navLinks.style.right = "16px";
+      navLinks.style.background = "var(--surface)";
+      navLinks.style.border = "1px solid var(--border)";
+      navLinks.style.borderRadius = "12px";
+      navLinks.style.padding = "8px";
+      navLinks.style.boxShadow = "var(--shadow-lg)";
+    });
+
+    /* Sommaire actif + barre de progression (pages module) */
+    var toc = document.querySelector(".toc");
+    var bar = document.querySelector(".progress-bar");
+    if (toc || bar) {
+      var headings = Array.prototype.slice.call(document.querySelectorAll(".module-body h2[id]"));
+      var links = toc ? Array.prototype.slice.call(toc.querySelectorAll("a")) : [];
+      var onScroll = function () {
+        if (bar) {
+          var h = document.documentElement;
+          var pct = h.scrollTop / (h.scrollHeight - h.clientHeight);
+          bar.style.width = Math.max(0, Math.min(1, pct)) * 100 + "%";
+        }
+        if (headings.length && links.length) {
+          var pos = window.scrollY + 120, current = headings[0].id;
+          headings.forEach(function (hd) { if (hd.offsetTop <= pos) current = hd.id; });
+          links.forEach(function (a) {
+            a.classList.toggle("active", a.getAttribute("href") === "#" + current);
+          });
+        }
+      };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    }
+  });
+
+  /* ---------- Quiz (exposé globalement pour les onclick) ---------- */
+  window.avenirAnswer = function (btn, correct) {
+    var q = btn.closest(".q");
+    if (q.getAttribute("data-done") === "1") return;
+    q.setAttribute("data-done", "1");
+    var opts = q.querySelectorAll(".opt");
+    opts.forEach(function (o) { o.disabled = true; });
+    if (correct) {
+      btn.classList.add("correct");
+    } else {
+      btn.classList.add("wrong");
+      opts.forEach(function (o) { if (o.getAttribute("data-correct") === "1") o.classList.add("correct"); });
+    }
+    var ex = q.querySelector(".explain");
+    if (ex) ex.classList.add("show");
+  };
+})();
+
+</script>
+<script>
+/* Black-Scholes : valeur du call, payoff, delta (tangente) & Greeks */
+(function () {
+  var svg = document.getElementById("grk-chart");
+  if (!svg) return;
+  var R = 0.02; // taux sans risque
+  function v(id){ return parseFloat(document.getElementById(id).value); }
+  function setT(id,t){ var e=document.getElementById(id); if(e) e.textContent=t; }
+  function al(){ return document.body.getAttribute("data-active-lang")||"fr"; }
+
+  function ncdf(x){
+    var k=1/(1+0.2316419*Math.abs(x));
+    var d=0.3989423*Math.exp(-x*x/2);
+    var p=d*k*(0.3193815+k*(-0.3565638+k*(1.781478+k*(-1.821256+k*1.330274))));
+    return x>=0 ? 1-p : p;
+  }
+  function npdf(x){ return 0.3989423*Math.exp(-x*x/2); }
+
+  function bs(S,K,sig,T){
+    var sq=sig*Math.sqrt(T);
+    var d1=(Math.log(S/K)+(R+sig*sig/2)*T)/sq;
+    var d2=d1-sq;
+    var price=S*ncdf(d1)-K*Math.exp(-R*T)*ncdf(d2);
+    var delta=ncdf(d1);
+    var gamma=npdf(d1)/(S*sq);
+    var vega=S*npdf(d1)*Math.sqrt(T);           // par 1.00 de vol
+    var theta=-(S*npdf(d1)*sig)/(2*Math.sqrt(T)) - R*K*Math.exp(-R*T)*ncdf(d2); // annuel
+    var rho=K*T*Math.exp(-R*T)*ncdf(d2);        // par 1.00 de taux
+    return {price:price,delta:delta,gamma:gamma,vega:vega,theta:theta,rho:rho};
+  }
+
+  function draw(){
+    var S=v("grk-s"), K=v("grk-k"), sig=v("grk-v")/100, T=v("grk-t");
+    setT("grk-s-o", S.toFixed(0)); setT("grk-k-o", K.toFixed(0));
+    setT("grk-v-o", (sig*100).toFixed(0)+"%"); setT("grk-t-o", T.toFixed(1));
+    var g0=bs(S,K,sig,T);
+    setT("grk-price", g0.price.toFixed(2));
+    setT("grk-delta", g0.delta.toFixed(3));
+    setT("grk-gamma", g0.gamma.toFixed(4));
+    setT("grk-vega", (g0.vega/100).toFixed(3));       // par 1 %
+    setT("grk-theta", (g0.theta/365).toFixed(4));     // par jour calendaire
+    setT("grk-rho", (g0.rho/100).toFixed(3));         // par 1 %
+
+    var W=520,H=260,L=42,Rm=14,T2=14,B=30, pw=W-L-Rm, ph=H-T2-B;
+    var xmin=Math.max(1, K*0.5), xmax=K*1.5;
+    var N=90, xs=[], val=[], pay=[];
+    for (var i=0;i<=N;i++){ var s=xmin+(xmax-xmin)*i/N; xs.push(s); val.push(bs(s,K,sig,T).price); pay.push(Math.max(s-K,0)); }
+    var ymax=0; for (var j=0;j<=N;j++){ ymax=Math.max(ymax,val[j],pay[j]); } ymax*=1.08;
+    function px(s){ return L + (s-xmin)/(xmax-xmin)*pw; }
+    function py(y){ return T2 + (1-y/ymax)*ph; }
+
+    var g="";
+    // axes
+    g+='<line class="axis" x1="'+L+'" y1="'+T2+'" x2="'+L+'" y2="'+(T2+ph)+'"/>';
+    g+='<line class="axis" x1="'+L+'" y1="'+(T2+ph)+'" x2="'+(L+pw)+'" y2="'+(T2+ph)+'"/>';
+    // tangente delta au point courant
+    var pDelta0=g0.price;
+    function tang(s){ return pDelta0 + g0.delta*(s-S); }
+    var t1=tang(xmin), t2=tang(xmax);
+    g+='<line x1="'+px(xmin).toFixed(1)+'" y1="'+py(Math.max(0,Math.min(ymax,t1))).toFixed(1)+'" x2="'+px(xmax).toFixed(1)+'" y2="'+py(Math.max(0,Math.min(ymax,t2))).toFixed(1)+'" stroke="var(--gold)" stroke-width="1.8" stroke-dasharray="5 3"/>';
+    // payoff (crimson)
+    var pp="M "+px(xs[0]).toFixed(1)+","+py(pay[0]).toFixed(1);
+    for (var k1=1;k1<=N;k1++) pp+=" L "+px(xs[k1]).toFixed(1)+","+py(pay[k1]).toFixed(1);
+    g+='<path d="'+pp+'" fill="none" stroke="var(--crimson)" stroke-width="1.8"/>';
+    // valeur BS (teal)
+    var vp="M "+px(xs[0]).toFixed(1)+","+py(val[0]).toFixed(1);
+    for (var k2=1;k2<=N;k2++) vp+=" L "+px(xs[k2]).toFixed(1)+","+py(val[k2]).toFixed(1);
+    g+='<path d="'+vp+'" fill="none" stroke="var(--teal)" stroke-width="2.6"/>';
+    // strike marker
+    g+='<line x1="'+px(K).toFixed(1)+'" y1="'+T2+'" x2="'+px(K).toFixed(1)+'" y2="'+(T2+ph)+'" stroke="var(--ink-mute)" stroke-width="1" stroke-dasharray="2 3"/>';
+    g+='<text class="tick" x="'+px(K).toFixed(1)+'" y="'+(T2+11)+'" text-anchor="middle">K</text>';
+    // point courant
+    g+='<circle cx="'+px(S).toFixed(1)+'" cy="'+py(g0.price).toFixed(1)+'" r="4" fill="var(--ink)"/>';
+    // ticks
+    g+='<text class="tick" x="'+L+'" y="'+(H-16)+'" text-anchor="start">'+xmin.toFixed(0)+'</text>';
+    g+='<text class="tick" x="'+px(S).toFixed(1)+'" y="'+(H-16)+'" text-anchor="middle">S='+S.toFixed(0)+'</text>';
+    g+='<text class="tick" x="'+(L+pw)+'" y="'+(H-16)+'" text-anchor="end">'+xmax.toFixed(0)+'</text>';
+    g+='<text class="tick" x="'+(L-6)+'" y="'+(py(ymax)+4).toFixed(1)+'" text-anchor="end">'+ymax.toFixed(0)+'</text>';
+    g+='<text class="tick" x="'+(L-6)+'" y="'+(py(0)+0).toFixed(1)+'" text-anchor="end">0</text>';
+    var xlab = al()==="en"?"underlying price (S)":(al()==="nl"?"koers onderliggende (S)":"cours du sous-jacent (S)");
+    var ylab = al()==="en"?"call value":(al()==="nl"?"callwaarde":"valeur du call");
+    g+='<text class="lab" x="'+(L+pw/2)+'" y="'+(H-3)+'" text-anchor="middle">'+xlab+'</text>';
+    g+='<text class="lab" x="'+(L-32)+'" y="'+(T2+ph/2)+'" text-anchor="middle" transform="rotate(-90 '+(L-32)+' '+(T2+ph/2)+')">'+ylab+'</text>';
+    svg.innerHTML=g;
+  }
+
+  ["grk-s","grk-k","grk-v","grk-t"].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener("input", draw); });
+  document.querySelectorAll("[data-set-lang]").forEach(function(b){ b.addEventListener("click", function(){ setTimeout(draw,10); }); });
+  document.addEventListener("DOMContentLoaded", draw);
+  draw();
+})();
+</script>
+</body>
+</html>
