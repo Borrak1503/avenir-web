@@ -1,0 +1,212 @@
+[
+ {
+  "slug": "var",
+  "titles": {
+   "fr": "Value at Risk (VaR)",
+   "en": "Value at Risk (VaR)",
+   "nl": "Value at Risk (VaR)"
+  },
+  "trackAm": false,
+  "nExo": 6
+ },
+ {
+  "slug": "am1",
+  "titles": {
+   "fr": "Fondamentaux de la gestion d'actifs",
+   "en": "Foundations of asset management",
+   "nl": "Grondslagen van vermogensbeheer"
+  },
+  "trackAm": true,
+  "nExo": 6
+ },
+ {
+  "slug": "am2",
+  "titles": {
+   "fr": "Théorie moderne du portefeuille",
+   "en": "Modern portfolio theory",
+   "nl": "Moderne portefeuilletheorie"
+  },
+  "trackAm": true,
+  "nExo": 8
+ },
+ {
+  "slug": "am3",
+  "titles": {
+   "fr": "CAPM & modèles multi-facteurs",
+   "en": "CAPM & multi-factor models",
+   "nl": "CAPM & multifactormodellen"
+  },
+  "trackAm": true,
+  "nExo": 6
+ },
+ {
+  "slug": "am4",
+  "titles": {
+   "fr": "Les classes d'actifs",
+   "en": "Asset classes",
+   "nl": "Activaklassen"
+  },
+  "trackAm": true,
+  "nExo": 6
+ },
+ {
+  "slug": "am5",
+  "titles": {
+   "fr": "Construction & allocation de portefeuille",
+   "en": "Portfolio construction & allocation",
+   "nl": "Portefeuilleconstructie & allocatie"
+  },
+  "trackAm": true,
+  "nExo": 6
+ },
+ {
+  "slug": "am6",
+  "titles": {
+   "fr": "Gestion active vs passive",
+   "en": "Active vs passive management",
+   "nl": "Actief vs passief beheer"
+  },
+  "trackAm": true,
+  "nExo": 6
+ },
+ {
+  "slug": "am7",
+  "titles": {
+   "fr": "Mesure de performance & attribution",
+   "en": "Performance measurement & attribution",
+   "nl": "Prestatiemeting & attributie"
+  },
+  "trackAm": true,
+  "nExo": 6
+ },
+ {
+  "slug": "am8",
+  "titles": {
+   "fr": "Styles & primes de facteurs",
+   "en": "Styles & factor premia",
+   "nl": "Stijlen & factorpremies"
+  },
+  "trackAm": true,
+  "nExo": 6
+ },
+ {
+  "slug": "frm1",
+  "titles": {
+   "fr": "Panorama des risques financiers",
+   "en": "Overview of financial risks",
+   "nl": "Overzicht van financiële risico's"
+  },
+  "trackAm": false,
+  "nExo": 6
+ },
+ {
+  "slug": "frm3",
+  "titles": {
+   "fr": "Modélisation de la volatilité",
+   "en": "Modelling volatility",
+   "nl": "Volatiliteit modelleren"
+  },
+  "trackAm": false,
+  "nExo": 6
+ },
+ {
+  "slug": "frm4",
+  "titles": {
+   "fr": "Risque de taux & duration",
+   "en": "Interest-rate risk & duration",
+   "nl": "Renterisico & duration"
+  },
+  "trackAm": false,
+  "nExo": 6
+ },
+ {
+  "slug": "frm5",
+  "titles": {
+   "fr": "Dérivés & les Greeks",
+   "en": "Derivatives & the Greeks",
+   "nl": "Derivaten & de Greeks"
+  },
+  "trackAm": false,
+  "nExo": 6
+ },
+ {
+  "slug": "frm6",
+  "titles": {
+   "fr": "Risque de crédit",
+   "en": "Credit risk",
+   "nl": "Kredietrisico"
+  },
+  "trackAm": false,
+  "nExo": 6
+ },
+ {
+  "slug": "frm7",
+  "titles": {
+   "fr": "Stress testing & scénarios",
+   "en": "Stress testing & scenarios",
+   "nl": "Stresstesten & scenario's"
+  },
+  "trackAm": false,
+  "nExo": 6
+ },
+ {
+  "slug": "frm8",
+  "titles": {
+   "fr": "Réglementation & capital",
+   "en": "Regulation & capital",
+   "nl": "Regelgeving & kapitaal"
+  },
+  "trackAm": false,
+  "nExo": 6
+ },
+ {
+  "slug": "am4-actions",
+  "titles": {
+   "fr": "Les actions",
+   "en": "Equities",
+   "nl": "Aandelen"
+  },
+  "trackAm": true,
+  "nExo": 6
+ },
+ {
+  "slug": "am4-obligations",
+  "titles": {
+   "fr": "Les obligations",
+   "en": "Bonds",
+   "nl": "Obligaties"
+  },
+  "trackAm": true,
+  "nExo": 6
+ },
+ {
+  "slug": "am4-immobilier",
+  "titles": {
+   "fr": "L'immobilier",
+   "en": "Real estate",
+   "nl": "Vastgoed"
+  },
+  "trackAm": true,
+  "nExo": 6
+ },
+ {
+  "slug": "am4-matieres",
+  "titles": {
+   "fr": "Les matières premières",
+   "en": "Commodities",
+   "nl": "Grondstoffen"
+  },
+  "trackAm": true,
+  "nExo": 6
+ },
+ {
+  "slug": "am4-monetaire",
+  "titles": {
+   "fr": "Le monétaire & les liquidités",
+   "en": "Cash & the money market",
+   "nl": "Geldmarkt & liquiditeiten"
+  },
+  "trackAm": true,
+  "nExo": 6
+ }
+]

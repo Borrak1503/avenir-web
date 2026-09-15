@@ -1,0 +1,31 @@
+---
+import Base from '../../layouts/Base.astro';
+import { locales, withBase } from '../../i18n';
+import home from '../../data/home.json';
+
+export function getStaticPaths() {
+  return locales.map((locale) => ({ params: { locale } }));
+}
+const { locale } = Astro.params;
+const body = withBase((home as any).body[locale as string]);
+const base = import.meta.env.BASE_URL;
+const podHref = `${base}${locale}/podcast/`;
+const titles: Record<string, string> = {
+  fr: 'Asset Management & Financial Risk Management',
+  en: 'Asset Management & Financial Risk Management',
+  nl: 'Asset Management & Financial Risk Management',
+};
+const ribbon: Record<string, { tt: string; em: string; cta: string }> = {
+  fr: { tt: 'Nouveau · Le podcast Avenir', em: '20 minutes pour comprendre la finance', cta: 'Voir les épisodes →' },
+  en: { tt: 'New · The Avenir podcast', em: '20 minutes to understand finance', cta: 'See the episodes →' },
+  nl: { tt: 'Nieuw · De Avenir-podcast', em: '20 minuten om finance te begrijpen', cta: 'Bekijk de afleveringen →' },
+};
+const rb = ribbon[locale as string];
+---
+<Base locale={locale as any} title={titles[locale as string]} subpath="">
+  <a class="pod-ribbon" href={podHref}>
+    <span class="tt"><b>{rb.tt}</b> <span class="em">{rb.em}</span></span>
+    <span class="rlink">🎧 {rb.cta}</span>
+  </a>
+  <Fragment set:html={body} />
+</Base>
