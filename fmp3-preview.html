@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Futures &amp; forwards · Avenir</title>
+<meta name="description" content="La plomberie et le pricing des futures et forwards : mécanique des marchés (spécification, open interest, convergence F vers S, ordres), couverture par les futures (short et long hedge, basis, ratio optimal ρσS/σF, tailing, pilotage du β, stack and roll), marché des changes (conventions, risques transaction/translation/economic, covered et uncovered interest parity, PPP), pricing par cost of carry (F = S(1+R)^T, revenu connu, yield), prix vs valeur PV(F−K), futures vs forwards, et commodities (consumption assets, convenience yield, backwardation vs contango). Courbe de cost of carry interactive, QCM et exercices.">
+<style>
+/* ==========================================================================
+   AVENIR — Plateforme pédagogique Asset Management & Financial Risk Management
+   Feuille de style partagée
+   ========================================================================== */
+
+:root {
+  /* Palette claire */
+  --bg:            #f6f4ef;
+  --bg-soft:       #efece4;
+  --surface:       #ffffff;
+  --surface-2:     #faf8f3;
+  --border:        #e2ddd1;
+  --ink:           #1a2230;
+  --ink-soft:      #4a5566;
+  --ink-mute:      #7a8494;
+
+  --navy:          #12294a;
+  --navy-2:        #1c3a63;
+  --gold:          #c19a3e;
+  --gold-soft:     #e7d9b0;
+  --teal:          #16706a;
+  --teal-soft:     #cfe6e2;
+  --crimson:       #9a3140;
+
+  --am:            var(--navy);   /* couleur du parcours Asset Management */
+  --am-soft:       #dbe3ef;
+  --frm:           var(--teal);   /* couleur du parcours Risk Management */
+  --frm-soft:      var(--teal-soft);
+
+  --radius:        14px;
+  --radius-sm:     9px;
+  --shadow:        0 1px 2px rgba(18,41,74,.05), 0 8px 24px rgba(18,41,74,.07);
+  --shadow-lg:     0 12px 40px rgba(18,41,74,.14);
+  --maxw:          1160px;
+
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: "SF Mono", "JetBrains Mono", "Fira Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:        #0d141f;
+    --bg-soft:   #111a28;
+    --surface:   #15202f;
+    --surface-2: #1a2637;
+    --border:    #263449;
+    --ink:       #edf1f6;
+    --ink-soft:  #b3bdcc;
+    --ink-mute:  #808ba0;
+    --navy:      #6f9bd6;
+    --navy-2:    #8bb0e0;
+    --gold:      #d8b95e;
+    --gold-soft: #40391f;
+    --teal:      #4bb3aa;
+    --teal-soft: #17332f;
+    --crimson:   #d47a86;
+    --am-soft:   #1a2c46;
+    --frm-soft:  #16332f;
+    --shadow:    0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"] {
+  --bg:        #0d141f;
+  --bg-soft:   #111a28;
+  --surface:   #15202f;
+  --surface-2: #1a2637;
+  --border:    #263449;
+  --ink:       #edf1f6;
+  --ink-soft:  #b3bdcc;
+  --ink-mute:  #808ba0;
+  --navy:      #6f9bd6;
+  --navy-2:    #8bb0e0;
+  --gold:      #d8b95e;
+  --gold-soft: #40391f;
+  --teal:      #4bb3aa;
+  --teal-soft: #17332f;
+  --crimson:   #d47a86;
+  --am-soft:   #1a2c46;
+  --frm-soft:  #16332f;
+  --shadow:    0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.5);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Bilinguisme : on masque la langue inactive */
+[data-lang] { display: none; }
+body[data-active-lang="fr"] [data-lang="fr"] { display: revert; }
+body[data-active-lang="en"] [data-lang="en"] { display: revert; }
+body[data-active-lang="nl"] [data-lang="nl"] { display: revert; }
+/* variantes en ligne */
+span[data-lang], a[data-lang], em[data-lang], strong[data-lang], code[data-lang] { display: none; }
+body[data-active-lang="fr"] span[data-lang="fr"],
+body[data-active-lang="fr"] a[data-lang="fr"],
+body[data-active-lang="fr"] em[data-lang="fr"],
+body[data-active-lang="fr"] strong[data-lang="fr"],
+body[data-active-lang="fr"] code[data-lang="fr"] { display: inline; }
+body[data-active-lang="en"] span[data-lang="en"],
+body[data-active-lang="en"] a[data-lang="en"],
+body[data-active-lang="en"] em[data-lang="en"],
+body[data-active-lang="en"] strong[data-lang="en"],
+body[data-active-lang="en"] code[data-lang="en"] { display: inline; }
+body[data-active-lang="nl"] span[data-lang="nl"],
+body[data-active-lang="nl"] a[data-lang="nl"],
+body[data-active-lang="nl"] em[data-lang="nl"],
+body[data-active-lang="nl"] strong[data-lang="nl"],
+body[data-active-lang="nl"] code[data-lang="nl"] { display: inline; }
+/* les pastilles inline-block conservent leur forme quand elles portent data-lang */
+body[data-active-lang="fr"] span.eyebrow[data-lang="fr"],
+body[data-active-lang="en"] span.eyebrow[data-lang="en"],
+body[data-active-lang="nl"] span.eyebrow[data-lang="nl"] { display: inline-block; }
+/* .callout .clabel force display:block — masquer les langues non actives et ne révéler que l'active */
+.callout .clabel[data-lang] { display: none; }
+body[data-active-lang="fr"] .callout .clabel[data-lang="fr"],
+body[data-active-lang="en"] .callout .clabel[data-lang="en"],
+body[data-active-lang="nl"] .callout .clabel[data-lang="nl"] { display: block; }
+/* garde-fou général : une règle de composant (ex. .sml-sliders label{display:block}) ne doit jamais
+   ré-afficher une langue non active. On masque toujours les langues non actives (!important). */
+body[data-active-lang="fr"] [data-lang]:not([data-lang="fr"]),
+body[data-active-lang="en"] [data-lang]:not([data-lang="en"]),
+body[data-active-lang="nl"] [data-lang]:not([data-lang="nl"]) { display: none !important; }
+
+a { color: var(--navy-2); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+/* ---------- En-tête / navigation ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.nav {
+  display: flex; align-items: center; gap: 20px;
+  height: 64px;
+}
+.brand { display: flex; align-items: baseline; gap: 10px; font-family: var(--serif); }
+.brand a { color: var(--ink); text-decoration: none; }
+.brand .logo {
+  font-size: 22px; font-weight: 700; letter-spacing: .5px;
+}
+.brand .logo b { color: var(--gold); }
+.brand .tag { font-size: 12.5px; color: var(--ink-mute); font-family: var(--sans); letter-spacing: .3px; }
+.nav .spacer { flex: 1; }
+.nav-links { display: flex; gap: 4px; }
+.nav-links a {
+  color: var(--ink-soft); font-size: 14.5px; font-weight: 500;
+  padding: 8px 12px; border-radius: 8px;
+}
+.nav-links a:hover { background: var(--bg-soft); color: var(--ink); text-decoration: none; }
+
+.controls { display: flex; align-items: center; gap: 8px; }
+.lang-toggle {
+  display: inline-flex; border: 1px solid var(--border); border-radius: 999px;
+  overflow: hidden; background: var(--surface-2);
+}
+.lang-toggle button {
+  border: 0; background: transparent; color: var(--ink-mute);
+  font: 600 13px/1 var(--sans); padding: 7px 13px; cursor: pointer;
+}
+.lang-toggle button.active { background: var(--navy); color: #fff; }
+:root[data-theme="dark"] .lang-toggle button.active,
+:root:not([data-theme="light"]) .lang-toggle button.active { color: #0d141f; }
+.icon-btn {
+  border: 1px solid var(--border); background: var(--surface-2);
+  width: 36px; height: 36px; border-radius: 999px; cursor: pointer;
+  font-size: 16px; color: var(--ink-soft); display: grid; place-items: center;
+}
+.icon-btn:hover { color: var(--ink); }
+.menu-btn { display: none; }
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative; overflow: hidden;
+  background:
+    radial-gradient(1200px 500px at 80% -10%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 60%),
+    linear-gradient(160deg, var(--navy) 0%, #0c1c34 65%, #0a1830 100%);
+  color: #eef2f8;
+}
+:root[data-theme="dark"] .hero,
+:root:not([data-theme="light"]) .hero {
+  background:
+    radial-gradient(1200px 500px at 80% -10%, rgba(216,185,94,.14), transparent 60%),
+    linear-gradient(160deg, #0b1524 0%, #0a1220 100%);
+}
+.hero .wrap { padding-top: 72px; padding-bottom: 76px; }
+.hero .eyebrow {
+  display: inline-block; font-size: 12.5px; letter-spacing: 2.2px; text-transform: uppercase;
+  color: var(--gold-soft); border: 1px solid rgba(231,217,176,.35);
+  padding: 5px 12px; border-radius: 999px; margin-bottom: 22px;
+}
+:root[data-theme="dark"] .hero .eyebrow,
+:root:not([data-theme="light"]) .hero .eyebrow { color: var(--gold); }
+.hero h1 {
+  font-family: var(--serif); font-weight: 700;
+  font-size: clamp(34px, 5.2vw, 58px); line-height: 1.08; margin: 0 0 20px;
+  max-width: 16ch;
+}
+.hero h1 .accent { color: var(--gold); }
+.hero p.lead { font-size: clamp(17px, 2.2vw, 21px); color: #cdd7e6; max-width: 60ch; margin: 0 0 32px; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; }
+.hero-stats { display: flex; gap: 40px; margin-top: 54px; flex-wrap: wrap; }
+.hero-stats .stat .n { font-family: var(--serif); font-size: 34px; color: #fff; font-weight: 700; }
+.hero-stats .stat .l { font-size: 13.5px; color: #a9b6c9; letter-spacing: .3px; }
+
+/* ---------- Boutons ---------- */
+.btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  font: 600 15px/1 var(--sans); padding: 13px 22px; border-radius: 10px;
+  cursor: pointer; border: 1px solid transparent; transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn:hover { text-decoration: none; transform: translateY(-1px); }
+.btn-gold { background: var(--gold); color: #241c05; }
+.btn-gold:hover { box-shadow: 0 8px 20px rgba(193,154,62,.35); }
+.btn-ghost { background: transparent; color: #eef2f8; border-color: rgba(255,255,255,.35); }
+.btn-ghost:hover { background: rgba(255,255,255,.08); }
+.btn-solid { background: var(--navy); color: #fff; }
+:root[data-theme="dark"] .btn-solid,
+:root:not([data-theme="light"]) .btn-solid { color: #0d141f; }
+.btn-solid:hover { box-shadow: var(--shadow); }
+.btn-outline { background: var(--surface); color: var(--ink); border-color: var(--border); }
+.btn-outline:hover { border-color: var(--navy-2); }
+
+/* ---------- Sections ---------- */
+section { padding: 66px 0; }
+.section-head { max-width: 720px; margin-bottom: 40px; }
+.section-head .kicker {
+  font-size: 12.5px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold); font-weight: 700; margin-bottom: 12px;
+}
+.section-head h2 { font-family: var(--serif); font-size: clamp(26px, 3.6vw, 38px); margin: 0 0 12px; line-height: 1.15; }
+.section-head p { color: var(--ink-soft); font-size: 18px; margin: 0; }
+
+/* ---------- Parcours (tracks) ---------- */
+.tracks { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.track {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 32px; box-shadow: var(--shadow); position: relative; overflow: hidden;
+}
+.track::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 5px; }
+.track.am::before { background: linear-gradient(var(--navy), var(--navy-2)); }
+.track.frm::before { background: linear-gradient(var(--teal), #0f5651); }
+.track .badge {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: 5px 11px; border-radius: 999px; margin-bottom: 16px;
+}
+.track.am .badge { background: var(--am-soft); color: var(--navy); }
+.track.frm .badge { background: var(--frm-soft); color: var(--teal); }
+.track h3 { font-family: var(--serif); font-size: 25px; margin: 0 0 8px; }
+.track p { color: var(--ink-soft); margin: 0 0 18px; font-size: 15.5px; }
+.track ul { list-style: none; padding: 0; margin: 0 0 22px; }
+.track ul li { padding: 7px 0 7px 26px; position: relative; font-size: 15px; border-top: 1px solid var(--border); }
+.track ul li:first-child { border-top: 0; }
+.track ul li::before {
+  content: "▸"; position: absolute; left: 4px; top: 7px; font-weight: 700;
+}
+.track.am ul li::before { color: var(--gold); }
+.track.frm ul li::before { color: var(--teal); }
+
+/* ---------- Curriculum ---------- */
+.curriculum { background: var(--bg-soft); }
+.curric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.curric-col h3 {
+  font-family: var(--serif); font-size: 22px; display: flex; align-items: center; gap: 10px;
+  padding-bottom: 14px; margin: 0 0 6px; border-bottom: 2px solid var(--border);
+}
+.curric-col.am h3 { color: var(--navy); }
+.curric-col.frm h3 { color: var(--teal); }
+.curric-col .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.curric-col.am .dot { background: var(--navy); }
+.curric-col.frm .dot { background: var(--teal); }
+.mod {
+  display: flex; gap: 15px; align-items: flex-start;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 15px 17px; margin-top: 12px; transition: border-color .15s ease, transform .15s ease;
+}
+a.mod:hover { text-decoration: none; transform: translateX(3px); box-shadow: var(--shadow); }
+.curric-col.am a.mod:hover { border-color: var(--navy-2); }
+.curric-col.frm a.mod:hover { border-color: var(--teal); }
+.mod .num {
+  flex: none; width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center;
+  font-family: var(--serif); font-weight: 700; font-size: 15px;
+}
+.curric-col.am .mod .num { background: var(--am-soft); color: var(--navy); }
+.curric-col.frm .mod .num { background: var(--frm-soft); color: var(--teal); }
+.mod .mt { font-weight: 600; font-size: 15.5px; color: var(--ink); margin: 2px 0 2px; }
+.mod .md { font-size: 13.5px; color: var(--ink-mute); line-height: 1.5; }
+.mod .chip {
+  font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+  color: var(--gold); border: 1px solid var(--gold-soft); border-radius: 999px; padding: 2px 8px;
+  margin-left: auto; align-self: center; flex: none;
+}
+
+/* ---------- Bandeau méthode ---------- */
+.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.feature { padding: 6px 4px; }
+.feature .ic { font-size: 24px; margin-bottom: 10px; }
+.feature h4 { font-size: 17px; margin: 0 0 6px; }
+.feature p { color: var(--ink-soft); font-size: 14.5px; margin: 0; }
+
+/* ---------- CTA final ---------- */
+.cta-band {
+  background: linear-gradient(160deg, var(--navy), #0b1c35);
+  color: #eef2f8; border-radius: var(--radius); padding: 46px; text-align: center;
+}
+.cta-band h2 { font-family: var(--serif); font-size: clamp(24px, 3vw, 34px); margin: 0 0 12px; }
+.cta-band p { color: #c7d2e2; max-width: 54ch; margin: 0 auto 26px; }
+
+/* ---------- Pied de page ---------- */
+.site-footer { border-top: 1px solid var(--border); background: var(--surface); padding: 40px 0; margin-top: 20px; }
+.foot { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: center; }
+.foot .brand .logo { font-size: 18px; }
+.foot p { color: var(--ink-mute); font-size: 13.5px; margin: 0; }
+
+/* ==========================================================================
+   PAGES MODULE
+   ========================================================================== */
+.module-shell { display: grid; grid-template-columns: 264px 1fr; gap: 40px; align-items: start; }
+.module-shell .wrap-mod { max-width: var(--maxw); margin: 0 auto; padding: 40px 24px 80px; }
+
+/* barre latérale sommaire */
+.toc {
+  position: sticky; top: 84px; align-self: start;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px; box-shadow: var(--shadow); max-height: calc(100vh - 110px); overflow: auto;
+}
+.toc .toc-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-mute); font-weight: 700; margin-bottom: 12px; }
+.toc a { display: block; color: var(--ink-soft); font-size: 14px; padding: 6px 10px; border-radius: 7px; border-left: 2px solid transparent; }
+.toc a:hover { background: var(--bg-soft); text-decoration: none; }
+.toc a.active { color: var(--teal); background: var(--frm-soft); border-left-color: var(--teal); font-weight: 600; }
+
+/* fil d'ariane + entête module */
+.crumbs { font-size: 13.5px; color: var(--ink-mute); margin-bottom: 14px; }
+.crumbs a { color: var(--ink-mute); }
+.module-hero { border-bottom: 1px solid var(--border); padding-bottom: 26px; margin-bottom: 34px; }
+.module-hero .badge {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: 5px 11px; border-radius: 999px;
+  background: var(--frm-soft); color: var(--teal); margin-bottom: 14px;
+}
+.module-hero h1 { font-family: var(--serif); font-size: clamp(30px, 4.4vw, 46px); line-height: 1.1; margin: 0 0 12px; }
+.module-hero .subtitle { font-size: 19px; color: var(--ink-soft); max-width: 65ch; margin: 0 0 18px; }
+.module-meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 13.5px; color: var(--ink-mute); }
+.module-meta span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* objectifs */
+.objectives {
+  background: var(--surface-2); border: 1px solid var(--border); border-left: 4px solid var(--teal);
+  border-radius: var(--radius-sm); padding: 20px 24px; margin: 0 0 40px;
+}
+.objectives h4 { margin: 0 0 10px; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); }
+.objectives ul { margin: 0; padding-left: 20px; }
+.objectives li { margin: 5px 0; color: var(--ink-soft); }
+
+/* corps du module */
+.module-body h2 {
+  font-family: var(--serif); font-size: 29px; margin: 48px 0 14px; scroll-margin-top: 84px;
+  padding-top: 6px;
+}
+.module-body h3 { font-family: var(--serif); font-size: 22px; margin: 30px 0 10px; }
+.module-body p { margin: 0 0 16px; color: var(--ink); }
+.module-body ul, .module-body ol { margin: 0 0 18px; padding-left: 26px; }
+.module-body li { margin: 6px 0; }
+.module-body strong { color: var(--ink); }
+
+/* définitions et encadrés */
+.callout {
+  border-radius: var(--radius-sm); padding: 18px 20px; margin: 24px 0; border: 1px solid var(--border);
+  background: var(--surface-2); font-size: 15.5px;
+}
+.callout .clabel { font-weight: 700; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 6px; }
+.callout.def { border-left: 4px solid var(--navy); }
+.callout.def .clabel { color: var(--navy); }
+.callout.warn { border-left: 4px solid var(--crimson); background: color-mix(in srgb, var(--crimson) 7%, var(--surface)); }
+.callout.warn .clabel { color: var(--crimson); }
+.callout.tip { border-left: 4px solid var(--gold); }
+.callout.tip .clabel { color: var(--gold); }
+
+/* formules */
+.formula {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 22px 24px; margin: 22px 0; text-align: center; box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+.formula .eq { font-family: var(--serif); font-size: 22px; color: var(--ink); }
+.formula .eq em { color: var(--teal); font-style: italic; }
+.formula .caption { font-size: 13px; color: var(--ink-mute); margin-top: 12px; }
+sub, sup { font-size: .72em; }
+
+/* tableaux */
+.table-wrap { overflow-x: auto; margin: 22px 0; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; min-width: 460px; }
+thead th { background: var(--navy); color: #fff; text-align: left; padding: 11px 14px; font-weight: 600; font-size: 13.5px; }
+:root[data-theme="dark"] thead th,
+:root:not([data-theme="light"]) thead th { color: #0d141f; }
+tbody td { padding: 10px 14px; border-top: 1px solid var(--border); }
+tbody tr:nth-child(even) td { background: var(--surface-2); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); }
+
+/* exemple travaillé */
+.worked {
+  border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 28px 0;
+}
+.worked .whead { background: var(--am-soft); color: var(--navy); padding: 12px 20px; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+.worked .wbody { padding: 20px 22px; background: var(--surface); }
+.worked .step { padding: 12px 0; border-top: 1px dashed var(--border); }
+.worked .step:first-child { border-top: 0; }
+.worked .step .sn { font-weight: 700; color: var(--teal); font-size: 13.5px; letter-spacing: .5px; }
+
+/* calculateur interactif */
+.calc {
+  border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+  background: var(--surface); overflow: hidden; margin: 30px 0;
+}
+.calc .chead { background: linear-gradient(160deg, var(--teal), #0f5651); color: #fff; padding: 16px 22px; }
+.calc .chead h4 { margin: 0; font-family: var(--serif); font-size: 20px; }
+.calc .chead p { margin: 4px 0 0; font-size: 13.5px; color: #d5eee9; }
+.calc .cbody { padding: 22px; display: grid; grid-template-columns: 1fr 300px; gap: 26px; }
+.calc .inputs label { display: block; font-size: 13.5px; font-weight: 600; color: var(--ink-soft); margin: 14px 0 6px; }
+.calc .inputs input, .calc .inputs select {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface-2); color: var(--ink); font: 500 15px var(--sans);
+}
+.calc .inputs .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.calc .rangewrap { display: flex; align-items: center; gap: 12px; }
+.calc .rangewrap input[type=range] { flex: 1; }
+.calc .rangewrap output { font-family: var(--mono); font-weight: 600; min-width: 46px; text-align: right; color: var(--teal); }
+.calc .result {
+  background: var(--navy); color: #fff; border-radius: var(--radius-sm); padding: 22px; align-self: start;
+}
+:root[data-theme="dark"] .calc .result,
+:root:not([data-theme="light"]) .calc .result { background: #0c1b32; }
+.calc .result .rl { font-size: 12.5px; text-transform: uppercase; letter-spacing: 1px; color: #9fb0c8; }
+.calc .result .rv { font-family: var(--serif); font-size: 34px; font-weight: 700; margin: 4px 0 2px; }
+.calc .result .rv.gold { color: var(--gold); }
+.calc .result .rsub { font-size: 13px; color: #b9c6d8; }
+.calc .result hr { border: 0; border-top: 1px solid rgba(255,255,255,.15); margin: 16px 0; }
+
+/* quiz */
+.quiz { border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin: 30px 0; background: var(--surface); }
+.quiz h4 { margin: 0 0 4px; font-family: var(--serif); font-size: 20px; }
+.quiz .qsub { color: var(--ink-mute); font-size: 14px; margin: 0 0 18px; }
+.q { margin: 18px 0; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.q:last-of-type { border-bottom: 0; }
+.q .qtext { font-weight: 600; margin-bottom: 12px; }
+.q .opt {
+  display: block; width: 100%; text-align: left; padding: 11px 14px; margin: 7px 0;
+  border: 1px solid var(--border); border-radius: 9px; background: var(--surface-2); color: var(--ink);
+  cursor: pointer; font: 500 15px var(--sans); transition: all .12s ease;
+}
+.q .opt:hover { border-color: var(--teal); }
+.q .opt.correct { background: color-mix(in srgb, var(--teal) 16%, var(--surface)); border-color: var(--teal); color: var(--ink); }
+.q .opt.wrong { background: color-mix(in srgb, var(--crimson) 14%, var(--surface)); border-color: var(--crimson); }
+.q .explain { display: none; margin-top: 10px; font-size: 14px; color: var(--ink-soft); background: var(--surface-2); border-radius: 8px; padding: 12px 14px; border-left: 3px solid var(--teal); }
+.q .explain.show { display: block; }
+
+/* navigation entre modules */
+.module-nav { display: flex; justify-content: space-between; gap: 16px; margin-top: 50px; flex-wrap: wrap; }
+.module-nav a {
+  flex: 1; min-width: 220px; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 20px; background: var(--surface); transition: border-color .15s ease;
+}
+.module-nav a:hover { border-color: var(--teal); text-decoration: none; }
+.module-nav .dir { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-mute); }
+.module-nav .tt { font-weight: 600; color: var(--ink); margin-top: 3px; }
+.module-nav a.next { text-align: right; }
+
+/* progression de lecture */
+.progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0; z-index: 60; transition: width .1s linear; }
+
+/* exercices chiffrés */
+.exo { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px; margin: 14px 0; background: var(--surface); box-shadow: var(--shadow); }
+.exo .ehead { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.exo .eid { font-size: 12px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--teal); }
+.exo .diff { font-size: 10.5px; letter-spacing: .5px; text-transform: uppercase; border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px; color: var(--ink-mute); }
+.exo .estatement { margin: 0 0 6px; }
+.exo details { border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 10px; }
+.exo summary { cursor: pointer; font-weight: 600; font-size: 14px; color: var(--navy-2); list-style: none; }
+.exo summary::-webkit-details-marker { display: none; }
+.exo summary::before { content: "▸ "; color: var(--gold); }
+.exo details[open] summary::before { content: "▾ "; }
+.exo .ans { font-size: 14.5px; color: var(--ink-soft); margin-top: 8px; }
+.exo .ans b { color: var(--ink); }
+
+/* ---------- Thème parcours Asset Management (navy/or) sur pages module ----------
+   Les composants module utilisent --teal / --frm-soft (couleur FRM) par défaut.
+   Sur un module du parcours Asset Management, on remappe ces variables vers le navy. */
+body.track-am { --teal: var(--navy); --frm-soft: var(--am-soft); }
+body.track-am .calc .chead { background: linear-gradient(160deg, var(--navy), #0a1830); }
+body.track-am .module-hero .badge,
+body.track-am .worked .whead { background: var(--am-soft); color: var(--navy); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 940px) {
+  .module-shell { grid-template-columns: 1fr; }
+  .toc { display: none; }
+  .calc .cbody { grid-template-columns: 1fr; }
+}
+@media (max-width: 820px) {
+  .tracks, .curric-grid, .features { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .menu-btn { display: grid; }
+  .hero-stats { gap: 26px; }
+}
+
+/* ---------- Bibliographie & sources ---------- */
+.biblio { border-top: 2px solid var(--border); margin-top: 50px; padding-top: 8px; }
+.biblio .bcol { margin: 0 0 22px; }
+.biblio h4 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--ink-mute); margin: 0 0 10px; }
+.biblio ol, .biblio ul { margin: 0; padding-left: 22px; }
+.biblio li { font-size: 14px; color: var(--ink-soft); line-height: 1.65; margin: 8px 0; }
+.biblio li em { color: var(--ink); font-style: italic; }
+.biblio a { color: var(--navy-2); text-decoration: none; border-bottom: 1px solid var(--border); }
+.biblio a:hover { border-color: var(--navy-2); }
+.formula .caption.src, .src { color: var(--ink-mute); font-style: italic; font-size: 12.5px; }
+
+/* ==========================================================================
+   RESSOURCES TÉLÉCHARGEABLES · VIDÉO · SOUS-MODULES (ajout)
+   ========================================================================== */
+
+/* --- Bloc de fichiers à télécharger --- */
+.downloads { margin: 26px 0 8px; }
+.downloads h4 { font-family: var(--serif); font-size: 18px; margin: 0 0 12px; color: var(--ink); }
+.dl-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.dl-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface-2); text-decoration: none; color: var(--ink);
+  transition: border-color .15s, transform .15s;
+}
+.dl-item:hover { border-color: var(--teal); transform: translateY(-1px); }
+body.track-am .dl-item:hover { border-color: var(--navy-2); }
+.dl-ic {
+  flex: 0 0 auto; width: 38px; height: 38px; border-radius: 8px;
+  display: grid; place-items: center; font-size: 12px; font-weight: 800;
+  font-family: var(--sans); color: #fff; letter-spacing: .3px;
+}
+.dl-ic.xls { background: #1a7a4c; }
+.dl-ic.pdf { background: #b23a48; }
+.dl-ic.doc { background: #2a5db0; }
+.dl-ic.zip { background: #7a6a1a; }
+.dl-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dl-name { font-size: 14px; font-weight: 600; line-height: 1.25; }
+.dl-sub { font-size: 12px; color: var(--ink-mute); }
+.dl-note { font-size: 12.5px; color: var(--ink-mute); font-style: italic; margin-top: 10px; }
+
+/* --- Vidéo responsive (16:9) + placeholder --- */
+.video-embed { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--surface-2); margin: 8px 0; }
+.video-embed iframe, .video-embed video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video-embed.placeholder { display: grid; place-items: center; text-align: center; }
+.video-embed.placeholder .ph-inner { display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--ink-mute); padding: 20px; }
+.video-embed.placeholder .ph-play {
+  width: 62px; height: 62px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--teal); color: #fff; font-size: 24px; padding-left: 4px;
+}
+body.track-am .video-embed.placeholder .ph-play { background: var(--navy-2); }
+.video-embed.placeholder .ph-t { font-size: 14.5px; font-weight: 600; color: var(--ink-soft); }
+.video-embed.placeholder .ph-s { font-size: 12.5px; }
+
+/* --- Grille de sous-modules (cartes) --- */
+.subgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin: 18px 0 8px; }
+.subcard {
+  display: flex; flex-direction: column; gap: 6px; padding: 16px;
+  border: 1px solid var(--border); border-radius: 12px; background: var(--surface);
+  text-decoration: none; color: var(--ink); transition: border-color .15s, transform .15s, box-shadow .15s;
+}
+.subcard:hover { border-color: var(--navy-2); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+.subcard .sc-ic { font-size: 22px; }
+.subcard .sc-t { font-family: var(--serif); font-size: 16.5px; font-weight: 600; line-height: 1.2; }
+.subcard .sc-d { font-size: 12.5px; color: var(--ink-mute); line-height: 1.45; }
+.subcard.soon { opacity: .55; pointer-events: none; }
+.subcard.soon .sc-tag { font-size: 11px; font-weight: 700; color: var(--ink-mute); text-transform: uppercase; letter-spacing: .5px; }
+@media (max-width:520px){ .dl-list, .subgrid { grid-template-columns: 1fr; } }
+
+/* ===== Podcast : bandeau accueil + ligne du temps ===== */
+.pod-ribbon { display:flex; align-items:center; justify-content:center; gap:14px 18px; flex-wrap:wrap; background:linear-gradient(90deg, var(--navy), var(--teal)); color:#fff; padding:11px 20px; text-align:center; }
+.pod-ribbon .tt { font-weight:700; font-size:15px; letter-spacing:.01em; }
+.pod-ribbon .tt b { color:var(--gold-soft); font-weight:800; }
+.pod-ribbon .tt .em { opacity:.85; font-weight:600; }
+.pod-ribbon .rlink { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.34); color:#fff; padding:6px 15px; border-radius:22px; font-weight:700; font-size:13.5px; white-space:nowrap; }
+.pod-ribbon .rlink:hover { background:rgba(255,255,255,.26); text-decoration:none; transform:translateY(-1px); }
+
+.pod-page { padding:44px 0 76px; }
+.pod-head { text-align:center; max-width:680px; margin:0 auto 48px; }
+.pod-eyebrow { color:var(--teal); font-weight:800; letter-spacing:.14em; text-transform:uppercase; font-size:12px; }
+.pod-head h1 { font-size:clamp(28px,4vw,42px); color:var(--ink); margin:12px 0 14px; line-height:1.1; }
+.pod-head p { color:var(--ink-soft); font-size:17px; line-height:1.6; margin:0; }
+
+.pod-timeline { position:relative; max-width:820px; margin:0 auto; padding-left:40px; }
+.pod-timeline::before { content:""; position:absolute; left:11px; top:8px; bottom:8px; width:2px; background:linear-gradient(var(--teal), var(--gold)); opacity:.55; }
+.pod-item { position:relative; margin-bottom:26px; }
+.pod-item:last-child { margin-bottom:0; }
+.pod-node { position:absolute; left:-35px; top:24px; width:16px; height:16px; border-radius:50%; background:var(--surface); border:3px solid var(--teal); }
+.pod-item.live .pod-node { border-color:var(--gold); box-shadow:0 0 0 5px var(--gold-soft); }
+.pod-card { display:grid; grid-template-columns:200px 1fr; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); transition:transform .15s ease, box-shadow .15s ease; }
+.pod-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-lg); }
+.pod-thumb { position:relative; aspect-ratio:16/10; background:linear-gradient(135deg, var(--navy), var(--teal)); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.pod-thumb img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.pod-thumb .play { width:48px; height:48px; border-radius:50%; background:rgba(255,255,255,.92); color:var(--navy); display:flex; align-items:center; justify-content:center; font-size:17px; padding-left:3px; box-shadow:0 4px 14px rgba(0,0,0,.25); z-index:1; }
+.pod-thumb .epnum { position:absolute; top:9px; left:11px; color:#fff; font-weight:800; font-size:11.5px; letter-spacing:.09em; opacity:.92; z-index:1; }
+.pod-body { padding:16px 18px 15px; }
+.pod-chips { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:7px; }
+.pod-chip { font-size:11px; font-weight:700; padding:2px 10px; border-radius:20px; background:var(--surface-2); color:var(--ink-mute); border:1px solid var(--border); }
+.pod-chip.soon { color:var(--teal); }
+.pod-chip.live { background:var(--gold-soft); color:var(--gold); border-color:transparent; }
+.pod-body h3 { font-size:18px; color:var(--ink); margin:2px 0 6px; line-height:1.25; }
+.pod-body p { color:var(--ink-soft); font-size:14.5px; line-height:1.5; margin:0 0 10px; }
+.pod-link { font-weight:700; color:var(--teal); font-size:14px; }
+.pod-link:hover { text-decoration:underline; }
+.pod-soonmsg { font-size:13px; color:var(--ink-mute); font-style:italic; }
+@media (max-width:620px){ .pod-card { grid-template-columns:1fr; } .pod-thumb { aspect-ratio:16/7; } }
+
+</style>
+</head>
+<body data-active-lang="fr">
+
+<div class="progress-bar"></div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <div class="brand">
+      <a href="../index.html"><span class="logo">Avenir<b>.</b></span></a>
+      <span class="tag">Asset Management &amp; Risk</span>
+    </div>
+    <div class="spacer"></div>
+    <nav class="nav-links">
+      <a href="../index.html#parcours"><span data-lang="fr">Parcours</span><span data-lang="en">Tracks</span><span data-lang="nl">Trajecten</span></a>
+      <a href="../index.html#curriculum"><span data-lang="fr">Programme</span><span data-lang="en">Curriculum</span><span data-lang="nl">Programma</span></a>
+      <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a>
+    </nav>
+    <div class="controls">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-set-lang="fr">FR</button>
+        <button data-set-lang="en">EN</button>
+        <button data-set-lang="nl">NL</button>
+      </div>
+      <button id="theme-btn" class="icon-btn" aria-label="Thème">☾</button>
+      <button id="menu-btn" class="icon-btn menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap-mod">
+  <div class="module-shell">
+
+    <aside class="toc">
+      <div class="toc-title" data-lang="fr">Sommaire</div>
+      <div class="toc-title" data-lang="en">Contents</div>
+      <div class="toc-title" data-lang="nl">Inhoud</div>
+      <a href="#marches"><span data-lang="fr">1. Marchés de futures</span><span data-lang="en">1. Futures markets</span><span data-lang="nl">1. Futuresmarkten</span></a>
+      <a href="#hedging"><span data-lang="fr">2. Hedger avec les futures</span><span data-lang="en">2. Hedging with futures</span><span data-lang="nl">2. Hedgen met futures</span></a>
+      <a href="#fx"><span data-lang="fr">3. Marché des changes &amp; parités</span><span data-lang="en">3. FX market &amp; parities</span><span data-lang="nl">3. FX-markt &amp; pariteiten</span></a>
+      <a href="#pricing"><span data-lang="fr">4. Pricing : cost of carry</span><span data-lang="en">4. Pricing: cost of carry</span><span data-lang="nl">4. Pricing: cost of carry</span></a>
+      <a href="#fut-fwd"><span data-lang="fr">5. Prix, valeur &amp; futures vs forwards</span><span data-lang="en">5. Price, value &amp; futures vs forwards</span><span data-lang="nl">5. Prijs, waarde &amp; futures vs forwards</span></a>
+      <a href="#commodities"><span data-lang="fr">6. Commodities &amp; convenience yield</span><span data-lang="en">6. Commodities &amp; convenience yield</span><span data-lang="nl">6. Commodities &amp; convenience yield</span></a>
+      <a href="#ressources"><span data-lang="fr">Ressources</span><span data-lang="en">Resources</span><span data-lang="nl">Bronnen</span></a>
+      <a href="#retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></a>
+      <a href="#qcm"><span data-lang="fr">8. QCM (15)</span><span data-lang="en">8. MCQ (15)</span><span data-lang="nl">8. MCV (15)</span></a>
+      <a href="#exercices"><span data-lang="fr">9. Exercices</span><span data-lang="en">9. Exercises</span><span data-lang="nl">9. Oefeningen</span></a>
+      <a href="#biblio"><span data-lang="fr">Sources</span><span data-lang="en">Sources</span><span data-lang="nl">Bronnen</span></a>
+    </aside>
+
+    <main>
+      <div class="crumbs">
+        <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a> ·
+        <span>Financial Risk Management</span> ·
+        <span data-lang="fr">Marchés &amp; produits</span><span data-lang="en">Financial Markets &amp; Products</span><span data-lang="nl">Financiële markten &amp; producten</span>
+      </div>
+
+      <div class="module-hero">
+        <span class="badge">Marchés &amp; produits · <span data-lang="fr">Futures &amp; forwards</span><span data-lang="en">Futures &amp; forwards</span><span data-lang="nl">Futures &amp; forwards</span></span>
+        <h1 data-lang="fr">Futures &amp; forwards</h1>
+        <h1 data-lang="en">Futures &amp; forwards</h1>
+        <h1 data-lang="nl">Futures &amp; forwards</h1>
+        <p class="subtitle" data-lang="fr">Comment fonctionne un marché de futures, comment on s'en sert pour couvrir un risque, et surtout comment se fixe le prix à terme. Un seul argument, l'arbitrage de cost of carry, relie le prix futures au spot, à travers les actions, les devises et les matières premières.</p>
+        <p class="subtitle" data-lang="en">How a futures market works, how it is used to hedge a risk, and above all how the forward price is set. A single argument, the cost-of-carry arbitrage, links the futures price to the spot, across equities, currencies and commodities.</p>
+        <p class="subtitle" data-lang="nl">Hoe een futuresmarkt werkt, hoe ze wordt gebruikt om een risico te dekken, en vooral hoe de termijnprijs wordt bepaald. Eén enkel argument, de cost-of-carry-arbitrage, verbindt de futuresprijs met de spot, doorheen aandelen, valuta's en grondstoffen.</p>
+        <div class="module-meta">
+          <span data-lang="fr">⏱ Lecture ~32 min</span><span data-lang="en">⏱ ~32 min read</span><span data-lang="nl">⏱ ~32 min lezen</span>
+          <span data-lang="fr">📶 Niveau avancé</span><span data-lang="en">📶 Advanced level</span><span data-lang="nl">📶 Gevorderd niveau</span>
+          <span>🎓 FRM I · FMP</span>
+        </div>
+      </div>
+
+      <div class="objectives">
+        <h4 data-lang="fr">Objectifs d'apprentissage</h4>
+        <h4 data-lang="en">Learning objectives</h4>
+        <h4 data-lang="nl">Leerdoelen</h4>
+        <ul>
+          <li data-lang="fr">Décrire la mécanique d'un futures : spécification, open interest, convergence.</li>
+          <li data-lang="en">Describe a futures' mechanics: specification, open interest, convergence.</li>
+          <li data-lang="nl">De mechaniek van een futures beschrijven: specificatie, open interest, convergentie.</li>
+          <li data-lang="fr">Construire un hedge (short/long), calculer le ratio optimal et le tailing.</li>
+          <li data-lang="en">Build a hedge (short/long), compute the optimal ratio and the tailing.</li>
+          <li data-lang="nl">Een hedge bouwen (short/long), de optimale ratio en de tailing berekenen.</li>
+          <li data-lang="fr">Distinguer les trois risques FX et la covered vs uncovered interest parity.</li>
+          <li data-lang="en">Distinguish the three FX risks and covered vs uncovered interest parity.</li>
+          <li data-lang="nl">De drie FX-risico's en covered vs uncovered interest parity onderscheiden.</li>
+          <li data-lang="fr">Pricer un forward par cost of carry dans les trois cas (sans revenu, revenu, yield).</li>
+          <li data-lang="en">Price a forward by cost of carry in the three cases (no income, income, yield).</li>
+          <li data-lang="nl">Een forward prijzen via cost of carry in de drie gevallen (geen inkomen, inkomen, yield).</li>
+          <li data-lang="fr">Distinguer prix et valeur d'un forward, et futures vs forwards.</li>
+          <li data-lang="en">Distinguish a forward's price and value, and futures vs forwards.</li>
+          <li data-lang="nl">De prijs en waarde van een forward onderscheiden, en futures vs forwards.</li>
+          <li data-lang="fr">Comprendre le convenience yield et backwardation vs contango.</li>
+          <li data-lang="en">Understand the convenience yield and backwardation vs contango.</li>
+          <li data-lang="nl">De convenience yield en backwardation vs contango begrijpen.</li>
+        </ul>
+      </div>
+
+      <div class="module-body">
+
+        <!-- 1. MARCHÉS -->
+        <h2 id="marches"><span data-lang="fr">1. Marchés de futures</span><span data-lang="en">1. Futures markets</span><span data-lang="nl">1. Futuresmarkten</span></h2>
+        <p data-lang="fr">L'exchange spécifie tout : le sous-jacent et son <strong>grade</strong> de qualité, la taille du contrat, le lieu et les mois de livraison. Quand un choix reste ouvert (quel grade, où, quand livrer), il appartient au <strong>short</strong>, car c'est lui qui livre. Deux notions structurent le marché. L'<strong>open interest</strong> compte les positions nettes ouvertes (autant de longs que de shorts) ; il culmine avant la livraison puis s'effondre. Attention : le <em>volume</em> quotidien peut dépasser l'OI (le day trading gonfle le volume sans créer de positions ouvertes). La <strong>convergence</strong> force F → S à l'approche de la livraison : tout écart crée un arbitrage immédiat (si F &gt; S, shorter le futures, acheter le spot, livrer). La courbe des prix par maturité est <em>normale</em> (croissante, comme l'or) ou <em>inversée</em> (décroissante, comme le crude).</p>
+        <p data-lang="en">The exchange specifies everything: the underlying and its quality <strong>grade</strong>, the contract size, the delivery place and months. When a choice remains open (which grade, where, when to deliver), it belongs to the <strong>short</strong>, since it is the one delivering. Two notions structure the market. The <strong>open interest</strong> counts the open net positions (as many longs as shorts); it peaks before delivery then collapses. Note: the daily <em>volume</em> can exceed the OI (day trading inflates volume without creating open positions). <strong>Convergence</strong> forces F → S near delivery: any gap creates an immediate arbitrage (if F &gt; S, short the futures, buy the spot, deliver). The price curve by maturity is <em>normal</em> (rising, like gold) or <em>inverted</em> (falling, like crude).</p>
+        <p data-lang="nl">De beurs specificeert alles: de onderliggende en zijn kwaliteits<strong>grade</strong>, de contractgrootte, de leveringsplaats en -maanden. Blijft een keuze open (welke grade, waar, wanneer leveren), dan behoort ze de <strong>short</strong> toe, want hij levert. Twee begrippen structureren de markt. De <strong>open interest</strong> telt de open netto posities (evenveel longs als shorts); ze piekt vóór de levering en stort dan in. Let op: het dagelijkse <em>volume</em> kan de OI overtreffen (day trading blaast volume op zonder open posities te creëren). <strong>Convergentie</strong> dwingt F → S nabij de levering: elk verschil creëert een onmiddellijke arbitrage (als F &gt; S, short de futures, koop de spot, lever). De prijscurve per looptijd is <em>normaal</em> (stijgend, zoals goud) of <em>inverted</em> (dalend, zoals crude).</p>
+
+        <div class="callout warn">
+          <span class="clabel" data-lang="fr">La palette d'ordres &amp; la comptabilité</span><span class="clabel" data-lang="en">The order palette &amp; accounting</span><span class="clabel" data-lang="nl">Het orderpalet &amp; de boekhouding</span>
+          <span data-lang="fr">Un <strong>market order</strong> garantit l'exécution mais pas le prix ; un <strong>limit order</strong> garantit le prix (ou mieux) mais pas l'exécution : les deux garanties sont incompatibles. Un <strong>stop-loss</strong> devient un market order au seuil (il coupe une perte, mais le prix d'exécution n'est pas garanti) ; un <strong>stop-limit</strong> devient un limit order (prix garanti, exécution non garantie). Le <strong>MIT</strong> (market-if-touched) est le miroir du stop-loss : il prend un profit sur mouvement favorable. Côté comptabilité, les futures sont par défaut <em>marked to market</em> (gains/pertes reconnus chaque année), ce qui peut paradoxalement <em>augmenter</em> la volatilité comptable d'un hedger ; le <strong>hedge accounting</strong> corrige cela en reconnaissant le résultat du hedge en même temps que l'élément couvert, à condition que le hedge soit documenté et effectif.</span>
+          <span data-lang="en">A <strong>market order</strong> guarantees execution but not price; a <strong>limit order</strong> guarantees price (or better) but not execution: the two guarantees are incompatible. A <strong>stop-loss</strong> becomes a market order at the threshold (it cuts a loss, but the execution price is not guaranteed); a <strong>stop-limit</strong> becomes a limit order (price guaranteed, execution not). The <strong>MIT</strong> (market-if-touched) is the mirror of the stop-loss: it takes a profit on a favourable move. On accounting, futures are by default <em>marked to market</em> (gains/losses recognised each year), which can paradoxically <em>increase</em> a hedger's accounting volatility; <strong>hedge accounting</strong> fixes this by recognising the hedge result at the same time as the hedged item, provided the hedge is documented and effective.</span>
+          <span data-lang="nl">Een <strong>market order</strong> garandeert uitvoering maar geen prijs; een <strong>limit order</strong> garandeert prijs (of beter) maar geen uitvoering: de twee garanties zijn onverenigbaar. Een <strong>stop-loss</strong> wordt een market order bij de drempel (het snijdt een verlies af, maar de uitvoeringsprijs is niet gegarandeerd); een <strong>stop-limit</strong> wordt een limit order (prijs gegarandeerd, uitvoering niet). De <strong>MIT</strong> (market-if-touched) is de spiegel van de stop-loss: het neemt winst bij een gunstige beweging. Boekhoudkundig zijn futures standaard <em>marked to market</em> (winst/verlies elk jaar erkend), wat paradoxaal de boekhoudkundige volatiliteit van een hedger kan <em>verhogen</em>; <strong>hedge accounting</strong> corrigeert dit door het hedgeresultaat tegelijk met het afgedekte item te erkennen, mits de hedge gedocumenteerd en effectief is.</span>
+        </div>
+
+        <!-- 2. HEDGING -->
+        <h2 id="hedging"><span data-lang="fr">2. Hedger avec les futures</span><span data-lang="en">2. Hedging with futures</span><span data-lang="nl">2. Hedgen met futures</span></h2>
+        <p data-lang="fr">Celui qui devra <em>vendre</em> un actif plus tard se protège en <strong>vendant</strong> des futures (short hedge) ; celui qui devra <em>acheter</em> se protège en <strong>achetant</strong> (long hedge). Dans les deux cas, le prix effectivement obtenu est <strong>F₀ + bₜ</strong> : le prix futures initial (connu dès le départ) plus la <em>basis</em> bₜ = Sₜ − Fₜ à la clôture. C'est donc la <strong>basis</strong>, et elle seule, qui porte l'incertitude résiduelle du hedge, pas le niveau final du spot. Quand l'actif hedgé n'est pas celui du contrat (<strong>cross hedging</strong>), le ratio optimal est la pente de la régression de ΔS sur ΔF : h* = ρ·σS/σF, dont l'efficacité se mesure par <strong>ρ²</strong> (le R², pas ρ). Comme les futures sont réglés chaque jour, on applique le <strong>tailing</strong> (rendements quotidiens et valeurs : N* = ĥ·VA/VF).</p>
+        <p data-lang="en">One who must <em>sell</em> an asset later hedges by <strong>selling</strong> futures (short hedge); one who must <em>buy</em> hedges by <strong>buying</strong> (long hedge). In both cases the price actually obtained is <strong>F₀ + bₜ</strong>: the initial futures price (known from the start) plus the <em>basis</em> bₜ = Sₜ − Fₜ at close. So it is the <strong>basis</strong>, and it alone, that carries the hedge's residual uncertainty, not the final spot level. When the hedged asset is not the contract's (<strong>cross hedging</strong>), the optimal ratio is the slope of the regression of ΔS on ΔF: h* = ρ·σS/σF, whose effectiveness is measured by <strong>ρ²</strong> (the R², not ρ). Since futures settle daily, we apply <strong>tailing</strong> (daily returns and values: N* = ĥ·VA/VF).</p>
+        <p data-lang="nl">Wie een actief later moet <em>verkopen</em> dekt zich door futures te <strong>verkopen</strong> (short hedge); wie moet <em>kopen</em> dekt zich door te <strong>kopen</strong> (long hedge). In beide gevallen is de werkelijk verkregen prijs <strong>F₀ + bₜ</strong>: de initiële futuresprijs (van bij het begin gekend) plus de <em>basis</em> bₜ = Sₜ − Fₜ bij sluiting. Het is dus de <strong>basis</strong>, en enkel die, die de residuele onzekerheid van de hedge draagt, niet het finale spotniveau. Is het afgedekte actief niet dat van het contract (<strong>cross hedging</strong>), dan is de optimale ratio de helling van de regressie van ΔS op ΔF: h* = ρ·σS/σF, waarvan de effectiviteit gemeten wordt door <strong>ρ²</strong> (de R², niet ρ). Aangezien futures dagelijks afrekenen, passen we <strong>tailing</strong> toe (dagrendementen en waarden: N* = ĥ·VA/VF).</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">Piloter le β &amp; le stack and roll</span><span class="clabel" data-lang="en">Steering the β &amp; stack and roll</span><span class="clabel" data-lang="nl">De β sturen &amp; stack and roll</span>
+          <span data-lang="fr">Les <strong>futures d'indice</strong> hedgent un portefeuille d'actions (N* = β·VA/VF) ou modulent son β sans tout liquider : pour viser β*, on prend la <em>différence</em> des bêtas, (β − β*)·VA/VF. Un hedge parfait ne rapporte pas zéro mais le <strong>taux sans risque</strong> (on a éliminé le risque de marché, pas le temps). C'est l'outil du stock-picker : neutraliser le marché tout en gardant l'alpha. Quand aucun futures liquide n'existe à l'horizon voulu, on fabrique un hedge long terme en <strong>stack and roll</strong> (empiler des contrats courts, les rouler), au prix de deux risques : le <em>rollover</em> (écart de prix à chaque roulement) et la <em>trésorerie</em> (les marges quotidiennes sont du cash immédiat, alors que le gain compensateur arrive plus tard). C'est ce décalage qui a coulé Metallgesellschaft.</span>
+          <span data-lang="en"><strong>Index futures</strong> hedge an equity portfolio (N* = β·VA/VF) or modulate its β without liquidating everything: to target β*, take the <em>difference</em> of betas, (β − β*)·VA/VF. A perfect hedge does not return zero but the <strong>risk-free rate</strong> (market risk removed, not the passage of time). It is the stock-picker's tool: neutralise the market while keeping the alpha. When no liquid futures exists at the wanted horizon, a long-term hedge is built by <strong>stack and roll</strong> (stack short contracts, roll them), at the cost of two risks: <em>rollover</em> (price gap at each roll) and <em>cash flow</em> (daily margins are immediate cash, while the offsetting gain comes later). This mismatch sank Metallgesellschaft.</span>
+          <span data-lang="nl"><strong>Indexfutures</strong> dekken een aandelenportefeuille (N* = β·VA/VF) of moduleren zijn β zonder alles te liquideren: om β* te richten, neem het <em>verschil</em> van de bèta's, (β − β*)·VA/VF. Een perfecte hedge levert geen nul op maar de <strong>risicovrije rente</strong> (marktrisico verwijderd, niet het verstrijken van de tijd). Het is het instrument van de stock-picker: de markt neutraliseren en de alpha behouden. Bestaat er geen liquide futures op de gewenste horizon, dan wordt een langetermijnhedge gebouwd via <strong>stack and roll</strong> (korte contracten stapelen, doorrollen), ten koste van twee risico's: <em>rollover</em> (prijsverschil bij elke roll) en <em>cashflow</em> (dagelijkse marges zijn onmiddellijk cash, terwijl de compenserende winst later komt). Deze mismatch deed Metallgesellschaft zinken.</span>
+        </div>
+
+        <!-- 3. FX -->
+        <h2 id="fx"><span data-lang="fr">3. Marché des changes &amp; parités</span><span data-lang="en">3. FX market &amp; parities</span><span data-lang="nl">3. FX-markt &amp; pariteiten</span></h2>
+        <p data-lang="fr">Le FX est le plus gros marché du monde (6,6 T USD/jour en 2019). Une paire s'écrit <strong>XXXYYY</strong> : le nombre affiché est le montant de devise <em>quote</em> (YYY) pour acheter 1 unité de devise <em>base</em> (XXX). Pour une entreprise, trois risques : le <strong>transaction risk</strong> (des cash-flows futurs en devise, couvrable par forward), le <strong>translation risk</strong> (valeur comptable des actifs/passifs étrangers, purement comptable, sans cash-flow) et l'<strong>economic risk</strong> (effet des changes sur la compétitivité future). Deux parités à ne pas confondre. La <strong>covered interest parity</strong> est un arbitrage strict : F = S·(1+R_quote)ᵀ / (1+R_base)ᵀ, sinon un profit sans risque existe. L'<strong>uncovered interest parity</strong> n'est qu'une hypothèse d'équilibre (la devise à taux élevé devrait se déprécier du différentiel), souvent démentie. La <strong>PPP</strong> relie inflation et change, mais seulement à long terme.</p>
+        <p data-lang="en">FX is the world's largest market (6.6T USD/day in 2019). A pair is written <strong>XXXYYY</strong>: the number shown is the amount of <em>quote</em> currency (YYY) to buy 1 unit of <em>base</em> currency (XXX). For a firm, three risks: <strong>transaction risk</strong> (future cash flows in a currency, hedgeable by forward), <strong>translation risk</strong> (book value of foreign assets/liabilities, purely accounting, no cash flow) and <strong>economic risk</strong> (FX effect on future competitiveness). Two parities not to confuse. <strong>Covered interest parity</strong> is a strict arbitrage: F = S·(1+R_quote)ᵀ / (1+R_base)ᵀ, else a riskless profit exists. <strong>Uncovered interest parity</strong> is only an equilibrium hypothesis (the high-rate currency should depreciate by the rate differential), often violated. <strong>PPP</strong> links inflation and FX, but only in the long run.</p>
+        <p data-lang="nl">FX is de grootste markt ter wereld (6,6T USD/dag in 2019). Een paar wordt geschreven <strong>XXXYYY</strong>: het getoonde getal is het bedrag <em>quote</em>-valuta (YYY) om 1 eenheid <em>base</em>-valuta (XXX) te kopen. Voor een bedrijf, drie risico's: <strong>transactierisico</strong> (toekomstige kasstromen in een valuta, afdekbaar via forward), <strong>translatierisico</strong> (boekwaarde van buitenlandse activa/passiva, puur boekhoudkundig, geen kasstroom) en <strong>economisch risico</strong> (FX-effect op toekomstige concurrentiekracht). Twee pariteiten niet te verwarren. <strong>Covered interest parity</strong> is een strikte arbitrage: F = S·(1+R_quote)ᵀ / (1+R_base)ᵀ, anders bestaat een risicovrije winst. <strong>Uncovered interest parity</strong> is enkel een evenwichtshypothese (de hoogrentende valuta zou moeten depreciëren met het renteverschil), vaak geschonden. <strong>PPP</strong> verbindt inflatie en FX, maar enkel op lange termijn.</p>
+
+        <!-- 4. PRICING + INTERACTIF -->
+        <h2 id="pricing"><span data-lang="fr">4. Pricing : l'arbitrage de cost of carry</span><span data-lang="en">4. Pricing: the cost-of-carry arbitrage</span><span data-lang="nl">4. Pricing: de cost-of-carry-arbitrage</span></h2>
+        <p data-lang="fr">Un seul argument fixe le prix à terme : le <strong>cost of carry</strong>. Détenir l'actif aujourd'hui et le livrer à terme coûte le financement de l'achat, donc le prix forward est le spot capitalisé au taux sans risque. Trois cas selon ce que l'actif rapporte. <strong>Sans revenu</strong> : F = S(1+R)ᵀ. <strong>Revenu connu en cash</strong> (coupon, dividende annoncé) : F = (S − I)(1+R)ᵀ, où <em>I est la valeur actualisée</em> des revenus, pas leur somme nominale. <strong>Yield</strong> (revenu proportionnel Q) : F = S·((1+R)/(1+Q))ᵀ. Cette troisième formule unifie tout : la CIP en est le cas où Q est le taux étranger, et le forward sur indice le cas où Q est le dividend yield. Tout écart au prix d'équilibre ouvre un arbitrage : <em>cash and carry</em> (F trop cher : emprunter, acheter le spot, vendre le forward) ou <em>reverse</em> (F trop bas : shorter le spot, placer, racheter via le forward).</p>
+        <p data-lang="en">A single argument sets the forward price: the <strong>cost of carry</strong>. Holding the asset today and delivering it forward costs the financing of the purchase, so the forward price is the spot compounded at the risk-free rate. Three cases by what the asset earns. <strong>No income</strong>: F = S(1+R)ᵀ. <strong>Known cash income</strong> (coupon, announced dividend): F = (S − I)(1+R)ᵀ, where <em>I is the present value</em> of the income, not its nominal sum. <strong>Yield</strong> (proportional income Q): F = S·((1+R)/(1+Q))ᵀ. This third formula unifies everything: CIP is the case where Q is the foreign rate, and the index forward the case where Q is the dividend yield. Any gap from the equilibrium price opens an arbitrage: <em>cash and carry</em> (F too dear: borrow, buy the spot, sell the forward) or <em>reverse</em> (F too low: short the spot, invest, buy back via the forward).</p>
+        <p data-lang="nl">Eén enkel argument bepaalt de termijnprijs: de <strong>cost of carry</strong>. Het actief vandaag aanhouden en op termijn leveren kost de financiering van de aankoop, dus de forwardprijs is de spot gekapitaliseerd tegen de risicovrije rente. Drie gevallen naargelang wat het actief opbrengt. <strong>Geen inkomen</strong>: F = S(1+R)ᵀ. <strong>Bekend cash-inkomen</strong> (coupon, aangekondigd dividend): F = (S − I)(1+R)ᵀ, waar <em>I de contante waarde</em> van het inkomen is, niet de nominale som. <strong>Yield</strong> (proportioneel inkomen Q): F = S·((1+R)/(1+Q))ᵀ. Deze derde formule verenigt alles: CIP is het geval waar Q de buitenlandse rente is, en de indexforward het geval waar Q de dividend yield is. Elk verschil met de evenwichtsprijs opent een arbitrage: <em>cash and carry</em> (F te duur: lenen, spot kopen, forward verkopen) of <em>reverse</em> (F te laag: spot shorten, beleggen, terugkopen via de forward).</p>
+
+        <p data-lang="fr">Le graphe trace la <strong>courbe de prix forward</strong> F(T) = S·((1+R)/(1+Q))ᵀ par maturité. Réglez le spot S, le taux de financement R et le rendement Q de l'actif. Quand R &gt; Q (financer coûte plus que ce que l'actif rapporte), la courbe <em>monte</em> : c'est le <strong>contango</strong> (marché normal, F &gt; S). Quand Q &gt; R (l'actif rapporte plus qu'il ne coûte à porter), la courbe <em>descend</em> : c'est un marché <strong>inversé</strong> (backwardation). La basis F − S n'est rien d'autre que le cost of carry net.</p>
+        <p data-lang="en">The chart plots the <strong>forward price curve</strong> F(T) = S·((1+R)/(1+Q))ᵀ by maturity. Set the spot S, the financing rate R and the asset's yield Q. When R &gt; Q (financing costs more than the asset earns), the curve <em>rises</em>: this is <strong>contango</strong> (normal market, F &gt; S). When Q &gt; R (the asset earns more than it costs to carry), the curve <em>falls</em>: an <strong>inverted</strong> market (backwardation). The basis F − S is nothing but the net cost of carry.</p>
+        <p data-lang="nl">De grafiek tekent de <strong>forwardprijscurve</strong> F(T) = S·((1+R)/(1+Q))ᵀ per looptijd. Stel de spot S, de financieringsrente R en de yield Q van het actief in. Wanneer R &gt; Q (financieren kost meer dan het actief opbrengt), <em>stijgt</em> de curve: dit is <strong>contango</strong> (normale markt, F &gt; S). Wanneer Q &gt; R (het actief brengt meer op dan het kost om te dragen), <em>daalt</em> de curve: een <strong>inverted</strong> markt (backwardation). De basis F − S is niets anders dan de netto cost of carry.</p>
+
+        <style>
+          #cc-chart { width:100%; height:auto; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; }
+          #cc-chart .axis { stroke:var(--ink-mute); stroke-width:1.4; }
+          #cc-chart .tick { fill:var(--ink-mute); font-size:10px; font-family:var(--sans); }
+          #cc-chart .lab { fill:var(--ink-soft); font-size:11px; font-family:var(--sans); font-weight:700; }
+          .cc-sliders { display:grid; grid-template-columns:repeat(3,1fr); gap:12px 18px; margin-bottom:16px; }
+          .cc-sliders label { display:block; font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:4px; }
+          .cc-out { margin-top:14px; font-size:14.5px; color:var(--ink-soft); display:flex; gap:20px; flex-wrap:wrap; }
+          .cc-out b { color:var(--ink); font-family:var(--mono); }
+          .cc-verdict { font-weight:800; }
+          @media (max-width:640px){ .cc-sliders { grid-template-columns:1fr 1fr; } }
+        </style>
+
+        <div class="calc">
+          <div class="chead">
+            <h4 data-lang="fr">Courbe de cost of carry : F(T) = S·((1+R)/(1+Q))ᵀ</h4>
+            <h4 data-lang="en">Cost-of-carry curve : F(T) = S·((1+R)/(1+Q))ᵀ</h4>
+            <h4 data-lang="nl">Cost-of-carry-curve : F(T) = S·((1+R)/(1+Q))ᵀ</h4>
+            <p data-lang="fr">R &gt; Q → contango (F &gt; S) · Q &gt; R → inversé</p>
+            <p data-lang="en">R &gt; Q → contango (F &gt; S) · Q &gt; R → inverted</p>
+            <p data-lang="nl">R &gt; Q → contango (F &gt; S) · Q &gt; R → inverted</p>
+          </div>
+          <div class="cbody" style="display:block">
+            <div class="cc-sliders">
+              <div>
+                <label><span data-lang="fr">Spot S</span><span data-lang="en">Spot S</span><span data-lang="nl">Spot S</span></label>
+                <div class="rangewrap"><input type="range" id="cc-s" min="50" max="150" step="1" value="100"><output id="cc-s-o">100</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Taux de financement R (%)</span><span data-lang="en">Financing rate R (%)</span><span data-lang="nl">Financieringsrente R (%)</span></label>
+                <div class="rangewrap"><input type="range" id="cc-r" min="0" max="10" step="0.1" value="5"><output id="cc-r-o">5.0%</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Rendement de l'actif Q (%)</span><span data-lang="en">Asset yield Q (%)</span><span data-lang="nl">Yield van het actief Q (%)</span></label>
+                <div class="rangewrap"><input type="range" id="cc-q" min="0" max="10" step="0.1" value="2"><output id="cc-q-o">2.0%</output></div>
+              </div>
+            </div>
+
+            <svg id="cc-chart" viewBox="0 0 520 300" role="img" aria-label="Courbe de prix forward selon la maturité"></svg>
+
+            <div class="cc-out">
+              <span><span data-lang="fr">F à 1 an :</span><span data-lang="en">F at 1 year:</span><span data-lang="nl">F op 1 jaar:</span> <b id="cc-f">·</b></span>
+              <span><span data-lang="fr">Basis (F − S) :</span><span data-lang="en">Basis (F − S):</span><span data-lang="nl">Basis (F − S):</span> <b id="cc-basis">·</b></span>
+              <span><span data-lang="fr">Régime :</span><span data-lang="en">Regime:</span><span data-lang="nl">Regime:</span> <b id="cc-reg" class="cc-verdict">·</b></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. PRIX VALEUR FUT/FWD -->
+        <h2 id="fut-fwd"><span data-lang="fr">5. Prix, valeur &amp; futures vs forwards</span><span data-lang="en">5. Price, value &amp; futures vs forwards</span><span data-lang="nl">5. Prijs, waarde &amp; futures vs forwards</span></h2>
+        <p data-lang="fr">Il faut distinguer le <strong>prix</strong> forward (le prix de livraison qu'on négocierait aujourd'hui) de la <strong>valeur</strong> du contrat. À l'initiation, la valeur est <em>nulle</em> (aucune partie ne paie l'autre) et le prix est le F d'équilibre du moment. Ensuite, le prix de livraison K reste figé mais le marché bouge : la valeur du long devient <strong>PV(F − K) = (F − K)/(1+R)ᵀ</strong>. Confondre les deux (répondre F quand on demande une valeur) est l'erreur classique. Piège fameux : l'affaire <strong>Joseph Jett</strong>, dont le système comptait l'écart F − S comme un profit immédiat, alors que ce n'est <em>que le coût de portage</em> : le « profit » d'un carry n'existe qu'à l'échéance.</p>
+        <p data-lang="en">One must distinguish the forward <strong>price</strong> (the delivery price negotiated today) from the contract's <strong>value</strong>. At initiation, the value is <em>zero</em> (neither party pays the other) and the price is the moment's equilibrium F. Then the delivery price K stays fixed but the market moves: the long's value becomes <strong>PV(F − K) = (F − K)/(1+R)ᵀ</strong>. Confusing the two (answering F when asked for a value) is the classic error. Famous trap: the <strong>Joseph Jett</strong> affair, whose system counted the gap F − S as an immediate profit, when it is <em>only the cost of carry</em> : a carry's "profit" exists only at maturity.</p>
+        <p data-lang="nl">Men moet de forward<strong>prijs</strong> (de vandaag onderhandelde leveringsprijs) onderscheiden van de <strong>waarde</strong> van het contract. Bij aanvang is de waarde <em>nul</em> (geen partij betaalt de andere) en de prijs is de evenwichts-F van het moment. Daarna blijft de leveringsprijs K vast maar de markt beweegt: de waarde van de long wordt <strong>PV(F − K) = (F − K)/(1+R)ᵀ</strong>. De twee verwarren (F antwoorden wanneer een waarde gevraagd wordt) is de klassieke fout. Beruchte valstrik: de <strong>Joseph Jett</strong>-affaire, wiens systeem het verschil F − S als een onmiddellijke winst telde, terwijl het <em>enkel de cost of carry</em> is : de "winst" van een carry bestaat pas op vervaldag.</p>
+
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">Futures vs forwards</span><span class="clabel" data-lang="en">Futures vs forwards</span><span class="clabel" data-lang="nl">Futures vs forwards</span>
+          <span data-lang="fr">Le futures est réglé chaque jour (<em>daily settlement</em>), le forward seulement à l'échéance. Malgré cela, les prix théoriques sont <strong>égaux si les taux sont déterministes</strong>. Quand les taux bougent, une corrélation <em>positive</em> actif/taux avantage le futures (ses gains quotidiens sont réinvestis à taux hauts) : futures &gt; forward ; une corrélation <em>négative</em> donne l'inverse. En pratique l'écart est négligeable, sauf pour l'Eurodollar. Deux corollaires : les formules de valeur PV(F − K) <strong>ne s'appliquent pas aux futures</strong> (le daily settlement remet la valeur à zéro chaque soir), et sur un futures c'est le short qui choisit la date de livraison (il livre tôt si R &gt; revenu, tard si revenu &gt; R).</span>
+          <span data-lang="en">The futures settles daily (<em>daily settlement</em>), the forward only at maturity. Despite this, the theoretical prices are <strong>equal if rates are deterministic</strong>. When rates move, a <em>positive</em> asset/rate correlation favours the futures (its daily gains are reinvested at high rates): futures &gt; forward; a <em>negative</em> correlation gives the reverse. In practice the gap is negligible, except for the Eurodollar. Two corollaries: the value formulas PV(F − K) <strong>do not apply to futures</strong> (daily settlement resets the value to zero each evening), and on a futures the short chooses the delivery date (delivers early if R &gt; income, late if income &gt; R).</span>
+          <span data-lang="nl">De futures rekent dagelijks af (<em>daily settlement</em>), de forward enkel op vervaldag. Toch zijn de theoretische prijzen <strong>gelijk als de rentes deterministisch zijn</strong>. Wanneer rentes bewegen, bevoordeelt een <em>positieve</em> actief/rente-correlatie de futures (zijn dagwinsten worden herbelegd tegen hoge rentes): futures &gt; forward; een <em>negatieve</em> correlatie geeft het omgekeerde. In de praktijk is het verschil verwaarloosbaar, behalve voor de Eurodollar. Twee gevolgen: de waardeformules PV(F − K) <strong>gelden niet voor futures</strong> (daily settlement zet de waarde elke avond op nul), en op een futures kiest de short de leveringsdatum (levert vroeg als R &gt; inkomen, laat als inkomen &gt; R).</span>
+        </div>
+
+        <!-- 6. COMMODITIES -->
+        <h2 id="commodities"><span data-lang="fr">6. Commodities &amp; convenience yield</span><span data-lang="en">6. Commodities &amp; convenience yield</span><span data-lang="nl">6. Commodities &amp; convenience yield</span></h2>
+        <p data-lang="fr">Les commodities ne se pricent pas comme des actifs financiers : leur stockage et leur transport coûtent, et la plupart sont des <strong>consumption assets</strong> (détenus pour être utilisés, pas comme placement). Or l'arbitrage <em>reverse</em> suppose qu'un détenteur vende son stock pour le racheter à terme, ce qu'un consommateur refuse. Il ne reste donc qu'une <strong>borne supérieure</strong> : F ≤ (S + U)(1+R)ᵀ, où U est la valeur actualisée des coûts de stockage. L'écart entre cette borne et le prix observé se mesure par le <strong>convenience yield</strong> Y, qui chiffre la valeur d'avoir le bien physiquement sous la main (élevé quand les stocks sont bas). Le <strong>cost of carry</strong> C unifie tout : F = S·e^((C−Y)T). Les métaux d'investissement (or, argent) font exception : la formule financière s'applique exactement, avec un <em>lease rate</em> qui tient lieu de revenu.</p>
+        <p data-lang="en">Commodities are not priced like financial assets: their storage and transport cost, and most are <strong>consumption assets</strong> (held to be used, not as an investment). But the <em>reverse</em> arbitrage assumes a holder sells their stock to buy it back forward, which a consumer refuses. So only an <strong>upper bound</strong> remains: F ≤ (S + U)(1+R)ᵀ, where U is the present value of storage costs. The gap between this bound and the observed price is measured by the <strong>convenience yield</strong> Y, which quantifies the value of having the good physically at hand (high when stocks are low). The <strong>cost of carry</strong> C unifies everything: F = S·e^((C−Y)T). Investment metals (gold, silver) are the exception: the financial formula applies exactly, with a <em>lease rate</em> standing in for income.</p>
+        <p data-lang="nl">Commodities worden niet geprijsd als financiële activa: hun opslag en transport kosten, en de meeste zijn <strong>consumption assets</strong> (aangehouden om gebruikt te worden, niet als belegging). Maar de <em>reverse</em>-arbitrage veronderstelt dat een houder zijn voorraad verkoopt om ze op termijn terug te kopen, wat een consument weigert. Dus blijft enkel een <strong>bovengrens</strong>: F ≤ (S + U)(1+R)ᵀ, waar U de contante waarde van de opslagkosten is. Het verschil tussen deze grens en de waargenomen prijs wordt gemeten door de <strong>convenience yield</strong> Y, die de waarde kwantificeert van het goed fysiek bij de hand te hebben (hoog wanneer de voorraden laag zijn). De <strong>cost of carry</strong> C verenigt alles: F = S·e^((C−Y)T). Investeringsmetalen (goud, zilver) zijn de uitzondering: de financiële formule geldt exact, met een <em>lease rate</em> in de plaats van inkomen.</p>
+
+        <div class="callout warn">
+          <span class="clabel" data-lang="fr">F prédit-il le spot futur ? Backwardation vs contango</span><span class="clabel" data-lang="en">Does F predict the future spot? Backwardation vs contango</span><span class="clabel" data-lang="nl">Voorspelt F de toekomstige spot? Backwardation vs contango</span>
+          <span data-lang="fr">Le prix futures F n'est <strong>pas</strong> la prévision du spot futur E(Sₜ). <strong>Keynes</strong> l'explique par la prime exigée des spéculateurs : si les hedgers sont majoritairement short (des producteurs qui verrouillent leur prix de vente), les spéculateurs en face sont longs et doivent gagner en moyenne, donc F &lt; E(Sₜ) : c'est la <strong>normal backwardation</strong>. La lecture <strong>CAPM</strong> raffine : le signe de l'écart suit le risque systématique du sous-jacent. Vocabulaire à ne pas confondre : <em>contango</em> = F &gt; S (courbe montante), <em>backwardation</em> = F &lt; S (courbe descendante) ; ce sont des descriptions de la courbe des prix, distinctes de la question de savoir si F prédit le spot.</span>
+          <span data-lang="en">The futures price F is <strong>not</strong> the forecast of the future spot E(Sₜ). <strong>Keynes</strong> explains it by the premium demanded by speculators: if hedgers are mostly short (producers locking their selling price), the speculators opposite are long and must gain on average, so F &lt; E(Sₜ) : this is <strong>normal backwardation</strong>. The <strong>CAPM</strong> reading refines it: the sign of the gap follows the underlying's systematic risk. Vocabulary not to confuse: <em>contango</em> = F &gt; S (rising curve), <em>backwardation</em> = F &lt; S (falling curve); these describe the price curve, distinct from whether F predicts the spot.</span>
+          <span data-lang="nl">De futuresprijs F is <strong>niet</strong> de voorspelling van de toekomstige spot E(Sₜ). <strong>Keynes</strong> verklaart het door de premie die speculanten eisen: zijn hedgers overwegend short (producenten die hun verkoopprijs vergrendelen), dan zijn de speculanten ertegenover long en moeten gemiddeld winnen, dus F &lt; E(Sₜ) : dit is <strong>normal backwardation</strong>. De <strong>CAPM</strong>-lezing verfijnt: het teken van het verschil volgt het systematische risico van de onderliggende. Woordenschat niet te verwarren: <em>contango</em> = F &gt; S (stijgende curve), <em>backwardation</em> = F &lt; S (dalende curve); dit beschrijft de prijscurve, los van de vraag of F de spot voorspelt.</span>
+        </div>
+
+        <!-- RESSOURCES -->
+        <h2 id="ressources"><span data-lang="fr">Ressources à télécharger</span><span data-lang="en">Downloadable resources</span><span data-lang="nl">Downloadbare bronnen</span></h2>
+        <div class="downloads">
+          <div class="dl-list">
+            <a class="dl-item" data-lang="fr" href="files/fmp3-exercice-corrige-fr.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Exercice et corrigé : futures &amp; forwards</span>
+                <span class="dl-sub">PDF, énoncé et solution détaillée (français)</span>
+              </span>
+            </a>
+            <a class="dl-item" data-lang="en" href="files/fmp3-exercice-corrige-en.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Exercise and solution: futures &amp; forwards</span>
+                <span class="dl-sub">PDF, statement and worked solution (English)</span>
+              </span>
+            </a>
+            <a class="dl-item" data-lang="nl" href="files/fmp3-exercice-corrige-nl.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Oefening en oplossing: futures &amp; forwards</span>
+                <span class="dl-sub">PDF, opgave en uitgewerkte oplossing (Nederlands)</span>
+              </span>
+            </a>
+          </div>
+          <p class="dl-note" data-lang="fr">Un énoncé progressif suivi de sa correction pas à pas, dans votre langue. Cliquez pour télécharger le PDF.</p>
+          <p class="dl-note" data-lang="en">A progressive problem set followed by its step-by-step solution, in your language. Click to download the PDF.</p>
+          <p class="dl-note" data-lang="nl">Een progressieve opgave gevolgd door de stapsgewijze oplossing, in uw taal. Klik om de PDF te downloaden.</p>
+        </div>
+
+        <!-- 7. À RETENIR -->
+        <h2 id="retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></h2>
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">L'essentiel</span><span class="clabel" data-lang="en">The essentials</span><span class="clabel" data-lang="nl">De kern</span>
+          <span data-lang="fr">Futures : le short choisit les options de livraison ; open interest = positions nettes (volume ≷ OI) ; convergence F → S forcée par arbitrage ; courbe normale vs inversée. Ordres : market (exécution) vs limit (prix), stop-loss (devient market) vs stop-limit (devient limit). Comptabilité : marking to market vs hedge accounting. Hedge : short = vendre des futures, long = acheter ; prix net F₀ + basis (la basis porte le risque résiduel) ; h* = ρσS/σF, efficacité ρ² ; tailing en rendements/valeurs ; piloter le β avec la différence des bêtas ; hedge parfait rapporte le taux sans risque ; stack and roll = rollover + trésorerie (MGRM). FX : XXXYYY = YYY par XXX ; 3 risques (transaction/translation/economic) ; CIP = arbitrage, UIP = hypothèse souvent violée, PPP = long terme. Pricing cost of carry : F = S(1+R)ᵀ (sans revenu), (S−I)(1+R)ᵀ (I = PV), S((1+R)/(1+Q))ᵀ (yield, unifie CIP et indice). Prix ≠ valeur : valeur du long = PV(F−K), nulle à l'initiation (Jett : le carry n'est pas un profit). Futures ≈ forwards sauf corrélation taux/actif (Eurodollar) ; valeur des futures remise à zéro chaque jour. Commodities : consumption assets → borne F ≤ (S+U)(1+R)ᵀ, convenience yield Y, F = S·e^((C−Y)T) ; or/argent = lease rate ; contango (F&gt;S) vs backwardation (F&lt;S) ; F ≠ E(Sₜ) (Keynes, CAPM).</span>
+          <span data-lang="en">Futures: the short chooses the delivery options; open interest = net positions (volume ≷ OI); convergence F → S forced by arbitrage; normal vs inverted curve. Orders: market (execution) vs limit (price), stop-loss (becomes market) vs stop-limit (becomes limit). Accounting: marking to market vs hedge accounting. Hedge: short = sell futures, long = buy; net price F₀ + basis (the basis carries the residual risk); h* = ρσS/σF, effectiveness ρ²; tailing in returns/values; steer the β with the difference of betas; a perfect hedge returns the risk-free rate; stack and roll = rollover + cash flow (MGRM). FX: XXXYYY = YYY per XXX; 3 risks (transaction/translation/economic); CIP = arbitrage, UIP = often-violated hypothesis, PPP = long run. Cost-of-carry pricing: F = S(1+R)ᵀ (no income), (S−I)(1+R)ᵀ (I = PV), S((1+R)/(1+Q))ᵀ (yield, unifies CIP and index). Price ≠ value: the long's value = PV(F−K), zero at initiation (Jett: a carry is not a profit). Futures ≈ forwards except rate/asset correlation (Eurodollar); a futures' value resets to zero daily. Commodities: consumption assets → bound F ≤ (S+U)(1+R)ᵀ, convenience yield Y, F = S·e^((C−Y)T); gold/silver = lease rate; contango (F&gt;S) vs backwardation (F&lt;S); F ≠ E(Sₜ) (Keynes, CAPM).</span>
+          <span data-lang="nl">Futures: de short kiest de leveringsopties; open interest = netto posities (volume ≷ OI); convergentie F → S afgedwongen door arbitrage; normale vs inverted curve. Orders: market (uitvoering) vs limit (prijs), stop-loss (wordt market) vs stop-limit (wordt limit). Boekhouding: marking to market vs hedge accounting. Hedge: short = futures verkopen, long = kopen; nettoprijs F₀ + basis (de basis draagt het residuele risico); h* = ρσS/σF, effectiviteit ρ²; tailing in rendementen/waarden; de β sturen met het verschil van bèta's; een perfecte hedge levert de risicovrije rente; stack and roll = rollover + cashflow (MGRM). FX: XXXYYY = YYY per XXX; 3 risico's (transactie/translatie/economisch); CIP = arbitrage, UIP = vaak geschonden hypothese, PPP = lange termijn. Cost-of-carry-pricing: F = S(1+R)ᵀ (geen inkomen), (S−I)(1+R)ᵀ (I = PV), S((1+R)/(1+Q))ᵀ (yield, verenigt CIP en index). Prijs ≠ waarde: de waarde van de long = PV(F−K), nul bij aanvang (Jett: een carry is geen winst). Futures ≈ forwards behalve rente/actief-correlatie (Eurodollar); de waarde van een futures wordt dagelijks op nul gezet. Commodities: consumption assets → grens F ≤ (S+U)(1+R)ᵀ, convenience yield Y, F = S·e^((C−Y)T); goud/zilver = lease rate; contango (F&gt;S) vs backwardation (F&lt;S); F ≠ E(Sₜ) (Keynes, CAPM).</span>
+        </div>
+
+        <!-- 8. QCM -->
+        <h2 id="qcm"><span data-lang="fr">8. QCM (15 questions)</span><span data-lang="en">8. MCQ (15 questions)</span><span data-lang="nl">8. MCV (15 vragen)</span></h2>
+        <div class="quiz">
+          <h4 data-lang="fr">Auto-évaluation</h4><h4 data-lang="en">Self-assessment</h4><h4 data-lang="nl">Zelfevaluatie</h4>
+          <p class="qsub" data-lang="fr">Cliquez sur une réponse : la bonne s'affiche en vert et la justification apparaît.</p>
+          <p class="qsub" data-lang="en">Click an answer: the correct one turns green and the justification appears.</p>
+          <p class="qsub" data-lang="nl">Klik op een antwoord: het juiste kleurt groen en de verantwoording verschijnt.</p>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">1. Quand la spécification d'un futures laisse un choix (grade, lieu, date de livraison), ce choix appartient…</div>
+            <div class="qtext" data-lang="en">1. When a futures' specification leaves a choice (grade, place, delivery date), that choice belongs to…</div>
+            <div class="qtext" data-lang="nl">1. Wanneer de specificatie van een futures een keuze laat (grade, plaats, leveringsdatum), behoort die keuze toe aan…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Au short, car c'est lui qui effectue la livraison.</span><span data-lang="en">The short, since it makes the delivery.</span><span data-lang="nl">De short, want hij verricht de levering.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Au long, car c'est lui qui reçoit.</span><span data-lang="en">The long, since it receives.</span><span data-lang="nl">De long, want hij ontvangt.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">À l'exchange, qui tranche au hasard.</span><span data-lang="en">The exchange, which decides at random.</span><span data-lang="nl">De beurs, die willekeurig beslist.</span></button>
+            <div class="explain"><span data-lang="fr">✔ C'est le livreur (le short) qui choisit. L'examen adore inverser ce sens. Sans grades clairement distingués, le short livrerait la pire qualité et le contrat mourrait faute d'acheteurs.</span><span data-lang="en">✔ The deliverer (the short) chooses. The exam loves to reverse this. Without clearly distinguished grades, the short would deliver the worst quality and the contract would die for lack of buyers.</span><span data-lang="nl">✔ De leveraar (de short) kiest. Het examen keert dit graag om. Zonder duidelijk onderscheiden grades zou de short de slechtste kwaliteit leveren en zou het contract sterven bij gebrek aan kopers.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">2. L'open interest d'un contrat futures…</div>
+            <div class="qtext" data-lang="en">2. A futures contract's open interest…</div>
+            <div class="qtext" data-lang="nl">2. De open interest van een futurescontract…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Est toujours supérieur au volume quotidien.</span><span data-lang="en">Is always greater than daily volume.</span><span data-lang="nl">Is altijd groter dan het dagvolume.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Compte tous les trades depuis le lancement.</span><span data-lang="en">Counts all trades since launch.</span><span data-lang="nl">Telt alle transacties sinds de lancering.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Compte les positions nettes ouvertes ; le volume quotidien peut le dépasser.</span><span data-lang="en">Counts the open net positions; daily volume can exceed it.</span><span data-lang="nl">Telt de open netto posities; het dagvolume kan het overtreffen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ L'OI = contrats nets ouverts (autant de longs que de shorts), il culmine avant la livraison. Le volume (contrats tradés dans la journée) peut le dépasser via le day trading, qui gonfle le volume sans créer de positions ouvertes.</span><span data-lang="en">✔ OI = open net contracts (as many longs as shorts), peaking before delivery. Volume (contracts traded in the day) can exceed it via day trading, which inflates volume without creating open positions.</span><span data-lang="nl">✔ OI = open netto contracten (evenveel longs als shorts), pieken vóór de levering. Volume (op de dag verhandelde contracten) kan het overtreffen via day trading, dat volume opblaast zonder open posities te creëren.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">3. La convergence du prix futures vers le spot à l'approche de la livraison est forcée par…</div>
+            <div class="qtext" data-lang="en">3. The convergence of the futures price to the spot near delivery is forced by…</div>
+            <div class="qtext" data-lang="nl">3. De convergentie van de futuresprijs naar de spot nabij de levering wordt afgedwongen door…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une règle imposée par le régulateur.</span><span data-lang="en">A rule imposed by the regulator.</span><span data-lang="nl">Een door de toezichthouder opgelegde regel.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Un arbitrage qui fonctionne dans les deux sens (F &gt; S comme F &lt; S).</span><span data-lang="en">An arbitrage working both ways (F &gt; S as well as F &lt; S).</span><span data-lang="nl">Een arbitrage die in beide richtingen werkt (F &gt; S én F &lt; S).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">L'obligation que tous les contrats aillent à la livraison.</span><span data-lang="en">The requirement that all contracts go to delivery.</span><span data-lang="nl">De verplichting dat alle contracten tot levering gaan.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Si F &gt; S : shorter le futures, acheter le spot, livrer → profit sans risque qui écrase F. Si F &lt; S : acheter le futures et attendre la livraison plutôt que le spot → demande qui remonte F. La livraison <em>potentielle</em> suffit à ancrer F, même si presque aucun contrat n'y va vraiment.</span><span data-lang="en">✔ If F &gt; S: short the futures, buy the spot, deliver → riskless profit that crushes F. If F &lt; S: buy the futures and await delivery rather than the spot → demand that lifts F. <em>Potential</em> delivery is enough to anchor F, even if almost no contract goes there.</span><span data-lang="nl">✔ Als F &gt; S: short de futures, koop de spot, lever → risicovrije winst die F verplettert. Als F &lt; S: koop de futures en wacht op levering in plaats van de spot → vraag die F optilt. <em>Potentiële</em> levering volstaat om F te verankeren, zelfs als bijna geen contract er echt naartoe gaat.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">4. Une entreprise qui devra vendre un actif dans trois mois se couvre en…</div>
+            <div class="qtext" data-lang="en">4. A firm that must sell an asset in three months hedges by…</div>
+            <div class="qtext" data-lang="nl">4. Een bedrijf dat over drie maanden een actief moet verkopen dekt zich door…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Vendant des futures aujourd'hui (short hedge).</span><span data-lang="en">Selling futures today (short hedge).</span><span data-lang="nl">Vandaag futures te verkopen (short hedge).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Achetant des futures aujourd'hui (long hedge).</span><span data-lang="en">Buying futures today (long hedge).</span><span data-lang="nl">Vandaag futures te kopen (long hedge).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">N'achetant que des options.</span><span data-lang="en">Buying options only.</span><span data-lang="nl">Enkel opties te kopen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Devoir vendre plus tard = short hedge (vendre des futures) : une baisse du prix de vente est compensée par un gain sur les futures. Le prix net verrouillé est F₀ + basis, pas le spot initial. Devoir acheter plus tard = long hedge (acheter des futures).</span><span data-lang="en">✔ Having to sell later = short hedge (sell futures): a fall in the selling price is offset by a futures gain. The locked net price is F₀ + basis, not the initial spot. Having to buy later = long hedge (buy futures).</span><span data-lang="nl">✔ Later moeten verkopen = short hedge (futures verkopen): een daling van de verkoopprijs wordt gecompenseerd door een futureswinst. De vergrendelde nettoprijs is F₀ + basis, niet de initiële spot. Later moeten kopen = long hedge (futures kopen).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">5. Dans un hedge, l'incertitude résiduelle est portée par…</div>
+            <div class="qtext" data-lang="en">5. In a hedge, the residual uncertainty is carried by…</div>
+            <div class="qtext" data-lang="nl">5. In een hedge wordt de residuele onzekerheid gedragen door…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le niveau final du spot.</span><span data-lang="en">The final spot level.</span><span data-lang="nl">Het finale spotniveau.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le prix futures initial F₀.</span><span data-lang="en">The initial futures price F₀.</span><span data-lang="nl">De initiële futuresprijs F₀.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">La basis (bₜ = Sₜ − Fₜ), puisque le prix net est F₀ + bₜ.</span><span data-lang="en">The basis (bₜ = Sₜ − Fₜ), since the net price is F₀ + bₜ.</span><span data-lang="nl">De basis (bₜ = Sₜ − Fₜ), want de nettoprijs is F₀ + bₜ.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le prix effectivement obtenu est F₀ + bₜ. Comme F₀ est connu dès le départ, toute l'incertitude est dans la basis à la clôture. Une question qui présente le niveau final du spot comme source de risque du hedge est un piège.</span><span data-lang="en">✔ The price actually obtained is F₀ + bₜ. Since F₀ is known from the start, all the uncertainty is in the basis at close. A question presenting the final spot level as the hedge's risk source is a trap.</span><span data-lang="nl">✔ De werkelijk verkregen prijs is F₀ + bₜ. Aangezien F₀ van bij het begin gekend is, zit alle onzekerheid in de basis bij sluiting. Een vraag die het finale spotniveau als de risicobron van de hedge voorstelt, is een valstrik.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">6. Le ratio de hedge optimal h* = ρ·σS/σF ; son efficacité (hedge effectiveness) se mesure par…</div>
+            <div class="qtext" data-lang="en">6. The optimal hedge ratio is h* = ρ·σS/σF; its hedge effectiveness is measured by…</div>
+            <div class="qtext" data-lang="nl">6. De optimale hedge ratio is h* = ρ·σS/σF; de effectiviteit wordt gemeten door…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">ρ (la corrélation elle-même).</span><span data-lang="en">ρ (the correlation itself).</span><span data-lang="nl">ρ (de correlatie zelf).</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">ρ² (le R² de la régression).</span><span data-lang="en">ρ² (the regression's R²).</span><span data-lang="nl">ρ² (de R² van de regressie).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">σS/σF.</span><span data-lang="en">σS/σF.</span><span data-lang="nl">σS/σF.</span></button>
+            <div class="explain"><span data-lang="fr">✔ h* est la pente de la régression de ΔS sur ΔF ; l'efficacité est ρ² (part de variance couverte), pas ρ. L'examen aime inverser les deux. On convertit ensuite h* en nombre de contrats N* = h*·QA/QF.</span><span data-lang="en">✔ h* is the slope of the regression of ΔS on ΔF; effectiveness is ρ² (share of variance hedged), not ρ. The exam likes to swap the two. h* is then converted to contracts N* = h*·QA/QF.</span><span data-lang="nl">✔ h* is de helling van de regressie van ΔS op ΔF; effectiviteit is ρ² (afgedekt variantieaandeel), niet ρ. Het examen verwisselt beide graag. h* wordt dan omgezet naar contracten N* = h*·QA/QF.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">7. Un hedge parfait (élimination du risque de marché) rapporte…</div>
+            <div class="qtext" data-lang="en">7. A perfect hedge (removing market risk) returns…</div>
+            <div class="qtext" data-lang="nl">7. Een perfecte hedge (marktrisico verwijderd) levert…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le taux sans risque (le temps qui passe reste).</span><span data-lang="en">The risk-free rate (the passage of time remains).</span><span data-lang="nl">De risicovrije rente (het verstrijken van de tijd blijft).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Exactement zéro.</span><span data-lang="en">Exactly zero.</span><span data-lang="nl">Exact nul.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le rendement du marché.</span><span data-lang="en">The market return.</span><span data-lang="nl">Het marktrendement.</span></button>
+            <div class="explain"><span data-lang="fr">✔ En éliminant l'exposition au marché (β → 0), il ne reste que RF (CAPM : E(Rp) − RF = β(RM − RF)). Un hedge parfait ne « rapporte pas zéro » : il rend le taux sans risque. Perdre sur la jambe futures n'est pas un échec, le but est de réduire la variabilité.</span><span data-lang="en">✔ By removing market exposure (β → 0), only RF remains (CAPM: E(Rp) − RF = β(RM − RF)). A perfect hedge does not "return zero": it returns the risk-free rate. Losing on the futures leg is not a failure, the goal is to reduce variability.</span><span data-lang="nl">✔ Door de marktblootstelling te verwijderen (β → 0), blijft enkel RF (CAPM: E(Rp) − RF = β(RM − RF)). Een perfecte hedge levert geen "nul": ze levert de risicovrije rente. Verliezen op de futures-poot is geen mislukking, het doel is de variabiliteit verminderen.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">8. Le stack and roll (hedge long terme par contrats courts) comporte deux risques :</div>
+            <div class="qtext" data-lang="en">8. Stack and roll (a long-term hedge via short contracts) carries two risks:</div>
+            <div class="qtext" data-lang="nl">8. Stack and roll (een langetermijnhedge via korte contracten) draagt twee risico's:</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le risque de crédit et le risque de change.</span><span data-lang="en">Credit risk and FX risk.</span><span data-lang="nl">Kredietrisico en wisselkoersrisico.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Aucun, c'est un hedge parfait.</span><span data-lang="en">None, it is a perfect hedge.</span><span data-lang="nl">Geen, het is een perfecte hedge.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le rollover et la trésorerie (marges immédiates vs gains différés).</span><span data-lang="en">Rollover and cash flow (immediate margins vs deferred gains).</span><span data-lang="nl">Rollover en cashflow (onmiddellijke marges vs uitgestelde winsten).</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le rollover (écart de prix à chaque roulement) et la trésorerie (les marges quotidiennes sont du cash immédiat, alors que le gain compensateur arrive plus tard). C'est ce décalage de trésorerie qui a coulé Metallgesellschaft, malgré un hedge économiquement sain.</span><span data-lang="en">✔ Rollover (price gap at each roll) and cash flow (daily margins are immediate cash, while the offsetting gain comes later). This cash-flow mismatch sank Metallgesellschaft, despite an economically sound hedge.</span><span data-lang="nl">✔ Rollover (prijsverschil bij elke roll) en cashflow (dagelijkse marges zijn onmiddellijk cash, terwijl de compenserende winst later komt). Deze cashflow-mismatch deed Metallgesellschaft zinken, ondanks een economisch gezonde hedge.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">9. Dans une cotation EURUSD = 1,2345…</div>
+            <div class="qtext" data-lang="en">9. In a quote EURUSD = 1.2345…</div>
+            <div class="qtext" data-lang="nl">9. In een notering EURUSD = 1,2345…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Il faut 1,2345 EUR pour acheter 1 USD.</span><span data-lang="en">It takes 1.2345 EUR to buy 1 USD.</span><span data-lang="nl">Er is 1,2345 EUR nodig om 1 USD te kopen.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Il faut 1,2345 USD (quote) pour acheter 1 EUR (base).</span><span data-lang="en">It takes 1.2345 USD (quote) to buy 1 EUR (base).</span><span data-lang="nl">Er is 1,2345 USD (quote) nodig om 1 EUR (base) te kopen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le prix est en points, à diviser par 10 000.</span><span data-lang="en">The price is in points, to divide by 10,000.</span><span data-lang="nl">De prijs is in punten, te delen door 10.000.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Dans XXXYYY, le nombre est un montant de YYY (quote) pour 1 unité de XXX (base) : 1,2345 USD par EUR. Lire la paire à l'envers et inverser le sens d'une appréciation est le piège classique.</span><span data-lang="en">✔ In XXXYYY, the number is an amount of YYY (quote) for 1 unit of XXX (base): 1.2345 USD per EUR. Reading the pair backwards and reversing the direction of an appreciation is the classic trap.</span><span data-lang="nl">✔ In XXXYYY is het getal een bedrag YYY (quote) voor 1 eenheid XXX (base): 1,2345 USD per EUR. Het paar omgekeerd lezen en de richting van een appreciatie omdraaien is de klassieke valstrik.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">10. La covered interest parity (F = S·(1+R_quote)ᵀ/(1+R_base)ᵀ) est…</div>
+            <div class="qtext" data-lang="en">10. Covered interest parity (F = S·(1+R_quote)ᵀ/(1+R_base)ᵀ) is…</div>
+            <div class="qtext" data-lang="nl">10. Covered interest parity (F = S·(1+R_quote)ᵀ/(1+R_base)ᵀ) is…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Un arbitrage strict imposé par le marché.</span><span data-lang="en">A strict arbitrage imposed by the market.</span><span data-lang="nl">Een strikte arbitrage opgelegd door de markt.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une hypothèse d'équilibre souvent violée.</span><span data-lang="en">An equilibrium hypothesis often violated.</span><span data-lang="nl">Een evenwichtshypothese die vaak geschonden wordt.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une relation valable uniquement à long terme.</span><span data-lang="en">A relation valid only in the long run.</span><span data-lang="nl">Een relatie die enkel op lange termijn geldt.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La CIP est un arbitrage : deux chemins certains (placer puis convertir au forward, ou convertir au spot puis placer) doivent rendre la même chose, sinon profit sans risque. À ne pas confondre avec l'UIP (hypothèse d'équilibre, souvent violée) ni la PPP (approximative, long terme).</span><span data-lang="en">✔ CIP is an arbitrage: two certain paths (invest then convert at the forward, or convert at spot then invest) must return the same, else a riskless profit. Not to confuse with UIP (equilibrium hypothesis, often violated) or PPP (approximate, long run).</span><span data-lang="nl">✔ CIP is een arbitrage: twee zekere paden (beleggen dan omzetten tegen de forward, of omzetten tegen spot dan beleggen) moeten hetzelfde opleveren, anders risicovrije winst. Niet te verwarren met UIP (evenwichtshypothese, vaak geschonden) of PPP (benaderend, lange termijn).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">11. Le prix forward d'un actif sans revenu est…</div>
+            <div class="qtext" data-lang="en">11. The forward price of an asset with no income is…</div>
+            <div class="qtext" data-lang="nl">11. De forwardprijs van een actief zonder inkomen is…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">F = S(1−R)ᵀ.</span><span data-lang="en">F = S(1−R)ᵀ.</span><span data-lang="nl">F = S(1−R)ᵀ.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">F = S, toujours.</span><span data-lang="en">F = S, always.</span><span data-lang="nl">F = S, altijd.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">F = S(1+R)ᵀ (le spot capitalisé au taux sans risque).</span><span data-lang="en">F = S(1+R)ᵀ (the spot compounded at the risk-free rate).</span><span data-lang="nl">F = S(1+R)ᵀ (de spot gekapitaliseerd tegen de risicovrije rente).</span></button>
+            <div class="explain"><span data-lang="fr">✔ Détenir l'actif et le livrer coûte le financement, d'où F = S(1+R)ᵀ. Tout autre prix ouvre un cash and carry (F trop cher) ou un reverse (F trop bas). Avec un revenu cash, F = (S − I)(1+R)ᵀ où I est la PV des revenus ; avec un yield, F = S((1+R)/(1+Q))ᵀ.</span><span data-lang="en">✔ Holding the asset and delivering it costs the financing, hence F = S(1+R)ᵀ. Any other price opens a cash and carry (F too dear) or a reverse (F too low). With cash income, F = (S − I)(1+R)ᵀ where I is the PV of income; with a yield, F = S((1+R)/(1+Q))ᵀ.</span><span data-lang="nl">✔ Het actief aanhouden en leveren kost de financiering, vandaar F = S(1+R)ᵀ. Elke andere prijs opent een cash and carry (F te duur) of een reverse (F te laag). Met cash-inkomen, F = (S − I)(1+R)ᵀ waar I de PV van het inkomen is; met een yield, F = S((1+R)/(1+Q))ᵀ.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">12. Dans F = (S − I)(1+R)ᵀ, la quantité I représente…</div>
+            <div class="qtext" data-lang="en">12. In F = (S − I)(1+R)ᵀ, the quantity I represents…</div>
+            <div class="qtext" data-lang="nl">12. In F = (S − I)(1+R)ᵀ vertegenwoordigt de grootheid I…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La somme nominale des coupons.</span><span data-lang="en">The nominal sum of the coupons.</span><span data-lang="nl">De nominale som van de coupons.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">La valeur actualisée des revenus, pas leur somme nominale.</span><span data-lang="en">The present value of the income, not its nominal sum.</span><span data-lang="nl">De contante waarde van het inkomen, niet de nominale som.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le taux d'intérêt R.</span><span data-lang="en">The interest rate R.</span><span data-lang="nl">De rente R.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le porteur du carry encaisse les revenus pendant la vie du contrat, donc il ne finance que S moins la PV de ce qu'il recevra. Chaque flux est actualisé au taux de sa propre maturité. Oublier d'actualiser est exactement le réflexe que l'examen teste.</span><span data-lang="en">✔ The carry holder collects the income over the contract's life, so finances only S minus the PV of what they will receive. Each cash flow is discounted at the rate of its own maturity. Forgetting to discount is exactly the reflex the exam tests.</span><span data-lang="nl">✔ De carry-houder int het inkomen gedurende de looptijd, dus financiert enkel S min de PV van wat hij zal ontvangen. Elke kasstroom wordt verdisconteerd tegen de rente van zijn eigen looptijd. Vergeten te verdisconteren is precies de reflex die het examen test.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">13. La valeur d'un forward long déjà en cours, de prix de livraison K, est…</div>
+            <div class="qtext" data-lang="en">13. The value of an existing long forward with delivery price K is…</div>
+            <div class="qtext" data-lang="nl">13. De waarde van een bestaande long forward met leveringsprijs K is…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">PV(F − K) = (F − K)/(1+R)ᵀ, nulle à l'initiation.</span><span data-lang="en">PV(F − K) = (F − K)/(1+R)ᵀ, zero at initiation.</span><span data-lang="nl">PV(F − K) = (F − K)/(1+R)ᵀ, nul bij aanvang.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le prix forward F lui-même.</span><span data-lang="en">The forward price F itself.</span><span data-lang="nl">De forwardprijs F zelf.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Toujours zéro.</span><span data-lang="en">Always zero.</span><span data-lang="nl">Altijd nul.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le prix n'est pas la valeur : la valeur est PV(F − K), nulle seulement à l'initiation (où K = F). Répondre F quand on demande une valeur (ou l'inverse) est l'erreur classique. Attention : cette formule ne s'applique pas aux futures (daily settlement remet la valeur à zéro chaque jour).</span><span data-lang="en">✔ The price is not the value: the value is PV(F − K), zero only at initiation (where K = F). Answering F when asked for a value (or vice versa) is the classic error. Note: this formula does not apply to futures (daily settlement resets the value to zero each day).</span><span data-lang="nl">✔ De prijs is niet de waarde: de waarde is PV(F − K), enkel nul bij aanvang (waar K = F). F antwoorden wanneer een waarde gevraagd wordt (of omgekeerd) is de klassieke fout. Let op: deze formule geldt niet voor futures (daily settlement zet de waarde elke dag op nul).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">14. L'affaire Joseph Jett illustre que l'écart F − S d'un carry…</div>
+            <div class="qtext" data-lang="en">14. The Joseph Jett affair shows that a carry's gap F − S…</div>
+            <div class="qtext" data-lang="nl">14. De Joseph Jett-affaire toont dat het verschil F − S van een carry…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Est un profit immédiat à comptabiliser d'emblée.</span><span data-lang="en">Is an immediate profit to book at once.</span><span data-lang="nl">Een onmiddellijke winst is die meteen te boeken valt.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Est toujours nul.</span><span data-lang="en">Is always zero.</span><span data-lang="nl">Altijd nul is.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">N'est pas un profit mais le coût de portage (réalisé seulement à l'échéance).</span><span data-lang="en">Is not a profit but the cost of carry (realised only at maturity).</span><span data-lang="nl">Geen winst is maar de cost of carry (pas op vervaldag gerealiseerd).</span></button>
+            <div class="explain"><span data-lang="fr">✔ Acheter à 70 et vendre forward 73,50 ne « rapporte » 3,50 que parce que porter la position coûte 3,50. Le système de Jett comptait cet écart comme un profit immédiat, d'où des faux profits qu'il devait entretenir en gonflant sans cesse la position. Le profit d'un carry n'existe qu'à l'échéance.</span><span data-lang="en">✔ Buying at 70 and selling forward at 73.50 "earns" 3.50 only because carrying the position costs 3.50. Jett's system counted this gap as an immediate profit, hence fake profits he had to sustain by ever inflating the position. A carry's profit exists only at maturity.</span><span data-lang="nl">✔ Kopen tegen 70 en forward verkopen tegen 73,50 "levert" enkel 3,50 op omdat de positie dragen 3,50 kost. Jetts systeem telde dit verschil als een onmiddellijke winst, vandaar valse winsten die hij moest onderhouden door de positie steeds op te blazen. De winst van een carry bestaat pas op vervaldag.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">15. Le convenience yield d'une commodity est élevé quand…</div>
+            <div class="qtext" data-lang="en">15. A commodity's convenience yield is high when…</div>
+            <div class="qtext" data-lang="nl">15. De convenience yield van een commodity is hoog wanneer…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les stocks sont abondants.</span><span data-lang="en">Stocks are plentiful.</span><span data-lang="nl">De voorraden overvloedig zijn.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Les stocks sont bas (la disponibilité physique a beaucoup de valeur).</span><span data-lang="en">Stocks are low (physical availability is very valuable).</span><span data-lang="nl">De voorraden laag zijn (fysieke beschikbaarheid is zeer waardevol).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le taux d'intérêt est nul.</span><span data-lang="en">The interest rate is zero.</span><span data-lang="nl">De rente nul is.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Comme une commodity de consommation ne se short pas (l'arbitrage reverse échoue), F n'est borné que par le haut : F ≤ (S+U)(1+R)ᵀ. Le convenience yield Y mesure la valeur d'avoir le bien sous la main, élevé quand les stocks sont bas (crainte de pénurie, courbe inversée) et proche de 0 quand l'offre abonde.</span><span data-lang="en">✔ Since a consumption commodity cannot be shorted (the reverse arbitrage fails), F is bounded only above: F ≤ (S+U)(1+R)ᵀ. The convenience yield Y measures the value of having the good at hand, high when stocks are low (fear of shortage, inverted curve) and near 0 when supply is abundant.</span><span data-lang="nl">✔ Aangezien een consumptiecommodity niet geshort kan worden (de reverse-arbitrage faalt), is F enkel naar boven begrensd: F ≤ (S+U)(1+R)ᵀ. De convenience yield Y meet de waarde van het goed bij de hand te hebben, hoog wanneer de voorraden laag zijn (vrees voor tekort, inverted curve) en nabij 0 wanneer het aanbod overvloedig is.</span></div>
+          </div>
+        </div>
+
+        <!-- 9. EXERCICES -->
+        <h2 id="exercices"><span data-lang="fr">9. Exercices</span><span data-lang="en">9. Exercises</span><span data-lang="nl">9. Oefeningen</span></h2>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice FF-1</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Un pétrolier recevra 2 M bbl dans trois mois. Le spot est 59,50 et le futures trois mois F₀ = 60. Il shorte 2 000 contrats de 1 000 bbl. Calculez le produit net si le spot termine à (a) 50, (b) 68. Que verrouille le hedge ?</p>
+          <p class="estatement" data-lang="en">An oil producer will receive 2M bbl in three months. The spot is 59.50 and the three-month futures F₀ = 60. It shorts 2,000 contracts of 1,000 bbl. Compute the net proceeds if the spot ends at (a) 50, (b) 68. What does the hedge lock in?</p>
+          <p class="estatement" data-lang="nl">Een olieproducent ontvangt over drie maanden 2M bbl. De spot is 59,50 en de driemaands futures F₀ = 60. Hij short 2.000 contracten van 1.000 bbl. Bereken de netto-opbrengst als de spot eindigt op (a) 50, (b) 68. Wat vergrendelt de hedge?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">(a) À 50 : vente physique = 2 M × 50 = 100 M ; gain futures = 2 M × (60 − 50) = 20 M ; net = <b>120 M</b>. (b) À 68 : vente = 2 M × 68 = 136 M ; perte futures = 2 M × (60 − 68) = −16 M ; net = <b>120 M</b>. Dans les deux cas, le produit net est 120 M, soit <b>60 USD/bbl exactement</b> : le hedge verrouille le prix futures initial F₀ = 60 (et non le spot initial 59,50). L'incertitude résiduelle ne tient qu'à la basis.</div>
+            <div class="ans" data-lang="en">(a) At 50: physical sale = 2M × 50 = 100M; futures gain = 2M × (60 − 50) = 20M; net = <b>120M</b>. (b) At 68: sale = 2M × 68 = 136M; futures loss = 2M × (60 − 68) = −16M; net = <b>120M</b>. In both cases the net proceeds are 120M, i.e. <b>60 USD/bbl exactly</b>: the hedge locks the initial futures price F₀ = 60 (not the initial spot 59.50). The residual uncertainty is only the basis.</div>
+            <div class="ans" data-lang="nl">(a) Op 50: fysieke verkoop = 2M × 50 = 100M; futureswinst = 2M × (60 − 50) = 20M; netto = <b>120M</b>. (b) Op 68: verkoop = 2M × 68 = 136M; futuresverlies = 2M × (60 − 68) = −16M; netto = <b>120M</b>. In beide gevallen is de netto-opbrengst 120M, dus <b>60 USD/bbl exact</b>: de hedge vergrendelt de initiële futuresprijs F₀ = 60 (niet de initiële spot 59,50). De residuele onzekerheid is enkel de basis.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice FF-2</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Un actif cote S = 70, le taux à un an est R = 5 %. (a) Quel est le prix forward à un an s'il ne verse aucun revenu ? (b) Et s'il verse un coupon de 5 dans 6 mois (taux 6 mois R₆ = 4 %) ?</p>
+          <p class="estatement" data-lang="en">An asset trades at S = 70, the one-year rate is R = 5%. (a) What is the one-year forward price if it pays no income? (b) And if it pays a coupon of 5 in 6 months (6-month rate R₆ = 4%)?</p>
+          <p class="estatement" data-lang="nl">Een actief noteert S = 70, de eenjaarsrente is R = 5%. (a) Wat is de eenjaars forwardprijs als het geen inkomen betaalt? (b) En als het een coupon van 5 over 6 maanden betaalt (6-maandsrente R₆ = 4%)?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">(a) Sans revenu : F = S(1+R)ᵀ = 70 × 1,05 = <b>73,50</b>. (b) Avec revenu : I est la <b>valeur actualisée</b> du coupon, I = 5/1,04^0,5 = 5/1,0198 = 4,903. Alors F = (S − I)(1+R)ᵀ = (70 − 4,903) × 1,05 = 65,097 × 1,05 = <b>68,35</b>. Le revenu abaisse le forward : le porteur encaisse le coupon, il ne finance donc que S moins la PV de ce revenu. Piège : ne pas oublier d'actualiser le coupon.</div>
+            <div class="ans" data-lang="en">(a) No income: F = S(1+R)ᵀ = 70 × 1.05 = <b>73.50</b>. (b) With income: I is the <b>present value</b> of the coupon, I = 5/1.04^0.5 = 5/1.0198 = 4.903. Then F = (S − I)(1+R)ᵀ = (70 − 4.903) × 1.05 = 65.097 × 1.05 = <b>68.35</b>. Income lowers the forward: the holder collects the coupon, so finances only S minus the PV of that income. Trap: do not forget to discount the coupon.</div>
+            <div class="ans" data-lang="nl">(a) Geen inkomen: F = S(1+R)ᵀ = 70 × 1,05 = <b>73,50</b>. (b) Met inkomen: I is de <b>contante waarde</b> van de coupon, I = 5/1,04^0,5 = 5/1,0198 = 4,903. Dan F = (S − I)(1+R)ᵀ = (70 − 4,903) × 1,05 = 65,097 × 1,05 = <b>68,35</b>. Inkomen verlaagt de forward: de houder int de coupon, dus financiert enkel S min de PV van dat inkomen. Valstrik: vergeet de coupon niet te verdisconteren.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice FF-3</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Une compagnie aérienne couvre 1 M gallons de jet fuel avec des futures de heating oil (contrats de 42 000 gallons). On a ρ = 0,9, σ_S = 0,025 et σ_F = 0,03. Calculez le ratio de hedge optimal h*, l'efficacité du hedge, et le nombre de contrats.</p>
+          <p class="estatement" data-lang="en">An airline hedges 1M gallons of jet fuel with heating oil futures (42,000-gallon contracts). We have ρ = 0.9, σ_S = 0.025 and σ_F = 0.03. Compute the optimal hedge ratio h*, the hedge effectiveness, and the number of contracts.</p>
+          <p class="estatement" data-lang="nl">Een luchtvaartmaatschappij dekt 1M gallon jet fuel met heating-oil-futures (contracten van 42.000 gallon). We hebben ρ = 0,9, σ_S = 0,025 en σ_F = 0,03. Bereken de optimale hedge ratio h*, de effectiviteit, en het aantal contracten.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">h* = ρ·σ_S/σ_F = 0,9 × 0,025/0,03 = <b>0,75</b> : on ne couvre que 75 % de l'exposition (le jet fuel et le heating oil ne bougent pas parfaitement ensemble). Efficacité = ρ² = 0,9² = <b>0,81</b> (81 % de la variance couverte), attention, c'est ρ² et non ρ. Nombre de contrats : N* = h* × Q_A/Q_F = 0,75 × 1 000 000/42 000 = 17,86 ≈ <b>18 contrats</b>.</div>
+            <div class="ans" data-lang="en">h* = ρ·σ_S/σ_F = 0.9 × 0.025/0.03 = <b>0.75</b>: only 75% of the exposure is hedged (jet fuel and heating oil do not move perfectly together). Effectiveness = ρ² = 0.9² = <b>0.81</b> (81% of variance hedged), note, it is ρ² not ρ. Number of contracts: N* = h* × Q_A/Q_F = 0.75 × 1,000,000/42,000 = 17.86 ≈ <b>18 contracts</b>.</div>
+            <div class="ans" data-lang="nl">h* = ρ·σ_S/σ_F = 0,9 × 0,025/0,03 = <b>0,75</b>: slechts 75% van de blootstelling wordt gedekt (jet fuel en heating oil bewegen niet perfect samen). Effectiviteit = ρ² = 0,9² = <b>0,81</b> (81% van de variantie gedekt), let op, het is ρ² niet ρ. Aantal contracten: N* = h* × Q_A/Q_F = 0,75 × 1.000.000/42.000 = 17,86 ≈ <b>18 contracten</b>.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice FF-4</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Un portefeuille vaut 1 M avec β = 1,25. Le mini-futures S&P 500 vaut 50 × l'indice, l'indice cote 2 500. (a) Combien de contrats pour hedger totalement le portefeuille ? (b) Combien pour ramener le β de 1,25 à 0,5 ?</p>
+          <p class="estatement" data-lang="en">A portfolio is worth 1M with β = 1.25. The S&P 500 mini-futures is 50 × the index, the index trades at 2,500. (a) How many contracts to fully hedge the portfolio? (b) How many to bring the β from 1.25 to 0.5?</p>
+          <p class="estatement" data-lang="nl">Een portefeuille is 1M waard met β = 1,25. De S&P 500 mini-futures is 50 × de index, de index noteert 2.500. (a) Hoeveel contracten om de portefeuille volledig te hedgen? (b) Hoeveel om de β van 1,25 naar 0,5 te brengen?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Valeur d'un contrat V_F = 50 × 2 500 = 125 000. (a) Hedge total : N* = β × V_A/V_F = 1,25 × 1 000 000/125 000 = <b>10 contrats short</b>. Le portefeuille couvert rapportera alors le taux sans risque. (b) Pour piloter le β vers 0,5, on prend la <b>différence</b> des bêtas : N = (β − β*) × V_A/V_F = (1,25 − 0,5) × 8 = <b>6 contrats short</b> (V_A/V_F = 1 000 000/125 000 = 8). Piège : utiliser β seul ramènerait à 0, pas à la cible.</div>
+            <div class="ans" data-lang="en">Contract value V_F = 50 × 2,500 = 125,000. (a) Full hedge: N* = β × V_A/V_F = 1.25 × 1,000,000/125,000 = <b>10 short contracts</b>. The hedged portfolio then returns the risk-free rate. (b) To steer β to 0.5, take the <b>difference</b> of betas: N = (β − β*) × V_A/V_F = (1.25 − 0.5) × 8 = <b>6 short contracts</b> (V_A/V_F = 1,000,000/125,000 = 8). Trap: using β alone would bring it to 0, not the target.</div>
+            <div class="ans" data-lang="nl">Contractwaarde V_F = 50 × 2.500 = 125.000. (a) Volledige hedge: N* = β × V_A/V_F = 1,25 × 1.000.000/125.000 = <b>10 short-contracten</b>. De gedekte portefeuille levert dan de risicovrije rente. (b) Om β naar 0,5 te sturen, neem het <b>verschil</b> van de bèta's: N = (β − β*) × V_A/V_F = (1,25 − 0,5) × 8 = <b>6 short-contracten</b> (V_A/V_F = 1.000.000/125.000 = 8). Valstrik: β alleen gebruiken zou naar 0 brengen, niet naar het doel.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice FF-5</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Un indice boursier cote 2 500, le taux sans risque R = 5 %, le dividend yield Q = 3 %. (a) Calculez le forward à 6 mois. (b) Le forward cote en réalité 2 540 sur le marché : quel arbitrage, et pourquoi ?</p>
+          <p class="estatement" data-lang="en">A stock index trades at 2,500, the risk-free rate R = 5%, the dividend yield Q = 3%. (a) Compute the 6-month forward. (b) The forward actually trades at 2,540 in the market: which arbitrage, and why?</p>
+          <p class="estatement" data-lang="nl">Een aandelenindex noteert 2.500, de risicovrije rente R = 5%, de dividend yield Q = 3%. (a) Bereken de 6-maands forward. (b) De forward noteert in werkelijkheid 2.540 op de markt: welke arbitrage, en waarom?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">(a) Un indice se traite comme un actif versant un yield : F = S × ((1+R)/(1+Q))ᵀ = 2 500 × (1,05/1,03)^0,5 = 2 500 × 1,00964 = <b>2 524</b> (≈ 2 524). (b) Le forward de marché (2 540) est <b>trop cher</b> par rapport au théorique (2 524), donc <b>cash and carry</b> : emprunter, acheter le panier d'actions au spot (2 500, en encaissant les dividendes), et vendre le forward à 2 540. À l'échéance, on livre le panier, on rembourse le financement net des dividendes (≈ 2 524) et on empoche 2 540 − 2 524 = <b>16 points</b> sans risque. Cette pression vendeuse sur le forward le ramène vers 2 524.</div>
+            <div class="ans" data-lang="en">(a) An index trades like an asset paying a yield: F = S × ((1+R)/(1+Q))ᵀ = 2,500 × (1.05/1.03)^0.5 = 2,500 × 1.00964 = <b>2,524</b> (≈ 2,524). (b) The market forward (2,540) is <b>too dear</b> versus the theoretical (2,524), so <b>cash and carry</b>: borrow, buy the basket of shares at spot (2,500, collecting the dividends), and sell the forward at 2,540. At maturity, deliver the basket, repay the financing net of dividends (≈ 2,524) and pocket 2,540 − 2,524 = <b>16 points</b> riskless. This selling pressure on the forward pulls it back to 2,524.</div>
+            <div class="ans" data-lang="nl">(a) Een index handelt als een actief dat een yield betaalt: F = S × ((1+R)/(1+Q))ᵀ = 2.500 × (1,05/1,03)^0,5 = 2.500 × 1,00964 = <b>2.524</b> (≈ 2.524). (b) De marktforward (2.540) is <b>te duur</b> tegenover de theoretische (2.524), dus <b>cash and carry</b>: lenen, de mand aandelen kopen tegen spot (2.500, dividenden innend), en de forward verkopen tegen 2.540. Op vervaldag lever je de mand, betaal je de financiering netto van dividenden terug (≈ 2.524) en incasseer je 2.540 − 2.524 = <b>16 punten</b> risicovrij. Deze verkoopdruk op de forward trekt hem terug naar 2.524.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice FF-6</span><span class="diff" data-lang="fr">Réflexion</span><span class="diff" data-lang="en">Conceptual</span><span class="diff" data-lang="nl">Reflectie</span></div>
+          <p class="estatement" data-lang="fr">Pour le pétrole : S = 69, futures 6 mois F₆ = 65, coûts de stockage U = 1 (en PV), R = 2 %. (a) Le forward est sous le spot alors que porter le pétrole coûte : est-ce un arbitrage ? (b) Calculez le convenience yield. (c) Que dit-il sur le marché ?</p>
+          <p class="estatement" data-lang="en">For oil: S = 69, 6-month futures F₆ = 65, storage costs U = 1 (in PV), R = 2%. (a) The forward is below the spot while carrying oil costs money: is this an arbitrage? (b) Compute the convenience yield. (c) What does it say about the market?</p>
+          <p class="estatement" data-lang="nl">Voor olie: S = 69, 6-maands futures F₆ = 65, opslagkosten U = 1 (in PV), R = 2%. (a) De forward ligt onder de spot terwijl olie dragen geld kost: is dit een arbitrage? (b) Bereken de convenience yield. (c) Wat zegt hij over de markt?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">(a) <b>Non</b>, pas d'arbitrage. Le pétrole est un <em>consumption asset</em> : l'arbitrage reverse (shorter le pétrole physique, placer, racheter via le forward) suppose que des détenteurs vendent leur stock pour le racheter à terme, ce qu'ils refusent (ils le détiennent pour le consommer). Il ne reste que la borne supérieure F ≤ (S+U)(1+R)ᵀ, et le prix peut rester nettement dessous. (b) On résout F = (S+U)·((1+R)/(1+Y))ᵀ : 65 = 70 × (1,02/(1+Y))^0,5, d'où (1+Y) = 1,02 × (70/65)² = 1,183, soit Y ≈ <b>18,3 %</b>. (c) Ce convenience yield énorme mesure la valeur d'avoir le pétrole physiquement sous la main : il est élevé car les stocks sont perçus comme bas (crainte de pénurie), ce qui justifie de garder du stock malgré un coût de portage positif et un futures sous le spot.</div>
+            <div class="ans" data-lang="en">(a) <b>No</b>, not an arbitrage. Oil is a <em>consumption asset</em>: the reverse arbitrage (short physical oil, invest, buy back via the forward) assumes holders sell their stock to buy it back forward, which they refuse (they hold it to consume it). Only the upper bound F ≤ (S+U)(1+R)ᵀ remains, and the price can stay well below. (b) Solve F = (S+U)·((1+R)/(1+Y))ᵀ: 65 = 70 × (1.02/(1+Y))^0.5, hence (1+Y) = 1.02 × (70/65)² = 1.183, i.e. Y ≈ <b>18.3%</b>. (c) This huge convenience yield measures the value of having oil physically at hand: it is high because stocks are perceived as low (fear of shortage), which justifies holding stock despite a positive cost of carry and a futures below the spot.</div>
+            <div class="ans" data-lang="nl">(a) <b>Nee</b>, geen arbitrage. Olie is een <em>consumption asset</em>: de reverse-arbitrage (fysieke olie shorten, beleggen, terugkopen via de forward) veronderstelt dat houders hun voorraad verkopen om ze op termijn terug te kopen, wat ze weigeren (ze houden ze om te consumeren). Enkel de bovengrens F ≤ (S+U)(1+R)ᵀ blijft, en de prijs kan ver eronder blijven. (b) Los op F = (S+U)·((1+R)/(1+Y))ᵀ: 65 = 70 × (1,02/(1+Y))^0,5, dus (1+Y) = 1,02 × (70/65)² = 1,183, dus Y ≈ <b>18,3%</b>. (c) Deze enorme convenience yield meet de waarde van olie fysiek bij de hand te hebben: hij is hoog omdat de voorraden als laag worden gezien (vrees voor tekort), wat het aanhouden van voorraad rechtvaardigt ondanks een positieve cost of carry en een futures onder de spot.</div>
+          </details>
+        </div>
+
+        <section class="biblio">
+          <h2 id="biblio"><span data-lang="fr">Bibliographie &amp; pour aller plus loin</span><span data-lang="en">Bibliography &amp; further reading</span><span data-lang="nl">Bibliografie &amp; verder lezen</span></h2>
+          <div class="bcol">
+            <h4 data-lang="fr">Références</h4><h4 data-lang="en">References</h4><h4 data-lang="nl">Referenties</h4>
+            <ol>
+      <li>GARP (2024). <em>Financial Risk Manager (FRM) Part I: Financial Markets and Products</em>. Pearson.</li>
+      <li>Hull, J. C. (2021). <em>Options, Futures, and Other Derivatives</em> (11th ed.). Pearson.</li>
+      <li>Keynes, J. M. (1930). <em>A Treatise on Money</em>. Macmillan (normal backwardation).</li>
+      <li>Cox, J., Ingersoll, J. &amp; Ross, S. (1981). The Relation between Forward Prices and Futures Prices. <em>Journal of Financial Economics</em>, 9(4), 321–346.</li>
+      <li>Culp, C. &amp; Miller, M. (1995). Metallgesellschaft and the Economics of Synthetic Storage. <em>Journal of Applied Corporate Finance</em>, 7(4).</li>
+            </ol>
+          </div>
+          <div class="bcol">
+            <h4 data-lang="fr">Pour aller plus loin</h4><h4 data-lang="en">Further reading</h4><h4 data-lang="nl">Verder lezen</h4>
+            <ul>
+      <li>Investopedia : <a href="https://www.investopedia.com/terms/c/costofcarry.asp" target="_blank" rel="noopener">Cost of Carry</a> · <a href="https://www.investopedia.com/terms/c/contango.asp" target="_blank" rel="noopener">Contango</a> · <a href="https://www.investopedia.com/terms/i/interestrateparity.asp" target="_blank" rel="noopener">Interest Rate Parity</a>.</li>
+      <li><span data-lang="fr">Module précédent : Introduction aux dérivés. Suite : Options &amp; stratégies.</span><span data-lang="en">Previous module: Introduction to derivatives. Next: Options &amp; strategies.</span><span data-lang="nl">Vorige module: Inleiding tot derivaten. Volgende: Opties &amp; strategieën.</span></li>
+            </ul>
+          </div>
+        </section>
+
+        <div class="module-nav">
+          <a class="prev" href="fmp2-derives.html">
+            <div class="dir" data-lang="fr">← Module précédent</div><div class="dir" data-lang="en">← Previous module</div><div class="dir" data-lang="nl">← Vorige module</div>
+            <div class="tt" data-lang="fr">Introduction aux dérivés</div><div class="tt" data-lang="en">Introduction to derivatives</div><div class="tt" data-lang="nl">Inleiding tot derivaten</div>
+          </a>
+          <a class="next" href="../index.html#curriculum">
+            <div class="dir" data-lang="fr">Module suivant →</div><div class="dir" data-lang="en">Next module →</div><div class="dir" data-lang="nl">Volgende module →</div>
+            <div class="tt" data-lang="fr">Options &amp; stratégies</div><div class="tt" data-lang="en">Options &amp; strategies</div><div class="tt" data-lang="nl">Opties &amp; strategieën</div>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap foot">
+    <div class="brand"><span class="logo">Avenir<b>.</b></span></div>
+    <p data-lang="fr">Financial Risk Management · Marchés &amp; produits · Futures &amp; forwards</p>
+    <p data-lang="en">Financial Risk Management · Financial Markets &amp; Products · Futures &amp; forwards</p>
+    <p data-lang="nl">Financial Risk Management · Financiële markten &amp; producten · Futures &amp; forwards</p>
+  </div>
+</footer>
+
+<script>
+/* ==========================================================================
+   AVENIR — Scripts partagés
+   Sélecteur de langue FR/EN, thème clair/sombre, sommaire actif, quiz
+   ========================================================================== */
+(function () {
+  "use strict";
+
+  var LS_LANG = "avenir-lang";
+  var LS_THEME = "avenir-theme";
+
+  function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  /* ---------- Langue ---------- */
+  function detectLang() {
+    var saved = safeGet(LS_LANG);
+    if (saved === "fr" || saved === "en" || saved === "nl") return saved;
+    var nav = (navigator.language || "fr").toLowerCase();
+    if (nav.indexOf("nl") === 0) return "nl";
+    if (nav.indexOf("en") === 0) return "en";
+    return "fr";
+  }
+
+  function setLang(lang) {
+    document.body.setAttribute("data-active-lang", lang);
+    document.documentElement.setAttribute("lang", lang);
+    safeSet(LS_LANG, lang);
+    document.querySelectorAll(".lang-toggle button").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-set-lang") === lang);
+    });
+  }
+
+  /* ---------- Thème ---------- */
+  function detectTheme() {
+    var saved = safeGet(LS_THEME);
+    if (saved === "light" || saved === "dark") return saved;
+    return null; // suit le système
+  }
+
+  function applyTheme(theme) {
+    if (theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      safeSet(LS_THEME, theme);
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+    updateThemeIcon();
+  }
+
+  function currentTheme() {
+    var attr = document.documentElement.getAttribute("data-theme");
+    if (attr) return attr;
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  function updateThemeIcon() {
+    var btn = document.getElementById("theme-btn");
+    if (btn) btn.textContent = currentTheme() === "dark" ? "☀" : "☾";
+  }
+
+  /* ---------- Initialisation ---------- */
+  document.addEventListener("DOMContentLoaded", function () {
+    setLang(detectLang());
+    applyTheme(detectTheme());
+
+    document.querySelectorAll(".lang-toggle button").forEach(function (b) {
+      b.addEventListener("click", function () { setLang(b.getAttribute("data-set-lang")); });
+    });
+
+    var themeBtn = document.getElementById("theme-btn");
+    if (themeBtn) themeBtn.addEventListener("click", function () {
+      applyTheme(currentTheme() === "dark" ? "light" : "dark");
+    });
+
+    var menuBtn = document.getElementById("menu-btn");
+    var navLinks = document.querySelector(".nav-links");
+    if (menuBtn && navLinks) menuBtn.addEventListener("click", function () {
+      var open = navLinks.style.display === "flex";
+      navLinks.style.display = open ? "" : "flex";
+      navLinks.style.position = "absolute";
+      navLinks.style.flexDirection = "column";
+      navLinks.style.top = "64px";
+      navLinks.style.right = "16px";
+      navLinks.style.background = "var(--surface)";
+      navLinks.style.border = "1px solid var(--border)";
+      navLinks.style.borderRadius = "12px";
+      navLinks.style.padding = "8px";
+      navLinks.style.boxShadow = "var(--shadow-lg)";
+    });
+
+    /* Sommaire actif + barre de progression (pages module) */
+    var toc = document.querySelector(".toc");
+    var bar = document.querySelector(".progress-bar");
+    if (toc || bar) {
+      var headings = Array.prototype.slice.call(document.querySelectorAll(".module-body h2[id]"));
+      var links = toc ? Array.prototype.slice.call(toc.querySelectorAll("a")) : [];
+      var onScroll = function () {
+        if (bar) {
+          var h = document.documentElement;
+          var pct = h.scrollTop / (h.scrollHeight - h.clientHeight);
+          bar.style.width = Math.max(0, Math.min(1, pct)) * 100 + "%";
+        }
+        if (headings.length && links.length) {
+          var pos = window.scrollY + 120, current = headings[0].id;
+          headings.forEach(function (hd) { if (hd.offsetTop <= pos) current = hd.id; });
+          links.forEach(function (a) {
+            a.classList.toggle("active", a.getAttribute("href") === "#" + current);
+          });
+        }
+      };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    }
+  });
+
+  /* ---------- Quiz (exposé globalement pour les onclick) ---------- */
+  window.avenirAnswer = function (btn, correct) {
+    var q = btn.closest(".q");
+    if (q.getAttribute("data-done") === "1") return;
+    q.setAttribute("data-done", "1");
+    var opts = q.querySelectorAll(".opt");
+    opts.forEach(function (o) { o.disabled = true; });
+    if (correct) {
+      btn.classList.add("correct");
+    } else {
+      btn.classList.add("wrong");
+      opts.forEach(function (o) { if (o.getAttribute("data-correct") === "1") o.classList.add("correct"); });
+    }
+    var ex = q.querySelector(".explain");
+    if (ex) ex.classList.add("show");
+  };
+})();
+
+</script>
+<script>
+/* Courbe de cost of carry : F(T) = S·((1+R)/(1+Q))^T par maturité, contango vs inversé */
+(function () {
+  var svg = document.getElementById("cc-chart");
+  if (!svg) return;
+  function v(id){ return parseFloat(document.getElementById(id).value); }
+  function setT(id,t){ var e=document.getElementById(id); if(e) e.textContent=t; }
+  function al(){ return document.body.getAttribute("data-active-lang")||"fr"; }
+
+  function draw(){
+    var S=v("cc-s"), R=v("cc-r")/100, Q=v("cc-q")/100;
+    setT("cc-s-o", S.toFixed(0)); setT("cc-r-o", (R*100).toFixed(1)+"%"); setT("cc-q-o", (Q*100).toFixed(1)+"%");
+    var ratio=(1+R)/(1+Q);
+    var Tmax=2;
+    function F(T){ return S*Math.pow(ratio,T); }
+    var f1=F(1), basis=f1-S;
+    setT("cc-f", f1.toFixed(2));
+    setT("cc-basis", (basis>=0?"+":"")+basis.toFixed(2));
+    var reg=document.getElementById("cc-reg");
+    if (R>Q+1e-9){ reg.textContent = al()==="en"?"Contango (F > S)":(al()==="nl"?"Contango (F > S)":"Contango (F > S)"); reg.style.color="var(--teal)"; }
+    else if (R<Q-1e-9){ reg.textContent = al()==="en"?"Inverted (F < S)":(al()==="nl"?"Inverted (F < S)":"Inversé (F < S)"); reg.style.color="var(--crimson)"; }
+    else { reg.textContent = al()==="en"?"Flat (F = S)":(al()==="nl"?"Vlak (F = S)":"Plat (F = S)"); reg.style.color="var(--gold)"; }
+
+    // échelle
+    var W=520,H=300,L=48,R0=16,T0=16,B=34, pw=W-L-R0, ph=H-T0-B;
+    var fmax=F(Tmax), fmin=F(0);
+    var ylo=Math.min(fmin,fmax,S), yhi=Math.max(fmin,fmax,S);
+    var pad=(yhi-ylo)*0.15||S*0.05; ylo-=pad; yhi+=pad;
+    function px(T){ return L + T/Tmax*pw; }
+    function py(val){ return T0 + (1-(val-ylo)/(yhi-ylo))*ph; }
+
+    var g="";
+    // ligne spot (référence)
+    g+='<line x1="'+L+'" y1="'+py(S).toFixed(1)+'" x2="'+(L+pw)+'" y2="'+py(S).toFixed(1)+'" stroke="var(--ink-mute)" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.7"/>';
+    g+='<text class="tick" x="'+(L+pw)+'" y="'+(py(S)-4).toFixed(1)+'" text-anchor="end" fill="var(--ink-mute)">S = '+S.toFixed(0)+'</text>';
+    // courbe F(T)
+    var d="";
+    for (var i=0;i<=120;i++){ var T=Tmax*i/120; d+=(i===0?"M ":" L ")+px(T).toFixed(1)+","+py(F(T)).toFixed(1); }
+    g+='<path d="'+d+'" fill="none" stroke="var(--teal)" stroke-width="2.6"/>';
+    // point à 1 an
+    g+='<circle cx="'+px(1).toFixed(1)+'" cy="'+py(f1).toFixed(1)+'" r="4" fill="var(--teal)"/>';
+    g+='<line x1="'+px(1).toFixed(1)+'" y1="'+py(f1).toFixed(1)+'" x2="'+px(1).toFixed(1)+'" y2="'+(T0+ph).toFixed(1)+'" stroke="var(--ink-mute)" stroke-width="0.8" stroke-dasharray="2 3"/>';
+    // axes
+    g+='<line class="axis" x1="'+L+'" y1="'+(T0+ph)+'" x2="'+(L+pw)+'" y2="'+(T0+ph)+'"/>';
+    g+='<line class="axis" x1="'+L+'" y1="'+T0+'" x2="'+L+'" y2="'+(T0+ph)+'"/>';
+    // libellés
+    var xlab = al()==="en"?"maturity T (years)":(al()==="nl"?"looptijd T (jaren)":"maturité T (années)");
+    g+='<text class="lab" x="'+(L+pw)+'" y="'+(T0+ph+16)+'" text-anchor="end">'+xlab+'</text>';
+    g+='<text class="lab" x="'+L+'" y="'+(T0-4)+'" text-anchor="start">F</text>';
+    g+='<text class="tick" x="'+px(1).toFixed(1)+'" y="'+(T0+ph+14)+'" text-anchor="middle">1</text>';
+    g+='<text class="tick" x="'+px(2).toFixed(1)+'" y="'+(T0+ph+14)+'" text-anchor="middle">2</text>';
+    svg.innerHTML=g;
+  }
+  ["cc-s","cc-r","cc-q"].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener("input", draw); });
+  document.querySelectorAll("[data-set-lang]").forEach(function(b){ b.addEventListener("click", function(){ setTimeout(draw,10); }); });
+  document.addEventListener("DOMContentLoaded", draw);
+  draw();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulation &amp; machine learning — Avenir</title>
+<meta name="description" content="Quand il n'y a pas de formule fermée : la simulation Monte Carlo (transformation inverse de la CDF, erreur en 1/√b, réduction de variance par antithetic et control variates), le bootstrap (iid et par blocs circulaires) et son application à la VaR, puis la boîte à outils du machine learning (préparation des données, biais-variance, train/validation/test, PCA et K-means, régularisation ridge et LASSO, régression logistique et évaluation par confusion matrix et AUC, arbres, ensembles, KNN, SVM et réseaux de neurones). Convergence Monte Carlo interactive, QCM et exercices.">
+<style>
+/* ==========================================================================
+   AVENIR — Plateforme pédagogique Asset Management & Financial Risk Management
+   Feuille de style partagée
+   ========================================================================== */
+
+:root {
+  /* Palette claire */
+  --bg:            #f6f4ef;
+  --bg-soft:       #efece4;
+  --surface:       #ffffff;
+  --surface-2:     #faf8f3;
+  --border:        #e2ddd1;
+  --ink:           #1a2230;
+  --ink-soft:      #4a5566;
+  --ink-mute:      #7a8494;
+
+  --navy:          #12294a;
+  --navy-2:        #1c3a63;
+  --gold:          #c19a3e;
+  --gold-soft:     #e7d9b0;
+  --teal:          #16706a;
+  --teal-soft:     #cfe6e2;
+  --crimson:       #9a3140;
+
+  --am:            var(--navy);   /* couleur du parcours Asset Management */
+  --am-soft:       #dbe3ef;
+  --frm:           var(--teal);   /* couleur du parcours Risk Management */
+  --frm-soft:      var(--teal-soft);
+
+  --radius:        14px;
+  --radius-sm:     9px;
+  --shadow:        0 1px 2px rgba(18,41,74,.05), 0 8px 24px rgba(18,41,74,.07);
+  --shadow-lg:     0 12px 40px rgba(18,41,74,.14);
+  --maxw:          1160px;
+
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: "SF Mono", "JetBrains Mono", "Fira Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:        #0d141f;
+    --bg-soft:   #111a28;
+    --surface:   #15202f;
+    --surface-2: #1a2637;
+    --border:    #263449;
+    --ink:       #edf1f6;
+    --ink-soft:  #b3bdcc;
+    --ink-mute:  #808ba0;
+    --navy:      #6f9bd6;
+    --navy-2:    #8bb0e0;
+    --gold:      #d8b95e;
+    --gold-soft: #40391f;
+    --teal:      #4bb3aa;
+    --teal-soft: #17332f;
+    --crimson:   #d47a86;
+    --am-soft:   #1a2c46;
+    --frm-soft:  #16332f;
+    --shadow:    0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"] {
+  --bg:        #0d141f;
+  --bg-soft:   #111a28;
+  --surface:   #15202f;
+  --surface-2: #1a2637;
+  --border:    #263449;
+  --ink:       #edf1f6;
+  --ink-soft:  #b3bdcc;
+  --ink-mute:  #808ba0;
+  --navy:      #6f9bd6;
+  --navy-2:    #8bb0e0;
+  --gold:      #d8b95e;
+  --gold-soft: #40391f;
+  --teal:      #4bb3aa;
+  --teal-soft: #17332f;
+  --crimson:   #d47a86;
+  --am-soft:   #1a2c46;
+  --frm-soft:  #16332f;
+  --shadow:    0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.5);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Bilinguisme : on masque la langue inactive */
+[data-lang] { display: none; }
+body[data-active-lang="fr"] [data-lang="fr"] { display: revert; }
+body[data-active-lang="en"] [data-lang="en"] { display: revert; }
+body[data-active-lang="nl"] [data-lang="nl"] { display: revert; }
+/* variantes en ligne */
+span[data-lang], a[data-lang], em[data-lang], strong[data-lang], code[data-lang] { display: none; }
+body[data-active-lang="fr"] span[data-lang="fr"],
+body[data-active-lang="fr"] a[data-lang="fr"],
+body[data-active-lang="fr"] em[data-lang="fr"],
+body[data-active-lang="fr"] strong[data-lang="fr"],
+body[data-active-lang="fr"] code[data-lang="fr"] { display: inline; }
+body[data-active-lang="en"] span[data-lang="en"],
+body[data-active-lang="en"] a[data-lang="en"],
+body[data-active-lang="en"] em[data-lang="en"],
+body[data-active-lang="en"] strong[data-lang="en"],
+body[data-active-lang="en"] code[data-lang="en"] { display: inline; }
+body[data-active-lang="nl"] span[data-lang="nl"],
+body[data-active-lang="nl"] a[data-lang="nl"],
+body[data-active-lang="nl"] em[data-lang="nl"],
+body[data-active-lang="nl"] strong[data-lang="nl"],
+body[data-active-lang="nl"] code[data-lang="nl"] { display: inline; }
+/* les pastilles inline-block conservent leur forme quand elles portent data-lang */
+body[data-active-lang="fr"] span.eyebrow[data-lang="fr"],
+body[data-active-lang="en"] span.eyebrow[data-lang="en"],
+body[data-active-lang="nl"] span.eyebrow[data-lang="nl"] { display: inline-block; }
+/* .callout .clabel force display:block — masquer les langues non actives et ne révéler que l'active */
+.callout .clabel[data-lang] { display: none; }
+body[data-active-lang="fr"] .callout .clabel[data-lang="fr"],
+body[data-active-lang="en"] .callout .clabel[data-lang="en"],
+body[data-active-lang="nl"] .callout .clabel[data-lang="nl"] { display: block; }
+/* garde-fou général : une règle de composant (ex. .sml-sliders label{display:block}) ne doit jamais
+   ré-afficher une langue non active. On masque toujours les langues non actives (!important). */
+body[data-active-lang="fr"] [data-lang]:not([data-lang="fr"]),
+body[data-active-lang="en"] [data-lang]:not([data-lang="en"]),
+body[data-active-lang="nl"] [data-lang]:not([data-lang="nl"]) { display: none !important; }
+
+a { color: var(--navy-2); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+/* ---------- En-tête / navigation ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.nav {
+  display: flex; align-items: center; gap: 20px;
+  height: 64px;
+}
+.brand { display: flex; align-items: baseline; gap: 10px; font-family: var(--serif); }
+.brand a { color: var(--ink); text-decoration: none; }
+.brand .logo {
+  font-size: 22px; font-weight: 700; letter-spacing: .5px;
+}
+.brand .logo b { color: var(--gold); }
+.brand .tag { font-size: 12.5px; color: var(--ink-mute); font-family: var(--sans); letter-spacing: .3px; }
+.nav .spacer { flex: 1; }
+.nav-links { display: flex; gap: 4px; }
+.nav-links a {
+  color: var(--ink-soft); font-size: 14.5px; font-weight: 500;
+  padding: 8px 12px; border-radius: 8px;
+}
+.nav-links a:hover { background: var(--bg-soft); color: var(--ink); text-decoration: none; }
+
+.controls { display: flex; align-items: center; gap: 8px; }
+.lang-toggle {
+  display: inline-flex; border: 1px solid var(--border); border-radius: 999px;
+  overflow: hidden; background: var(--surface-2);
+}
+.lang-toggle button {
+  border: 0; background: transparent; color: var(--ink-mute);
+  font: 600 13px/1 var(--sans); padding: 7px 13px; cursor: pointer;
+}
+.lang-toggle button.active { background: var(--navy); color: #fff; }
+:root[data-theme="dark"] .lang-toggle button.active,
+:root:not([data-theme="light"]) .lang-toggle button.active { color: #0d141f; }
+.icon-btn {
+  border: 1px solid var(--border); background: var(--surface-2);
+  width: 36px; height: 36px; border-radius: 999px; cursor: pointer;
+  font-size: 16px; color: var(--ink-soft); display: grid; place-items: center;
+}
+.icon-btn:hover { color: var(--ink); }
+.menu-btn { display: none; }
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative; overflow: hidden;
+  background:
+    radial-gradient(1200px 500px at 80% -10%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 60%),
+    linear-gradient(160deg, var(--navy) 0%, #0c1c34 65%, #0a1830 100%);
+  color: #eef2f8;
+}
+:root[data-theme="dark"] .hero,
+:root:not([data-theme="light"]) .hero {
+  background:
+    radial-gradient(1200px 500px at 80% -10%, rgba(216,185,94,.14), transparent 60%),
+    linear-gradient(160deg, #0b1524 0%, #0a1220 100%);
+}
+.hero .wrap { padding-top: 72px; padding-bottom: 76px; }
+.hero .eyebrow {
+  display: inline-block; font-size: 12.5px; letter-spacing: 2.2px; text-transform: uppercase;
+  color: var(--gold-soft); border: 1px solid rgba(231,217,176,.35);
+  padding: 5px 12px; border-radius: 999px; margin-bottom: 22px;
+}
+:root[data-theme="dark"] .hero .eyebrow,
+:root:not([data-theme="light"]) .hero .eyebrow { color: var(--gold); }
+.hero h1 {
+  font-family: var(--serif); font-weight: 700;
+  font-size: clamp(34px, 5.2vw, 58px); line-height: 1.08; margin: 0 0 20px;
+  max-width: 16ch;
+}
+.hero h1 .accent { color: var(--gold); }
+.hero p.lead { font-size: clamp(17px, 2.2vw, 21px); color: #cdd7e6; max-width: 60ch; margin: 0 0 32px; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; }
+.hero-stats { display: flex; gap: 40px; margin-top: 54px; flex-wrap: wrap; }
+.hero-stats .stat .n { font-family: var(--serif); font-size: 34px; color: #fff; font-weight: 700; }
+.hero-stats .stat .l { font-size: 13.5px; color: #a9b6c9; letter-spacing: .3px; }
+
+/* ---------- Boutons ---------- */
+.btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  font: 600 15px/1 var(--sans); padding: 13px 22px; border-radius: 10px;
+  cursor: pointer; border: 1px solid transparent; transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn:hover { text-decoration: none; transform: translateY(-1px); }
+.btn-gold { background: var(--gold); color: #241c05; }
+.btn-gold:hover { box-shadow: 0 8px 20px rgba(193,154,62,.35); }
+.btn-ghost { background: transparent; color: #eef2f8; border-color: rgba(255,255,255,.35); }
+.btn-ghost:hover { background: rgba(255,255,255,.08); }
+.btn-solid { background: var(--navy); color: #fff; }
+:root[data-theme="dark"] .btn-solid,
+:root:not([data-theme="light"]) .btn-solid { color: #0d141f; }
+.btn-solid:hover { box-shadow: var(--shadow); }
+.btn-outline { background: var(--surface); color: var(--ink); border-color: var(--border); }
+.btn-outline:hover { border-color: var(--navy-2); }
+
+/* ---------- Sections ---------- */
+section { padding: 66px 0; }
+.section-head { max-width: 720px; margin-bottom: 40px; }
+.section-head .kicker {
+  font-size: 12.5px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold); font-weight: 700; margin-bottom: 12px;
+}
+.section-head h2 { font-family: var(--serif); font-size: clamp(26px, 3.6vw, 38px); margin: 0 0 12px; line-height: 1.15; }
+.section-head p { color: var(--ink-soft); font-size: 18px; margin: 0; }
+
+/* ---------- Parcours (tracks) ---------- */
+.tracks { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.track {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 32px; box-shadow: var(--shadow); position: relative; overflow: hidden;
+}
+.track::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 5px; }
+.track.am::before { background: linear-gradient(var(--navy), var(--navy-2)); }
+.track.frm::before { background: linear-gradient(var(--teal), #0f5651); }
+.track .badge {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: 5px 11px; border-radius: 999px; margin-bottom: 16px;
+}
+.track.am .badge { background: var(--am-soft); color: var(--navy); }
+.track.frm .badge { background: var(--frm-soft); color: var(--teal); }
+.track h3 { font-family: var(--serif); font-size: 25px; margin: 0 0 8px; }
+.track p { color: var(--ink-soft); margin: 0 0 18px; font-size: 15.5px; }
+.track ul { list-style: none; padding: 0; margin: 0 0 22px; }
+.track ul li { padding: 7px 0 7px 26px; position: relative; font-size: 15px; border-top: 1px solid var(--border); }
+.track ul li:first-child { border-top: 0; }
+.track ul li::before {
+  content: "▸"; position: absolute; left: 4px; top: 7px; font-weight: 700;
+}
+.track.am ul li::before { color: var(--gold); }
+.track.frm ul li::before { color: var(--teal); }
+
+/* ---------- Curriculum ---------- */
+.curriculum { background: var(--bg-soft); }
+.curric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.curric-col h3 {
+  font-family: var(--serif); font-size: 22px; display: flex; align-items: center; gap: 10px;
+  padding-bottom: 14px; margin: 0 0 6px; border-bottom: 2px solid var(--border);
+}
+.curric-col.am h3 { color: var(--navy); }
+.curric-col.frm h3 { color: var(--teal); }
+.curric-col .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.curric-col.am .dot { background: var(--navy); }
+.curric-col.frm .dot { background: var(--teal); }
+.mod {
+  display: flex; gap: 15px; align-items: flex-start;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 15px 17px; margin-top: 12px; transition: border-color .15s ease, transform .15s ease;
+}
+a.mod:hover { text-decoration: none; transform: translateX(3px); box-shadow: var(--shadow); }
+.curric-col.am a.mod:hover { border-color: var(--navy-2); }
+.curric-col.frm a.mod:hover { border-color: var(--teal); }
+.mod .num {
+  flex: none; width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center;
+  font-family: var(--serif); font-weight: 700; font-size: 15px;
+}
+.curric-col.am .mod .num { background: var(--am-soft); color: var(--navy); }
+.curric-col.frm .mod .num { background: var(--frm-soft); color: var(--teal); }
+.mod .mt { font-weight: 600; font-size: 15.5px; color: var(--ink); margin: 2px 0 2px; }
+.mod .md { font-size: 13.5px; color: var(--ink-mute); line-height: 1.5; }
+.mod .chip {
+  font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+  color: var(--gold); border: 1px solid var(--gold-soft); border-radius: 999px; padding: 2px 8px;
+  margin-left: auto; align-self: center; flex: none;
+}
+
+/* ---------- Bandeau méthode ---------- */
+.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.feature { padding: 6px 4px; }
+.feature .ic { font-size: 24px; margin-bottom: 10px; }
+.feature h4 { font-size: 17px; margin: 0 0 6px; }
+.feature p { color: var(--ink-soft); font-size: 14.5px; margin: 0; }
+
+/* ---------- CTA final ---------- */
+.cta-band {
+  background: linear-gradient(160deg, var(--navy), #0b1c35);
+  color: #eef2f8; border-radius: var(--radius); padding: 46px; text-align: center;
+}
+.cta-band h2 { font-family: var(--serif); font-size: clamp(24px, 3vw, 34px); margin: 0 0 12px; }
+.cta-band p { color: #c7d2e2; max-width: 54ch; margin: 0 auto 26px; }
+
+/* ---------- Pied de page ---------- */
+.site-footer { border-top: 1px solid var(--border); background: var(--surface); padding: 40px 0; margin-top: 20px; }
+.foot { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: center; }
+.foot .brand .logo { font-size: 18px; }
+.foot p { color: var(--ink-mute); font-size: 13.5px; margin: 0; }
+
+/* ==========================================================================
+   PAGES MODULE
+   ========================================================================== */
+.module-shell { display: grid; grid-template-columns: 264px 1fr; gap: 40px; align-items: start; }
+.module-shell .wrap-mod { max-width: var(--maxw); margin: 0 auto; padding: 40px 24px 80px; }
+
+/* barre latérale sommaire */
+.toc {
+  position: sticky; top: 84px; align-self: start;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px; box-shadow: var(--shadow); max-height: calc(100vh - 110px); overflow: auto;
+}
+.toc .toc-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-mute); font-weight: 700; margin-bottom: 12px; }
+.toc a { display: block; color: var(--ink-soft); font-size: 14px; padding: 6px 10px; border-radius: 7px; border-left: 2px solid transparent; }
+.toc a:hover { background: var(--bg-soft); text-decoration: none; }
+.toc a.active { color: var(--teal); background: var(--frm-soft); border-left-color: var(--teal); font-weight: 600; }
+
+/* fil d'ariane + entête module */
+.crumbs { font-size: 13.5px; color: var(--ink-mute); margin-bottom: 14px; }
+.crumbs a { color: var(--ink-mute); }
+.module-hero { border-bottom: 1px solid var(--border); padding-bottom: 26px; margin-bottom: 34px; }
+.module-hero .badge {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: 5px 11px; border-radius: 999px;
+  background: var(--frm-soft); color: var(--teal); margin-bottom: 14px;
+}
+.module-hero h1 { font-family: var(--serif); font-size: clamp(30px, 4.4vw, 46px); line-height: 1.1; margin: 0 0 12px; }
+.module-hero .subtitle { font-size: 19px; color: var(--ink-soft); max-width: 65ch; margin: 0 0 18px; }
+.module-meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 13.5px; color: var(--ink-mute); }
+.module-meta span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* objectifs */
+.objectives {
+  background: var(--surface-2); border: 1px solid var(--border); border-left: 4px solid var(--teal);
+  border-radius: var(--radius-sm); padding: 20px 24px; margin: 0 0 40px;
+}
+.objectives h4 { margin: 0 0 10px; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); }
+.objectives ul { margin: 0; padding-left: 20px; }
+.objectives li { margin: 5px 0; color: var(--ink-soft); }
+
+/* corps du module */
+.module-body h2 {
+  font-family: var(--serif); font-size: 29px; margin: 48px 0 14px; scroll-margin-top: 84px;
+  padding-top: 6px;
+}
+.module-body h3 { font-family: var(--serif); font-size: 22px; margin: 30px 0 10px; }
+.module-body p { margin: 0 0 16px; color: var(--ink); }
+.module-body ul, .module-body ol { margin: 0 0 18px; padding-left: 26px; }
+.module-body li { margin: 6px 0; }
+.module-body strong { color: var(--ink); }
+
+/* définitions et encadrés */
+.callout {
+  border-radius: var(--radius-sm); padding: 18px 20px; margin: 24px 0; border: 1px solid var(--border);
+  background: var(--surface-2); font-size: 15.5px;
+}
+.callout .clabel { font-weight: 700; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 6px; }
+.callout.def { border-left: 4px solid var(--navy); }
+.callout.def .clabel { color: var(--navy); }
+.callout.warn { border-left: 4px solid var(--crimson); background: color-mix(in srgb, var(--crimson) 7%, var(--surface)); }
+.callout.warn .clabel { color: var(--crimson); }
+.callout.tip { border-left: 4px solid var(--gold); }
+.callout.tip .clabel { color: var(--gold); }
+
+/* formules */
+.formula {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 22px 24px; margin: 22px 0; text-align: center; box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+.formula .eq { font-family: var(--serif); font-size: 22px; color: var(--ink); }
+.formula .eq em { color: var(--teal); font-style: italic; }
+.formula .caption { font-size: 13px; color: var(--ink-mute); margin-top: 12px; }
+sub, sup { font-size: .72em; }
+
+/* tableaux */
+.table-wrap { overflow-x: auto; margin: 22px 0; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; min-width: 460px; }
+thead th { background: var(--navy); color: #fff; text-align: left; padding: 11px 14px; font-weight: 600; font-size: 13.5px; }
+:root[data-theme="dark"] thead th,
+:root:not([data-theme="light"]) thead th { color: #0d141f; }
+tbody td { padding: 10px 14px; border-top: 1px solid var(--border); }
+tbody tr:nth-child(even) td { background: var(--surface-2); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); }
+
+/* exemple travaillé */
+.worked {
+  border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 28px 0;
+}
+.worked .whead { background: var(--am-soft); color: var(--navy); padding: 12px 20px; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+.worked .wbody { padding: 20px 22px; background: var(--surface); }
+.worked .step { padding: 12px 0; border-top: 1px dashed var(--border); }
+.worked .step:first-child { border-top: 0; }
+.worked .step .sn { font-weight: 700; color: var(--teal); font-size: 13.5px; letter-spacing: .5px; }
+
+/* calculateur interactif */
+.calc {
+  border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+  background: var(--surface); overflow: hidden; margin: 30px 0;
+}
+.calc .chead { background: linear-gradient(160deg, var(--teal), #0f5651); color: #fff; padding: 16px 22px; }
+.calc .chead h4 { margin: 0; font-family: var(--serif); font-size: 20px; }
+.calc .chead p { margin: 4px 0 0; font-size: 13.5px; color: #d5eee9; }
+.calc .cbody { padding: 22px; display: grid; grid-template-columns: 1fr 300px; gap: 26px; }
+.calc .inputs label { display: block; font-size: 13.5px; font-weight: 600; color: var(--ink-soft); margin: 14px 0 6px; }
+.calc .inputs input, .calc .inputs select {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface-2); color: var(--ink); font: 500 15px var(--sans);
+}
+.calc .inputs .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.calc .rangewrap { display: flex; align-items: center; gap: 12px; }
+.calc .rangewrap input[type=range] { flex: 1; }
+.calc .rangewrap output { font-family: var(--mono); font-weight: 600; min-width: 46px; text-align: right; color: var(--teal); }
+.calc .result {
+  background: var(--navy); color: #fff; border-radius: var(--radius-sm); padding: 22px; align-self: start;
+}
+:root[data-theme="dark"] .calc .result,
+:root:not([data-theme="light"]) .calc .result { background: #0c1b32; }
+.calc .result .rl { font-size: 12.5px; text-transform: uppercase; letter-spacing: 1px; color: #9fb0c8; }
+.calc .result .rv { font-family: var(--serif); font-size: 34px; font-weight: 700; margin: 4px 0 2px; }
+.calc .result .rv.gold { color: var(--gold); }
+.calc .result .rsub { font-size: 13px; color: #b9c6d8; }
+.calc .result hr { border: 0; border-top: 1px solid rgba(255,255,255,.15); margin: 16px 0; }
+
+/* quiz */
+.quiz { border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin: 30px 0; background: var(--surface); }
+.quiz h4 { margin: 0 0 4px; font-family: var(--serif); font-size: 20px; }
+.quiz .qsub { color: var(--ink-mute); font-size: 14px; margin: 0 0 18px; }
+.q { margin: 18px 0; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.q:last-of-type { border-bottom: 0; }
+.q .qtext { font-weight: 600; margin-bottom: 12px; }
+.q .opt {
+  display: block; width: 100%; text-align: left; padding: 11px 14px; margin: 7px 0;
+  border: 1px solid var(--border); border-radius: 9px; background: var(--surface-2); color: var(--ink);
+  cursor: pointer; font: 500 15px var(--sans); transition: all .12s ease;
+}
+.q .opt:hover { border-color: var(--teal); }
+.q .opt.correct { background: color-mix(in srgb, var(--teal) 16%, var(--surface)); border-color: var(--teal); color: var(--ink); }
+.q .opt.wrong { background: color-mix(in srgb, var(--crimson) 14%, var(--surface)); border-color: var(--crimson); }
+.q .explain { display: none; margin-top: 10px; font-size: 14px; color: var(--ink-soft); background: var(--surface-2); border-radius: 8px; padding: 12px 14px; border-left: 3px solid var(--teal); }
+.q .explain.show { display: block; }
+
+/* navigation entre modules */
+.module-nav { display: flex; justify-content: space-between; gap: 16px; margin-top: 50px; flex-wrap: wrap; }
+.module-nav a {
+  flex: 1; min-width: 220px; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 20px; background: var(--surface); transition: border-color .15s ease;
+}
+.module-nav a:hover { border-color: var(--teal); text-decoration: none; }
+.module-nav .dir { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-mute); }
+.module-nav .tt { font-weight: 600; color: var(--ink); margin-top: 3px; }
+.module-nav a.next { text-align: right; }
+
+/* progression de lecture */
+.progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0; z-index: 60; transition: width .1s linear; }
+
+/* exercices chiffrés */
+.exo { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px; margin: 14px 0; background: var(--surface); box-shadow: var(--shadow); }
+.exo .ehead { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.exo .eid { font-size: 12px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--teal); }
+.exo .diff { font-size: 10.5px; letter-spacing: .5px; text-transform: uppercase; border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px; color: var(--ink-mute); }
+.exo .estatement { margin: 0 0 6px; }
+.exo details { border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 10px; }
+.exo summary { cursor: pointer; font-weight: 600; font-size: 14px; color: var(--navy-2); list-style: none; }
+.exo summary::-webkit-details-marker { display: none; }
+.exo summary::before { content: "▸ "; color: var(--gold); }
+.exo details[open] summary::before { content: "▾ "; }
+.exo .ans { font-size: 14.5px; color: var(--ink-soft); margin-top: 8px; }
+.exo .ans b { color: var(--ink); }
+
+/* ---------- Thème parcours Asset Management (navy/or) sur pages module ----------
+   Les composants module utilisent --teal / --frm-soft (couleur FRM) par défaut.
+   Sur un module du parcours Asset Management, on remappe ces variables vers le navy. */
+body.track-am { --teal: var(--navy); --frm-soft: var(--am-soft); }
+body.track-am .calc .chead { background: linear-gradient(160deg, var(--navy), #0a1830); }
+body.track-am .module-hero .badge,
+body.track-am .worked .whead { background: var(--am-soft); color: var(--navy); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 940px) {
+  .module-shell { grid-template-columns: 1fr; }
+  .toc { display: none; }
+  .calc .cbody { grid-template-columns: 1fr; }
+}
+@media (max-width: 820px) {
+  .tracks, .curric-grid, .features { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .menu-btn { display: grid; }
+  .hero-stats { gap: 26px; }
+}
+
+/* ---------- Bibliographie & sources ---------- */
+.biblio { border-top: 2px solid var(--border); margin-top: 50px; padding-top: 8px; }
+.biblio .bcol { margin: 0 0 22px; }
+.biblio h4 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--ink-mute); margin: 0 0 10px; }
+.biblio ol, .biblio ul { margin: 0; padding-left: 22px; }
+.biblio li { font-size: 14px; color: var(--ink-soft); line-height: 1.65; margin: 8px 0; }
+.biblio li em { color: var(--ink); font-style: italic; }
+.biblio a { color: var(--navy-2); text-decoration: none; border-bottom: 1px solid var(--border); }
+.biblio a:hover { border-color: var(--navy-2); }
+.formula .caption.src, .src { color: var(--ink-mute); font-style: italic; font-size: 12.5px; }
+
+/* ==========================================================================
+   RESSOURCES TÉLÉCHARGEABLES · VIDÉO · SOUS-MODULES (ajout)
+   ========================================================================== */
+
+/* --- Bloc de fichiers à télécharger --- */
+.downloads { margin: 26px 0 8px; }
+.downloads h4 { font-family: var(--serif); font-size: 18px; margin: 0 0 12px; color: var(--ink); }
+.dl-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.dl-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface-2); text-decoration: none; color: var(--ink);
+  transition: border-color .15s, transform .15s;
+}
+.dl-item:hover { border-color: var(--teal); transform: translateY(-1px); }
+body.track-am .dl-item:hover { border-color: var(--navy-2); }
+.dl-ic {
+  flex: 0 0 auto; width: 38px; height: 38px; border-radius: 8px;
+  display: grid; place-items: center; font-size: 12px; font-weight: 800;
+  font-family: var(--sans); color: #fff; letter-spacing: .3px;
+}
+.dl-ic.xls { background: #1a7a4c; }
+.dl-ic.pdf { background: #b23a48; }
+.dl-ic.doc { background: #2a5db0; }
+.dl-ic.zip { background: #7a6a1a; }
+.dl-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dl-name { font-size: 14px; font-weight: 600; line-height: 1.25; }
+.dl-sub { font-size: 12px; color: var(--ink-mute); }
+.dl-note { font-size: 12.5px; color: var(--ink-mute); font-style: italic; margin-top: 10px; }
+
+/* --- Vidéo responsive (16:9) + placeholder --- */
+.video-embed { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--surface-2); margin: 8px 0; }
+.video-embed iframe, .video-embed video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video-embed.placeholder { display: grid; place-items: center; text-align: center; }
+.video-embed.placeholder .ph-inner { display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--ink-mute); padding: 20px; }
+.video-embed.placeholder .ph-play {
+  width: 62px; height: 62px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--teal); color: #fff; font-size: 24px; padding-left: 4px;
+}
+body.track-am .video-embed.placeholder .ph-play { background: var(--navy-2); }
+.video-embed.placeholder .ph-t { font-size: 14.5px; font-weight: 600; color: var(--ink-soft); }
+.video-embed.placeholder .ph-s { font-size: 12.5px; }
+
+/* --- Grille de sous-modules (cartes) --- */
+.subgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin: 18px 0 8px; }
+.subcard {
+  display: flex; flex-direction: column; gap: 6px; padding: 16px;
+  border: 1px solid var(--border); border-radius: 12px; background: var(--surface);
+  text-decoration: none; color: var(--ink); transition: border-color .15s, transform .15s, box-shadow .15s;
+}
+.subcard:hover { border-color: var(--navy-2); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+.subcard .sc-ic { font-size: 22px; }
+.subcard .sc-t { font-family: var(--serif); font-size: 16.5px; font-weight: 600; line-height: 1.2; }
+.subcard .sc-d { font-size: 12.5px; color: var(--ink-mute); line-height: 1.45; }
+.subcard.soon { opacity: .55; pointer-events: none; }
+.subcard.soon .sc-tag { font-size: 11px; font-weight: 700; color: var(--ink-mute); text-transform: uppercase; letter-spacing: .5px; }
+@media (max-width:520px){ .dl-list, .subgrid { grid-template-columns: 1fr; } }
+
+/* ===== Podcast : bandeau accueil + ligne du temps ===== */
+.pod-ribbon { display:flex; align-items:center; justify-content:center; gap:14px 18px; flex-wrap:wrap; background:linear-gradient(90deg, var(--navy), var(--teal)); color:#fff; padding:11px 20px; text-align:center; }
+.pod-ribbon .tt { font-weight:700; font-size:15px; letter-spacing:.01em; }
+.pod-ribbon .tt b { color:var(--gold-soft); font-weight:800; }
+.pod-ribbon .tt .em { opacity:.85; font-weight:600; }
+.pod-ribbon .rlink { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.34); color:#fff; padding:6px 15px; border-radius:22px; font-weight:700; font-size:13.5px; white-space:nowrap; }
+.pod-ribbon .rlink:hover { background:rgba(255,255,255,.26); text-decoration:none; transform:translateY(-1px); }
+
+.pod-page { padding:44px 0 76px; }
+.pod-head { text-align:center; max-width:680px; margin:0 auto 48px; }
+.pod-eyebrow { color:var(--teal); font-weight:800; letter-spacing:.14em; text-transform:uppercase; font-size:12px; }
+.pod-head h1 { font-size:clamp(28px,4vw,42px); color:var(--ink); margin:12px 0 14px; line-height:1.1; }
+.pod-head p { color:var(--ink-soft); font-size:17px; line-height:1.6; margin:0; }
+
+.pod-timeline { position:relative; max-width:820px; margin:0 auto; padding-left:40px; }
+.pod-timeline::before { content:""; position:absolute; left:11px; top:8px; bottom:8px; width:2px; background:linear-gradient(var(--teal), var(--gold)); opacity:.55; }
+.pod-item { position:relative; margin-bottom:26px; }
+.pod-item:last-child { margin-bottom:0; }
+.pod-node { position:absolute; left:-35px; top:24px; width:16px; height:16px; border-radius:50%; background:var(--surface); border:3px solid var(--teal); }
+.pod-item.live .pod-node { border-color:var(--gold); box-shadow:0 0 0 5px var(--gold-soft); }
+.pod-card { display:grid; grid-template-columns:200px 1fr; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); transition:transform .15s ease, box-shadow .15s ease; }
+.pod-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-lg); }
+.pod-thumb { position:relative; aspect-ratio:16/10; background:linear-gradient(135deg, var(--navy), var(--teal)); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.pod-thumb img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.pod-thumb .play { width:48px; height:48px; border-radius:50%; background:rgba(255,255,255,.92); color:var(--navy); display:flex; align-items:center; justify-content:center; font-size:17px; padding-left:3px; box-shadow:0 4px 14px rgba(0,0,0,.25); z-index:1; }
+.pod-thumb .epnum { position:absolute; top:9px; left:11px; color:#fff; font-weight:800; font-size:11.5px; letter-spacing:.09em; opacity:.92; z-index:1; }
+.pod-body { padding:16px 18px 15px; }
+.pod-chips { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:7px; }
+.pod-chip { font-size:11px; font-weight:700; padding:2px 10px; border-radius:20px; background:var(--surface-2); color:var(--ink-mute); border:1px solid var(--border); }
+.pod-chip.soon { color:var(--teal); }
+.pod-chip.live { background:var(--gold-soft); color:var(--gold); border-color:transparent; }
+.pod-body h3 { font-size:18px; color:var(--ink); margin:2px 0 6px; line-height:1.25; }
+.pod-body p { color:var(--ink-soft); font-size:14.5px; line-height:1.5; margin:0 0 10px; }
+.pod-link { font-weight:700; color:var(--teal); font-size:14px; }
+.pod-link:hover { text-decoration:underline; }
+.pod-soonmsg { font-size:13px; color:var(--ink-mute); font-style:italic; }
+@media (max-width:620px){ .pod-card { grid-template-columns:1fr; } .pod-thumb { aspect-ratio:16/7; } }
+
+</style>
+</head>
+<body data-active-lang="fr">
+
+<div class="progress-bar"></div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <div class="brand">
+      <a href="../index.html"><span class="logo">Avenir<b>.</b></span></a>
+      <span class="tag">Asset Management &amp; Risk</span>
+    </div>
+    <div class="spacer"></div>
+    <nav class="nav-links">
+      <a href="../index.html#parcours"><span data-lang="fr">Parcours</span><span data-lang="en">Tracks</span><span data-lang="nl">Trajecten</span></a>
+      <a href="../index.html#curriculum"><span data-lang="fr">Programme</span><span data-lang="en">Curriculum</span><span data-lang="nl">Programma</span></a>
+      <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a>
+    </nav>
+    <div class="controls">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-set-lang="fr">FR</button>
+        <button data-set-lang="en">EN</button>
+        <button data-set-lang="nl">NL</button>
+      </div>
+      <button id="theme-btn" class="icon-btn" aria-label="Thème">☾</button>
+      <button id="menu-btn" class="icon-btn menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap-mod">
+  <div class="module-shell">
+
+    <aside class="toc">
+      <div class="toc-title" data-lang="fr">Sommaire</div>
+      <div class="toc-title" data-lang="en">Contents</div>
+      <div class="toc-title" data-lang="nl">Inhoud</div>
+      <a href="#monte-carlo"><span data-lang="fr">1. Monte Carlo &amp; l'erreur en 1/√b</span><span data-lang="en">1. Monte Carlo &amp; the 1/√b error</span><span data-lang="nl">1. Monte Carlo &amp; de 1/√b-fout</span></a>
+      <a href="#variance-bootstrap"><span data-lang="fr">2. Réduire la variance &amp; bootstrap</span><span data-lang="en">2. Variance reduction &amp; bootstrap</span><span data-lang="nl">2. Variantiereductie &amp; bootstrap</span></a>
+      <a href="#ml-cadre"><span data-lang="fr">3. Le ML : cadre &amp; biais-variance</span><span data-lang="en">3. ML: framework &amp; bias-variance</span><span data-lang="nl">3. ML: kader &amp; bias-variance</span></a>
+      <a href="#non-supervise"><span data-lang="fr">4. Non supervisé : PCA &amp; K-means</span><span data-lang="en">4. Unsupervised: PCA &amp; K-means</span><span data-lang="nl">4. Unsupervised: PCA &amp; K-means</span></a>
+      <a href="#regul-classif"><span data-lang="fr">5. Régularisation &amp; classification</span><span data-lang="en">5. Regularisation &amp; classification</span><span data-lang="nl">5. Regularisatie &amp; classificatie</span></a>
+      <a href="#arbres-reseaux"><span data-lang="fr">6. Arbres, ensembles &amp; réseaux</span><span data-lang="en">6. Trees, ensembles &amp; networks</span><span data-lang="nl">6. Bomen, ensembles &amp; netwerken</span></a>
+      <a href="#ressources"><span data-lang="fr">Ressources</span><span data-lang="en">Resources</span><span data-lang="nl">Bronnen</span></a>
+      <a href="#retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></a>
+      <a href="#qcm"><span data-lang="fr">8. QCM (15)</span><span data-lang="en">8. MCQ (15)</span><span data-lang="nl">8. MCV (15)</span></a>
+      <a href="#exercices"><span data-lang="fr">9. Exercices</span><span data-lang="en">9. Exercises</span><span data-lang="nl">9. Oefeningen</span></a>
+      <a href="#biblio"><span data-lang="fr">Sources</span><span data-lang="en">Sources</span><span data-lang="nl">Bronnen</span></a>
+    </aside>
+
+    <main>
+      <div class="crumbs">
+        <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a> ·
+        <span>Financial Risk Management</span> ·
+        <span data-lang="fr">Analyse quantitative</span><span data-lang="en">Quantitative Analysis</span><span data-lang="nl">Kwantitatieve analyse</span>
+      </div>
+
+      <div class="module-hero">
+        <span class="badge">Analyse quantitative · <span data-lang="fr">Simulation &amp; ML</span><span data-lang="en">Simulation &amp; ML</span><span data-lang="nl">Simulatie &amp; ML</span></span>
+        <h1 data-lang="fr">Simulation &amp; machine learning</h1>
+        <h1 data-lang="en">Simulation &amp; machine learning</h1>
+        <h1 data-lang="nl">Simulatie &amp; machine learning</h1>
+        <p class="subtitle" data-lang="fr">Quand aucune formule fermée n'existe, on simule. Monte Carlo tire au hasard et laisse la loi des grands nombres faire le travail ; le bootstrap rééchantillonne les données observées ; et le machine learning laisse les données choisir le modèle, au prix d'un arbitrage permanent entre trop simple et trop flexible.</p>
+        <p class="subtitle" data-lang="en">When no closed form exists, we simulate. Monte Carlo draws at random and lets the law of large numbers do the work; the bootstrap resamples observed data; and machine learning lets the data pick the model, at the cost of a constant trade-off between too simple and too flexible.</p>
+        <p class="subtitle" data-lang="nl">Wanneer er geen gesloten vorm bestaat, simuleren we. Monte Carlo trekt willekeurig en laat de wet van de grote getallen het werk doen; de bootstrap herbemonstert waargenomen data; en machine learning laat de data het model kiezen, ten koste van een voortdurende afweging tussen te simpel en te flexibel.</p>
+        <div class="module-meta">
+          <span data-lang="fr">⏱ Lecture ~32 min</span><span data-lang="en">⏱ ~32 min read</span><span data-lang="nl">⏱ ~32 min lezen</span>
+          <span data-lang="fr">📶 Niveau avancé</span><span data-lang="en">📶 Advanced level</span><span data-lang="nl">📶 Gevorderd niveau</span>
+          <span>🎓 FRM I · QA</span>
+        </div>
+      </div>
+
+      <div class="objectives">
+        <h4 data-lang="fr">Objectifs d'apprentissage</h4>
+        <h4 data-lang="en">Learning objectives</h4>
+        <h4 data-lang="nl">Leerdoelen</h4>
+        <ul>
+          <li data-lang="fr">Estimer une espérance par Monte Carlo et comprendre l'erreur en 1/√b.</li>
+          <li data-lang="en">Estimate an expectation by Monte Carlo and understand the 1/√b error.</li>
+          <li data-lang="nl">Een verwachting schatten via Monte Carlo en de 1/√b-fout begrijpen.</li>
+          <li data-lang="fr">Réduire la variance (antithetic, control variates) et bootstrapper (iid, CBB).</li>
+          <li data-lang="en">Reduce variance (antithetic, control variates) and bootstrap (iid, CBB).</li>
+          <li data-lang="nl">Variantie reduceren (antithetic, control variates) en bootstrappen (iid, CBB).</li>
+          <li data-lang="fr">Distinguer les trois familles de ML et préparer les données (rescaling).</li>
+          <li data-lang="en">Distinguish the three ML families and prepare data (rescaling).</li>
+          <li data-lang="nl">De drie ML-families onderscheiden en data voorbereiden (rescaling).</li>
+          <li data-lang="fr">Arbitrer le biais-variance et découper train / validation / test.</li>
+          <li data-lang="en">Arbitrate bias-variance and split train / validation / test.</li>
+          <li data-lang="nl">Bias-variance afwegen en train / validation / test splitsen.</li>
+          <li data-lang="fr">Régulariser (ridge, LASSO), classer (logit) et évaluer (confusion matrix, AUC).</li>
+          <li data-lang="en">Regularise (ridge, LASSO), classify (logit) and evaluate (confusion matrix, AUC).</li>
+          <li data-lang="nl">Regulariseren (ridge, LASSO), classificeren (logit) en evalueren (confusion matrix, AUC).</li>
+          <li data-lang="fr">Comprendre arbres, ensembles, KNN, SVM et réseaux de neurones.</li>
+          <li data-lang="en">Understand trees, ensembles, KNN, SVM and neural networks.</li>
+          <li data-lang="nl">Bomen, ensembles, KNN, SVM en neurale netwerken begrijpen.</li>
+        </ul>
+      </div>
+
+      <div class="module-body">
+
+        <!-- 1. MONTE CARLO + INTERACTIF -->
+        <h2 id="monte-carlo"><span data-lang="fr">1. Monte Carlo &amp; l'erreur en 1/√b</span><span data-lang="en">1. Monte Carlo &amp; the 1/√b error</span><span data-lang="nl">1. Monte Carlo &amp; de 1/√b-fout</span></h2>
+        <p data-lang="fr">Quand une espérance E[g(X)] n'a pas d'expression simple, par exemple le prix d'un call dont le payoff max(Sₜ − K, 0) est non linéaire, on l'<strong>approche par simulation</strong> : on tire b valeurs de X, on calcule g pour chacune, et on moyenne. Pour tirer une variable de loi quelconque à partir d'un générateur uniforme, on utilise la <strong>transformation inverse de la CDF</strong> : si U ∼ Uniforme(0,1), alors F⁻¹(U) suit la loi de CDF F. Deux théorèmes justifient tout : la <strong>LLN</strong> garantit la convergence de la moyenne vers la vraie espérance, et le <strong>CLT</strong> donne la vitesse : l'erreur-type vaut σ̂g/√b et décroît comme <strong>1/√b</strong>.</p>
+        <p data-lang="en">When an expectation E[g(X)] has no simple expression, e.g. the price of a call whose payoff max(Sₜ − K, 0) is non-linear, we <strong>approximate it by simulation</strong>: draw b values of X, compute g for each, and average. To draw a variable of any distribution from a uniform generator, we use the <strong>inverse CDF transform</strong>: if U ∼ Uniform(0,1), then F⁻¹(U) follows the law with CDF F. Two theorems justify everything: the <strong>LLN</strong> guarantees convergence of the mean to the true expectation, and the <strong>CLT</strong> gives the speed: the standard error is σ̂g/√b and decays as <strong>1/√b</strong>.</p>
+        <p data-lang="nl">Wanneer een verwachting E[g(X)] geen eenvoudige uitdrukking heeft, bv. de prijs van een call waarvan de payoff max(Sₜ − K, 0) niet-lineair is, <strong>benaderen we ze via simulatie</strong>: trek b waarden van X, bereken g voor elk, en middel. Om een variabele van een willekeurige verdeling te trekken uit een uniforme generator, gebruiken we de <strong>inverse CDF-transformatie</strong>: als U ∼ Uniform(0,1), dan volgt F⁻¹(U) de wet met CDF F. Twee stellingen rechtvaardigen alles: de <strong>LLN</strong> garandeert convergentie van het gemiddelde naar de echte verwachting, en de <strong>CLT</strong> geeft de snelheid: de standaardfout is σ̂g/√b en daalt als <strong>1/√b</strong>.</p>
+
+        <div class="formula">
+          <div class="eq">Ê[g(X)] = (1/b) Σ g(Xᵢ) &nbsp;·&nbsp; s.e. = σ̂g/√b &nbsp;·&nbsp; ÷2 l'erreur ⟹ ×4 les réplications</div>
+          <div class="caption" data-lang="fr">La racine carrée a une conséquence coûteuse : diviser l'erreur par 2 exige <strong>4× plus</strong> de réplications (car √4 = 2), et gagner un facteur 10 de précision en réclame <strong>100×</strong>. Le même échantillon simulé sert à bien plus que la moyenne : on y lit les <em>quantiles empiriques</em> (en triant, ce qui donne une VaR), le <em>biais</em> d'un estimateur, ou sa <em>distribution en petit échantillon</em>. Exemple fil rouge : un call européen (S₀ = K = 2500, σ = 16,4 %, rf = 2 %, T = 2 ans) se prix autour de 279 USD, avec un s.e. qui tombe de 71,2 (b = 50) à 0,23 (b = 3,3 M).</div>
+          <div class="caption" data-lang="en">The square root has a costly consequence: halving the error requires <strong>4× more</strong> replications (since √4 = 2), and gaining a factor 10 of precision needs <strong>100×</strong>. The same simulated sample serves far more than the mean: we read <em>empirical quantiles</em> (by sorting, giving a VaR), an estimator's <em>bias</em>, or its <em>small-sample distribution</em>. Worked example: a European call (S₀ = K = 2500, σ = 16.4%, rf = 2%, T = 2 yr) prices around 279 USD, with a s.e. falling from 71.2 (b = 50) to 0.23 (b = 3.3M).</div>
+          <div class="caption" data-lang="nl">De vierkantswortel heeft een dure consequentie: de fout halveren vereist <strong>4× meer</strong> replicaties (want √4 = 2), en een factor 10 aan precisie winnen vergt <strong>100×</strong>. Dezelfde gesimuleerde steekproef dient veel meer dan het gemiddelde: we lezen er <em>empirische kwantielen</em> (door sorteren, geeft een VaR), de <em>vertekening</em> van een schatter, of haar <em>kleine-steekproefverdeling</em>. Voorbeeld: een Europese call (S₀ = K = 2500, σ = 16,4%, rf = 2%, T = 2 jr) prijst rond 279 USD, met een s.e. die daalt van 71,2 (b = 50) naar 0,23 (b = 3,3M).</div>
+          <div class="caption src">Réf. — GARP QA-13 (Simulation), Box 13.2</div>
+        </div>
+
+        <p data-lang="fr">Le graphe montre l'<strong>estimation Monte Carlo</strong> (trait sombre) qui se stabilise vers la vraie valeur (pointillé) à mesure que le nombre de réplications b grandit. La bande ombrée est l'intervalle ±1,96·s.e. théorique : elle rétrécit en 1/√b. Faites glisser le nombre de réplications et la dispersion σ des tirages. Cochez <em>bande antithetic</em> pour superposer la bande réduite (~25 % plus étroite) qu'apporterait la réduction de variance. Observez : quadrupler b ne divise l'erreur que par 2.</p>
+        <p data-lang="en">The chart shows the <strong>Monte Carlo estimate</strong> (dark line) stabilising towards the true value (dashed) as the number of replications b grows. The shaded band is the theoretical ±1.96·s.e. interval: it narrows as 1/√b. Slide the number of replications and the dispersion σ of the draws. Tick <em>antithetic band</em> to overlay the narrower band (~25% tighter) that variance reduction would bring. Notice: quadrupling b only halves the error.</p>
+        <p data-lang="nl">De grafiek toont de <strong>Monte Carlo-schatting</strong> (donkere lijn) die naar de echte waarde (streepjes) stabiliseert naarmate het aantal replicaties b groeit. De gearceerde band is het theoretische ±1,96·s.e.-interval: het versmalt als 1/√b. Schuif het aantal replicaties en de spreiding σ van de trekkingen. Vink <em>antithetic band</em> aan om de smallere band (~25% strakker) te overlappen die variantiereductie zou brengen. Merk op: b verviervoudigen halveert de fout slechts.</p>
+
+        <style>
+          #mc-chart { width:100%; height:auto; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; }
+          #mc-chart .axis { stroke:var(--ink-mute); stroke-width:1.4; }
+          #mc-chart .tick { fill:var(--ink-mute); font-size:10px; font-family:var(--sans); }
+          #mc-chart .lab { fill:var(--ink-soft); font-size:11px; font-family:var(--sans); font-weight:700; }
+          .mc-sliders { display:grid; grid-template-columns:repeat(3,1fr); gap:12px 18px; margin-bottom:16px; align-items:end; }
+          .mc-sliders label { display:block; font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:4px; }
+          .mc-chk { display:flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600; color:var(--ink-soft); }
+          .mc-out { margin-top:14px; font-size:14.5px; color:var(--ink-soft); display:flex; gap:20px; flex-wrap:wrap; }
+          .mc-out b { color:var(--ink); font-family:var(--mono); }
+          @media (max-width:640px){ .mc-sliders { grid-template-columns:1fr 1fr; } }
+        </style>
+
+        <div class="calc">
+          <div class="chead">
+            <h4 data-lang="fr">Convergence Monte Carlo — l'erreur en 1/√b</h4>
+            <h4 data-lang="en">Monte Carlo convergence — the 1/√b error</h4>
+            <h4 data-lang="nl">Monte Carlo-convergentie — de 1/√b-fout</h4>
+            <p data-lang="fr">Ê = (1/b) Σ g(Xᵢ) · s.e. = σ/√b</p>
+            <p data-lang="en">Ê = (1/b) Σ g(Xᵢ) · s.e. = σ/√b</p>
+            <p data-lang="nl">Ê = (1/b) Σ g(Xᵢ) · s.e. = σ/√b</p>
+          </div>
+          <div class="cbody" style="display:block">
+            <div class="mc-sliders">
+              <div>
+                <label><span data-lang="fr">Réplications b</span><span data-lang="en">Replications b</span><span data-lang="nl">Replicaties b</span></label>
+                <div class="rangewrap"><input type="range" id="mc-b" min="50" max="5000" step="50" value="1000"><output id="mc-b-o">1000</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Dispersion σ</span><span data-lang="en">Dispersion σ</span><span data-lang="nl">Spreiding σ</span></label>
+                <div class="rangewrap"><input type="range" id="mc-sigma" min="10" max="80" step="1" value="40"><output id="mc-sigma-o">40</output></div>
+              </div>
+              <div>
+                <label class="mc-chk"><input type="checkbox" id="mc-anti"> <span data-lang="fr">Bande antithetic (ρ=−0,43)</span><span data-lang="en">Antithetic band (ρ=−0.43)</span><span data-lang="nl">Antithetic band (ρ=−0,43)</span></label>
+              </div>
+            </div>
+
+            <svg id="mc-chart" viewBox="0 0 520 300" role="img" aria-label="Convergence de l'estimation Monte Carlo et bande d'erreur"></svg>
+
+            <div class="mc-out">
+              <span><span data-lang="fr">Estimation :</span><span data-lang="en">Estimate:</span><span data-lang="nl">Schatting:</span> <b id="mc-est">—</b></span>
+              <span>s.e. : <b id="mc-se">—</b></span>
+              <span id="mc-anti-out" style="display:none"><span data-lang="fr">s.e. antithetic :</span><span data-lang="en">antithetic s.e.:</span><span data-lang="nl">antithetic s.e.:</span> <b id="mc-se-a">—</b></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. VARIANCE & BOOTSTRAP -->
+        <h2 id="variance-bootstrap"><span data-lang="fr">2. Réduire la variance &amp; bootstrapper</span><span data-lang="en">2. Variance reduction &amp; bootstrapping</span><span data-lang="nl">2. Variantiereductie &amp; bootstrappen</span></h2>
+        <p data-lang="fr">Comme la variance d'une somme vaut la somme des variances plus deux fois les covariances, rendre les tirages <strong>négativement corrélés</strong> fait baisser la variance de la moyenne, donc le s.e., à b égal. Les <strong>antithetic variates</strong> fabriquent chaque tirage par paire (U et 1−U, ou une valeur et son opposée pour une loi symétrique), négativement corrélés par construction : b valeurs à partir de b/2 uniformes. Attention, le gain n'existe que si <strong>g est monotone</strong>. Les <strong>control variates</strong> ajoutent une variable auxiliaire de <em>moyenne nulle connue</em> mais corrélée à l'erreur : tout écart observé signale l'erreur d'échantillonnage et se corrige (poids optimal β par régression). Les deux techniques se cumulent : sur le call, ensemble elles réduisent le s.e. de 33 %.</p>
+        <p data-lang="en">Since the variance of a sum equals the sum of variances plus twice the covariances, making draws <strong>negatively correlated</strong> lowers the variance of the mean, hence the s.e., at equal b. <strong>Antithetic variates</strong> build each draw in pairs (U and 1−U, or a value and its opposite for a symmetric law), negatively correlated by construction: b values from b/2 uniforms. Beware, the gain only exists if <strong>g is monotone</strong>. <strong>Control variates</strong> add an auxiliary variable of <em>known zero mean</em> but correlated with the error: any observed gap signals sampling error and is corrected (optimal weight β by regression). The two techniques stack: on the call, together they cut the s.e. by 33%.</p>
+        <p data-lang="nl">Aangezien de variantie van een som gelijk is aan de som van varianties plus tweemaal de covarianties, verlaagt het <strong>negatief correleren</strong> van trekkingen de variantie van het gemiddelde, dus de s.e., bij gelijke b. <strong>Antithetic variates</strong> bouwen elke trekking in paren (U en 1−U, of een waarde en haar tegengestelde voor een symmetrische wet), negatief gecorreleerd per constructie: b waarden uit b/2 uniformen. Let op, de winst bestaat enkel als <strong>g monotoon is</strong>. <strong>Control variates</strong> voegen een hulpvariabele toe met <em>bekend nulgemiddelde</em> maar gecorreleerd met de fout: elk waargenomen verschil signaleert bemonsteringsfout en wordt gecorrigeerd (optimaal gewicht β via regressie). Beide technieken stapelen: op de call snijden ze samen de s.e. met 33%.</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">Le bootstrap : rééchantillonner les données observées</span><span class="clabel" data-lang="en">The bootstrap: resampling observed data</span><span class="clabel" data-lang="nl">De bootstrap: waargenomen data herbemonsteren</span>
+          <span data-lang="fr">Le bootstrap part d'une idée : la distribution inconnue est exactement celle qui a produit les données, alors on l'approche par l'échantillon lui-même, en tirant dedans <strong>avec remise</strong> (les répétitions sont normales, pas une erreur). Le <strong>iid bootstrap</strong> tire des observations isolées. Le <strong>CBB</strong> (circular block bootstrap) tire des <em>blocs</em> de q observations consécutives pour conserver la dépendance temporelle, avec q ≈ √n. Pour une VaR annuelle du S&amp;P, l'iid mélange les régimes et <em>sous-estime</em> les queues (VaR 0,1 % ≈ 44 %), alors que le CBB garde des épisodes entiers de crise (VaR 0,1 % ≈ 53,5 %). Deux limites : le bootstrap mélange tout l'historique sans distinguer les régimes, et il ne peut <strong>jamais créer une perte pire que la plus grande observée</strong> (Black Swan). Un même seed redonne les mêmes tirages : c'est voulu (réplicabilité), pas un défaut.</span>
+          <span data-lang="en">The bootstrap starts from one idea: the unknown distribution is exactly the one that produced the data, so we approximate it by the sample itself, drawing from it <strong>with replacement</strong> (repeats are normal, not an error). The <strong>iid bootstrap</strong> draws isolated observations. The <strong>CBB</strong> (circular block bootstrap) draws <em>blocks</em> of q consecutive observations to preserve temporal dependence, with q ≈ √n. For an annual S&amp;P VaR, the iid mixes regimes and <em>underestimates</em> the tails (0.1% VaR ≈ 44%), whereas the CBB keeps entire crisis episodes (0.1% VaR ≈ 53.5%). Two limits: the bootstrap mixes all history without distinguishing regimes, and it can <strong>never create a loss worse than the largest observed</strong> (Black Swan). The same seed gives the same draws: this is intended (replicability), not a flaw.</span>
+          <span data-lang="nl">De bootstrap vertrekt van één idee: de onbekende verdeling is precies die welke de data voortbracht, dus benaderen we ze door de steekproef zelf, trekkend <strong>met teruglegging</strong> (herhalingen zijn normaal, geen fout). De <strong>iid bootstrap</strong> trekt geïsoleerde waarnemingen. De <strong>CBB</strong> (circular block bootstrap) trekt <em>blokken</em> van q opeenvolgende waarnemingen om temporele afhankelijkheid te bewaren, met q ≈ √n. Voor een jaarlijkse S&amp;P-VaR mengt de iid regimes en <em>onderschat</em> de staarten (0,1%-VaR ≈ 44%), terwijl de CBB volledige crisisepisodes bewaart (0,1%-VaR ≈ 53,5%). Twee grenzen: de bootstrap mengt de hele historiek zonder regimes te onderscheiden, en kan <strong>nooit een verlies creëren erger dan het grootste waargenomene</strong> (Black Swan). Dezelfde seed geeft dezelfde trekkingen: dat is bedoeld (repliceerbaarheid), geen fout.</span>
+        </div>
+
+        <p data-lang="fr">Monte Carlo et bootstrap se ressemblent (le second est un cas particulier du premier où le DGP <em>est</em> l'échantillon), mais leurs risques diffèrent. Le Monte Carlo dépend d'un <strong>DGP spécifié</strong> : si la distribution ou les paramètres décrivent mal la réalité, augmenter b resserre précisément… autour de la mauvaise valeur. Le bootstrap suppose que le <strong>présent ressemble au passé</strong> : il devient trompeur en régime inédit (en octobre 2008, une VaR bootstrappée paraissait rassurante car dominée par les journées calmes précédentes).</p>
+        <p data-lang="en">Monte Carlo and bootstrap are alike (the latter is a special case of the former where the DGP <em>is</em> the sample), but their risks differ. Monte Carlo depends on a <strong>specified DGP</strong>: if the distribution or parameters describe reality poorly, raising b tightens precisely… around the wrong value. The bootstrap assumes the <strong>present resembles the past</strong>: it becomes misleading in a novel regime (in October 2008, a bootstrapped VaR looked reassuring because dominated by the preceding calm days).</p>
+        <p data-lang="nl">Monte Carlo en bootstrap lijken op elkaar (de laatste is een bijzonder geval van de eerste waar het DGP de steekproef <em>is</em>), maar hun risico's verschillen. Monte Carlo hangt af van een <strong>gespecificeerd DGP</strong>: beschrijven de verdeling of parameters de realiteit slecht, dan verscherpt b verhogen precies… rond de verkeerde waarde. De bootstrap veronderstelt dat het <strong>heden op het verleden lijkt</strong>: ze wordt misleidend in een nieuw regime (in oktober 2008 leek een gebootstrapte VaR geruststellend omdat ze gedomineerd werd door de voorafgaande rustige dagen).</p>
+
+        <!-- 3. ML CADRE -->
+        <h2 id="ml-cadre"><span data-lang="fr">3. Le machine learning : cadre &amp; biais-variance</span><span data-lang="en">3. Machine learning: framework &amp; bias-variance</span><span data-lang="nl">3. Machine learning: kader &amp; bias-variance</span></h2>
+        <p data-lang="fr">Le ML renverse la logique de l'économétrie. En économétrie, l'analyste part d'une théorie, choisit le modèle et les variables, et l'ordinateur estime puis teste la significativité. En ML, <strong>ce sont les données qui choisissent le modèle</strong>, sans théorie a priori, et le critère n'est plus la t-stat ou le R² mais la <strong>précision prédictive</strong> sur des données jamais vues. Trois familles : l'<strong>unsupervised</strong> (structure sans cible : clustering, PCA), le <strong>supervised</strong> (prédire/classer à partir de données labellisées), le <strong>reinforcement</strong> (décisions par essai-erreur). Vocabulaire : les variables explicatives sont des <em>features</em>, la cible est le <em>target</em>, ses valeurs les <em>labels</em>. On prépare les données par <strong>rescaling</strong> : standardization (moyenne 0, variance 1, préférée en présence d'outliers) ou normalization min-max (dans [0,1]). On rééchelonne les features, <strong>jamais le target</strong>.</p>
+        <p data-lang="en">ML reverses the logic of econometrics. In econometrics, the analyst starts from a theory, picks the model and variables, and the computer estimates then tests significance. In ML, <strong>the data pick the model</strong>, with no prior theory, and the criterion is no longer the t-stat or R² but <strong>predictive accuracy</strong> on unseen data. Three families: <strong>unsupervised</strong> (structure with no target: clustering, PCA), <strong>supervised</strong> (predict/classify from labelled data), <strong>reinforcement</strong> (decisions by trial and error). Vocabulary: explanatory variables are <em>features</em>, the target is the <em>output</em>, its values the <em>labels</em>. Prepare data by <strong>rescaling</strong>: standardization (mean 0, variance 1, preferred with outliers) or min-max normalization (into [0,1]). Rescale the features, <strong>never the target</strong>.</p>
+        <p data-lang="nl">ML keert de logica van de econometrie om. In de econometrie vertrekt de analist van een theorie, kiest het model en de variabelen, en de computer schat en toetst significantie. In ML <strong>kiezen de data het model</strong>, zonder voorafgaande theorie, en het criterium is niet meer de t-stat of R² maar de <strong>voorspelnauwkeurigheid</strong> op ongeziene data. Drie families: <strong>unsupervised</strong> (structuur zonder doel: clustering, PCA), <strong>supervised</strong> (voorspellen/classificeren uit gelabelde data), <strong>reinforcement</strong> (beslissingen via trial-and-error). Woordenschat: verklarende variabelen zijn <em>features</em>, het doel is de <em>output</em>, haar waarden de <em>labels</em>. Bereid data voor via <strong>rescaling</strong>: standardization (gemiddelde 0, variantie 1, verkozen bij uitschieters) of min-max-normalization (in [0,1]). Herschaal de features, <strong>nooit het target</strong>.</p>
+
+        <div class="callout warn">
+          <span class="clabel" data-lang="fr">Le bias-variance tradeoff et le découpage train / validation / test</span><span class="clabel" data-lang="en">The bias-variance tradeoff and the train / validation / test split</span><span class="clabel" data-lang="nl">De bias-variance tradeoff en de train / validation / test-splitsing</span>
+          <span data-lang="fr">Un modèle trop simple fait de l'<strong>underfitting</strong> (biais fort, variance faible) ; un modèle trop flexible fait de l'<strong>overfitting</strong> (biais faible, variance forte) : il apprend le bruit, symptôme trompeur = une erreur quasi nulle sur le training. On ne juge jamais un modèle sur les données qui l'ont entraîné, d'où trois jeux : le <strong>training</strong> (≈ 2/3) estime les paramètres, le <strong>validation</strong> (≈ 1/6) choisit le modèle et les hyperparamètres (il se « contamine » ce faisant), le <strong>test</strong> (≈ 1/6), gardé jusqu'au bout, évalue une seule fois le modèle retenu. Pour des séries temporelles, le découpage est <em>chronologique</em> (training au début, test à la fin). En petit échantillon, on fusionne training et validation en <strong>cross-validation</strong> à k blocs.</span>
+          <span data-lang="en">A model too simple <strong>underfits</strong> (high bias, low variance); a model too flexible <strong>overfits</strong> (low bias, high variance): it learns the noise, the misleading symptom being near-zero training error. We never judge a model on the data that trained it, hence three sets: <strong>training</strong> (≈ 2/3) estimates the parameters, <strong>validation</strong> (≈ 1/6) picks the model and hyperparameters (getting "contaminated" in doing so), <strong>test</strong> (≈ 1/6), kept to the end, evaluates the chosen model once. For time series, the split is <em>chronological</em> (training first, test last). In small samples, we merge training and validation into k-fold <strong>cross-validation</strong>.</span>
+          <span data-lang="nl">Een te simpel model doet aan <strong>underfitting</strong> (hoge bias, lage variantie); een te flexibel model aan <strong>overfitting</strong> (lage bias, hoge variantie): het leert de ruis, het misleidende symptoom is een bijna nul trainingsfout. We beoordelen een model nooit op de data die het trainden, vandaar drie sets: <strong>training</strong> (≈ 2/3) schat de parameters, <strong>validation</strong> (≈ 1/6) kiest het model en de hyperparameters (raakt daarbij "besmet"), <strong>test</strong> (≈ 1/6), tot het einde bewaard, evalueert het gekozen model één keer. Voor tijdreeksen is de splitsing <em>chronologisch</em> (training eerst, test laatst). Bij kleine steekproeven voegen we training en validation samen in k-fold <strong>cross-validation</strong>.</span>
+        </div>
+
+        <!-- 4. NON SUPERVISÉ -->
+        <h2 id="non-supervise"><span data-lang="fr">4. Non supervisé : PCA &amp; K-means</span><span data-lang="en">4. Unsupervised: PCA &amp; K-means</span><span data-lang="nl">4. Unsupervised: PCA &amp; K-means</span></h2>
+        <p data-lang="fr">L'unsupervised learning ne prédit rien : il <strong>révèle une structure</strong>. La <strong>PCA</strong> (analyse en composantes principales) réduit la dimension en transformant les variables corrélées en un petit nombre de composantes <em>non corrélées</em> ordonnées par variance expliquée ; sur une courbe des taux, les trois premières composantes s'interprètent comme <em>niveau, pente (twist) et courbure</em>. Le <strong>K-means</strong> répartit les observations en K clusters (K fixé d'avance) en minimisant l'<em>inertie</em>, la somme des distances au carré de chaque point à son centroïde. Deux distances usuelles : euclidienne (L2, « à vol d'oiseau ») et Manhattan (L1, somme des côtés). Piège : l'inertie tombe dans le même travers que le R² (elle s'améliore toujours quand on ajoute des clusters, jusqu'à 0 pour K = n) ; on choisit K par la méthode du <em>coude</em> (elbow) ou le score de <em>silhouette</em>.</p>
+        <p data-lang="en">Unsupervised learning predicts nothing: it <strong>reveals structure</strong>. <strong>PCA</strong> (principal component analysis) reduces dimension by turning correlated variables into a few <em>uncorrelated</em> components ordered by explained variance; on a yield curve, the first three components read as <em>level, slope (twist) and curvature</em>. <strong>K-means</strong> splits observations into K clusters (K fixed in advance) by minimising the <em>inertia</em>, the sum of squared distances from each point to its centroid. Two usual distances: Euclidean (L2, "as the crow flies") and Manhattan (L1, sum of sides). Trap: inertia falls into the same pitfall as R² (it always improves as clusters are added, down to 0 for K = n); K is chosen by the <em>elbow</em> method or the <em>silhouette</em> score.</p>
+        <p data-lang="nl">Unsupervised learning voorspelt niets: het <strong>onthult structuur</strong>. <strong>PCA</strong> (principale componentenanalyse) reduceert dimensie door gecorreleerde variabelen om te zetten in enkele <em>ongecorreleerde</em> componenten geordend op verklaarde variantie; op een rentecurve lezen de eerste drie componenten als <em>niveau, helling (twist) en kromming</em>. <strong>K-means</strong> splitst waarnemingen in K clusters (K vooraf vast) door de <em>inertie</em> te minimaliseren, de som van gekwadrateerde afstanden van elk punt tot zijn centroïde. Twee gebruikelijke afstanden: Euclidisch (L2, "hemelsbreed") en Manhattan (L1, som van de zijden). Valstrik: inertie valt in dezelfde val als R² (ze verbetert altijd als clusters worden toegevoegd, tot 0 bij K = n); K wordt gekozen via de <em>elbow</em>-methode of de <em>silhouette</em>-score.</p>
+
+        <!-- 5. REGUL & CLASSIF -->
+        <h2 id="regul-classif"><span data-lang="fr">5. Régularisation &amp; classification</span><span data-lang="en">5. Regularisation &amp; classification</span><span data-lang="nl">5. Regularisatie &amp; classificatie</span></h2>
+        <p data-lang="fr">Quand les features sont nombreuses et corrélées, l'OLS produit des coefficients énormes qui se compensent. La <strong>régularisation</strong> les discipline en ajoutant une pénalité à la somme des carrés des résidus. Le <strong>ridge</strong> (pénalité L2) rétrécit tous les coefficients vers zéro <em>sans jamais les annuler</em> (solution analytique). Le <strong>LASSO</strong> (pénalité L1) en met certains <em>exactement à zéro</em>, ce qui fait de la <strong>feature selection</strong> automatique (solution numérique). L'intensité λ est un <em>hyperparamètre</em> choisi sur le validation set ; il faut d'abord rescaler les features. Pour <strong>classer</strong>, la <strong>régression logistique</strong> passe la combinaison linéaire dans la <em>sigmoïde</em> pour borner la sortie dans (0,1) ; elle s'estime par <strong>MLE</strong> (pas OLS) et l'on n'interprète que le <em>signe et la significativité</em> des coefficients, pas leur grandeur. On classe en fixant un seuil Z (0,5 par défaut, abaissé quand un faux négatif coûte cher, ex. accorder un prêt qui fera défaut).</p>
+        <p data-lang="en">When features are many and correlated, OLS produces huge offsetting coefficients. <strong>Regularisation</strong> disciplines them by adding a penalty to the sum of squared residuals. <strong>Ridge</strong> (L2 penalty) shrinks all coefficients towards zero <em>without ever zeroing them</em> (analytic solution). <strong>LASSO</strong> (L1 penalty) sets some <em>exactly to zero</em>, doing automatic <strong>feature selection</strong> (numerical solution). The intensity λ is a <em>hyperparameter</em> chosen on the validation set; features must be rescaled first. To <strong>classify</strong>, <strong>logistic regression</strong> passes the linear combination through the <em>sigmoid</em> to bound the output in (0,1); it is estimated by <strong>MLE</strong> (not OLS) and only the <em>sign and significance</em> of coefficients are interpreted, not their magnitude. We classify by setting a threshold Z (0.5 by default, lowered when a false negative is costly, e.g. granting a loan that will default).</p>
+        <p data-lang="nl">Wanneer features talrijk en gecorreleerd zijn, produceert OLS enorme compenserende coëfficiënten. <strong>Regularisatie</strong> disciplineert ze door een straf toe te voegen aan de som van gekwadrateerde residuen. <strong>Ridge</strong> (L2-straf) krimpt alle coëfficiënten naar nul <em>zonder ze ooit te annuleren</em> (analytische oplossing). <strong>LASSO</strong> (L1-straf) zet sommige <em>exact op nul</em>, wat automatische <strong>feature selection</strong> doet (numerieke oplossing). De intensiteit λ is een <em>hyperparameter</em> gekozen op de validation set; features moeten eerst herschaald worden. Om te <strong>classificeren</strong>, stuurt <strong>logistische regressie</strong> de lineaire combinatie door de <em>sigmoïde</em> om de output in (0,1) te begrenzen; ze wordt geschat via <strong>MLE</strong> (niet OLS) en enkel het <em>teken en de significantie</em> van de coëfficiënten worden geïnterpreteerd, niet hun grootte. We classificeren met een drempel Z (0,5 standaard, verlaagd wanneer een valse negatieve duur is, bv. een lening toekennen die in gebreke zal blijven).</p>
+
+        <div class="formula">
+          <div class="eq">Accuracy = (TP+TN)/total &nbsp;·&nbsp; Precision = TP/(TP+FP) &nbsp;·&nbsp; Recall = TP/(TP+FN)</div>
+          <div class="caption" data-lang="fr">La <strong>confusion matrix</strong> confronte prédiction et réalité : la diagonale (TP, TN) compte les bonnes réponses. L'<em>accuracy</em> est la part globale correcte ; la <em>precision</em> répond « parmi mes prédictions positives, combien l'étaient vraiment ? » ; le <em>recall</em> répond « parmi les vrais positifs, combien ai-je retrouvés ? ». En faisant varier le seuil Z on trace la courbe <strong>ROC</strong>, résumée par son aire, l'<strong>AUC</strong> : AUC = 1 → classifieur parfait, AUC = 0,5 → <em>aucun</em> pouvoir prédictif (le hasard), AUC &lt; 0,5 → pire que le hasard. Pour une sortie continue, on mesure l'erreur par la MSFE (moyenne des carrés des écarts).</div>
+          <div class="caption" data-lang="en">The <strong>confusion matrix</strong> confronts prediction and reality: the diagonal (TP, TN) counts correct answers. <em>Accuracy</em> is the overall correct share; <em>precision</em> answers "of my positive predictions, how many were truly positive?"; <em>recall</em> answers "of the true positives, how many did I recover?". Varying the threshold Z traces the <strong>ROC</strong> curve, summarised by its area, the <strong>AUC</strong>: AUC = 1 → perfect classifier, AUC = 0.5 → <em>no</em> predictive power (chance), AUC &lt; 0.5 → worse than chance. For a continuous output, error is measured by the MSFE (mean squared forecast error).</div>
+          <div class="caption" data-lang="nl">De <strong>confusion matrix</strong> confronteert voorspelling en realiteit: de diagonaal (TP, TN) telt de juiste antwoorden. <em>Accuracy</em> is het globale juiste aandeel; <em>precision</em> beantwoordt "van mijn positieve voorspellingen, hoeveel waren echt positief?"; <em>recall</em> beantwoordt "van de echte positieven, hoeveel vond ik terug?". De drempel Z variëren tekent de <strong>ROC</strong>-curve, samengevat door haar oppervlakte, de <strong>AUC</strong>: AUC = 1 → perfecte classifier, AUC = 0,5 → <em>geen</em> voorspelkracht (toeval), AUC &lt; 0,5 → slechter dan toeval. Voor een continue output wordt de fout gemeten door de MSFE (mean squared forecast error).</div>
+          <div class="caption src">Réf. — GARP QA-15 (Machine Learning and Prediction)</div>
+        </div>
+
+        <!-- 6. ARBRES & RÉSEAUX -->
+        <h2 id="arbres-reseaux"><span data-lang="fr">6. Arbres, ensembles &amp; réseaux</span><span data-lang="en">6. Trees, ensembles &amp; networks</span><span data-lang="nl">6. Bomen, ensembles &amp; netwerken</span></h2>
+        <p data-lang="fr">Un <strong>arbre de décision</strong> pose à chaque nœud la question qui maximise le <em>gain d'information</em> (incertitude avant le split moins la moyenne pondérée après), l'incertitude étant mesurée par l'<strong>entropy</strong> ou le <strong>Gini</strong> (résultats très proches). Les arbres tendent à overfitter ; on les élague (pre-pruning ou post-pruning). Un <strong>ensemble</strong> combine plusieurs modèles (« wisdom of crowds ») : le <strong>bagging</strong> est parallèle et bootstrappe les observations, la <strong>random forest</strong> échantillonne aussi ≈ √m features pour <em>décorréler</em> les arbres, le <strong>boosting</strong> est séquentiel et travaille sur les résidus (gradient boosting) ou les poids des mal classés (AdaBoost). Le <strong>KNN</strong> classe par les K plus proches voisins (K ≈ √n : petit K → variance/overfit, grand K → biais). Le <strong>SVM</strong> cherche la frontière à <em>marge maximale</em> (les points sur les bords sont les support vectors). Le <strong>réseau de neurones</strong> empile des combinaisons linéaires suivies d'une <em>activation non linéaire</em> (indispensable, sinon il se réduit à une régression) ; ses poids s'ajustent par <em>gradient descent</em> (pas = learning rate) avec <strong>early stopping</strong> sur le validation set.</p>
+        <p data-lang="en">A <strong>decision tree</strong> asks at each node the question maximising the <em>information gain</em> (uncertainty before the split minus the weighted average after), uncertainty measured by <strong>entropy</strong> or <strong>Gini</strong> (very close results). Trees tend to overfit; we prune them (pre- or post-pruning). An <strong>ensemble</strong> combines several models ("wisdom of crowds"): <strong>bagging</strong> is parallel and bootstraps the observations, the <strong>random forest</strong> also samples ≈ √m features to <em>decorrelate</em> the trees, <strong>boosting</strong> is sequential and works on the residuals (gradient boosting) or the weights of misclassified points (AdaBoost). <strong>KNN</strong> classifies by the K nearest neighbours (K ≈ √n: small K → variance/overfit, large K → bias). The <strong>SVM</strong> seeks the <em>maximum-margin</em> boundary (points on the edges are the support vectors). The <strong>neural network</strong> stacks linear combinations followed by a <em>non-linear activation</em> (essential, else it reduces to a regression); its weights adjust by <em>gradient descent</em> (step = learning rate) with <strong>early stopping</strong> on the validation set.</p>
+        <p data-lang="nl">Een <strong>beslisboom</strong> stelt bij elke knoop de vraag die de <em>informatiewinst</em> maximaliseert (onzekerheid vóór de split min het gewogen gemiddelde erna), onzekerheid gemeten door <strong>entropy</strong> of <strong>Gini</strong> (zeer nabije resultaten). Bomen neigen tot overfitten; we snoeien ze (pre- of post-pruning). Een <strong>ensemble</strong> combineert meerdere modellen ("wisdom of crowds"): <strong>bagging</strong> is parallel en bootstrapt de waarnemingen, de <strong>random forest</strong> bemonstert ook ≈ √m features om de bomen te <em>decorreleren</em>, <strong>boosting</strong> is sequentieel en werkt op de residuen (gradient boosting) of de gewichten van verkeerd geclassificeerde punten (AdaBoost). <strong>KNN</strong> classificeert via de K dichtste buren (K ≈ √n: kleine K → variantie/overfit, grote K → bias). De <strong>SVM</strong> zoekt de <em>maximum-marge</em>-grens (punten op de randen zijn de support vectors). Het <strong>neuraal netwerk</strong> stapelt lineaire combinaties gevolgd door een <em>niet-lineaire activatie</em> (essentieel, anders reduceert het tot een regressie); zijn gewichten passen zich aan via <em>gradient descent</em> (stap = learning rate) met <strong>early stopping</strong> op de validation set.</p>
+
+        <!-- RESSOURCES -->
+        <h2 id="ressources"><span data-lang="fr">Ressources à télécharger</span><span data-lang="en">Downloadable resources</span><span data-lang="nl">Downloadbare bronnen</span></h2>
+        <div class="downloads">
+          <div class="dl-list">
+            <a class="dl-item" data-lang="fr" href="files/qa5-exercice-corrige-fr.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Exercice et corrigé : simulation &amp; ML</span>
+                <span class="dl-sub">PDF, énoncé et solution détaillée (français)</span>
+              </span>
+            </a>
+            <a class="dl-item" data-lang="en" href="files/qa5-exercice-corrige-en.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Exercise and solution: simulation &amp; ML</span>
+                <span class="dl-sub">PDF, statement and worked solution (English)</span>
+              </span>
+            </a>
+            <a class="dl-item" data-lang="nl" href="files/qa5-exercice-corrige-nl.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Oefening en oplossing: simulatie &amp; ML</span>
+                <span class="dl-sub">PDF, opgave en uitgewerkte oplossing (Nederlands)</span>
+              </span>
+            </a>
+          </div>
+          <p class="dl-note" data-lang="fr">Un énoncé progressif suivi de sa correction pas à pas, dans votre langue. Cliquez pour télécharger le PDF.</p>
+          <p class="dl-note" data-lang="en">A progressive problem set followed by its step-by-step solution, in your language. Click to download the PDF.</p>
+          <p class="dl-note" data-lang="nl">Een progressieve opgave gevolgd door de stapsgewijze oplossing, in uw taal. Klik om de PDF te downloaden.</p>
+        </div>
+
+        <!-- 7. À RETENIR -->
+        <h2 id="retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></h2>
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">L'essentiel</span><span class="clabel" data-lang="en">The essentials</span><span class="clabel" data-lang="nl">De kern</span>
+          <span data-lang="fr">Monte Carlo : Ê = (1/b)Σg(Xᵢ), tirage par inverse CDF, erreur en 1/√b (÷2 ⟹ ×4 réplications). Réduction de variance : antithetic (paires négativement corrélées, si g monotone) + control variate (moyenne nulle connue), cumulables. Bootstrap : rééchantillonnage avec remise ; iid pour données indépendantes, CBB (blocs q≈√n) pour la dépendance ; VaR = quantile empirique (CBB &gt; iid dans les queues) ; jamais de perte pire que l'observé (Black Swan). ML : les données choisissent le modèle, jugé sur la prédiction hors échantillon. Rescaler les features (pas le target) : standardization (outliers) vs normalization. Biais-variance : underfit = biais, overfit = variance (erreur nulle en training = alerte). Découpage train (2/3) / validation (choix, se contamine) / test (une fois). Non supervisé : PCA (composantes non corrélées : niveau/pente/courbure), K-means (inertie, elbow/silhouette). Régularisation : ridge (L2, rétrécit) vs LASSO (L1, annule = feature selection), λ sur validation. Logit : sigmoïde + MLE, signe/significativité seulement, seuil Z. Évaluation : confusion matrix (precision = TP/(TP+FP), recall = TP/(TP+FN)), AUC (0,5 = nul). Arbres (gain d'information Gini/entropy, pruning), ensembles (bagging parallèle vs boosting séquentiel, random forest √m décorrèle), KNN (K≈√n), SVM (marge maximale), réseaux (activation non linéaire indispensable, gradient descent, early stopping).</span>
+          <span data-lang="en">Monte Carlo: Ê = (1/b)Σg(Xᵢ), draw by inverse CDF, error in 1/√b (÷2 ⟹ ×4 replications). Variance reduction: antithetic (negatively correlated pairs, if g monotone) + control variate (known zero mean), stackable. Bootstrap: resampling with replacement; iid for independent data, CBB (blocks q≈√n) for dependence; VaR = empirical quantile (CBB &gt; iid in the tails); never a loss worse than observed (Black Swan). ML: data pick the model, judged on out-of-sample prediction. Rescale the features (not the target): standardization (outliers) vs normalization. Bias-variance: underfit = bias, overfit = variance (zero training error = warning). Split train (2/3) / validation (selection, gets contaminated) / test (once). Unsupervised: PCA (uncorrelated components: level/slope/curvature), K-means (inertia, elbow/silhouette). Regularisation: ridge (L2, shrinks) vs LASSO (L1, zeroes = feature selection), λ on validation. Logit: sigmoid + MLE, sign/significance only, threshold Z. Evaluation: confusion matrix (precision = TP/(TP+FP), recall = TP/(TP+FN)), AUC (0.5 = none). Trees (information gain Gini/entropy, pruning), ensembles (parallel bagging vs sequential boosting, random forest √m decorrelates), KNN (K≈√n), SVM (max margin), networks (non-linear activation essential, gradient descent, early stopping).</span>
+          <span data-lang="nl">Monte Carlo: Ê = (1/b)Σg(Xᵢ), trekking via inverse CDF, fout in 1/√b (÷2 ⟹ ×4 replicaties). Variantiereductie: antithetic (negatief gecorreleerde paren, als g monotoon) + control variate (bekend nulgemiddelde), stapelbaar. Bootstrap: herbemonstering met teruglegging; iid voor onafhankelijke data, CBB (blokken q≈√n) voor afhankelijkheid; VaR = empirisch kwantiel (CBB &gt; iid in de staarten); nooit een verlies erger dan het waargenomene (Black Swan). ML: data kiezen het model, beoordeeld op out-of-sample voorspelling. Herschaal de features (niet het target): standardization (uitschieters) vs normalization. Bias-variance: underfit = bias, overfit = variantie (nul trainingsfout = waarschuwing). Splitsing train (2/3) / validation (selectie, raakt besmet) / test (één keer). Unsupervised: PCA (ongecorreleerde componenten: niveau/helling/kromming), K-means (inertie, elbow/silhouette). Regularisatie: ridge (L2, krimpt) vs LASSO (L1, annuleert = feature selection), λ op validation. Logit: sigmoïde + MLE, enkel teken/significantie, drempel Z. Evaluatie: confusion matrix (precision = TP/(TP+FP), recall = TP/(TP+FN)), AUC (0,5 = geen). Bomen (informatiewinst Gini/entropy, pruning), ensembles (parallelle bagging vs sequentiële boosting, random forest √m decorreleert), KNN (K≈√n), SVM (max marge), netwerken (niet-lineaire activatie essentieel, gradient descent, early stopping).</span>
+        </div>
+
+        <!-- 8. QCM -->
+        <h2 id="qcm"><span data-lang="fr">8. QCM — 15 questions</span><span data-lang="en">8. MCQ — 15 questions</span><span data-lang="nl">8. MCV — 15 vragen</span></h2>
+        <div class="quiz">
+          <h4 data-lang="fr">Auto-évaluation</h4><h4 data-lang="en">Self-assessment</h4><h4 data-lang="nl">Zelfevaluatie</h4>
+          <p class="qsub" data-lang="fr">Cliquez sur une réponse : la bonne s'affiche en vert et la justification apparaît.</p>
+          <p class="qsub" data-lang="en">Click an answer: the correct one turns green and the justification appears.</p>
+          <p class="qsub" data-lang="nl">Klik op een antwoord: het juiste kleurt groen en de verantwoording verschijnt.</p>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">1. L'erreur-type d'une estimation Monte Carlo décroît comme…</div>
+            <div class="qtext" data-lang="en">1. The standard error of a Monte Carlo estimate decays as…</div>
+            <div class="qtext" data-lang="nl">1. De standaardfout van een Monte Carlo-schatting daalt als…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">1/√b, donc ÷2 l'erreur demande ×4 les réplications.</span><span data-lang="en">1/√b, so halving the error needs ×4 replications.</span><span data-lang="nl">1/√b, dus de fout halveren vergt ×4 replicaties.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">1/b, donc ÷2 l'erreur demande ×2 les réplications.</span><span data-lang="en">1/b, so halving the error needs ×2 replications.</span><span data-lang="nl">1/b, dus de fout halveren vergt ×2 replicaties.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">1/b², très vite.</span><span data-lang="en">1/b², very fast.</span><span data-lang="nl">1/b², zeer snel.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le CLT donne s.e. = σ̂g/√b. Comme √4 = 2, diviser l'erreur par 2 exige 4× plus de réplications ; gagner un facteur 10 en réclame 100×.</span><span data-lang="en">✔ The CLT gives s.e. = σ̂g/√b. Since √4 = 2, halving the error requires 4× more replications; gaining a factor 10 needs 100×.</span><span data-lang="nl">✔ De CLT geeft s.e. = σ̂g/√b. Aangezien √4 = 2, vereist de fout halveren 4× meer replicaties; een factor 10 winnen vergt 100×.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">2. Pour tirer une variable de loi quelconque à partir d'un uniforme, on utilise…</div>
+            <div class="qtext" data-lang="en">2. To draw a variable of any distribution from a uniform, we use…</div>
+            <div class="qtext" data-lang="nl">2. Om een variabele van een willekeurige verdeling uit een uniforme te trekken, gebruiken we…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La dérivée de la densité.</span><span data-lang="en">The derivative of the density.</span><span data-lang="nl">De afgeleide van de dichtheid.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le bootstrap par blocs.</span><span data-lang="en">The block bootstrap.</span><span data-lang="nl">De block bootstrap.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">La transformation inverse de la CDF : F⁻¹(U).</span><span data-lang="en">The inverse CDF transform: F⁻¹(U).</span><span data-lang="nl">De inverse CDF-transformatie: F⁻¹(U).</span></button>
+            <div class="explain"><span data-lang="fr">✔ Si U ∼ Uniforme(0,1), alors F⁻¹(U) suit la loi de CDF F. C'est la brique qui transforme des uniformes en tirages de n'importe quelle loi.</span><span data-lang="en">✔ If U ∼ Uniform(0,1), then F⁻¹(U) follows the law with CDF F. It is the block that turns uniforms into draws from any law.</span><span data-lang="nl">✔ Als U ∼ Uniform(0,1), dan volgt F⁻¹(U) de wet met CDF F. Het is de bouwsteen die uniformen omzet in trekkingen van elke wet.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">3. Les antithetic variates ne réduisent la variance que si…</div>
+            <div class="qtext" data-lang="en">3. Antithetic variates reduce variance only if…</div>
+            <div class="qtext" data-lang="nl">3. Antithetic variates reduceren de variantie enkel als…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">L'échantillon est très grand.</span><span data-lang="en">The sample is very large.</span><span data-lang="nl">De steekproef zeer groot is.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">La fonction g est monotone.</span><span data-lang="en">The function g is monotone.</span><span data-lang="nl">De functie g monotoon is.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les tirages sont positivement corrélés.</span><span data-lang="en">The draws are positively correlated.</span><span data-lang="nl">De trekkingen positief gecorreleerd zijn.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La corrélation négative des tirages (U, 1−U) ne se transmet à g que si g est monotone ; sinon appliquer g peut détruire cette corrélation et le gain disparaît.</span><span data-lang="en">✔ The negative correlation of the draws (U, 1−U) transmits to g only if g is monotone; otherwise applying g can destroy the correlation and the gain vanishes.</span><span data-lang="nl">✔ De negatieve correlatie van de trekkingen (U, 1−U) draagt enkel over op g als g monotoon is; anders kan g toepassen de correlatie vernietigen en verdwijnt de winst.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">4. Une control variate doit avoir…</div>
+            <div class="qtext" data-lang="en">4. A control variate must have…</div>
+            <div class="qtext" data-lang="nl">4. Een control variate moet hebben…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Une moyenne connue nulle, corrélée à l'erreur de simulation.</span><span data-lang="en">A known zero mean, correlated with the simulation error.</span><span data-lang="nl">Een bekend nulgemiddelde, gecorreleerd met de simulatiefout.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une moyenne inconnue.</span><span data-lang="en">An unknown mean.</span><span data-lang="nl">Een onbekend gemiddelde.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Aucune corrélation avec g.</span><span data-lang="en">No correlation with g.</span><span data-lang="nl">Geen correlatie met g.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Sa moyenne connue (zéro) ne biaise pas ; comme elle est corrélée à l'erreur, tout écart observé signale l'erreur d'échantillonnage et se corrige. Le poids optimal β vient d'une régression de g sur la variable de contrôle.</span><span data-lang="en">✔ Its known mean (zero) does not bias; being correlated with the error, any observed gap signals sampling error and is corrected. The optimal weight β comes from regressing g on the control variate.</span><span data-lang="nl">✔ Haar bekende gemiddelde (nul) vertekent niet; gecorreleerd met de fout signaleert elk waargenomen verschil bemonsteringsfout en wordt gecorrigeerd. Het optimale gewicht β komt uit een regressie van g op de control variate.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">5. Le circular block bootstrap (CBB) s'emploie plutôt que l'iid bootstrap quand…</div>
+            <div class="qtext" data-lang="en">5. The circular block bootstrap (CBB) is used instead of the iid bootstrap when…</div>
+            <div class="qtext" data-lang="nl">5. De circular block bootstrap (CBB) wordt gebruikt in plaats van de iid bootstrap wanneer…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les données sont parfaitement indépendantes.</span><span data-lang="en">The data are perfectly independent.</span><span data-lang="nl">De data perfect onafhankelijk zijn.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">On tire sans remise.</span><span data-lang="en">We draw without replacement.</span><span data-lang="nl">We trekken zonder teruglegging.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Les données présentent une dépendance temporelle (taille q ≈ √n).</span><span data-lang="en">The data show temporal dependence (block size q ≈ √n).</span><span data-lang="nl">De data temporele afhankelijkheid vertonen (blokgrootte q ≈ √n).</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le CBB tire des blocs de q observations consécutives (q ≈ √n) pour conserver la structure temporelle. Un iid bootstrap sur des données à volatility clustering casse les grappes et sous-estime la VaR extrême.</span><span data-lang="en">✔ The CBB draws blocks of q consecutive observations (q ≈ √n) to preserve temporal structure. An iid bootstrap on volatility-clustered data breaks the clusters and underestimates extreme VaR.</span><span data-lang="nl">✔ De CBB trekt blokken van q opeenvolgende waarnemingen (q ≈ √n) om de temporele structuur te bewaren. Een iid bootstrap op data met volatility clustering breekt de clusters en onderschat de extreme VaR.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">6. Une limite fondamentale du bootstrap est qu'il…</div>
+            <div class="qtext" data-lang="en">6. A fundamental limit of the bootstrap is that it…</div>
+            <div class="qtext" data-lang="nl">6. Een fundamentele grens van de bootstrap is dat het…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Exige de connaître le vrai DGP.</span><span data-lang="en">Requires knowing the true DGP.</span><span data-lang="nl">Het echte DGP moet kennen.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Ne peut jamais générer une perte pire que la plus grande observée (Black Swan).</span><span data-lang="en">Can never generate a loss worse than the largest observed (Black Swan).</span><span data-lang="nl">Nooit een verlies kan genereren erger dan het grootste waargenomene (Black Swan).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Ne fonctionne qu'avec des données gaussiennes.</span><span data-lang="en">Only works with Gaussian data.</span><span data-lang="nl">Enkel werkt met Gaussische data.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le bootstrap rééchantillonne l'historique : il ne crée jamais de valeur non observée. Un bon modèle de simulation peut, lui, extrapoler au-delà de l'historique. Il mélange aussi les régimes, trompeur en état anormal (oct. 2008).</span><span data-lang="en">✔ The bootstrap resamples history: it never creates an unobserved value. A good simulation model can extrapolate beyond history. It also mixes regimes, misleading in abnormal states (Oct 2008).</span><span data-lang="nl">✔ De bootstrap herbemonstert de historiek: ze creëert nooit een niet-waargenomen waarde. Een goed simulatiemodel kan wel extrapoleren voorbij de historiek. Ze mengt ook regimes, misleidend in abnormale toestand (okt. 2008).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">7. Avant d'appliquer une méthode de ML basée sur des distances, on rééchelonne…</div>
+            <div class="qtext" data-lang="en">7. Before a distance-based ML method, we rescale…</div>
+            <div class="qtext" data-lang="nl">7. Vóór een op afstand gebaseerde ML-methode herschalen we…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Les features, jamais le target.</span><span data-lang="en">The features, never the target.</span><span data-lang="nl">De features, nooit het target.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le target, jamais les features.</span><span data-lang="en">The target, never the features.</span><span data-lang="nl">Het target, nooit de features.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Ni l'un ni l'autre.</span><span data-lang="en">Neither.</span><span data-lang="nl">Geen van beide.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Sans rescaling, une feature à grands nombres écraserait les autres dans le calcul des distances. On rééchelonne les features (standardization si outliers, sinon normalization), jamais la variable cible.</span><span data-lang="en">✔ Without rescaling, a large-valued feature would swamp the others in distance computations. We rescale the features (standardization if outliers, else normalization), never the target.</span><span data-lang="nl">✔ Zonder rescaling zou een feature met grote waarden de andere overweldigen in afstandsberekeningen. We herschalen de features (standardization bij uitschieters, anders normalization), nooit het target.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">8. Un modèle qui affiche une erreur quasi nulle sur le training mais mauvaise ailleurs fait de l'…</div>
+            <div class="qtext" data-lang="en">8. A model with near-zero training error but poor elsewhere is…</div>
+            <div class="qtext" data-lang="nl">8. Een model met bijna nul trainingsfout maar slecht elders doet aan…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Underfitting (biais fort).</span><span data-lang="en">Underfitting (high bias).</span><span data-lang="nl">Underfitting (hoge bias).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Un modèle parfaitement calibré.</span><span data-lang="en">A perfectly calibrated model.</span><span data-lang="nl">Een perfect gekalibreerd model.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Overfitting (biais faible, variance forte).</span><span data-lang="en">Overfitting (low bias, high variance).</span><span data-lang="nl">Overfitting (lage bias, hoge variantie).</span></button>
+            <div class="explain"><span data-lang="fr">✔ L'overfitting apprend le bruit du training : erreur d'entraînement trompeusement basse, mais mauvaise généralisation (variance forte). L'underfitting est l'inverse (biais fort). D'où le jugement sur des données hors échantillon.</span><span data-lang="en">✔ Overfitting learns the training noise: deceptively low training error but poor generalisation (high variance). Underfitting is the opposite (high bias). Hence judging on out-of-sample data.</span><span data-lang="nl">✔ Overfitting leert de trainingsruis: bedrieglijk lage trainingsfout maar slechte generalisatie (hoge variantie). Underfitting is het omgekeerde (hoge bias). Vandaar beoordelen op out-of-sample data.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">9. Le rôle du test set est de…</div>
+            <div class="qtext" data-lang="en">9. The role of the test set is to…</div>
+            <div class="qtext" data-lang="nl">9. De rol van de test set is om…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Estimer les paramètres du modèle.</span><span data-lang="en">Estimate the model parameters.</span><span data-lang="nl">De modelparameters te schatten.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Évaluer une seule fois, à la fin, le modèle retenu.</span><span data-lang="en">Evaluate the chosen model once, at the end.</span><span data-lang="nl">Het gekozen model één keer, op het einde, te evalueren.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Choisir les hyperparamètres.</span><span data-lang="en">Choose the hyperparameters.</span><span data-lang="nl">De hyperparameters te kiezen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le training estime les paramètres, le validation choisit modèle et hyperparamètres (et se contamine en le faisant), le test — gardé jusqu'au bout — donne l'évaluation finale, une seule fois. S'en servir pour choisir invaliderait l'évaluation.</span><span data-lang="en">✔ Training estimates parameters, validation picks model and hyperparameters (getting contaminated), the test — kept to the end — gives the final evaluation, once. Using it to choose would invalidate the evaluation.</span><span data-lang="nl">✔ Training schat parameters, validation kiest model en hyperparameters (raakt besmet), de test — tot het einde bewaard — geeft de finale evaluatie, één keer. Ze gebruiken om te kiezen zou de evaluatie ongeldig maken.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">10. La différence clé entre ridge et LASSO est que…</div>
+            <div class="qtext" data-lang="en">10. The key difference between ridge and LASSO is that…</div>
+            <div class="qtext" data-lang="nl">10. Het belangrijkste verschil tussen ridge en LASSO is dat…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le LASSO (L1) met des coefficients exactement à zéro (feature selection), le ridge (L2) non.</span><span data-lang="en">LASSO (L1) sets coefficients exactly to zero (feature selection), ridge (L2) does not.</span><span data-lang="nl">LASSO (L1) coëfficiënten exact op nul zet (feature selection), ridge (L2) niet.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le ridge fait de la feature selection, pas le LASSO.</span><span data-lang="en">Ridge does feature selection, not LASSO.</span><span data-lang="nl">Ridge doet feature selection, niet LASSO.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les deux annulent des coefficients.</span><span data-lang="en">Both zero out coefficients.</span><span data-lang="nl">Beide annuleren coëfficiënten.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le ridge (L2) rétrécit tous les coefficients vers zéro sans les annuler ; le LASSO (L1) en met certains exactement à zéro, supprimant les features correspondantes. Dans les deux cas λ se choisit sur le validation set (après rescaling).</span><span data-lang="en">✔ Ridge (L2) shrinks all coefficients towards zero without zeroing them; LASSO (L1) sets some exactly to zero, removing those features. In both, λ is chosen on the validation set (after rescaling).</span><span data-lang="nl">✔ Ridge (L2) krimpt alle coëfficiënten naar nul zonder ze te annuleren; LASSO (L1) zet sommige exact op nul, die features verwijderend. In beide wordt λ gekozen op de validation set (na rescaling).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">11. La régression logistique s'estime par…</div>
+            <div class="qtext" data-lang="en">11. Logistic regression is estimated by…</div>
+            <div class="qtext" data-lang="nl">11. Logistische regressie wordt geschat via…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">OLS, comme une régression linéaire.</span><span data-lang="en">OLS, like a linear regression.</span><span data-lang="nl">OLS, zoals een lineaire regressie.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le test de White.</span><span data-lang="en">The White test.</span><span data-lang="nl">De White-toets.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">MLE, car la sigmoïde la rend non linéaire.</span><span data-lang="en">MLE, because the sigmoid makes it non-linear.</span><span data-lang="nl">MLE, want de sigmoïde maakt ze niet-lineair.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La sigmoïde borne la sortie dans (0,1) mais rend le modèle non linéaire, donc OLS ne s'applique pas : on maximise la log-vraisemblance (MLE). On n'interprète que le signe et la significativité des coefficients, pas leur grandeur.</span><span data-lang="en">✔ The sigmoid bounds the output in (0,1) but makes the model non-linear, so OLS does not apply: we maximise the log-likelihood (MLE). Only the sign and significance of coefficients are interpreted, not their magnitude.</span><span data-lang="nl">✔ De sigmoïde begrenst de output in (0,1) maar maakt het model niet-lineair, dus OLS geldt niet: we maximaliseren de log-likelihood (MLE). Enkel het teken en de significantie van de coëfficiënten worden geïnterpreteerd, niet hun grootte.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">12. La precision d'un classifieur se calcule…</div>
+            <div class="qtext" data-lang="en">12. A classifier's precision is computed as…</div>
+            <div class="qtext" data-lang="nl">12. De precision van een classifier wordt berekend als…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">TP / (TP + FN) : le recall.</span><span data-lang="en">TP / (TP + FN): the recall.</span><span data-lang="nl">TP / (TP + FN): de recall.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">TP / (TP + FP) : parmi les prédits positifs, la part vraiment positive.</span><span data-lang="en">TP / (TP + FP): of the predicted positives, the truly positive share.</span><span data-lang="nl">TP / (TP + FP): van de voorspelde positieven, het echt positieve aandeel.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">(TP + TN) / total : l'accuracy.</span><span data-lang="en">(TP + TN) / total: the accuracy.</span><span data-lang="nl">(TP + TN) / totaal: de accuracy.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Precision = TP/(TP+FP) (parmi mes prédictions positives, combien étaient justes) ; recall = TP/(TP+FN) (parmi les vrais positifs, combien retrouvés). On arbitre entre les deux en déplaçant le seuil Z.</span><span data-lang="en">✔ Precision = TP/(TP+FP) (of my positive predictions, how many were right); recall = TP/(TP+FN) (of the true positives, how many recovered). We trade off between them by moving the threshold Z.</span><span data-lang="nl">✔ Precision = TP/(TP+FP) (van mijn positieve voorspellingen, hoeveel juist); recall = TP/(TP+FN) (van de echte positieven, hoeveel teruggevonden). We wegen af door de drempel Z te verschuiven.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">13. Une AUC (aire sous la courbe ROC) de 0,5 signifie…</div>
+            <div class="qtext" data-lang="en">13. An AUC (area under the ROC curve) of 0.5 means…</div>
+            <div class="qtext" data-lang="nl">13. Een AUC (oppervlakte onder de ROC-curve) van 0,5 betekent…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Aucun pouvoir prédictif (le hasard).</span><span data-lang="en">No predictive power (chance).</span><span data-lang="nl">Geen voorspelkracht (toeval).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Un classifieur parfait.</span><span data-lang="en">A perfect classifier.</span><span data-lang="nl">Een perfecte classifier.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Un pouvoir prédictif moyen mais réel.</span><span data-lang="en">Average but real predictive power.</span><span data-lang="nl">Gemiddelde maar reële voorspelkracht.</span></button>
+            <div class="explain"><span data-lang="fr">✔ AUC = 1 → classifieur parfait, AUC = 0,5 → la diagonale du hasard (aucun pouvoir prédictif), AUC &lt; 0,5 → pire que le hasard. « 0,5 = moyen » est un piège.</span><span data-lang="en">✔ AUC = 1 → perfect classifier, AUC = 0.5 → the chance diagonal (no predictive power), AUC &lt; 0.5 → worse than chance. “0.5 = average” is a trap.</span><span data-lang="nl">✔ AUC = 1 → perfecte classifier, AUC = 0,5 → de toevalsdiagonaal (geen voorspelkracht), AUC &lt; 0,5 → slechter dan toeval. “0,5 = gemiddeld” is een valstrik.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">14. Dans une random forest, échantillonner ≈ √m features par arbre sert à…</div>
+            <div class="qtext" data-lang="en">14. In a random forest, sampling ≈ √m features per tree serves to…</div>
+            <div class="qtext" data-lang="nl">14. In een random forest dient ≈ √m features per boom bemonsteren om…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Accélérer le calcul uniquement.</span><span data-lang="en">Only to speed up computation.</span><span data-lang="nl">Enkel de berekening te versnellen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Rendre chaque arbre parfait.</span><span data-lang="en">Make each tree perfect.</span><span data-lang="nl">Elke boom perfect te maken.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Décorréler les arbres (le gain d'ensemble vient de leurs faibles corrélations).</span><span data-lang="en">Decorrelate the trees (the ensemble gain comes from their low correlations).</span><span data-lang="nl">De bomen te decorreleren (de ensemblewinst komt uit hun lage correlaties).</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le gain d'un ensemble est d'autant plus fort que les modèles sont peu corrélés ; échantillonner les features décorrèle les arbres. Ne pas confondre avec le boosting, séquentiel et travaillant sur les résidus ou les poids des mal classés.</span><span data-lang="en">✔ An ensemble's gain is larger the less correlated the models; sampling features decorrelates the trees. Do not confuse with boosting, which is sequential and works on residuals or misclassified weights.</span><span data-lang="nl">✔ De winst van een ensemble is groter naarmate de modellen minder gecorreleerd zijn; features bemonsteren decorreleert de bomen. Niet verwarren met boosting, dat sequentieel is en op residuen of gewichten van verkeerd geclassificeerde punten werkt.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">15. Dans un réseau de neurones, la fonction d'activation non linéaire est indispensable parce que…</div>
+            <div class="qtext" data-lang="en">15. In a neural network, the non-linear activation is essential because…</div>
+            <div class="qtext" data-lang="nl">15. In een neuraal netwerk is de niet-lineaire activatie essentieel omdat…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Elle accélère le gradient descent.</span><span data-lang="en">It speeds up gradient descent.</span><span data-lang="nl">Ze de gradient descent versnelt.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Sans elle, l'empilement resterait une simple régression linéaire.</span><span data-lang="en">Without it, the stack would remain a plain linear regression.</span><span data-lang="nl">Zonder haar het stapelen een gewone lineaire regressie zou blijven.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Elle remplace le early stopping.</span><span data-lang="en">It replaces early stopping.</span><span data-lang="nl">Ze early stopping vervangt.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Un empilement de combinaisons linéaires reste linéaire : sans activation non linéaire, le réseau se réduirait à une régression, incapable de capter le non-linéaire. Les poids s'estiment par gradient descent (pas = learning rate) avec early stopping sur le validation set.</span><span data-lang="en">✔ A stack of linear combinations stays linear: without a non-linear activation, the network reduces to a regression, unable to capture non-linearity. Weights are estimated by gradient descent (step = learning rate) with early stopping on the validation set.</span><span data-lang="nl">✔ Een stapel lineaire combinaties blijft lineair: zonder niet-lineaire activatie reduceert het netwerk tot een regressie, onbekwaam het niet-lineaire te vangen. Gewichten worden geschat via gradient descent (stap = learning rate) met early stopping op de validation set.</span></div>
+          </div>
+        </div>
+
+        <!-- 9. EXERCICES -->
+        <h2 id="exercices"><span data-lang="fr">9. Exercices</span><span data-lang="en">9. Exercises</span><span data-lang="nl">9. Oefeningen</span></h2>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice SM-1</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Une simulation Monte Carlo avec b = 10 000 réplications donne une erreur-type de 0,80. Combien de réplications faut-il pour ramener l'erreur-type à 0,20 ?</p>
+          <p class="estatement" data-lang="en">A Monte Carlo simulation with b = 10,000 replications gives a standard error of 0.80. How many replications are needed to bring the standard error down to 0.20?</p>
+          <p class="estatement" data-lang="nl">Een Monte Carlo-simulatie met b = 10.000 replicaties geeft een standaardfout van 0,80. Hoeveel replicaties zijn nodig om de standaardfout tot 0,20 te brengen?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">On veut diviser l'erreur par 4 (0,80 → 0,20). Comme s.e. ∝ 1/√b, diviser l'erreur par 4 exige de multiplier b par 4² = <b>16</b>. Il faut donc <b>160 000</b> réplications. Retenez : gain de précision × k ⟹ réplications × k².</div>
+            <div class="ans" data-lang="en">We want to divide the error by 4 (0.80 → 0.20). Since s.e. ∝ 1/√b, dividing the error by 4 requires multiplying b by 4² = <b>16</b>. So <b>160,000</b> replications are needed. Remember: precision gain × k ⟹ replications × k².</div>
+            <div class="ans" data-lang="nl">We willen de fout door 4 delen (0,80 → 0,20). Aangezien s.e. ∝ 1/√b, vereist de fout door 4 delen b vermenigvuldigen met 4² = <b>16</b>. Dus <b>160.000</b> replicaties nodig. Onthoud: precisiewinst × k ⟹ replicaties × k².</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice SM-2</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Pour pricer un call européen par Monte Carlo, un analyste apparie les tirages par antithetic et obtient une corrélation ρ = −0,43 entre les paires. (a) Le s.e. baisse d'environ 25 % : à quoi correspond ce gain en termes de réplications iid supplémentaires ? (b) Quelle condition sur le payoff garantit que le gain existe ?</p>
+          <p class="estatement" data-lang="en">To price a European call by Monte Carlo, an analyst pairs the draws antithetically and gets a correlation ρ = −0.43 between pairs. (a) The s.e. drops by about 25%: what does this gain correspond to in extra iid replications? (b) What condition on the payoff guarantees the gain exists?</p>
+          <p class="estatement" data-lang="nl">Om een Europese call te prijzen via Monte Carlo, paart een analist de trekkingen antithetisch en krijgt een correlatie ρ = −0,43 tussen paren. (a) De s.e. daalt met ongeveer 25%: waaraan komt deze winst overeen in extra iid-replicaties? (b) Welke voorwaarde op de payoff garandeert dat de winst bestaat?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">(a) Réduire le s.e. de 25 % équivaut à un facteur 0,75. Comme s.e. ∝ 1/√b, obtenir le même s.e. en iid demanderait b' tel que 1/√b' = 0,75/√b, soit b' = b/0,75² = b/0,5625 ≈ <b>1,78 b</b> : c'est comme faire <b>+78 % de réplications gratuitement</b>. (b) Le payoff (la fonction g) doit être <b>monotone</b>, sinon appliquer g détruirait la corrélation négative des tirages et le gain disparaîtrait. Antithetic et control variate se cumulent (ensemble ~ −33 % de s.e. sur le call).</div>
+            <div class="ans" data-lang="en">(a) Reducing the s.e. by 25% is a factor 0.75. Since s.e. ∝ 1/√b, getting the same s.e. in iid would need b' such that 1/√b' = 0.75/√b, i.e. b' = b/0.75² = b/0.5625 ≈ <b>1.78 b</b>: like doing <b>+78% replications for free</b>. (b) The payoff (function g) must be <b>monotone</b>, otherwise applying g would destroy the negative correlation of the draws and the gain would vanish. Antithetic and control variate stack (together ~ −33% s.e. on the call).</div>
+            <div class="ans" data-lang="nl">(a) De s.e. met 25% verlagen is een factor 0,75. Aangezien s.e. ∝ 1/√b, zou dezelfde s.e. in iid b' vereisen met 1/√b' = 0,75/√b, dus b' = b/0,75² = b/0,5625 ≈ <b>1,78 b</b>: alsof je <b>+78% replicaties gratis</b> doet. (b) De payoff (functie g) moet <b>monotoon</b> zijn, anders zou g toepassen de negatieve correlatie van de trekkingen vernietigen en verdween de winst. Antithetic en control variate stapelen (samen ~ −33% s.e. op de call).</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice SM-3</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Pour estimer une VaR annuelle du S&amp;P 500, un risk manager compare un iid bootstrap et un CBB. À 0,1 %, il obtient 44,1 % (iid) contre 53,5 % (CBB). (a) Expliquez pourquoi le CBB donne une VaR extrême plus élevée. (b) Le classement s'inverse-t-il forcément à 10 % ?</p>
+          <p class="estatement" data-lang="en">To estimate an annual S&amp;P 500 VaR, a risk manager compares an iid bootstrap and a CBB. At 0.1%, they get 44.1% (iid) vs 53.5% (CBB). (a) Explain why the CBB gives a higher extreme VaR. (b) Does the ranking necessarily reverse at 10%?</p>
+          <p class="estatement" data-lang="nl">Om een jaarlijkse S&amp;P 500-VaR te schatten, vergelijkt een risk manager een iid bootstrap en een CBB. Bij 0,1% krijgt hij 44,1% (iid) tegen 53,5% (CBB). (a) Leg uit waarom de CBB een hogere extreme VaR geeft. (b) Keert de rangschikking noodzakelijk om bij 10%?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">(a) L'iid tire des jours isolés dans tout l'historique, produisant une année artificiellement équilibrée (~5 jours par année sur 50) qui <b>dilue les épisodes de forte volatilité</b> et sous-estime les queues. Le CBB tire des blocs de six mois : quand il tombe sur un bloc de crise, il conserve un <b>épisode entier de haute volatilité</b>, ce qui gonfle les pertes extrêmes. D'où VaR CBB &gt; VaR iid dans l'extrême gauche. (b) Oui, ici : à 10 % le CBB donne 10,9 % contre 12,9 % pour l'iid, car le CBB peut aussi tirer des blocs entiers de <b>faible</b> volatilité. Le classement s'inverse donc aux quantiles modérés.</div>
+            <div class="ans" data-lang="en">(a) The iid draws isolated days from all history, producing an artificially balanced year (~5 days per year over 50) that <b>dilutes high-volatility episodes</b> and underestimates the tails. The CBB draws six-month blocks: landing on a crisis block, it keeps an <b>entire high-volatility episode</b>, inflating extreme losses. Hence CBB VaR &gt; iid VaR in the far left. (b) Yes, here: at 10% the CBB gives 10.9% vs 12.9% for the iid, because the CBB can also draw entire <b>low</b>-volatility blocks. So the ranking reverses at moderate quantiles.</div>
+            <div class="ans" data-lang="nl">(a) De iid trekt geïsoleerde dagen uit de hele historiek, wat een kunstmatig gebalanceerd jaar geeft (~5 dagen per jaar over 50) dat <b>hoge-volatiliteitsepisodes verdunt</b> en de staarten onderschat. De CBB trekt blokken van zes maanden: op een crisisblok bewaart het een <b>volledige hoge-volatiliteitsepisode</b>, wat extreme verliezen opblaast. Vandaar CBB-VaR &gt; iid-VaR in de uiterst linkse staart. (b) Ja, hier: bij 10% geeft de CBB 10,9% tegen 12,9% voor de iid, want de CBB kan ook volledige <b>lage</b>-volatiliteitsblokken trekken. De rangschikking keert dus om bij matige kwantielen.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice SM-4</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Une feature a une moyenne de 50 et un écart-type de 8. (a) Standardisez l'observation x = 66. (b) Dans quel cas préfère-t-on la standardization à la normalization min-max ?</p>
+          <p class="estatement" data-lang="en">A feature has a mean of 50 and a standard deviation of 8. (a) Standardize the observation x = 66. (b) When is standardization preferred over min-max normalization?</p>
+          <p class="estatement" data-lang="nl">Een feature heeft een gemiddelde van 50 en een standaardafwijking van 8. (a) Standaardiseer de waarneming x = 66. (b) Wanneer verkiest men standardization boven min-max-normalization?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">(a) x̃ = (x − µ)/σ = (66 − 50)/8 = 16/8 = <b>2,0</b> : l'observation est à 2 écarts-types au-dessus de la moyenne. Après standardization, la feature a une moyenne de 0 et une variance de 1. (b) On préfère la standardization <b>en présence d'outliers</b> : la normalization min-max (qui divise par max − min) tasserait alors le gros des observations dans une plage étroite, peu représentative de leur dispersion réelle. Dans les deux cas on rééchelonne les features, jamais le target.</div>
+            <div class="ans" data-lang="en">(a) x̃ = (x − µ)/σ = (66 − 50)/8 = 16/8 = <b>2.0</b>: the observation is 2 standard deviations above the mean. After standardization, the feature has mean 0 and variance 1. (b) Standardization is preferred <b>with outliers</b>: min-max normalization (dividing by max − min) would then squeeze most observations into a narrow range, unrepresentative of their true spread. In both, we rescale features, never the target.</div>
+            <div class="ans" data-lang="nl">(a) x̃ = (x − µ)/σ = (66 − 50)/8 = 16/8 = <b>2,0</b>: de waarneming ligt 2 standaardafwijkingen boven het gemiddelde. Na standardization heeft de feature gemiddelde 0 en variantie 1. (b) Standardization is verkozen <b>bij uitschieters</b>: min-max-normalization (delen door max − min) zou dan de meeste waarnemingen in een smalle reeks persen, niet representatief voor hun echte spreiding. In beide herschalen we features, nooit het target.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice SM-5</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Un modèle de détection de défaut donne, sur 1000 firmes : TP = 432, FN = 168, FP = 121, TN = 279. Calculez l'accuracy, la precision et le recall. Le modèle rate-t-il plutôt des vrais défauts ou signale-t-il trop de faux défauts ?</p>
+          <p class="estatement" data-lang="en">A default-detection model gives, on 1000 firms: TP = 432, FN = 168, FP = 121, TN = 279. Compute accuracy, precision and recall. Does the model rather miss true defaults or flag too many false ones?</p>
+          <p class="estatement" data-lang="nl">Een default-detectiemodel geeft, op 1000 firma's: TP = 432, FN = 168, FP = 121, TN = 279. Bereken accuracy, precision en recall. Mist het model eerder echte defaults of signaleert het te veel valse?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Accuracy = (TP+TN)/total = (432+279)/1000 = <b>71,1 %</b>. Precision = TP/(TP+FP) = 432/(432+121) = 432/553 = <b>78,1 %</b>. Recall = TP/(TP+FN) = 432/(432+168) = 432/600 = <b>72,0 %</b>. Le recall (72 %) est un peu plus bas que la precision (78 %) : le modèle <b>rate 28 % des vrais défauts</b> (168 FN) un peu plus qu'il ne crie au loup. En crédit, un faux négatif (accorder un prêt qui fera défaut) coûte cher : on abaisserait le seuil Z pour remonter le recall, au prix d'une precision plus faible.</div>
+            <div class="ans" data-lang="en">Accuracy = (TP+TN)/total = (432+279)/1000 = <b>71.1%</b>. Precision = TP/(TP+FP) = 432/(432+121) = 432/553 = <b>78.1%</b>. Recall = TP/(TP+FN) = 432/(432+168) = 432/600 = <b>72.0%</b>. Recall (72%) is a bit below precision (78%): the model <b>misses 28% of true defaults</b> (168 FN) slightly more than it cries wolf. In credit, a false negative (granting a loan that defaults) is costly: one would lower the threshold Z to raise recall, at the cost of lower precision.</div>
+            <div class="ans" data-lang="nl">Accuracy = (TP+TN)/totaal = (432+279)/1000 = <b>71,1%</b>. Precision = TP/(TP+FP) = 432/(432+121) = 432/553 = <b>78,1%</b>. Recall = TP/(TP+FN) = 432/(432+168) = 432/600 = <b>72,0%</b>. Recall (72%) ligt iets onder precision (78%): het model <b>mist 28% van de echte defaults</b> (168 FN) iets meer dan dat het loos alarm slaat. In krediet is een valse negatieve (een lening toekennen die in gebreke blijft) duur: men zou de drempel Z verlagen om de recall te verhogen, ten koste van lagere precision.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice SM-6</span><span class="diff" data-lang="fr">Réflexion</span><span class="diff" data-lang="en">Conceptual</span><span class="diff" data-lang="nl">Reflectie</span></div>
+          <p class="estatement" data-lang="fr">Un analyste régresse un indice actions sur vingt yields du Trésor très corrélés. L'OLS donne des coefficients allant jusqu'à ±50, dont le signe change d'une estimation à l'autre. (a) Que se passe-t-il ? (b) Quelle méthode utiliser pour obtenir un modèle stable, et laquelle si l'on veut en plus ne garder que quelques yields ? (c) Comment choisir l'intensité de la pénalité ?</p>
+          <p class="estatement" data-lang="en">An analyst regresses an equity index on twenty highly correlated Treasury yields. OLS gives coefficients up to ±50, whose sign changes between estimations. (a) What is happening? (b) Which method gives a stable model, and which if one also wants to keep only a few yields? (c) How to choose the penalty intensity?</p>
+          <p class="estatement" data-lang="nl">Een analist regresseert een aandelenindex op twintig sterk gecorreleerde Treasury-yields. OLS geeft coëfficiënten tot ±50, waarvan het teken verandert tussen schattingen. (a) Wat gebeurt er? (b) Welke methode geeft een stabiel model, en welke als men ook slechts enkele yields wil behouden? (c) Hoe de strafintensiteit kiezen?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">(a) C'est la <b>multicolinéarité</b> : des features quasi identiques poussent l'OLS à attribuer des coefficients énormes qui se compensent (offsetting), l'un très positif, l'autre très négatif, instables d'un échantillon à l'autre. (b) La <b>régularisation</b> discipline ces coefficients. Le <b>ridge</b> (L2) les rétrécit tous vers zéro sans les annuler → modèle stable (ex. tous sous ±2,5). Si l'on veut en plus <b>sélectionner</b> quelques yields, le <b>LASSO</b> (L1) met les moins utiles exactement à zéro (feature selection ; ex. un seul yield non nul). (c) L'intensité λ est un <b>hyperparamètre</b> : on le choisit sur le <b>validation set</b> (jamais sur le test), après avoir rescalé les features pour que la pénalité les compare à la même échelle. Plus λ est grand, plus le shrinkage est fort et plus le LASSO supprime de variables.</div>
+            <div class="ans" data-lang="en">(a) It is <b>multicollinearity</b>: near-identical features push OLS to assign huge offsetting coefficients, one very positive, one very negative, unstable across samples. (b) <b>Regularisation</b> disciplines these coefficients. <b>Ridge</b> (L2) shrinks them all towards zero without zeroing them → stable model (e.g. all under ±2.5). If one also wants to <b>select</b> a few yields, <b>LASSO</b> (L1) sets the least useful exactly to zero (feature selection; e.g. a single non-zero yield). (c) The intensity λ is a <b>hyperparameter</b>: chosen on the <b>validation set</b> (never the test), after rescaling features so the penalty compares them on the same scale. The larger λ, the stronger the shrinkage and the more variables LASSO removes.</div>
+            <div class="ans" data-lang="nl">(a) Het is <b>multicollineariteit</b>: bijna identieke features duwen OLS om enorme compenserende coëfficiënten toe te kennen, één zeer positief, één zeer negatief, onstabiel tussen steekproeven. (b) <b>Regularisatie</b> disciplineert deze coëfficiënten. <b>Ridge</b> (L2) krimpt ze allemaal naar nul zonder ze te annuleren → stabiel model (bv. allemaal onder ±2,5). Wil men ook enkele yields <b>selecteren</b>, dan zet <b>LASSO</b> (L1) de minst nuttige exact op nul (feature selection; bv. één niet-nul yield). (c) De intensiteit λ is een <b>hyperparameter</b>: gekozen op de <b>validation set</b> (nooit de test), na de features te herschalen zodat de straf ze op dezelfde schaal vergelijkt. Hoe groter λ, hoe sterker de shrinkage en hoe meer variabelen LASSO verwijdert.</div>
+          </details>
+        </div>
+
+        <section class="biblio">
+          <h2 id="biblio"><span data-lang="fr">Bibliographie &amp; pour aller plus loin</span><span data-lang="en">Bibliography &amp; further reading</span><span data-lang="nl">Bibliografie &amp; verder lezen</span></h2>
+          <div class="bcol">
+            <h4 data-lang="fr">Références</h4><h4 data-lang="en">References</h4><h4 data-lang="nl">Referenties</h4>
+            <ol>
+      <li>GARP (2024). <em>Financial Risk Manager (FRM) Part I: Quantitative Analysis</em>. Pearson.</li>
+      <li>Glasserman, P. (2004). <em>Monte Carlo Methods in Financial Engineering</em>. Springer.</li>
+      <li>Efron, B. &amp; Tibshirani, R. (1993). <em>An Introduction to the Bootstrap</em>. Chapman &amp; Hall.</li>
+      <li>Hastie, T., Tibshirani, R. &amp; Friedman, J. (2009). <em>The Elements of Statistical Learning</em> (2nd ed.). Springer.</li>
+      <li>James, G., Witten, D., Hastie, T. &amp; Tibshirani, R. (2021). <em>An Introduction to Statistical Learning</em> (2nd ed.). Springer.</li>
+            </ol>
+          </div>
+          <div class="bcol">
+            <h4 data-lang="fr">Pour aller plus loin</h4><h4 data-lang="en">Further reading</h4><h4 data-lang="nl">Verder lezen</h4>
+            <ul>
+      <li>Investopedia — <a href="https://www.investopedia.com/terms/m/montecarlosimulation.asp" target="_blank" rel="noopener">Monte Carlo Simulation</a> · <a href="https://www.investopedia.com/terms/b/bootstrapping.asp" target="_blank" rel="noopener">Bootstrapping</a> · <a href="https://www.investopedia.com/terms/m/machine-learning.asp" target="_blank" rel="noopener">Machine Learning</a>.</li>
+      <li><span data-lang="fr">Module précédent : Séries temporelles. Ce module clôt le bloc Analyse quantitative ; la suite couvre les Marchés &amp; produits.</span><span data-lang="en">Previous module: Time series. This module closes the Quantitative Analysis block; next comes Financial Markets &amp; Products.</span><span data-lang="nl">Vorige module: Tijdreeksen. Deze module sluit het blok Kwantitatieve analyse af; hierna volgen Financiële markten &amp; producten.</span></li>
+            </ul>
+          </div>
+        </section>
+
+        <div class="module-nav">
+          <a class="prev" href="qa4-series-temporelles.html">
+            <div class="dir" data-lang="fr">← Module précédent</div><div class="dir" data-lang="en">← Previous module</div><div class="dir" data-lang="nl">← Vorige module</div>
+            <div class="tt" data-lang="fr">Séries temporelles</div><div class="tt" data-lang="en">Time series</div><div class="tt" data-lang="nl">Tijdreeksen</div>
+          </a>
+          <a class="next" href="../index.html#curriculum">
+            <div class="dir" data-lang="fr">Module suivant →</div><div class="dir" data-lang="en">Next module →</div><div class="dir" data-lang="nl">Volgende module →</div>
+            <div class="tt" data-lang="fr">Institutions financières</div><div class="tt" data-lang="en">Financial institutions</div><div class="tt" data-lang="nl">Financiële instellingen</div>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap foot">
+    <div class="brand"><span class="logo">Avenir<b>.</b></span></div>
+    <p data-lang="fr">Financial Risk Management · Analyse quantitative · Simulation &amp; machine learning</p>
+    <p data-lang="en">Financial Risk Management · Quantitative Analysis · Simulation &amp; machine learning</p>
+    <p data-lang="nl">Financial Risk Management · Kwantitatieve analyse · Simulatie &amp; machine learning</p>
+  </div>
+</footer>
+
+<script>
+/* ==========================================================================
+   AVENIR — Scripts partagés
+   Sélecteur de langue FR/EN, thème clair/sombre, sommaire actif, quiz
+   ========================================================================== */
+(function () {
+  "use strict";
+
+  var LS_LANG = "avenir-lang";
+  var LS_THEME = "avenir-theme";
+
+  function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  /* ---------- Langue ---------- */
+  function detectLang() {
+    var saved = safeGet(LS_LANG);
+    if (saved === "fr" || saved === "en" || saved === "nl") return saved;
+    var nav = (navigator.language || "fr").toLowerCase();
+    if (nav.indexOf("nl") === 0) return "nl";
+    if (nav.indexOf("en") === 0) return "en";
+    return "fr";
+  }
+
+  function setLang(lang) {
+    document.body.setAttribute("data-active-lang", lang);
+    document.documentElement.setAttribute("lang", lang);
+    safeSet(LS_LANG, lang);
+    document.querySelectorAll(".lang-toggle button").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-set-lang") === lang);
+    });
+  }
+
+  /* ---------- Thème ---------- */
+  function detectTheme() {
+    var saved = safeGet(LS_THEME);
+    if (saved === "light" || saved === "dark") return saved;
+    return null; // suit le système
+  }
+
+  function applyTheme(theme) {
+    if (theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      safeSet(LS_THEME, theme);
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+    updateThemeIcon();
+  }
+
+  function currentTheme() {
+    var attr = document.documentElement.getAttribute("data-theme");
+    if (attr) return attr;
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  function updateThemeIcon() {
+    var btn = document.getElementById("theme-btn");
+    if (btn) btn.textContent = currentTheme() === "dark" ? "☀" : "☾";
+  }
+
+  /* ---------- Initialisation ---------- */
+  document.addEventListener("DOMContentLoaded", function () {
+    setLang(detectLang());
+    applyTheme(detectTheme());
+
+    document.querySelectorAll(".lang-toggle button").forEach(function (b) {
+      b.addEventListener("click", function () { setLang(b.getAttribute("data-set-lang")); });
+    });
+
+    var themeBtn = document.getElementById("theme-btn");
+    if (themeBtn) themeBtn.addEventListener("click", function () {
+      applyTheme(currentTheme() === "dark" ? "light" : "dark");
+    });
+
+    var menuBtn = document.getElementById("menu-btn");
+    var navLinks = document.querySelector(".nav-links");
+    if (menuBtn && navLinks) menuBtn.addEventListener("click", function () {
+      var open = navLinks.style.display === "flex";
+      navLinks.style.display = open ? "" : "flex";
+      navLinks.style.position = "absolute";
+      navLinks.style.flexDirection = "column";
+      navLinks.style.top = "64px";
+      navLinks.style.right = "16px";
+      navLinks.style.background = "var(--surface)";
+      navLinks.style.border = "1px solid var(--border)";
+      navLinks.style.borderRadius = "12px";
+      navLinks.style.padding = "8px";
+      navLinks.style.boxShadow = "var(--shadow-lg)";
+    });
+
+    /* Sommaire actif + barre de progression (pages module) */
+    var toc = document.querySelector(".toc");
+    var bar = document.querySelector(".progress-bar");
+    if (toc || bar) {
+      var headings = Array.prototype.slice.call(document.querySelectorAll(".module-body h2[id]"));
+      var links = toc ? Array.prototype.slice.call(toc.querySelectorAll("a")) : [];
+      var onScroll = function () {
+        if (bar) {
+          var h = document.documentElement;
+          var pct = h.scrollTop / (h.scrollHeight - h.clientHeight);
+          bar.style.width = Math.max(0, Math.min(1, pct)) * 100 + "%";
+        }
+        if (headings.length && links.length) {
+          var pos = window.scrollY + 120, current = headings[0].id;
+          headings.forEach(function (hd) { if (hd.offsetTop <= pos) current = hd.id; });
+          links.forEach(function (a) {
+            a.classList.toggle("active", a.getAttribute("href") === "#" + current);
+          });
+        }
+      };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    }
+  });
+
+  /* ---------- Quiz (exposé globalement pour les onclick) ---------- */
+  window.avenirAnswer = function (btn, correct) {
+    var q = btn.closest(".q");
+    if (q.getAttribute("data-done") === "1") return;
+    q.setAttribute("data-done", "1");
+    var opts = q.querySelectorAll(".opt");
+    opts.forEach(function (o) { o.disabled = true; });
+    if (correct) {
+      btn.classList.add("correct");
+    } else {
+      btn.classList.add("wrong");
+      opts.forEach(function (o) { if (o.getAttribute("data-correct") === "1") o.classList.add("correct"); });
+    }
+    var ex = q.querySelector(".explain");
+    if (ex) ex.classList.add("show");
+  };
+})();
+
+</script>
+<script>
+/* Convergence Monte Carlo : estimation courante + bande d'erreur ±1,96 s.e. en 1/√b */
+(function () {
+  var svg = document.getElementById("mc-chart");
+  if (!svg) return;
+  function v(id){ return parseFloat(document.getElementById(id).value); }
+  function setT(id,t){ var e=document.getElementById(id); if(e) e.textContent=t; }
+  function al(){ return document.body.getAttribute("data-active-lang")||"fr"; }
+
+  // Chocs déterministes (LCG + Box-Muller, seed fixe)
+  function makeNormals(count, seed){
+    var out=[];
+    function rnd(){ seed=(1103515245*seed+12345)&0x7fffffff; return seed/0x7fffffff; }
+    for (var i=0;i<count;i++){
+      var u1=Math.max(rnd(),1e-9), u2=rnd();
+      out.push(Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2));
+    }
+    return out;
+  }
+  var TARGET=100, ANTI=0.755, MAXB=5000;
+  var Z = makeNormals(MAXB, 24681012);
+
+  function draw(){
+    var b=Math.round(v("mc-b")), sigma=v("mc-sigma"), anti=document.getElementById("mc-anti").checked;
+    setT("mc-b-o", b.toString()); setT("mc-sigma-o", sigma.toFixed(0));
+
+    // estimation courante = moyenne des g(Xi) = TARGET + sigma*Z (running mean)
+    var run=0, est=[];
+    for (var i=0;i<b;i++){ run += TARGET + sigma*Z[i]; est.push(run/(i+1)); }
+    var final = est[b-1];
+    var se = sigma/Math.sqrt(b);
+    setT("mc-est", final.toFixed(2)); setT("mc-se", se.toFixed(3));
+    var antiOut=document.getElementById("mc-anti-out");
+    if (anti){ antiOut.style.display=""; setT("mc-se-a", (se*ANTI).toFixed(3)); } else { antiOut.style.display="none"; }
+
+    // échelle : x logarithmique de 1 à b, y autour de TARGET
+    var W=520,H=300,L=46,R=16,T0=16,B=34, pw=W-L-R, ph=H-T0-B;
+    var i0=5; // on démarre le tracé à la 5e réplication (bande initiale sinon énorme)
+    var logmin=Math.log(i0), logmax=Math.log(Math.max(b,i0+1));
+    function px(i){ return L + (Math.log(i)-logmin)/(logmax-logmin)*pw; }
+    var hw0=1.96*sigma/Math.sqrt(i0); // demi-largeur max (au début)
+    var yspan=Math.max(hw0*1.1, sigma*0.5);
+    function py(val){ return T0 + (1-((val-TARGET)+yspan)/(2*yspan))*ph; }
+
+    var g="";
+    // bande d'erreur théorique ±1,96 s.e.(i)
+    function band(factor, fill, op){
+      var up="", lo=[];
+      for (var i=i0;i<=b;i+=Math.max(1,Math.round((b-i0)/160))){
+        var hw=1.96*sigma/Math.sqrt(i)*factor;
+        up += (up===""?"M ":" L ")+px(i).toFixed(1)+","+py(TARGET+hw).toFixed(1);
+        lo.push([px(i).toFixed(1), py(TARGET-hw).toFixed(1)]);
+      }
+      for (var k=lo.length-1;k>=0;k--){ up += " L "+lo[k][0]+","+lo[k][1]; }
+      up += " Z";
+      return '<path d="'+up+'" fill="'+fill+'" opacity="'+op+'"/>';
+    }
+    g += band(1, "var(--teal)", 0.13);
+    if (anti) g += band(ANTI, "var(--gold)", 0.20);
+    // ligne vraie valeur
+    g += '<line x1="'+L+'" y1="'+py(TARGET).toFixed(1)+'" x2="'+(L+pw)+'" y2="'+py(TARGET).toFixed(1)+'" stroke="var(--crimson)" stroke-width="1.4" stroke-dasharray="5 4"/>';
+    // trajectoire de l'estimation
+    var d="";
+    for (i=i0;i<b;i+=Math.max(1,Math.round(b/260))){ d+=(d===""?"M ":" L ")+px(i).toFixed(1)+","+py(est[i-1]).toFixed(1); }
+    d+=" L "+px(b).toFixed(1)+","+py(final).toFixed(1);
+    g += '<path d="'+d+'" fill="none" stroke="var(--teal)" stroke-width="2"/>';
+    // axes
+    g += '<line class="axis" x1="'+L+'" y1="'+(T0+ph)+'" x2="'+(L+pw)+'" y2="'+(T0+ph)+'"/>';
+    g += '<line class="axis" x1="'+L+'" y1="'+T0+'" x2="'+L+'" y2="'+(T0+ph)+'"/>';
+    // libellés
+    var xlab = al()==="en"?"replications b (log)":(al()==="nl"?"replicaties b (log)":"réplications b (log)");
+    var vlab = al()==="en"?"true value":(al()==="nl"?"echte waarde":"vraie valeur");
+    g += '<text class="lab" x="'+(L+pw)+'" y="'+(T0+ph+16)+'" text-anchor="end">'+xlab+'</text>';
+    g += '<text class="tick" x="'+(L+pw)+'" y="'+(py(TARGET)-4).toFixed(1)+'" text-anchor="end" fill="var(--crimson)">'+vlab+'</text>';
+    svg.innerHTML=g;
+  }
+  ["mc-b","mc-sigma"].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener("input", draw); });
+  var chk=document.getElementById("mc-anti"); if(chk) chk.addEventListener("change", draw);
+  document.querySelectorAll("[data-set-lang]").forEach(function(b){ b.addEventListener("click", function(){ setTimeout(draw,10); }); });
+  document.addEventListener("DOMContentLoaded", draw);
+  draw();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stress testing &amp; scénarios — Avenir</title>
+<meta name="description" content="Module FRM sur le stress testing : au-delà de la VaR, scénarios historiques et hypothétiques, analyse de sensibilité, reverse stress testing, stress tests réglementaires (EBA, CCAR), stress de liquidité et LCR. Simulateur de P&L de stress interactif, QCM et exercices.">
+<style>
+/* ==========================================================================
+   AVENIR — Plateforme pédagogique Asset Management & Financial Risk Management
+   Feuille de style partagée
+   ========================================================================== */
+
+:root {
+  /* Palette claire */
+  --bg:            #f6f4ef;
+  --bg-soft:       #efece4;
+  --surface:       #ffffff;
+  --surface-2:     #faf8f3;
+  --border:        #e2ddd1;
+  --ink:           #1a2230;
+  --ink-soft:      #4a5566;
+  --ink-mute:      #7a8494;
+
+  --navy:          #12294a;
+  --navy-2:        #1c3a63;
+  --gold:          #c19a3e;
+  --gold-soft:     #e7d9b0;
+  --teal:          #16706a;
+  --teal-soft:     #cfe6e2;
+  --crimson:       #9a3140;
+
+  --am:            var(--navy);   /* couleur du parcours Asset Management */
+  --am-soft:       #dbe3ef;
+  --frm:           var(--teal);   /* couleur du parcours Risk Management */
+  --frm-soft:      var(--teal-soft);
+
+  --radius:        14px;
+  --radius-sm:     9px;
+  --shadow:        0 1px 2px rgba(18,41,74,.05), 0 8px 24px rgba(18,41,74,.07);
+  --shadow-lg:     0 12px 40px rgba(18,41,74,.14);
+  --maxw:          1160px;
+
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: "SF Mono", "JetBrains Mono", "Fira Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:        #0d141f;
+    --bg-soft:   #111a28;
+    --surface:   #15202f;
+    --surface-2: #1a2637;
+    --border:    #263449;
+    --ink:       #edf1f6;
+    --ink-soft:  #b3bdcc;
+    --ink-mute:  #808ba0;
+    --navy:      #6f9bd6;
+    --navy-2:    #8bb0e0;
+    --gold:      #d8b95e;
+    --gold-soft: #40391f;
+    --teal:      #4bb3aa;
+    --teal-soft: #17332f;
+    --crimson:   #d47a86;
+    --am-soft:   #1a2c46;
+    --frm-soft:  #16332f;
+    --shadow:    0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"] {
+  --bg:        #0d141f;
+  --bg-soft:   #111a28;
+  --surface:   #15202f;
+  --surface-2: #1a2637;
+  --border:    #263449;
+  --ink:       #edf1f6;
+  --ink-soft:  #b3bdcc;
+  --ink-mute:  #808ba0;
+  --navy:      #6f9bd6;
+  --navy-2:    #8bb0e0;
+  --gold:      #d8b95e;
+  --gold-soft: #40391f;
+  --teal:      #4bb3aa;
+  --teal-soft: #17332f;
+  --crimson:   #d47a86;
+  --am-soft:   #1a2c46;
+  --frm-soft:  #16332f;
+  --shadow:    0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.5);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Bilinguisme : on masque la langue inactive */
+[data-lang] { display: none; }
+body[data-active-lang="fr"] [data-lang="fr"] { display: revert; }
+body[data-active-lang="en"] [data-lang="en"] { display: revert; }
+body[data-active-lang="nl"] [data-lang="nl"] { display: revert; }
+/* variantes en ligne */
+span[data-lang], a[data-lang], em[data-lang], strong[data-lang], code[data-lang] { display: none; }
+body[data-active-lang="fr"] span[data-lang="fr"],
+body[data-active-lang="fr"] a[data-lang="fr"],
+body[data-active-lang="fr"] em[data-lang="fr"],
+body[data-active-lang="fr"] strong[data-lang="fr"],
+body[data-active-lang="fr"] code[data-lang="fr"] { display: inline; }
+body[data-active-lang="en"] span[data-lang="en"],
+body[data-active-lang="en"] a[data-lang="en"],
+body[data-active-lang="en"] em[data-lang="en"],
+body[data-active-lang="en"] strong[data-lang="en"],
+body[data-active-lang="en"] code[data-lang="en"] { display: inline; }
+body[data-active-lang="nl"] span[data-lang="nl"],
+body[data-active-lang="nl"] a[data-lang="nl"],
+body[data-active-lang="nl"] em[data-lang="nl"],
+body[data-active-lang="nl"] strong[data-lang="nl"],
+body[data-active-lang="nl"] code[data-lang="nl"] { display: inline; }
+/* les pastilles inline-block conservent leur forme quand elles portent data-lang */
+body[data-active-lang="fr"] span.eyebrow[data-lang="fr"],
+body[data-active-lang="en"] span.eyebrow[data-lang="en"],
+body[data-active-lang="nl"] span.eyebrow[data-lang="nl"] { display: inline-block; }
+/* .callout .clabel force display:block — masquer les langues non actives et ne révéler que l'active */
+.callout .clabel[data-lang] { display: none; }
+body[data-active-lang="fr"] .callout .clabel[data-lang="fr"],
+body[data-active-lang="en"] .callout .clabel[data-lang="en"],
+body[data-active-lang="nl"] .callout .clabel[data-lang="nl"] { display: block; }
+/* garde-fou général : une règle de composant (ex. .sml-sliders label{display:block}) ne doit jamais
+   ré-afficher une langue non active. On masque toujours les langues non actives (!important). */
+body[data-active-lang="fr"] [data-lang]:not([data-lang="fr"]),
+body[data-active-lang="en"] [data-lang]:not([data-lang="en"]),
+body[data-active-lang="nl"] [data-lang]:not([data-lang="nl"]) { display: none !important; }
+
+a { color: var(--navy-2); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+/* ---------- En-tête / navigation ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.nav {
+  display: flex; align-items: center; gap: 20px;
+  height: 64px;
+}
+.brand { display: flex; align-items: baseline; gap: 10px; font-family: var(--serif); }
+.brand a { color: var(--ink); text-decoration: none; }
+.brand .logo {
+  font-size: 22px; font-weight: 700; letter-spacing: .5px;
+}
+.brand .logo b { color: var(--gold); }
+.brand .tag { font-size: 12.5px; color: var(--ink-mute); font-family: var(--sans); letter-spacing: .3px; }
+.nav .spacer { flex: 1; }
+.nav-links { display: flex; gap: 4px; }
+.nav-links a {
+  color: var(--ink-soft); font-size: 14.5px; font-weight: 500;
+  padding: 8px 12px; border-radius: 8px;
+}
+.nav-links a:hover { background: var(--bg-soft); color: var(--ink); text-decoration: none; }
+
+.controls { display: flex; align-items: center; gap: 8px; }
+.lang-toggle {
+  display: inline-flex; border: 1px solid var(--border); border-radius: 999px;
+  overflow: hidden; background: var(--surface-2);
+}
+.lang-toggle button {
+  border: 0; background: transparent; color: var(--ink-mute);
+  font: 600 13px/1 var(--sans); padding: 7px 13px; cursor: pointer;
+}
+.lang-toggle button.active { background: var(--navy); color: #fff; }
+:root[data-theme="dark"] .lang-toggle button.active,
+:root:not([data-theme="light"]) .lang-toggle button.active { color: #0d141f; }
+.icon-btn {
+  border: 1px solid var(--border); background: var(--surface-2);
+  width: 36px; height: 36px; border-radius: 999px; cursor: pointer;
+  font-size: 16px; color: var(--ink-soft); display: grid; place-items: center;
+}
+.icon-btn:hover { color: var(--ink); }
+.menu-btn { display: none; }
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative; overflow: hidden;
+  background:
+    radial-gradient(1200px 500px at 80% -10%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 60%),
+    linear-gradient(160deg, var(--navy) 0%, #0c1c34 65%, #0a1830 100%);
+  color: #eef2f8;
+}
+:root[data-theme="dark"] .hero,
+:root:not([data-theme="light"]) .hero {
+  background:
+    radial-gradient(1200px 500px at 80% -10%, rgba(216,185,94,.14), transparent 60%),
+    linear-gradient(160deg, #0b1524 0%, #0a1220 100%);
+}
+.hero .wrap { padding-top: 72px; padding-bottom: 76px; }
+.hero .eyebrow {
+  display: inline-block; font-size: 12.5px; letter-spacing: 2.2px; text-transform: uppercase;
+  color: var(--gold-soft); border: 1px solid rgba(231,217,176,.35);
+  padding: 5px 12px; border-radius: 999px; margin-bottom: 22px;
+}
+:root[data-theme="dark"] .hero .eyebrow,
+:root:not([data-theme="light"]) .hero .eyebrow { color: var(--gold); }
+.hero h1 {
+  font-family: var(--serif); font-weight: 700;
+  font-size: clamp(34px, 5.2vw, 58px); line-height: 1.08; margin: 0 0 20px;
+  max-width: 16ch;
+}
+.hero h1 .accent { color: var(--gold); }
+.hero p.lead { font-size: clamp(17px, 2.2vw, 21px); color: #cdd7e6; max-width: 60ch; margin: 0 0 32px; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; }
+.hero-stats { display: flex; gap: 40px; margin-top: 54px; flex-wrap: wrap; }
+.hero-stats .stat .n { font-family: var(--serif); font-size: 34px; color: #fff; font-weight: 700; }
+.hero-stats .stat .l { font-size: 13.5px; color: #a9b6c9; letter-spacing: .3px; }
+
+/* ---------- Boutons ---------- */
+.btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  font: 600 15px/1 var(--sans); padding: 13px 22px; border-radius: 10px;
+  cursor: pointer; border: 1px solid transparent; transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn:hover { text-decoration: none; transform: translateY(-1px); }
+.btn-gold { background: var(--gold); color: #241c05; }
+.btn-gold:hover { box-shadow: 0 8px 20px rgba(193,154,62,.35); }
+.btn-ghost { background: transparent; color: #eef2f8; border-color: rgba(255,255,255,.35); }
+.btn-ghost:hover { background: rgba(255,255,255,.08); }
+.btn-solid { background: var(--navy); color: #fff; }
+:root[data-theme="dark"] .btn-solid,
+:root:not([data-theme="light"]) .btn-solid { color: #0d141f; }
+.btn-solid:hover { box-shadow: var(--shadow); }
+.btn-outline { background: var(--surface); color: var(--ink); border-color: var(--border); }
+.btn-outline:hover { border-color: var(--navy-2); }
+
+/* ---------- Sections ---------- */
+section { padding: 66px 0; }
+.section-head { max-width: 720px; margin-bottom: 40px; }
+.section-head .kicker {
+  font-size: 12.5px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold); font-weight: 700; margin-bottom: 12px;
+}
+.section-head h2 { font-family: var(--serif); font-size: clamp(26px, 3.6vw, 38px); margin: 0 0 12px; line-height: 1.15; }
+.section-head p { color: var(--ink-soft); font-size: 18px; margin: 0; }
+
+/* ---------- Parcours (tracks) ---------- */
+.tracks { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.track {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 32px; box-shadow: var(--shadow); position: relative; overflow: hidden;
+}
+.track::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 5px; }
+.track.am::before { background: linear-gradient(var(--navy), var(--navy-2)); }
+.track.frm::before { background: linear-gradient(var(--teal), #0f5651); }
+.track .badge {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: 5px 11px; border-radius: 999px; margin-bottom: 16px;
+}
+.track.am .badge { background: var(--am-soft); color: var(--navy); }
+.track.frm .badge { background: var(--frm-soft); color: var(--teal); }
+.track h3 { font-family: var(--serif); font-size: 25px; margin: 0 0 8px; }
+.track p { color: var(--ink-soft); margin: 0 0 18px; font-size: 15.5px; }
+.track ul { list-style: none; padding: 0; margin: 0 0 22px; }
+.track ul li { padding: 7px 0 7px 26px; position: relative; font-size: 15px; border-top: 1px solid var(--border); }
+.track ul li:first-child { border-top: 0; }
+.track ul li::before {
+  content: "▸"; position: absolute; left: 4px; top: 7px; font-weight: 700;
+}
+.track.am ul li::before { color: var(--gold); }
+.track.frm ul li::before { color: var(--teal); }
+
+/* ---------- Curriculum ---------- */
+.curriculum { background: var(--bg-soft); }
+.curric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.curric-col h3 {
+  font-family: var(--serif); font-size: 22px; display: flex; align-items: center; gap: 10px;
+  padding-bottom: 14px; margin: 0 0 6px; border-bottom: 2px solid var(--border);
+}
+.curric-col.am h3 { color: var(--navy); }
+.curric-col.frm h3 { color: var(--teal); }
+.curric-col .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.curric-col.am .dot { background: var(--navy); }
+.curric-col.frm .dot { background: var(--teal); }
+.mod {
+  display: flex; gap: 15px; align-items: flex-start;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 15px 17px; margin-top: 12px; transition: border-color .15s ease, transform .15s ease;
+}
+a.mod:hover { text-decoration: none; transform: translateX(3px); box-shadow: var(--shadow); }
+.curric-col.am a.mod:hover { border-color: var(--navy-2); }
+.curric-col.frm a.mod:hover { border-color: var(--teal); }
+.mod .num {
+  flex: none; width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center;
+  font-family: var(--serif); font-weight: 700; font-size: 15px;
+}
+.curric-col.am .mod .num { background: var(--am-soft); color: var(--navy); }
+.curric-col.frm .mod .num { background: var(--frm-soft); color: var(--teal); }
+.mod .mt { font-weight: 600; font-size: 15.5px; color: var(--ink); margin: 2px 0 2px; }
+.mod .md { font-size: 13.5px; color: var(--ink-mute); line-height: 1.5; }
+.mod .chip {
+  font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+  color: var(--gold); border: 1px solid var(--gold-soft); border-radius: 999px; padding: 2px 8px;
+  margin-left: auto; align-self: center; flex: none;
+}
+
+/* ---------- Bandeau méthode ---------- */
+.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.feature { padding: 6px 4px; }
+.feature .ic { font-size: 24px; margin-bottom: 10px; }
+.feature h4 { font-size: 17px; margin: 0 0 6px; }
+.feature p { color: var(--ink-soft); font-size: 14.5px; margin: 0; }
+
+/* ---------- CTA final ---------- */
+.cta-band {
+  background: linear-gradient(160deg, var(--navy), #0b1c35);
+  color: #eef2f8; border-radius: var(--radius); padding: 46px; text-align: center;
+}
+.cta-band h2 { font-family: var(--serif); font-size: clamp(24px, 3vw, 34px); margin: 0 0 12px; }
+.cta-band p { color: #c7d2e2; max-width: 54ch; margin: 0 auto 26px; }
+
+/* ---------- Pied de page ---------- */
+.site-footer { border-top: 1px solid var(--border); background: var(--surface); padding: 40px 0; margin-top: 20px; }
+.foot { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: center; }
+.foot .brand .logo { font-size: 18px; }
+.foot p { color: var(--ink-mute); font-size: 13.5px; margin: 0; }
+
+/* ==========================================================================
+   PAGES MODULE
+   ========================================================================== */
+.module-shell { display: grid; grid-template-columns: 264px 1fr; gap: 40px; align-items: start; }
+.module-shell .wrap-mod { max-width: var(--maxw); margin: 0 auto; padding: 40px 24px 80px; }
+
+/* barre latérale sommaire */
+.toc {
+  position: sticky; top: 84px; align-self: start;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px; box-shadow: var(--shadow); max-height: calc(100vh - 110px); overflow: auto;
+}
+.toc .toc-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-mute); font-weight: 700; margin-bottom: 12px; }
+.toc a { display: block; color: var(--ink-soft); font-size: 14px; padding: 6px 10px; border-radius: 7px; border-left: 2px solid transparent; }
+.toc a:hover { background: var(--bg-soft); text-decoration: none; }
+.toc a.active { color: var(--teal); background: var(--frm-soft); border-left-color: var(--teal); font-weight: 600; }
+
+/* fil d'ariane + entête module */
+.crumbs { font-size: 13.5px; color: var(--ink-mute); margin-bottom: 14px; }
+.crumbs a { color: var(--ink-mute); }
+.module-hero { border-bottom: 1px solid var(--border); padding-bottom: 26px; margin-bottom: 34px; }
+.module-hero .badge {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: 5px 11px; border-radius: 999px;
+  background: var(--frm-soft); color: var(--teal); margin-bottom: 14px;
+}
+.module-hero h1 { font-family: var(--serif); font-size: clamp(30px, 4.4vw, 46px); line-height: 1.1; margin: 0 0 12px; }
+.module-hero .subtitle { font-size: 19px; color: var(--ink-soft); max-width: 65ch; margin: 0 0 18px; }
+.module-meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 13.5px; color: var(--ink-mute); }
+.module-meta span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* objectifs */
+.objectives {
+  background: var(--surface-2); border: 1px solid var(--border); border-left: 4px solid var(--teal);
+  border-radius: var(--radius-sm); padding: 20px 24px; margin: 0 0 40px;
+}
+.objectives h4 { margin: 0 0 10px; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); }
+.objectives ul { margin: 0; padding-left: 20px; }
+.objectives li { margin: 5px 0; color: var(--ink-soft); }
+
+/* corps du module */
+.module-body h2 {
+  font-family: var(--serif); font-size: 29px; margin: 48px 0 14px; scroll-margin-top: 84px;
+  padding-top: 6px;
+}
+.module-body h3 { font-family: var(--serif); font-size: 22px; margin: 30px 0 10px; }
+.module-body p { margin: 0 0 16px; color: var(--ink); }
+.module-body ul, .module-body ol { margin: 0 0 18px; padding-left: 26px; }
+.module-body li { margin: 6px 0; }
+.module-body strong { color: var(--ink); }
+
+/* définitions et encadrés */
+.callout {
+  border-radius: var(--radius-sm); padding: 18px 20px; margin: 24px 0; border: 1px solid var(--border);
+  background: var(--surface-2); font-size: 15.5px;
+}
+.callout .clabel { font-weight: 700; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 6px; }
+.callout.def { border-left: 4px solid var(--navy); }
+.callout.def .clabel { color: var(--navy); }
+.callout.warn { border-left: 4px solid var(--crimson); background: color-mix(in srgb, var(--crimson) 7%, var(--surface)); }
+.callout.warn .clabel { color: var(--crimson); }
+.callout.tip { border-left: 4px solid var(--gold); }
+.callout.tip .clabel { color: var(--gold); }
+
+/* formules */
+.formula {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 22px 24px; margin: 22px 0; text-align: center; box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+.formula .eq { font-family: var(--serif); font-size: 22px; color: var(--ink); }
+.formula .eq em { color: var(--teal); font-style: italic; }
+.formula .caption { font-size: 13px; color: var(--ink-mute); margin-top: 12px; }
+sub, sup { font-size: .72em; }
+
+/* tableaux */
+.table-wrap { overflow-x: auto; margin: 22px 0; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; min-width: 460px; }
+thead th { background: var(--navy); color: #fff; text-align: left; padding: 11px 14px; font-weight: 600; font-size: 13.5px; }
+:root[data-theme="dark"] thead th,
+:root:not([data-theme="light"]) thead th { color: #0d141f; }
+tbody td { padding: 10px 14px; border-top: 1px solid var(--border); }
+tbody tr:nth-child(even) td { background: var(--surface-2); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); }
+
+/* exemple travaillé */
+.worked {
+  border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 28px 0;
+}
+.worked .whead { background: var(--am-soft); color: var(--navy); padding: 12px 20px; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+.worked .wbody { padding: 20px 22px; background: var(--surface); }
+.worked .step { padding: 12px 0; border-top: 1px dashed var(--border); }
+.worked .step:first-child { border-top: 0; }
+.worked .step .sn { font-weight: 700; color: var(--teal); font-size: 13.5px; letter-spacing: .5px; }
+
+/* calculateur interactif */
+.calc {
+  border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+  background: var(--surface); overflow: hidden; margin: 30px 0;
+}
+.calc .chead { background: linear-gradient(160deg, var(--teal), #0f5651); color: #fff; padding: 16px 22px; }
+.calc .chead h4 { margin: 0; font-family: var(--serif); font-size: 20px; }
+.calc .chead p { margin: 4px 0 0; font-size: 13.5px; color: #d5eee9; }
+.calc .cbody { padding: 22px; display: grid; grid-template-columns: 1fr 300px; gap: 26px; }
+.calc .inputs label { display: block; font-size: 13.5px; font-weight: 600; color: var(--ink-soft); margin: 14px 0 6px; }
+.calc .inputs input, .calc .inputs select {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface-2); color: var(--ink); font: 500 15px var(--sans);
+}
+.calc .inputs .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.calc .rangewrap { display: flex; align-items: center; gap: 12px; }
+.calc .rangewrap input[type=range] { flex: 1; }
+.calc .rangewrap output { font-family: var(--mono); font-weight: 600; min-width: 46px; text-align: right; color: var(--teal); }
+.calc .result {
+  background: var(--navy); color: #fff; border-radius: var(--radius-sm); padding: 22px; align-self: start;
+}
+:root[data-theme="dark"] .calc .result,
+:root:not([data-theme="light"]) .calc .result { background: #0c1b32; }
+.calc .result .rl { font-size: 12.5px; text-transform: uppercase; letter-spacing: 1px; color: #9fb0c8; }
+.calc .result .rv { font-family: var(--serif); font-size: 34px; font-weight: 700; margin: 4px 0 2px; }
+.calc .result .rv.gold { color: var(--gold); }
+.calc .result .rsub { font-size: 13px; color: #b9c6d8; }
+.calc .result hr { border: 0; border-top: 1px solid rgba(255,255,255,.15); margin: 16px 0; }
+
+/* quiz */
+.quiz { border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin: 30px 0; background: var(--surface); }
+.quiz h4 { margin: 0 0 4px; font-family: var(--serif); font-size: 20px; }
+.quiz .qsub { color: var(--ink-mute); font-size: 14px; margin: 0 0 18px; }
+.q { margin: 18px 0; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.q:last-of-type { border-bottom: 0; }
+.q .qtext { font-weight: 600; margin-bottom: 12px; }
+.q .opt {
+  display: block; width: 100%; text-align: left; padding: 11px 14px; margin: 7px 0;
+  border: 1px solid var(--border); border-radius: 9px; background: var(--surface-2); color: var(--ink);
+  cursor: pointer; font: 500 15px var(--sans); transition: all .12s ease;
+}
+.q .opt:hover { border-color: var(--teal); }
+.q .opt.correct { background: color-mix(in srgb, var(--teal) 16%, var(--surface)); border-color: var(--teal); color: var(--ink); }
+.q .opt.wrong { background: color-mix(in srgb, var(--crimson) 14%, var(--surface)); border-color: var(--crimson); }
+.q .explain { display: none; margin-top: 10px; font-size: 14px; color: var(--ink-soft); background: var(--surface-2); border-radius: 8px; padding: 12px 14px; border-left: 3px solid var(--teal); }
+.q .explain.show { display: block; }
+
+/* navigation entre modules */
+.module-nav { display: flex; justify-content: space-between; gap: 16px; margin-top: 50px; flex-wrap: wrap; }
+.module-nav a {
+  flex: 1; min-width: 220px; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 20px; background: var(--surface); transition: border-color .15s ease;
+}
+.module-nav a:hover { border-color: var(--teal); text-decoration: none; }
+.module-nav .dir { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-mute); }
+.module-nav .tt { font-weight: 600; color: var(--ink); margin-top: 3px; }
+.module-nav a.next { text-align: right; }
+
+/* progression de lecture */
+.progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0; z-index: 60; transition: width .1s linear; }
+
+/* exercices chiffrés */
+.exo { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px; margin: 14px 0; background: var(--surface); box-shadow: var(--shadow); }
+.exo .ehead { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.exo .eid { font-size: 12px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--teal); }
+.exo .diff { font-size: 10.5px; letter-spacing: .5px; text-transform: uppercase; border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px; color: var(--ink-mute); }
+.exo .estatement { margin: 0 0 6px; }
+.exo details { border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 10px; }
+.exo summary { cursor: pointer; font-weight: 600; font-size: 14px; color: var(--navy-2); list-style: none; }
+.exo summary::-webkit-details-marker { display: none; }
+.exo summary::before { content: "▸ "; color: var(--gold); }
+.exo details[open] summary::before { content: "▾ "; }
+.exo .ans { font-size: 14.5px; color: var(--ink-soft); margin-top: 8px; }
+.exo .ans b { color: var(--ink); }
+
+/* ---------- Thème parcours Asset Management (navy/or) sur pages module ----------
+   Les composants module utilisent --teal / --frm-soft (couleur FRM) par défaut.
+   Sur un module du parcours Asset Management, on remappe ces variables vers le navy. */
+body.track-am { --teal: var(--navy); --frm-soft: var(--am-soft); }
+body.track-am .calc .chead { background: linear-gradient(160deg, var(--navy), #0a1830); }
+body.track-am .module-hero .badge,
+body.track-am .worked .whead { background: var(--am-soft); color: var(--navy); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 940px) {
+  .module-shell { grid-template-columns: 1fr; }
+  .toc { display: none; }
+  .calc .cbody { grid-template-columns: 1fr; }
+}
+@media (max-width: 820px) {
+  .tracks, .curric-grid, .features { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .menu-btn { display: grid; }
+  .hero-stats { gap: 26px; }
+}
+
+/* ---------- Bibliographie & sources ---------- */
+.biblio { border-top: 2px solid var(--border); margin-top: 50px; padding-top: 8px; }
+.biblio .bcol { margin: 0 0 22px; }
+.biblio h4 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--ink-mute); margin: 0 0 10px; }
+.biblio ol, .biblio ul { margin: 0; padding-left: 22px; }
+.biblio li { font-size: 14px; color: var(--ink-soft); line-height: 1.65; margin: 8px 0; }
+.biblio li em { color: var(--ink); font-style: italic; }
+.biblio a { color: var(--navy-2); text-decoration: none; border-bottom: 1px solid var(--border); }
+.biblio a:hover { border-color: var(--navy-2); }
+.formula .caption.src, .src { color: var(--ink-mute); font-style: italic; font-size: 12.5px; }
+
+</style>
+</head>
+<body data-active-lang="fr">
+
+<div class="progress-bar"></div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <div class="brand">
+      <a href="../index.html"><span class="logo">Avenir<b>.</b></span></a>
+      <span class="tag">Asset Management &amp; Risk</span>
+    </div>
+    <div class="spacer"></div>
+    <nav class="nav-links">
+      <a href="../index.html#parcours"><span data-lang="fr">Parcours</span><span data-lang="en">Tracks</span><span data-lang="nl">Trajecten</span></a>
+      <a href="../index.html#curriculum"><span data-lang="fr">Programme</span><span data-lang="en">Curriculum</span><span data-lang="nl">Programma</span></a>
+      <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a>
+    </nav>
+    <div class="controls">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-set-lang="fr">FR</button>
+        <button data-set-lang="en">EN</button>
+        <button data-set-lang="nl">NL</button>
+      </div>
+      <button id="theme-btn" class="icon-btn" aria-label="Thème">☾</button>
+      <button id="menu-btn" class="icon-btn menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap-mod">
+  <div class="module-shell">
+
+    <aside class="toc">
+      <div class="toc-title" data-lang="fr">Sommaire</div>
+      <div class="toc-title" data-lang="en">Contents</div>
+      <div class="toc-title" data-lang="nl">Inhoud</div>
+      <a href="#pourquoi"><span data-lang="fr">1. Pourquoi stresser ?</span><span data-lang="en">1. Why stress test?</span><span data-lang="nl">1. Waarom stresstesten?</span></a>
+      <a href="#types"><span data-lang="fr">2. Types de scénarios</span><span data-lang="en">2. Types of scenarios</span><span data-lang="nl">2. Types scenario's</span></a>
+      <a href="#pratique"><span data-lang="fr">3. Le stress en pratique</span><span data-lang="en">3. Stress in practice</span><span data-lang="nl">3. Stress in de praktijk</span></a>
+      <a href="#reverse"><span data-lang="fr">4. Reverse stress testing</span><span data-lang="en">4. Reverse stress testing</span><span data-lang="nl">4. Reverse stresstesten</span></a>
+      <a href="#reglementaire"><span data-lang="fr">5. Stress réglementaires</span><span data-lang="en">5. Regulatory stress tests</span><span data-lang="nl">5. Reglementaire stresstests</span></a>
+      <a href="#liquidite"><span data-lang="fr">6. Stress de liquidité</span><span data-lang="en">6. Liquidity stress</span><span data-lang="nl">6. Liquiditeitsstress</span></a>
+      <a href="#retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></a>
+      <a href="#qcm"><span data-lang="fr">8. QCM (15)</span><span data-lang="en">8. MCQ (15)</span><span data-lang="nl">8. MCV (15)</span></a>
+      <a href="#exercices"><span data-lang="fr">9. Exercices</span><span data-lang="en">9. Exercises</span><span data-lang="nl">9. Oefeningen</span></a>
+      <a href="#biblio"><span data-lang="fr">Sources</span><span data-lang="en">Sources</span><span data-lang="nl">Bronnen</span></a>
+    </aside>
+
+    <main>
+      <div class="crumbs">
+        <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a> ·
+        <span>Financial Risk Management</span> ·
+        <span data-lang="fr">Module 7</span><span data-lang="en">Module 7</span><span data-lang="nl">Module 7</span>
+      </div>
+
+      <div class="module-hero">
+        <span class="badge">Risk Management · 07</span>
+        <h1 data-lang="fr">Stress testing &amp; scénarios</h1>
+        <h1 data-lang="en">Stress testing &amp; scenarios</h1>
+        <h1 data-lang="nl">Stresstesten &amp; scenario's</h1>
+        <p class="subtitle" data-lang="fr">La VaR mesure le risque des jours ordinaires ; le stress testing pose la seule question qui compte vraiment : « et si le pire arrivait ? ». Rejouer 2008, imaginer l'impensable, et remonter de la faillite aux scénarios qui la causent.</p>
+        <p class="subtitle" data-lang="en">VaR measures the risk of ordinary days; stress testing asks the only question that truly matters: “what if the worst happened?”. Replay 2008, imagine the unimaginable, and work backward from failure to the scenarios that cause it.</p>
+        <p class="subtitle" data-lang="nl">VaR meet het risico van gewone dagen; stresstesten stelt de enige vraag die echt telt: “wat als het ergste gebeurt?”. Herbeleef 2008, verbeeld het ondenkbare, en werk terug van faillissement naar de scenario's die het veroorzaken.</p>
+        <div class="module-meta">
+          <span data-lang="fr">⏱ Lecture ~30 min</span><span data-lang="en">⏱ ~30 min read</span><span data-lang="nl">⏱ ~30 min lezen</span>
+          <span data-lang="fr">📶 Niveau intermédiaire+</span><span data-lang="en">📶 Intermediate+ level</span><span data-lang="nl">📶 Gemiddeld+ niveau</span>
+          <span>🎓 FRM I</span>
+        </div>
+      </div>
+
+      <div class="objectives">
+        <h4 data-lang="fr">Objectifs d'apprentissage</h4>
+        <h4 data-lang="en">Learning objectives</h4>
+        <h4 data-lang="nl">Leerdoelen</h4>
+        <ul>
+          <li data-lang="fr">Expliquer pourquoi le stress testing complète la VaR et quelles limites il corrige.</li>
+          <li data-lang="en">Explain why stress testing complements VaR and which limits it corrects.</li>
+          <li data-lang="nl">Uitleggen waarom stresstesten de VaR aanvult en welke grenzen het corrigeert.</li>
+          <li data-lang="fr">Distinguer scénarios historiques, hypothétiques et analyse de sensibilité.</li>
+          <li data-lang="en">Distinguish historical, hypothetical scenarios and sensitivity analysis.</li>
+          <li data-lang="nl">Historische, hypothetische scenario's en sensitiviteitsanalyse onderscheiden.</li>
+          <li data-lang="fr">Calculer le P&amp;L d'un portefeuille sous un scénario multi-facteurs cohérent.</li>
+          <li data-lang="en">Compute a portfolio's P&amp;L under a coherent multi-factor scenario.</li>
+          <li data-lang="nl">De P&amp;L van een portefeuille berekenen onder een coherent multifactorscenario.</li>
+          <li data-lang="fr">Comprendre le principe et l'utilité du reverse stress testing.</li>
+          <li data-lang="en">Understand the principle and value of reverse stress testing.</li>
+          <li data-lang="nl">Het principe en het nut van reverse stresstesten begrijpen.</li>
+          <li data-lang="fr">Situer les stress tests réglementaires (EBA, CCAR) et le stress de liquidité (LCR).</li>
+          <li data-lang="en">Place regulatory stress tests (EBA, CCAR) and liquidity stress (LCR).</li>
+          <li data-lang="nl">Reglementaire stresstests (EBA, CCAR) en liquiditeitsstress (LCR) situeren.</li>
+        </ul>
+      </div>
+
+      <div class="module-body">
+
+        <!-- 1. POURQUOI STRESSER -->
+        <h2 id="pourquoi"><span data-lang="fr">1. Pourquoi stresser au-delà de la VaR ?</span><span data-lang="en">1. Why stress beyond VaR?</span><span data-lang="nl">1. Waarom stressen voorbij de VaR?</span></h2>
+        <p data-lang="fr">La VaR (module 2) répond à « quelle perte dans un mauvais jour <em>normal</em> ? ». Mais elle a des angles morts fondamentaux : elle ne dit <strong>rien de l'ampleur des pertes au-delà</strong> du seuil de confiance, elle s'appuie sur des corrélations et volatilités <strong>estimées en temps calme</strong> qui explosent en crise, et elle est <strong>aveugle à l'impensé</strong> — les événements absents de l'historique. Le stress testing comble ces angles morts en posant frontalement la question : <em>« et si un choc extrême, mais plausible, se produisait aujourd'hui ? »</em>.</p>
+        <p data-lang="en">VaR (module 2) answers “what loss on a <em>normal</em> bad day?”. But it has fundamental blind spots: it says <strong>nothing about the size of losses beyond</strong> the confidence level, it relies on correlations and volatilities <strong>estimated in calm times</strong> that blow up in a crisis, and it is <strong>blind to the unimagined</strong> — events absent from history. Stress testing fills these blind spots by asking head-on: <em>“what if an extreme but plausible shock happened today?”</em>.</p>
+        <p data-lang="nl">VaR (module 2) beantwoordt “welk verlies op een <em>normale</em> slechte dag?”. Maar ze heeft fundamentele blinde vlekken: ze zegt <strong>niets over de omvang van de verliezen voorbij</strong> het betrouwbaarheidsniveau, ze steunt op correlaties en volatiliteiten <strong>geschat in kalme tijden</strong> die in een crisis ontploffen, en ze is <strong>blind voor het ondenkbare</strong> — gebeurtenissen afwezig in de historiek. Stresstesten vult deze blinde vlekken door frontaal te vragen: <em>“wat als vandaag een extreme maar plausibele schok gebeurt?”</em>.</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">Stress ≠ VaR : une question différente</span><span class="clabel" data-lang="en">Stress ≠ VaR: a different question</span><span class="clabel" data-lang="nl">Stress ≠ VaR: een andere vraag</span>
+          <span data-lang="fr">La VaR est <strong>probabiliste</strong> : « il y a 1 % de chances de perdre plus de X ». Le stress est <strong>conditionnel et déterministe</strong> : « <em>si</em> ce scénario se réalise, la perte est de Y » — sans probabilité attachée. La VaR regarde la distribution ; le stress regarde <em>un point</em> précis de la queue, souvent bien au-delà de ce que la VaR capture. Les deux sont complémentaires, pas concurrents : Bâle exige les deux.</span>
+          <span data-lang="en">VaR is <strong>probabilistic</strong>: “there is a 1% chance of losing more than X”. Stress is <strong>conditional and deterministic</strong>: “<em>if</em> this scenario occurs, the loss is Y” — with no probability attached. VaR looks at the distribution; stress looks at <em>one specific point</em> in the tail, often far beyond what VaR captures. The two are complementary, not competing: Basel requires both.</span>
+          <span data-lang="nl">VaR is <strong>probabilistisch</strong>: “er is 1% kans om meer dan X te verliezen”. Stress is <strong>voorwaardelijk en deterministisch</strong>: “<em>als</em> dit scenario zich voordoet, is het verlies Y” — zonder gekoppelde kans. VaR bekijkt de verdeling; stress bekijkt <em>één specifiek punt</em> in de staart, vaak ver voorbij wat de VaR vangt. De twee zijn complementair, geen concurrenten: Bazel vereist beide.</span>
+        </div>
+
+        <!-- 2. TYPES DE SCÉNARIOS -->
+        <h2 id="types"><span data-lang="fr">2. Types de scénarios</span><span data-lang="en">2. Types of scenarios</span><span data-lang="nl">2. Types scenario's</span></h2>
+        <p data-lang="fr">Trois grandes familles d'approches, souvent combinées.</p>
+        <p data-lang="en">Three broad families of approaches, often combined.</p>
+        <p data-lang="nl">Drie brede families van benaderingen, vaak gecombineerd.</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th data-lang="fr">Approche</th><th data-lang="en">Approach</th><th data-lang="nl">Aanpak</th>
+                <th data-lang="fr">Principe</th><th data-lang="en">Principle</th><th data-lang="nl">Principe</th>
+                <th data-lang="fr">Exemple</th><th data-lang="en">Example</th><th data-lang="nl">Voorbeeld</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-lang="fr">Scénario historique</td><td data-lang="en">Historical scenario</td><td data-lang="nl">Historisch scenario</td>
+                <td data-lang="fr">Rejouer les chocs d'une crise passée réelle sur le portefeuille actuel.</td><td data-lang="en">Replay a real past crisis's shocks on today's portfolio.</td><td data-lang="nl">De schokken van een echte voorbije crisis herspelen op de huidige portefeuille.</td>
+                <td data-lang="fr">Krach de 2008, COVID mars 2020.</td><td data-lang="en">2008 crash, COVID March 2020.</td><td data-lang="nl">Crash van 2008, COVID maart 2020.</td>
+              </tr>
+              <tr>
+                <td data-lang="fr">Scénario hypothétique</td><td data-lang="en">Hypothetical scenario</td><td data-lang="nl">Hypothetisch scenario</td>
+                <td data-lang="fr">Construire un choc plausible jamais encore observé, à dire d'expert.</td><td data-lang="en">Build a plausible, not-yet-observed shock, by expert judgment.</td><td data-lang="nl">Een plausibele, nog niet waargenomen schok bouwen, op expertoordeel.</td>
+                <td data-lang="fr">Éclatement d'une zone monétaire, cyber-krach.</td><td data-lang="en">Break-up of a currency zone, cyber-crash.</td><td data-lang="nl">Uiteenvallen van een muntzone, cybercrash.</td>
+              </tr>
+              <tr>
+                <td data-lang="fr">Analyse de sensibilité</td><td data-lang="en">Sensitivity analysis</td><td data-lang="nl">Sensitiviteitsanalyse</td>
+                <td data-lang="fr">Choquer <em>un seul</em> facteur à la fois pour isoler son impact.</td><td data-lang="en">Shock <em>one</em> factor at a time to isolate its impact.</td><td data-lang="nl"><em>Eén</em> factor per keer schokken om de impact te isoleren.</td>
+                <td data-lang="fr">« +200 bps sur toute la courbe ».</td><td data-lang="en">“+200 bps across the whole curve”.</td><td data-lang="nl">“+200 bps over de hele curve”.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p data-lang="fr">Le scénario historique a l'avantage de la <strong>cohérence</strong> (les chocs et leurs corrélations ont réellement coexisté) mais le défaut de <strong>toujours refaire la dernière guerre</strong>. Le scénario hypothétique est plus créatif mais plus subjectif : sa qualité dépend de l'imagination du concepteur. L'analyse de sensibilité est simple mais <em>partielle</em> — elle ignore la manière dont les facteurs bougent <em>ensemble</em>.</p>
+        <p data-lang="en">The historical scenario has the advantage of <strong>consistency</strong> (the shocks and their correlations genuinely coexisted) but the flaw of <strong>always fighting the last war</strong>. The hypothetical scenario is more creative but more subjective: its quality depends on the designer's imagination. Sensitivity analysis is simple but <em>partial</em> — it ignores how factors move <em>together</em>.</p>
+        <p data-lang="nl">Het historische scenario heeft het voordeel van <strong>consistentie</strong> (de schokken en hun correlaties bestonden echt samen) maar de fout <strong>altijd de vorige oorlog over te doen</strong>. Het hypothetische scenario is creatiever maar subjectiever: de kwaliteit hangt af van de verbeelding van de ontwerper. Sensitiviteitsanalyse is eenvoudig maar <em>partieel</em> — ze negeert hoe factoren <em>samen</em> bewegen.</p>
+
+        <!-- 3. PRATIQUE + INTERACTIF -->
+        <h2 id="pratique"><span data-lang="fr">3. Le stress testing en pratique</span><span data-lang="en">3. Stress testing in practice</span><span data-lang="nl">3. Stresstesten in de praktijk</span></h2>
+        <p data-lang="fr">Construire un stress test, c'est : (1) identifier les <strong>facteurs de risque</strong> auxquels le portefeuille est exposé (actions, taux, spreads, change…) ; (2) calibrer des <strong>chocs cohérents</strong> sur chacun ; (3) réévaluer le portefeuille et sommer le <strong>P&amp;L</strong> par facteur. La clé est la <em>cohérence</em> : en vraie crise, les actions chutent, les spreads de crédit s'élargissent, et les taux souverains baissent souvent (fuite vers la qualité). Un scénario qui ignore ces liens sous-estime — ou surestime — le vrai danger.</p>
+        <p data-lang="en">Building a stress test means: (1) identify the <strong>risk factors</strong> the portfolio is exposed to (equities, rates, spreads, FX…); (2) calibrate <strong>coherent shocks</strong> on each; (3) revalue the portfolio and sum the <strong>P&amp;L</strong> by factor. The key is <em>consistency</em>: in a real crisis, equities fall, credit spreads widen, and sovereign rates often drop (flight to quality). A scenario that ignores these links understates — or overstates — the true danger.</p>
+        <p data-lang="nl">Een stresstest bouwen betekent: (1) de <strong>risicofactoren</strong> identificeren waaraan de portefeuille is blootgesteld (aandelen, rente, spreads, wisselkoers…); (2) <strong>coherente schokken</strong> op elk kalibreren; (3) de portefeuille herwaarderen en de <strong>P&amp;L</strong> per factor sommeren. De sleutel is <em>consistentie</em>: in een echte crisis dalen aandelen, verbreden kredietspreads, en dalen soevereine rentes vaak (vlucht naar kwaliteit). Een scenario dat deze verbanden negeert onderschat — of overschat — het echte gevaar.</p>
+
+        <p data-lang="fr">Le simulateur ci-dessous applique un scénario à un portefeuille type de 110 M€ (40 M€ actions, 35 M€ souverain de duration 6, 20 M€ crédit de spread-duration 4, 15 M€ exposition de change). Choisissez un scénario historique ou réglez les chocs à la main, et comparez la perte totale à la <span style="color:var(--gold);font-weight:700">VaR 1 jour à 99 %</span> de temps calme (≈ 2 M€). Le message est frappant : le stress dépasse la VaR d'un ordre de grandeur.</p>
+        <p data-lang="en">The simulator below applies a scenario to a typical €110M portfolio (€40M equities, €35M sovereign of duration 6, €20M credit of spread-duration 4, €15M FX exposure). Pick a historical scenario or set the shocks by hand, and compare the total loss with the calm-times <span style="color:var(--gold);font-weight:700">1-day 99% VaR</span> (≈ €2M). The message is striking: stress exceeds VaR by an order of magnitude.</p>
+        <p data-lang="nl">De simulator hieronder past een scenario toe op een typische portefeuille van €110M (€40M aandelen, €35M soeverein met duration 6, €20M krediet met spread-duration 4, €15M wisselkoersblootstelling). Kies een historisch scenario of stel de schokken handmatig in, en vergelijk het totale verlies met de <span style="color:var(--gold);font-weight:700">1-daagse 99%-VaR</span> in kalme tijden (≈ €2M). De boodschap is treffend: stress overtreft de VaR met een orde van grootte.</p>
+
+        <style>
+          #st-chart { width:100%; height:auto; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; }
+          #st-chart .axis { stroke:var(--ink-mute); stroke-width:1.4; }
+          #st-chart .tick { fill:var(--ink-mute); font-size:10px; font-family:var(--sans); }
+          #st-chart .lab { fill:var(--ink-soft); font-size:11px; font-family:var(--sans); font-weight:700; }
+          .st-presets { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+          .st-presets button { font-family:var(--sans); font-size:12.5px; font-weight:600; padding:6px 12px; border:1px solid var(--border); border-radius:20px; background:var(--surface); color:var(--ink-soft); cursor:pointer; }
+          .st-presets button:hover { border-color:var(--teal); color:var(--teal); }
+          .st-sliders { display:grid; grid-template-columns:repeat(2,1fr); gap:12px 18px; margin-bottom:16px; }
+          .st-sliders label { display:block; font-size:12.5px; font-weight:600; color:var(--ink-soft); margin-bottom:4px; }
+          .st-out { margin-top:14px; font-size:14.5px; color:var(--ink-soft); display:flex; gap:22px; flex-wrap:wrap; }
+          .st-out b { color:var(--ink); font-family:var(--mono); }
+          @media (max-width:640px){ .st-sliders { grid-template-columns:1fr; } }
+        </style>
+
+        <div class="calc">
+          <div class="chead">
+            <h4 data-lang="fr">Simulateur de stress — P&amp;L par facteur</h4>
+            <h4 data-lang="en">Stress simulator — P&amp;L by factor</h4>
+            <h4 data-lang="nl">Stresssimulator — P&amp;L per factor</h4>
+            <p data-lang="fr">Portefeuille 110 M€ · actions 40, souverain 35 (dur 6), crédit 20 (sdur 4), change 15</p>
+            <p data-lang="en">€110M portfolio · equities 40, sovereign 35 (dur 6), credit 20 (sdur 4), FX 15</p>
+            <p data-lang="nl">Portefeuille €110M · aandelen 40, soeverein 35 (dur 6), krediet 20 (sdur 4), wissel 15</p>
+          </div>
+          <div class="cbody" style="display:block">
+            <div class="st-presets">
+              <button data-eq="-5" data-rt="25" data-cs="20" data-fx="-1"><span data-lang="fr">Calme</span><span data-lang="en">Calm</span><span data-lang="nl">Kalm</span></button>
+              <button data-eq="-45" data-rt="-150" data-cs="350" data-fx="-8">2008</button>
+              <button data-eq="-34" data-rt="-100" data-cs="250" data-fx="-3">COVID 2020</button>
+              <button data-eq="-20" data-rt="250" data-cs="100" data-fx="5"><span data-lang="fr">Taux 2022</span><span data-lang="en">Rates 2022</span><span data-lang="nl">Rente 2022</span></button>
+            </div>
+            <div class="st-sliders">
+              <div>
+                <label><span data-lang="fr">Choc actions</span><span data-lang="en">Equity shock</span><span data-lang="nl">Aandelenschok</span></label>
+                <div class="rangewrap"><input type="range" id="st-eq" min="-60" max="20" step="1" value="-20"><output id="st-eq-o">−20%</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Choc taux (souverain)</span><span data-lang="en">Rate shock (sovereign)</span><span data-lang="nl">Renteschok (soeverein)</span></label>
+                <div class="rangewrap"><input type="range" id="st-rt" min="-200" max="300" step="5" value="100"><output id="st-rt-o">+100 bps</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Choc spread de crédit</span><span data-lang="en">Credit spread shock</span><span data-lang="nl">Kredietspreadschok</span></label>
+                <div class="rangewrap"><input type="range" id="st-cs" min="0" max="500" step="10" value="150"><output id="st-cs-o">+150 bps</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Choc de change</span><span data-lang="en">FX shock</span><span data-lang="nl">Wisselkoersschok</span></label>
+                <div class="rangewrap"><input type="range" id="st-fx" min="-20" max="20" step="1" value="-5"><output id="st-fx-o">−5%</output></div>
+              </div>
+            </div>
+
+            <svg id="st-chart" viewBox="0 0 520 260" role="img" aria-label="P&amp;L de stress par facteur de risque"></svg>
+
+            <div class="st-out">
+              <span><span data-lang="fr">Perte totale de stress :</span><span data-lang="en">Total stress loss:</span><span data-lang="nl">Totaal stressverlies:</span> <b id="st-total">—</b></span>
+              <span><span data-lang="fr">Multiple de la VaR 99 % :</span><span data-lang="en">Multiple of 99% VaR:</span><span data-lang="nl">Veelvoud van de 99%-VaR:</span> <b id="st-mult">—</b></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. REVERSE STRESS TESTING -->
+        <h2 id="reverse"><span data-lang="fr">4. Le reverse stress testing</span><span data-lang="en">4. Reverse stress testing</span><span data-lang="nl">4. Reverse stresstesten</span></h2>
+        <p data-lang="fr">Le stress classique va du <em>scénario</em> vers la <em>perte</em> : « si 2008 se répète, je perds X ». Le <strong>reverse stress testing</strong> inverse la flèche : on part du <strong>résultat catastrophique</strong> — « la banque est insolvable », « le fonds perd la moitié de son capital » — et on <strong>remonte aux scénarios qui pourraient le provoquer</strong>. La question n'est plus « combien puis-je perdre dans ce scénario ? » mais « <em>quel</em> scénario me tuerait ? ».</p>
+        <p data-lang="en">Classic stress runs from <em>scenario</em> to <em>loss</em>: “if 2008 repeats, I lose X”. <strong>Reverse stress testing</strong> flips the arrow: you start from the <strong>catastrophic outcome</strong> — “the bank is insolvent”, “the fund loses half its capital” — and <strong>work back to the scenarios that could cause it</strong>. The question is no longer “how much can I lose in this scenario?” but “<em>which</em> scenario would kill me?”.</p>
+        <p data-lang="nl">Klassieke stress loopt van <em>scenario</em> naar <em>verlies</em>: “als 2008 zich herhaalt, verlies ik X”. <strong>Reverse stresstesten</strong> keert de pijl om: je start van de <strong>catastrofale uitkomst</strong> — “de bank is insolvent”, “het fonds verliest de helft van zijn kapitaal” — en <strong>werkt terug naar de scenario's die het kunnen veroorzaken</strong>. De vraag is niet langer “hoeveel kan ik verliezen in dit scenario?” maar “<em>welk</em> scenario zou me doden?”.</p>
+
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">Pourquoi c'est précieux</span><span class="clabel" data-lang="en">Why it's valuable</span><span class="clabel" data-lang="nl">Waarom het waardevol is</span>
+          <span data-lang="fr">Le stress classique ne teste que les scénarios <em>qu'on a imaginés</em> — il hérite des angles morts de son concepteur. Le reverse stress testing force à découvrir les <strong>vulnérabilités cachées</strong> : les concentrations, les corrélations sous-estimées, les combinaisons de chocs modérés qui, ensemble, deviennent fatales. Rendu obligatoire après 2008 par les régulateurs, il révèle ce que la banque <em>n'aurait pas pensé à tester</em>.</span>
+          <span data-lang="en">Classic stress only tests the scenarios <em>you imagined</em> — it inherits its designer's blind spots. Reverse stress testing forces you to discover the <strong>hidden vulnerabilities</strong>: concentrations, underestimated correlations, combinations of moderate shocks that together turn fatal. Made mandatory after 2008 by regulators, it reveals what the bank <em>would not have thought to test</em>.</span>
+          <span data-lang="nl">Klassieke stress test enkel de scenario's <em>die je bedacht</em> — ze erft de blinde vlekken van de ontwerper. Reverse stresstesten dwingt je de <strong>verborgen kwetsbaarheden</strong> te ontdekken: concentraties, onderschatte correlaties, combinaties van matige schokken die samen fataal worden. Na 2008 verplicht gemaakt door toezichthouders, onthult het wat de bank <em>niet zou hebben bedacht om te testen</em>.</span>
+        </div>
+
+        <!-- 5. RÉGLEMENTAIRE -->
+        <h2 id="reglementaire"><span data-lang="fr">5. Les stress tests réglementaires</span><span data-lang="en">5. Regulatory stress tests</span><span data-lang="nl">5. Reglementaire stresstests</span></h2>
+        <p data-lang="fr">Depuis 2008, les superviseurs imposent des stress tests <strong>à l'échelle du système</strong>. En Europe, l'<strong>EBA</strong> (autorité bancaire européenne), avec la BCE, mène des exercices bisannuels sur un scénario adverse commun. Aux États-Unis, la Fed conduit le <strong>CCAR</strong> (Comprehensive Capital Analysis and Review) et le <strong>DFAST</strong> (issu de la loi Dodd-Frank). Leur logique : appliquer un même scénario sévère (récession, chômage, chute de l'immobilier et des actions) à toutes les grandes banques, et vérifier qu'après le choc, leur ratio de fonds propres reste au-dessus du minimum.</p>
+        <p data-lang="en">Since 2008, supervisors impose <strong>system-wide</strong> stress tests. In Europe, the <strong>EBA</strong> (European Banking Authority), with the ECB, runs biennial exercises on a common adverse scenario. In the US, the Fed runs <strong>CCAR</strong> (Comprehensive Capital Analysis and Review) and <strong>DFAST</strong> (from the Dodd-Frank Act). Their logic: apply one severe scenario (recession, unemployment, falling real estate and equities) to all large banks, and check that after the shock their capital ratio stays above the minimum.</p>
+        <p data-lang="nl">Sinds 2008 leggen toezichthouders <strong>systeembrede</strong> stresstests op. In Europa voert de <strong>EBA</strong> (Europese Bankautoriteit), met de ECB, tweejaarlijkse oefeningen uit op een gemeenschappelijk ongunstig scenario. In de VS voert de Fed <strong>CCAR</strong> (Comprehensive Capital Analysis and Review) en <strong>DFAST</strong> (uit de Dodd-Frank-wet) uit. Hun logica: één streng scenario (recessie, werkloosheid, dalend vastgoed en aandelen) toepassen op alle grote banken, en controleren dat na de schok hun kapitaalratio boven het minimum blijft.</p>
+
+        <p data-lang="fr">L'objectif est double : <strong>micro-prudentiel</strong> (chaque banque survit-elle ?) et <strong>macro-prudentiel</strong> (le système tient-il, et les résultats publiés rétablissent-ils la confiance des marchés ?). Ces exercices déterminent les distributions de dividendes et rachats d'actions autorisés — un enjeu majeur pour les banques.</p>
+        <p data-lang="en">The goal is twofold: <strong>micro-prudential</strong> (does each bank survive?) and <strong>macro-prudential</strong> (does the system hold, and do the published results restore market confidence?). These exercises determine the dividends and buybacks banks are allowed — a major stake for them.</p>
+        <p data-lang="nl">Het doel is tweeledig: <strong>micro-prudentieel</strong> (overleeft elke bank?) en <strong>macro-prudentieel</strong> (houdt het systeem stand, en herstellen de gepubliceerde resultaten het marktvertrouwen?). Deze oefeningen bepalen de toegestane dividenden en inkopen van banken — een grote inzet voor hen.</p>
+
+        <!-- 6. LIQUIDITÉ -->
+        <h2 id="liquidite"><span data-lang="fr">6. Le stress de liquidité</span><span data-lang="en">6. Liquidity stress</span><span data-lang="nl">6. Liquiditeitsstress</span></h2>
+        <p data-lang="fr">Une banque peut être <strong>solvable</strong> (actifs &gt; passifs) et pourtant <strong>couler faute de liquidité</strong> : si les déposants retirent et les financements se tarissent plus vite qu'elle ne peut vendre ses actifs, elle fait défaut. C'est ce qui a tué Northern Rock (2007), Lehman (2008) et, plus récemment, Silicon Valley Bank (2023). Le stress de liquidité est donc distinct du stress de solvabilité.</p>
+        <p data-lang="en">A bank can be <strong>solvent</strong> (assets &gt; liabilities) yet <strong>sink for lack of liquidity</strong>: if depositors withdraw and funding dries up faster than it can sell its assets, it defaults. That is what killed Northern Rock (2007), Lehman (2008) and, more recently, Silicon Valley Bank (2023). Liquidity stress is thus distinct from solvency stress.</p>
+        <p data-lang="nl">Een bank kan <strong>solvabel</strong> zijn (activa &gt; passiva) en toch <strong>zinken bij gebrek aan liquiditeit</strong>: als deposanten opnemen en financiering opdroogt sneller dan ze haar activa kan verkopen, gaat ze in default. Dat is wat Northern Rock (2007), Lehman (2008) en, recenter, Silicon Valley Bank (2023) doodde. Liquiditeitsstress is dus verschillend van solvabiliteitsstress.</p>
+
+        <div class="formula">
+          <div class="eq">LCR = <span data-lang="fr">Actifs liquides de haute qualité (HQLA)</span><span data-lang="en">High-Quality Liquid Assets (HQLA)</span><span data-lang="nl">Hoogwaardige liquide activa (HQLA)</span> / <span data-lang="fr">Sorties nettes de trésorerie sur 30 j de stress</span><span data-lang="en">Net cash outflows over a 30-day stress</span><span data-lang="nl">Netto kasuitstroom over 30 dagen stress</span> ≥ 100 %</div>
+          <div class="caption" data-lang="fr">Le <strong>LCR</strong> (Liquidity Coverage Ratio) de Bâle III impose de détenir assez d'actifs très liquides (cash, dette souveraine) pour couvrir 30 jours de fuite des financements dans un scénario de stress. Complément : le <strong>NSFR</strong> (Net Stable Funding Ratio) vise l'adéquation du financement à plus long terme.</div>
+          <div class="caption" data-lang="en">Basel III's <strong>LCR</strong> (Liquidity Coverage Ratio) requires holding enough highly liquid assets (cash, sovereign debt) to cover 30 days of funding flight in a stress scenario. Complement: the <strong>NSFR</strong> (Net Stable Funding Ratio) targets longer-term funding adequacy.</div>
+          <div class="caption" data-lang="nl">Bazel III's <strong>LCR</strong> (Liquidity Coverage Ratio) vereist voldoende zeer liquide activa (cash, soevereine schuld) om 30 dagen financieringsvlucht in een stressscenario te dekken. Aanvulling: de <strong>NSFR</strong> (Net Stable Funding Ratio) beoogt de toereikendheid van langetermijnfinanciering.</div>
+          <div class="caption src">Réf. — BCBS (2013), Basel III LCR</div>
+        </div>
+
+        <!-- 7. À RETENIR -->
+        <h2 id="retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></h2>
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">L'essentiel</span><span class="clabel" data-lang="en">The essentials</span><span class="clabel" data-lang="nl">De kern</span>
+          <span data-lang="fr">Le stress testing complète la VaR là où elle est aveugle : au-delà du seuil de confiance, en régime de crise, et face à l'impensé. Il est conditionnel (« si ce scénario, alors cette perte »), sans probabilité. On distingue scénarios historiques (rejouer 2008), hypothétiques (imaginer un choc plausible) et analyse de sensibilité (un facteur à la fois). Un bon scénario garde les chocs cohérents entre facteurs. Le reverse stress testing part de la faillite et remonte aux scénarios qui la causent — il révèle les angles morts. Les régulateurs imposent des stress tests systémiques (EBA en Europe, CCAR/DFAST aux US) pour vérifier l'adéquation du capital. Enfin, le stress de liquidité (LCR de Bâle III) est distinct de la solvabilité : une banque solvable peut couler faute de cash. Limite : on ne peut stresser que ce qu'on imagine.</span>
+          <span data-lang="en">Stress testing complements VaR where it is blind: beyond the confidence level, in crisis regimes, and against the unimagined. It is conditional (“if this scenario, then this loss”), with no probability. We distinguish historical scenarios (replay 2008), hypothetical ones (imagine a plausible shock) and sensitivity analysis (one factor at a time). A good scenario keeps shocks consistent across factors. Reverse stress testing starts from failure and works back to the scenarios that cause it — it reveals blind spots. Regulators impose system-wide stress tests (EBA in Europe, CCAR/DFAST in the US) to check capital adequacy. Finally, liquidity stress (Basel III's LCR) is distinct from solvency: a solvent bank can sink for lack of cash. Limit: you can only stress what you imagine.</span>
+          <span data-lang="nl">Stresstesten vult de VaR aan waar ze blind is: voorbij het betrouwbaarheidsniveau, in crisisregimes, en tegen het ondenkbare. Het is voorwaardelijk (“als dit scenario, dan dit verlies”), zonder kans. We onderscheiden historische scenario's (2008 herspelen), hypothetische (een plausibele schok verbeelden) en sensitiviteitsanalyse (één factor per keer). Een goed scenario houdt de schokken consistent over factoren. Reverse stresstesten start van faillissement en werkt terug naar de scenario's die het veroorzaken — het onthult blinde vlekken. Toezichthouders leggen systeembrede stresstests op (EBA in Europa, CCAR/DFAST in de VS) om de kapitaaltoereikendheid te controleren. Ten slotte is liquiditeitsstress (Bazel III's LCR) verschillend van solvabiliteit: een solvabele bank kan zinken bij gebrek aan cash. Grens: je kan enkel stressen wat je verbeeldt.</span>
+        </div>
+
+        <!-- 8. QCM -->
+        <h2 id="qcm"><span data-lang="fr">8. QCM — 15 questions</span><span data-lang="en">8. MCQ — 15 questions</span><span data-lang="nl">8. MCV — 15 vragen</span></h2>
+        <div class="quiz">
+          <h4 data-lang="fr">Auto-évaluation</h4><h4 data-lang="en">Self-assessment</h4><h4 data-lang="nl">Zelfevaluatie</h4>
+          <p class="qsub" data-lang="fr">Cliquez sur une réponse : la bonne s'affiche en vert et la justification apparaît.</p>
+          <p class="qsub" data-lang="en">Click an answer: the correct one turns green and the justification appears.</p>
+          <p class="qsub" data-lang="nl">Klik op een antwoord: het juiste kleurt groen en de verantwoording verschijnt.</p>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">1. Le stress testing sert avant tout à…</div>
+            <div class="qtext" data-lang="en">1. Stress testing primarily serves to…</div>
+            <div class="qtext" data-lang="nl">1. Stresstesten dient vooral om…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Prédire le rendement moyen du portefeuille.</span><span data-lang="en">Predict the portfolio's average return.</span><span data-lang="nl">Het gemiddelde rendement van de portefeuille te voorspellen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Remplacer entièrement la VaR.</span><span data-lang="en">Fully replace VaR.</span><span data-lang="nl">De VaR volledig te vervangen.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Évaluer les pertes sous des scénarios extrêmes que la VaR capture mal.</span><span data-lang="en">Assess losses under extreme scenarios the VaR captures poorly.</span><span data-lang="nl">Verliezen te beoordelen onder extreme scenario's die de VaR slecht vangt.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le stress complète la VaR sur les scénarios extrêmes / au-delà du seuil de confiance. Les deux coexistent (Bâle exige les deux).</span><span data-lang="en">✔ Stress complements VaR on extreme scenarios / beyond the confidence level. Both coexist (Basel requires both).</span><span data-lang="nl">✔ Stress vult de VaR aan op extreme scenario's / voorbij het betrouwbaarheidsniveau. Beide bestaan samen (Bazel vereist beide).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">2. Une limite majeure de la VaR que le stress testing corrige est…</div>
+            <div class="qtext" data-lang="en">2. A major VaR limitation that stress testing corrects is…</div>
+            <div class="qtext" data-lang="nl">2. Een grote VaR-beperking die stresstesten corrigeert is…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Qu'elle est trop lente à calculer.</span><span data-lang="en">That it is too slow to compute.</span><span data-lang="nl">Dat ze te traag is om te berekenen.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Qu'elle ne dit rien de l'ampleur des pertes au-delà du seuil de confiance.</span><span data-lang="en">That it says nothing about losses beyond the confidence level.</span><span data-lang="nl">Dat ze niets zegt over verliezen voorbij het betrouwbaarheidsniveau.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Qu'elle exige trop de données.</span><span data-lang="en">That it needs too much data.</span><span data-lang="nl">Dat ze te veel data vereist.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La VaR est un quantile : elle borne la « perte normale » mais ne dit rien de la queue au-delà, ni des régimes de crise. Le stress explore justement cette zone.</span><span data-lang="en">✔ VaR is a quantile: it bounds the “normal loss” but says nothing of the tail beyond, nor of crisis regimes. Stress explores exactly that zone.</span><span data-lang="nl">✔ VaR is een kwantiel: ze begrenst het “normale verlies” maar zegt niets over de staart erachter, noch over crisisregimes. Stress verkent net die zone.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">3. Un scénario « historique » consiste à…</div>
+            <div class="qtext" data-lang="en">3. A “historical” scenario consists of…</div>
+            <div class="qtext" data-lang="nl">3. Een “historisch” scenario bestaat uit…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Rejouer les chocs d'une crise passée réelle sur le portefeuille actuel.</span><span data-lang="en">Replaying a real past crisis's shocks on today's portfolio.</span><span data-lang="nl">De schokken van een echte voorbije crisis herspelen op de huidige portefeuille.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Inventer un choc jamais observé.</span><span data-lang="en">Inventing a never-observed shock.</span><span data-lang="nl">Een nooit waargenomen schok verzinnen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Choquer un seul facteur à la fois.</span><span data-lang="en">Shocking one factor at a time.</span><span data-lang="nl">Eén factor per keer schokken.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le scénario historique applique les mouvements réels d'une crise (2008, COVID) : ses chocs sont cohérents entre eux car ils ont réellement coexisté.</span><span data-lang="en">✔ The historical scenario applies a crisis's actual moves (2008, COVID): its shocks are mutually consistent because they truly coexisted.</span><span data-lang="nl">✔ Het historische scenario past de werkelijke bewegingen van een crisis toe (2008, COVID): de schokken zijn onderling consistent omdat ze echt samen bestonden.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">4. Un scénario « hypothétique » se distingue par le fait qu'il…</div>
+            <div class="qtext" data-lang="en">4. A “hypothetical” scenario is distinguished by the fact that it…</div>
+            <div class="qtext" data-lang="nl">4. Een “hypothetisch” scenario onderscheidt zich doordat het…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Reproduit exactement une crise passée.</span><span data-lang="en">Exactly reproduces a past crisis.</span><span data-lang="nl">Exact een voorbije crisis reproduceert.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">N'implique aucun facteur de risque.</span><span data-lang="en">Involves no risk factor.</span><span data-lang="nl">Geen enkele risicofactor betrekt.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Construit un choc plausible mais jamais encore observé.</span><span data-lang="en">Builds a plausible but not-yet-observed shock.</span><span data-lang="nl">Een plausibele maar nog niet waargenomen schok bouwt.</span></button>
+            <div class="explain"><span data-lang="fr">✔ L'hypothétique est bâti « à dire d'expert » (éclatement d'une union monétaire, cyberattaque majeure) : plus créatif, mais plus subjectif que l'historique.</span><span data-lang="en">✔ The hypothetical is built on expert judgment (currency-union break-up, major cyberattack): more creative, but more subjective than the historical.</span><span data-lang="nl">✔ Het hypothetische wordt op expertoordeel gebouwd (uiteenvallen muntunie, grote cyberaanval): creatiever, maar subjectiever dan het historische.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">5. L'analyse de sensibilité consiste à…</div>
+            <div class="qtext" data-lang="en">5. Sensitivity analysis consists of…</div>
+            <div class="qtext" data-lang="nl">5. Sensitiviteitsanalyse bestaat uit…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Choquer tous les facteurs simultanément et de façon corrélée.</span><span data-lang="en">Shocking all factors simultaneously and in correlated fashion.</span><span data-lang="nl">Alle factoren gelijktijdig en gecorreleerd schokken.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Choquer un seul facteur à la fois pour isoler son effet.</span><span data-lang="en">Shocking one factor at a time to isolate its effect.</span><span data-lang="nl">Eén factor per keer schokken om het effect te isoleren.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Calculer la probabilité de défaut.</span><span data-lang="en">Computing the probability of default.</span><span data-lang="nl">De kans op wanbetaling berekenen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Simple mais partielle : elle isole l'impact d'un facteur (« +200 bps »), au prix d'ignorer les mouvements conjoints des autres facteurs.</span><span data-lang="en">✔ Simple but partial: it isolates one factor's impact (“+200 bps”), at the cost of ignoring the joint moves of other factors.</span><span data-lang="nl">✔ Eenvoudig maar partieel: ze isoleert de impact van één factor (“+200 bps”), ten koste van het negeren van de gezamenlijke bewegingen van andere factoren.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">6. Un scénario de stress bien conçu veille surtout à…</div>
+            <div class="qtext" data-lang="en">6. A well-designed stress scenario above all ensures…</div>
+            <div class="qtext" data-lang="nl">6. Een goed ontworpen stressscenario zorgt vooral voor…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">La cohérence des chocs entre facteurs corrélés.</span><span data-lang="en">Consistency of shocks across correlated factors.</span><span data-lang="nl">Consistentie van de schokken over gecorreleerde factoren.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Que les chocs soient tous positifs.</span><span data-lang="en">That all shocks are positive.</span><span data-lang="nl">Dat alle schokken positief zijn.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Que la perte soit inférieure à la VaR.</span><span data-lang="en">That the loss is below the VaR.</span><span data-lang="nl">Dat het verlies onder de VaR ligt.</span></button>
+            <div class="explain"><span data-lang="fr">✔ En vraie crise, actions ↓, spreads ↑, taux souverains ↓ (fuite vers la qualité) : un scénario doit respecter ces liens pour être crédible.</span><span data-lang="en">✔ In a real crisis, equities ↓, spreads ↑, sovereign rates ↓ (flight to quality): a scenario must respect these links to be credible.</span><span data-lang="nl">✔ In een echte crisis: aandelen ↓, spreads ↑, soevereine rentes ↓ (vlucht naar kwaliteit): een scenario moet deze verbanden respecteren om geloofwaardig te zijn.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">7. Le reverse stress testing part…</div>
+            <div class="qtext" data-lang="en">7. Reverse stress testing starts…</div>
+            <div class="qtext" data-lang="nl">7. Reverse stresstesten start…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">D'un scénario donné pour en déduire la perte.</span><span data-lang="en">From a given scenario to deduce the loss.</span><span data-lang="nl">Van een gegeven scenario om het verlies af te leiden.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">De la VaR pour calculer l'Expected Shortfall.</span><span data-lang="en">From the VaR to compute Expected Shortfall.</span><span data-lang="nl">Van de VaR om de Expected Shortfall te berekenen.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">D'un résultat catastrophique pour remonter aux scénarios qui le causent.</span><span data-lang="en">From a catastrophic outcome to work back to the scenarios that cause it.</span><span data-lang="nl">Van een catastrofale uitkomst om terug te werken naar de scenario's die het veroorzaken.</span></button>
+            <div class="explain"><span data-lang="fr">✔ On fixe l'issue (« insolvable ») et on cherche <em>quelles</em> combinaisons de chocs y mènent — l'inverse du stress classique scénario → perte.</span><span data-lang="en">✔ You fix the outcome (“insolvent”) and search <em>which</em> shock combinations lead there — the reverse of classic scenario → loss.</span><span data-lang="nl">✔ Je legt de uitkomst vast (“insolvent”) en zoekt <em>welke</em> schokcombinaties er naartoe leiden — het omgekeerde van klassiek scenario → verlies.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">8. Le principal apport du reverse stress testing est de…</div>
+            <div class="qtext" data-lang="en">8. The main contribution of reverse stress testing is to…</div>
+            <div class="qtext" data-lang="nl">8. De belangrijkste bijdrage van reverse stresstesten is om…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Fournir la probabilité exacte de faillite.</span><span data-lang="en">Provide the exact probability of failure.</span><span data-lang="nl">De exacte kans op faillissement te geven.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Révéler des vulnérabilités cachées qu'on n'aurait pas pensé à tester.</span><span data-lang="en">Reveal hidden vulnerabilities one would not have thought to test.</span><span data-lang="nl">Verborgen kwetsbaarheden te onthullen die men niet zou hebben bedacht te testen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Réduire le coût des calculs de VaR.</span><span data-lang="en">Reduce the cost of VaR computations.</span><span data-lang="nl">De kost van VaR-berekeningen te verlagen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le stress classique n'explore que les scénarios imaginés ; le reverse débusque les angles morts (concentrations, corrélations sous-estimées). Obligatoire depuis 2008.</span><span data-lang="en">✔ Classic stress only explores imagined scenarios; the reverse flushes out blind spots (concentrations, underestimated correlations). Mandatory since 2008.</span><span data-lang="nl">✔ Klassieke stress verkent enkel bedachte scenario's; de reverse spoort blinde vlekken op (concentraties, onderschatte correlaties). Verplicht sinds 2008.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">9. Le CCAR et le DFAST sont des stress tests menés par…</div>
+            <div class="qtext" data-lang="en">9. CCAR and DFAST are stress tests run by…</div>
+            <div class="qtext" data-lang="nl">9. CCAR en DFAST zijn stresstests uitgevoerd door…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">La Réserve fédérale (Fed) aux États-Unis.</span><span data-lang="en">The Federal Reserve (Fed) in the United States.</span><span data-lang="nl">De Federal Reserve (Fed) in de Verenigde Staten.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">L'EBA en Europe.</span><span data-lang="en">The EBA in Europe.</span><span data-lang="nl">De EBA in Europa.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les agences de notation.</span><span data-lang="en">The rating agencies.</span><span data-lang="nl">De ratingbureaus.</span></button>
+            <div class="explain"><span data-lang="fr">✔ CCAR/DFAST = Fed (US, issus de Dodd-Frank). En Europe, l'équivalent est l'exercice de l'EBA avec la BCE.</span><span data-lang="en">✔ CCAR/DFAST = Fed (US, from Dodd-Frank). In Europe, the equivalent is the EBA exercise with the ECB.</span><span data-lang="nl">✔ CCAR/DFAST = Fed (VS, uit Dodd-Frank). In Europa is het equivalent de EBA-oefening met de ECB.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">10. L'objectif d'un stress test réglementaire systémique est surtout de…</div>
+            <div class="qtext" data-lang="en">10. The goal of a system-wide regulatory stress test is mainly to…</div>
+            <div class="qtext" data-lang="nl">10. Het doel van een systeembrede reglementaire stresstest is vooral om…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Maximiser les dividendes des banques.</span><span data-lang="en">Maximise banks' dividends.</span><span data-lang="nl">De dividenden van banken te maximaliseren.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Prédire le prochain krach.</span><span data-lang="en">Predict the next crash.</span><span data-lang="nl">De volgende crash te voorspellen.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Vérifier que les banques gardent assez de capital après un choc sévère.</span><span data-lang="en">Verify banks keep enough capital after a severe shock.</span><span data-lang="nl">Te verifiëren dat banken genoeg kapitaal behouden na een zware schok.</span></button>
+            <div class="explain"><span data-lang="fr">✔ On applique un même scénario adverse à toutes les grandes banques et on vérifie que leur ratio de fonds propres reste au-dessus du minimum (micro- et macro-prudentiel).</span><span data-lang="en">✔ One applies the same adverse scenario to all large banks and checks their capital ratio stays above the minimum (micro- and macro-prudential).</span><span data-lang="nl">✔ Men past hetzelfde ongunstige scenario toe op alle grote banken en controleert dat hun kapitaalratio boven het minimum blijft (micro- en macro-prudentieel).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">11. Contrairement à la VaR, un scénario de stress…</div>
+            <div class="qtext" data-lang="en">11. Unlike VaR, a stress scenario…</div>
+            <div class="qtext" data-lang="nl">11. In tegenstelling tot de VaR, een stressscenario…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Donne la probabilité exacte de la perte.</span><span data-lang="en">Gives the exact probability of the loss.</span><span data-lang="nl">De exacte kans op het verlies geeft.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">N'a pas de probabilité attachée : il est conditionnel (« et si »).</span><span data-lang="en">Has no probability attached: it is conditional (“what if”).</span><span data-lang="nl">Heeft geen gekoppelde kans: het is voorwaardelijk (“wat als”).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Suppose une distribution normale.</span><span data-lang="en">Assumes a normal distribution.</span><span data-lang="nl">Een normale verdeling veronderstelt.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le stress dit « si ce scénario, alors cette perte », sans en chiffrer la vraisemblance. C'est un « et si », pas un « quelle chance ».</span><span data-lang="en">✔ Stress says “if this scenario, then this loss”, without pricing its likelihood. It is a “what if”, not a “how likely”.</span><span data-lang="nl">✔ Stress zegt “als dit scenario, dan dit verlies”, zonder de waarschijnlijkheid te becijferen. Het is een “wat als”, geen “hoe waarschijnlijk”.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">12. Une banque peut faire faillite tout en étant solvable si…</div>
+            <div class="qtext" data-lang="en">12. A bank can fail while being solvent if…</div>
+            <div class="qtext" data-lang="nl">12. Een bank kan failliet gaan terwijl ze solvabel is als…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Elle manque de liquidité : les financements fuient plus vite qu'elle ne peut vendre ses actifs.</span><span data-lang="en">It lacks liquidity: funding flees faster than it can sell its assets.</span><span data-lang="nl">Ze liquiditeit mist: financiering vlucht sneller dan ze haar activa kan verkopen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Ses actifs dépassent largement ses passifs.</span><span data-lang="en">Its assets far exceed its liabilities.</span><span data-lang="nl">Haar activa haar passiva ver overtreffen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Elle a trop de fonds propres.</span><span data-lang="en">It has too much capital.</span><span data-lang="nl">Ze te veel kapitaal heeft.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Solvabilité ≠ liquidité. Northern Rock, Lehman, SVB (2023) : solvables sur le papier mais coulées par une ruée sur les financements.</span><span data-lang="en">✔ Solvency ≠ liquidity. Northern Rock, Lehman, SVB (2023): solvent on paper but sunk by a funding run.</span><span data-lang="nl">✔ Solvabiliteit ≠ liquiditeit. Northern Rock, Lehman, SVB (2023): solvabel op papier maar gezonken door een financieringsrun.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">13. Le LCR (Liquidity Coverage Ratio) de Bâle III impose que…</div>
+            <div class="qtext" data-lang="en">13. Basel III's LCR (Liquidity Coverage Ratio) requires that…</div>
+            <div class="qtext" data-lang="nl">13. Bazel III's LCR (Liquidity Coverage Ratio) vereist dat…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le capital dépasse 8 % des actifs pondérés.</span><span data-lang="en">Capital exceeds 8% of risk-weighted assets.</span><span data-lang="nl">Kapitaal 8% van de risicogewogen activa overschrijdt.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les dividendes soient plafonnés.</span><span data-lang="en">Dividends be capped.</span><span data-lang="nl">Dividenden worden geplafonneerd.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Les actifs très liquides couvrent 30 jours de sorties nettes en stress (≥ 100 %).</span><span data-lang="en">Highly liquid assets cover 30 days of net stressed outflows (≥ 100%).</span><span data-lang="nl">Zeer liquide activa 30 dagen netto stress-uitstroom dekken (≥ 100%).</span></button>
+            <div class="explain"><span data-lang="fr">✔ LCR = HQLA / sorties nettes sur 30 j de stress ≥ 100 %. C'est une norme de liquidité, distincte des ratios de capital.</span><span data-lang="en">✔ LCR = HQLA / net 30-day stressed outflows ≥ 100%. It is a liquidity standard, distinct from capital ratios.</span><span data-lang="nl">✔ LCR = HQLA / netto 30-daagse stress-uitstroom ≥ 100%. Het is een liquiditeitsnorm, onderscheiden van kapitaalratio's.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">14. Qu'une perte de stress soit très supérieure à la VaR est…</div>
+            <div class="qtext" data-lang="en">14. A stress loss being far larger than the VaR is…</div>
+            <div class="qtext" data-lang="nl">14. Dat een stressverlies veel groter is dan de VaR is…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le signe d'une erreur de calcul.</span><span data-lang="en">A sign of a calculation error.</span><span data-lang="nl">Een teken van een rekenfout.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Attendu et normal : c'est justement le but (explorer la queue).</span><span data-lang="en">Expected and normal: that is precisely the point (explore the tail).</span><span data-lang="nl">Verwacht en normaal: dat is net de bedoeling (de staart verkennen).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La preuve que la VaR est fausse.</span><span data-lang="en">Proof that the VaR is wrong.</span><span data-lang="nl">Bewijs dat de VaR fout is.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La VaR mesure un mauvais jour normal ; le stress un scénario extrême. Que le second dépasse la première d'un facteur 5-10 est le message, pas un bug.</span><span data-lang="en">✔ VaR measures a normal bad day; stress an extreme scenario. The latter exceeding the former by 5-10× is the message, not a bug.</span><span data-lang="nl">✔ VaR meet een normale slechte dag; stress een extreem scenario. Dat het tweede het eerste met een factor 5-10 overtreft is de boodschap, geen bug.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">15. Une limite intrinsèque du stress testing est que…</div>
+            <div class="qtext" data-lang="en">15. An intrinsic limitation of stress testing is that…</div>
+            <div class="qtext" data-lang="nl">15. Een intrinsieke beperking van stresstesten is dat…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">On ne peut stresser que les scénarios qu'on imagine (les « inconnues inconnues » échappent).</span><span data-lang="en">You can only stress scenarios you imagine (the “unknown unknowns” escape).</span><span data-lang="nl">Je enkel scenario's kan stressen die je verbeeldt (de “unknown unknowns” ontsnappen).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Il donne des probabilités trop précises.</span><span data-lang="en">It gives overly precise probabilities.</span><span data-lang="nl">Het te precieze kansen geeft.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Il ne fonctionne que pour les actions.</span><span data-lang="en">It only works for equities.</span><span data-lang="nl">Het enkel werkt voor aandelen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le choix des scénarios est subjectif ; un choc jamais envisagé ne sera pas testé. Le reverse stress testing atténue ce biais, sans l'éliminer.</span><span data-lang="en">✔ Scenario choice is subjective; a never-envisaged shock won't be tested. Reverse stress testing mitigates this bias, without eliminating it.</span><span data-lang="nl">✔ De scenariokeuze is subjectief; een nooit overwogen schok wordt niet getest. Reverse stresstesten verzacht deze bias, zonder ze te elimineren.</span></div>
+          </div>
+        </div>
+
+        <!-- 9. EXERCICES -->
+        <h2 id="exercices"><span data-lang="fr">9. Exercices chiffrés</span><span data-lang="en">9. Numerical exercises</span><span data-lang="nl">9. Cijferoefeningen</span></h2>
+        <p data-lang="fr">Réponses courtes à révéler ; corrigés détaillés sur la page « Solutions ».</p>
+        <p data-lang="en">Short answers to reveal; full solutions on the “Solutions” page.</p>
+        <p data-lang="nl">Korte antwoorden te onthullen; uitgewerkte oplossingen op de “Oplossingen”-pagina.</p>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice STR-1</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Un portefeuille actions de 50 M€ subit un choc de −30 %. Quelle est la perte de stress ?</p>
+          <p class="estatement" data-lang="en">A €50M equity portfolio undergoes a −30% shock. What is the stress loss?</p>
+          <p class="estatement" data-lang="nl">Een aandelenportefeuille van €50M ondergaat een schok van −30%. Wat is het stressverlies?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Perte = 50 M€ × (−30 %) = <b>−15 M€</b>.</div>
+            <div class="ans" data-lang="en">Loss = €50M × (−30%) = <b>−€15M</b>.</div>
+            <div class="ans" data-lang="nl">Verlies = €50M × (−30%) = <b>−€15M</b>.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice STR-2</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Un portefeuille obligataire de 40 M€ a une duration modifiée de 7. Les taux montent de 200 bps. Estimez la perte.</p>
+          <p class="estatement" data-lang="en">A €40M bond portfolio has a modified duration of 7. Rates rise 200 bps. Estimate the loss.</p>
+          <p class="estatement" data-lang="nl">Een obligatieportefeuille van €40M heeft een gemodificeerde duration van 7. De rente stijgt 200 bps. Schat het verlies.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Perte ≈ −D<sub>mod</sub> × Δy × valeur = −7 × 0,02 × 40 M€ = <b>−5,6 M€</b>.</div>
+            <div class="ans" data-lang="en">Loss ≈ −D<sub>mod</sub> × Δy × value = −7 × 0.02 × €40M = <b>−€5.6M</b>.</div>
+            <div class="ans" data-lang="nl">Verlies ≈ −D<sub>mod</sub> × Δy × waarde = −7 × 0,02 × €40M = <b>−€5,6M</b>.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice STR-3</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Portefeuille : 30 M€ d'actions (choc −25 %) et 20 M€ d'obligations (duration 5, taux +100 bps). Calculez le P&amp;L total de stress.</p>
+          <p class="estatement" data-lang="en">Portfolio: €30M equities (−25% shock) and €20M bonds (duration 5, rates +100 bps). Compute the total stress P&amp;L.</p>
+          <p class="estatement" data-lang="nl">Portefeuille: €30M aandelen (schok −25%) en €20M obligaties (duration 5, rente +100 bps). Bereken de totale stress-P&amp;L.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Actions : 30 × (−0,25) = −7,5 M€. Obligations : −5 × 0,01 × 20 = −1,0 M€. Total = <b>−8,5 M€</b>.</div>
+            <div class="ans" data-lang="en">Equities: 30 × (−0.25) = −€7.5M. Bonds: −5 × 0.01 × 20 = −€1.0M. Total = <b>−€8.5M</b>.</div>
+            <div class="ans" data-lang="nl">Aandelen: 30 × (−0,25) = −€7,5M. Obligaties: −5 × 0,01 × 20 = −€1,0M. Totaal = <b>−€8,5M</b>.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice STR-4</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">La VaR 1 jour à 99 % d'un portefeuille est de 2 M€ ; un scénario de stress produit une perte de 16 M€. Que vaut le ratio, et comment l'interpréter ?</p>
+          <p class="estatement" data-lang="en">A portfolio's 1-day 99% VaR is €2M; a stress scenario produces a €16M loss. What is the ratio, and how to interpret it?</p>
+          <p class="estatement" data-lang="nl">De 1-daagse 99%-VaR van een portefeuille is €2M; een stressscenario produceert een verlies van €16M. Wat is de ratio, en hoe te interpreteren?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Ratio = 16 / 2 = <b>8×</b> la VaR. La VaR décrit un mauvais jour ordinaire ; le stress révèle une perte de queue bien plus lourde — d'où la nécessité de le compléter par du capital et des plans de contingence.</div>
+            <div class="ans" data-lang="en">Ratio = 16 / 2 = <b>8×</b> the VaR. VaR describes an ordinary bad day; stress reveals a far heavier tail loss — hence the need to back it with capital and contingency plans.</div>
+            <div class="ans" data-lang="nl">Ratio = 16 / 2 = <b>8×</b> de VaR. VaR beschrijft een gewone slechte dag; stress onthult een veel zwaarder staartverlies — vandaar de nood aan kapitaal en noodplannen.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice STR-5</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Une banque a 80 M€ d'actifs liquides de haute qualité (HQLA) et des sorties nettes de trésorerie de 100 M€ sur 30 jours de stress. Calculez le LCR. Est-il conforme ?</p>
+          <p class="estatement" data-lang="en">A bank has €80M of high-quality liquid assets (HQLA) and net cash outflows of €100M over a 30-day stress. Compute the LCR. Is it compliant?</p>
+          <p class="estatement" data-lang="nl">Een bank heeft €80M hoogwaardige liquide activa (HQLA) en netto kasuitstroom van €100M over 30 dagen stress. Bereken de LCR. Is ze conform?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">LCR = 80 / 100 = <b>80 %</b> &lt; 100 % → <b>non conforme</b>. La banque doit augmenter ses HQLA (ou réduire ses sorties) pour atteindre 100 %.</div>
+            <div class="ans" data-lang="en">LCR = 80 / 100 = <b>80%</b> &lt; 100% → <b>non-compliant</b>. The bank must raise its HQLA (or cut outflows) to reach 100%.</div>
+            <div class="ans" data-lang="nl">LCR = 80 / 100 = <b>80%</b> &lt; 100% → <b>niet-conform</b>. De bank moet haar HQLA verhogen (of uitstroom verlagen) om 100% te bereiken.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice STR-6</span><span class="diff" data-lang="fr">Réflexion</span><span class="diff" data-lang="en">Conceptual</span><span class="diff" data-lang="nl">Reflectie</span></div>
+          <p class="estatement" data-lang="fr">Pourquoi un régulateur impose-t-il le reverse stress testing en plus des stress tests classiques ?</p>
+          <p class="estatement" data-lang="en">Why does a regulator mandate reverse stress testing in addition to classic stress tests?</p>
+          <p class="estatement" data-lang="nl">Waarom legt een toezichthouder reverse stresstesten op bovenop klassieke stresstests?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Parce que le stress classique ne teste que les scénarios <b>déjà imaginés</b> par la banque : il hérite de ses angles morts. En partant de la faillite pour remonter aux causes, le reverse stress testing force à identifier les <b>vulnérabilités cachées</b> (concentrations, corrélations sous-estimées, combinaisons fatales de chocs modérés) que la banque n'aurait pas pensé à tester.</div>
+            <div class="ans" data-lang="en">Because classic stress only tests the scenarios the bank <b>already imagined</b>: it inherits its blind spots. By starting from failure and working back to causes, reverse stress testing forces the identification of <b>hidden vulnerabilities</b> (concentrations, underestimated correlations, fatal combinations of moderate shocks) the bank would not have thought to test.</div>
+            <div class="ans" data-lang="nl">Omdat klassieke stress enkel de scenario's test die de bank <b>al bedacht</b> heeft: ze erft haar blinde vlekken. Door van faillissement terug te werken naar oorzaken, dwingt reverse stresstesten de identificatie van <b>verborgen kwetsbaarheden</b> (concentraties, onderschatte correlaties, fatale combinaties van matige schokken) die de bank niet zou hebben bedacht te testen.</div>
+          </details>
+        </div>
+
+        <section class="biblio">
+          <h2 id="biblio"><span data-lang="fr">Bibliographie &amp; pour aller plus loin</span><span data-lang="en">Bibliography &amp; further reading</span><span data-lang="nl">Bibliografie &amp; verder lezen</span></h2>
+          <div class="bcol">
+            <h4 data-lang="fr">Références</h4><h4 data-lang="en">References</h4><h4 data-lang="nl">Referenties</h4>
+            <ol>
+      <li>Basel Committee on Banking Supervision (2018). <em>Stress testing principles</em>. BIS. <a href="https://www.bis.org/bcbs/publ/d450.htm" target="_blank" rel="noopener">bis.org/bcbs/publ/d450</a></li>
+      <li>Basel Committee on Banking Supervision (2013). <em>Basel III: The Liquidity Coverage Ratio and liquidity risk monitoring tools</em>. BIS. <a href="https://www.bis.org/publ/bcbs238.htm" target="_blank" rel="noopener">bis.org/publ/bcbs238</a></li>
+      <li>Kupiec, P. H. (1998). Stress Testing in a Value at Risk Framework. <em>Journal of Derivatives</em>, 6(1), 7–24. <a href="https://doi.org/10.3905/jod.1998.408008" target="_blank" rel="noopener">doi:10.3905/jod.1998.408008</a></li>
+      <li>Berkowitz, J. (2000). A Coherent Framework for Stress Testing. <em>Journal of Risk</em>, 2(2), 5–15. <a href="https://doi.org/10.21314/JOR.2000.031" target="_blank" rel="noopener">doi:10.21314/JOR.2000.031</a></li>
+      <li>Rebonato, R. (2010). <em>Coherent Stress Testing: A Bayesian Approach</em>. Wiley.</li>
+      <li>Hull, J. C. (2018). <em>Risk Management and Financial Institutions</em> (5th ed.), stress testing &amp; liquidity chapters. Wiley.</li>
+      <li>European Banking Authority (EBA). <em>EU-wide stress test methodology</em>.</li>
+      <li>Federal Reserve. <em>Comprehensive Capital Analysis and Review (CCAR) &amp; DFAST</em>.</li>
+            </ol>
+          </div>
+          <div class="bcol">
+            <h4 data-lang="fr">Pour aller plus loin</h4><h4 data-lang="en">Further reading</h4><h4 data-lang="nl">Verder lezen</h4>
+            <ul>
+      <li>BIS — <a href="https://www.bis.org/bcbs/" target="_blank" rel="noopener">Comité de Bâle</a> (stress testing, LCR/NSFR).</li>
+      <li>EBA — <a href="https://www.eba.europa.eu/risk-and-data-analysis/risk-analysis/eu-wide-stress-testing" target="_blank" rel="noopener">EU-wide stress testing</a> · Federal Reserve — <a href="https://www.federalreserve.gov/supervisionreg/dfa-stress-tests.htm" target="_blank" rel="noopener">DFAST / CCAR</a>.</li>
+      <li>Investopedia — <a href="https://www.investopedia.com/terms/s/stresstesting.asp" target="_blank" rel="noopener">Stress Testing</a> · <a href="https://www.investopedia.com/terms/r/reverse-stress-test.asp" target="_blank" rel="noopener">Reverse Stress Test</a> · <a href="https://www.investopedia.com/terms/l/lcr.asp" target="_blank" rel="noopener">LCR</a>.</li>
+            </ul>
+          </div>
+        </section>
+
+        <div class="module-nav">
+          <a class="prev" href="frm6-credit.html">
+            <div class="dir" data-lang="fr">← Module précédent</div><div class="dir" data-lang="en">← Previous module</div><div class="dir" data-lang="nl">← Vorige module</div>
+            <div class="tt" data-lang="fr">6. Risque de crédit</div><div class="tt" data-lang="en">6. Credit risk</div><div class="tt" data-lang="nl">6. Kredietrisico</div>
+          </a>
+          <a class="next" href="../index.html#curriculum">
+            <div class="dir" data-lang="fr">Module suivant →</div><div class="dir" data-lang="en">Next module →</div><div class="dir" data-lang="nl">Volgende module →</div>
+            <div class="tt" data-lang="fr">8. Réglementation &amp; capital</div><div class="tt" data-lang="en">8. Regulation &amp; capital</div><div class="tt" data-lang="nl">8. Regelgeving &amp; kapitaal</div>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap foot">
+    <div class="brand"><span class="logo">Avenir<b>.</b></span></div>
+    <p data-lang="fr">Financial Risk Management · Module 7 · Stress testing &amp; scénarios</p>
+    <p data-lang="en">Financial Risk Management · Module 7 · Stress testing &amp; scenarios</p>
+    <p data-lang="nl">Financial Risk Management · Module 7 · Stresstesten &amp; scenario's</p>
+  </div>
+</footer>
+
+<script>
+/* ==========================================================================
+   AVENIR — Scripts partagés
+   Sélecteur de langue FR/EN, thème clair/sombre, sommaire actif, quiz
+   ========================================================================== */
+(function () {
+  "use strict";
+
+  var LS_LANG = "avenir-lang";
+  var LS_THEME = "avenir-theme";
+
+  function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  /* ---------- Langue ---------- */
+  function detectLang() {
+    var saved = safeGet(LS_LANG);
+    if (saved === "fr" || saved === "en" || saved === "nl") return saved;
+    var nav = (navigator.language || "fr").toLowerCase();
+    if (nav.indexOf("nl") === 0) return "nl";
+    if (nav.indexOf("en") === 0) return "en";
+    return "fr";
+  }
+
+  function setLang(lang) {
+    document.body.setAttribute("data-active-lang", lang);
+    document.documentElement.setAttribute("lang", lang);
+    safeSet(LS_LANG, lang);
+    document.querySelectorAll(".lang-toggle button").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-set-lang") === lang);
+    });
+  }
+
+  /* ---------- Thème ---------- */
+  function detectTheme() {
+    var saved = safeGet(LS_THEME);
+    if (saved === "light" || saved === "dark") return saved;
+    return null; // suit le système
+  }
+
+  function applyTheme(theme) {
+    if (theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      safeSet(LS_THEME, theme);
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+    updateThemeIcon();
+  }
+
+  function currentTheme() {
+    var attr = document.documentElement.getAttribute("data-theme");
+    if (attr) return attr;
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  function updateThemeIcon() {
+    var btn = document.getElementById("theme-btn");
+    if (btn) btn.textContent = currentTheme() === "dark" ? "☀" : "☾";
+  }
+
+  /* ---------- Initialisation ---------- */
+  document.addEventListener("DOMContentLoaded", function () {
+    setLang(detectLang());
+    applyTheme(detectTheme());
+
+    document.querySelectorAll(".lang-toggle button").forEach(function (b) {
+      b.addEventListener("click", function () { setLang(b.getAttribute("data-set-lang")); });
+    });
+
+    var themeBtn = document.getElementById("theme-btn");
+    if (themeBtn) themeBtn.addEventListener("click", function () {
+      applyTheme(currentTheme() === "dark" ? "light" : "dark");
+    });
+
+    var menuBtn = document.getElementById("menu-btn");
+    var navLinks = document.querySelector(".nav-links");
+    if (menuBtn && navLinks) menuBtn.addEventListener("click", function () {
+      var open = navLinks.style.display === "flex";
+      navLinks.style.display = open ? "" : "flex";
+      navLinks.style.position = "absolute";
+      navLinks.style.flexDirection = "column";
+      navLinks.style.top = "64px";
+      navLinks.style.right = "16px";
+      navLinks.style.background = "var(--surface)";
+      navLinks.style.border = "1px solid var(--border)";
+      navLinks.style.borderRadius = "12px";
+      navLinks.style.padding = "8px";
+      navLinks.style.boxShadow = "var(--shadow-lg)";
+    });
+
+    /* Sommaire actif + barre de progression (pages module) */
+    var toc = document.querySelector(".toc");
+    var bar = document.querySelector(".progress-bar");
+    if (toc || bar) {
+      var headings = Array.prototype.slice.call(document.querySelectorAll(".module-body h2[id]"));
+      var links = toc ? Array.prototype.slice.call(toc.querySelectorAll("a")) : [];
+      var onScroll = function () {
+        if (bar) {
+          var h = document.documentElement;
+          var pct = h.scrollTop / (h.scrollHeight - h.clientHeight);
+          bar.style.width = Math.max(0, Math.min(1, pct)) * 100 + "%";
+        }
+        if (headings.length && links.length) {
+          var pos = window.scrollY + 120, current = headings[0].id;
+          headings.forEach(function (hd) { if (hd.offsetTop <= pos) current = hd.id; });
+          links.forEach(function (a) {
+            a.classList.toggle("active", a.getAttribute("href") === "#" + current);
+          });
+        }
+      };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    }
+  });
+
+  /* ---------- Quiz (exposé globalement pour les onclick) ---------- */
+  window.avenirAnswer = function (btn, correct) {
+    var q = btn.closest(".q");
+    if (q.getAttribute("data-done") === "1") return;
+    q.setAttribute("data-done", "1");
+    var opts = q.querySelectorAll(".opt");
+    opts.forEach(function (o) { o.disabled = true; });
+    if (correct) {
+      btn.classList.add("correct");
+    } else {
+      btn.classList.add("wrong");
+      opts.forEach(function (o) { if (o.getAttribute("data-correct") === "1") o.classList.add("correct"); });
+    }
+    var ex = q.querySelector(".explain");
+    if (ex) ex.classList.add("show");
+  };
+})();
+
+</script>
+<script>
+/* Simulateur de stress : P&L par facteur, comparaison à la VaR */
+(function () {
+  var svg = document.getElementById("st-chart");
+  if (!svg) return;
+  var EQ=40, BOND=35, BDUR=6, CRED=20, CSDUR=4, FX=15;   // M€ / durations
+  var VAR99=2.0;                                          // VaR 1j 99% (M€), temps calme
+  function v(id){ return parseFloat(document.getElementById(id).value); }
+  function setT(id,t){ var e=document.getElementById(id); if(e) e.textContent=t; }
+  function al(){ return document.body.getAttribute("data-active-lang")||"fr"; }
+  function sgn(x){ return (x>=0?"+":"")+x; }
+
+  function draw(){
+    var eq=v("st-eq"), rt=v("st-rt"), cs=v("st-cs"), fx=v("st-fx");
+    setT("st-eq-o",(eq>=0?"+":"")+eq+"%"); setT("st-rt-o",sgn(rt)+" bps"); setT("st-cs-o",sgn(cs)+" bps"); setT("st-fx-o",(fx>=0?"+":"")+fx+"%");
+    var pEq=EQ*eq/100, pRt=-BOND*BDUR*rt/10000, pCs=-CRED*CSDUR*cs/10000, pFx=FX*fx/100;
+    var total=pEq+pRt+pCs+pFx;
+    setT("st-total", total.toFixed(2)+" M€");
+    setT("st-mult", (Math.abs(total)/VAR99).toFixed(1)+"×");
+
+    var labs = al()==="en" ? ["Equities","Rates","Credit","FX","Total"]
+             : al()==="nl" ? ["Aandelen","Rente","Krediet","Wissel","Totaal"]
+             : ["Actions","Taux","Crédit","Change","Total"];
+    var vals=[pEq,pRt,pCs,pFx,total];
+
+    var W=520,H=260,L=16,R=16,T=16,B=40, pw=W-L-R, ph=H-T-B;
+    var amax=Math.max(VAR99, Math.abs(total)); for (var i=0;i<vals.length;i++) amax=Math.max(amax,Math.abs(vals[i]));
+    amax*=1.15;
+    var y0 = T + ph*amax/(2*amax); // = T + ph/2 (zéro au centre)
+    function py(val){ return T + (1-(val+amax)/(2*amax))*ph; }
+    var n=vals.length, slot=pw/n, bw=slot*0.5;
+
+    var g="";
+    // lignes VaR ±
+    g+='<line x1="'+L+'" y1="'+py(VAR99).toFixed(1)+'" x2="'+(L+pw)+'" y2="'+py(VAR99).toFixed(1)+'" stroke="var(--gold)" stroke-width="1.3" stroke-dasharray="4 3"/>';
+    g+='<line x1="'+L+'" y1="'+py(-VAR99).toFixed(1)+'" x2="'+(L+pw)+'" y2="'+py(-VAR99).toFixed(1)+'" stroke="var(--gold)" stroke-width="1.3" stroke-dasharray="4 3"/>';
+    g+='<text class="tick" x="'+(L+pw)+'" y="'+(py(VAR99)-3).toFixed(1)+'" text-anchor="end" fill="var(--gold)">± VaR 99%</text>';
+    // barres
+    for (var b2=0;b2<n;b2++){
+      var cx=L+slot*b2+slot/2, val=vals[b2];
+      var yTop=py(Math.max(0,val)), yBot=py(Math.min(0,val));
+      var hh=Math.max(1,yBot-yTop);
+      var fill = val<0 ? "var(--crimson)" : "var(--teal)";
+      var isTot = (b2===n-1);
+      g+='<rect x="'+(cx-bw/2).toFixed(1)+'" y="'+yTop.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+hh.toFixed(1)+'" rx="2" fill="'+fill+'" opacity="'+(isTot?"0.95":"0.65")+'"'+(isTot?' stroke="var(--ink)" stroke-width="1"':'')+'/>';
+      // valeur
+      var vy = val<0 ? yBot+13 : yTop-5;
+      g+='<text class="tick" x="'+cx.toFixed(1)+'" y="'+vy.toFixed(1)+'" text-anchor="middle" fill="var(--ink-soft)">'+(val>=0?"+":"")+val.toFixed(1)+'</text>';
+      // label
+      g+='<text class="lab" x="'+cx.toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+labs[b2]+'</text>';
+    }
+    // ligne zéro
+    g+='<line class="axis" x1="'+L+'" y1="'+py(0).toFixed(1)+'" x2="'+(L+pw)+'" y2="'+py(0).toFixed(1)+'"/>';
+    svg.innerHTML=g;
+  }
+
+  ["st-eq","st-rt","st-cs","st-fx"].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener("input", draw); });
+  document.querySelectorAll(".st-presets button").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      document.getElementById("st-eq").value=btn.getAttribute("data-eq");
+      document.getElementById("st-rt").value=btn.getAttribute("data-rt");
+      document.getElementById("st-cs").value=btn.getAttribute("data-cs");
+      document.getElementById("st-fx").value=btn.getAttribute("data-fx");
+      draw();
+    });
+  });
+  document.querySelectorAll("[data-set-lang]").forEach(function(b){ b.addEventListener("click", function(){ setTimeout(draw,10); }); });
+  document.addEventListener("DOMContentLoaded", draw);
+  draw();
+})();
+</script>
+</body>
+</html>

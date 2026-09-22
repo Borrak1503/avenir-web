@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Séries temporelles — Avenir</title>
+<meta name="description" content="Modéliser le temps en finance : stationnarité et white noise, processus AR, MA et ARMA avec leurs signatures ACF et PACF, la méthode Box-Jenkins (identification, AIC/BIC, Ljung-Box, prévision et mean reversion), la non-stationnarité (trends déterministes, saisonnalité, random walk et unit root), le test ADF et les régressions fallacieuses, puis la mesure des rendements (simple vs log), l'annualisation en racine du temps, les queues épaisses (Jarque-Bera) et la dépendance non linéaire (Spearman, Kendall). Trajectoire AR(1) interactive, QCM et exercices.">
+<style>
+/* ==========================================================================
+   AVENIR — Plateforme pédagogique Asset Management & Financial Risk Management
+   Feuille de style partagée
+   ========================================================================== */
+
+:root {
+  /* Palette claire */
+  --bg:            #f6f4ef;
+  --bg-soft:       #efece4;
+  --surface:       #ffffff;
+  --surface-2:     #faf8f3;
+  --border:        #e2ddd1;
+  --ink:           #1a2230;
+  --ink-soft:      #4a5566;
+  --ink-mute:      #7a8494;
+
+  --navy:          #12294a;
+  --navy-2:        #1c3a63;
+  --gold:          #c19a3e;
+  --gold-soft:     #e7d9b0;
+  --teal:          #16706a;
+  --teal-soft:     #cfe6e2;
+  --crimson:       #9a3140;
+
+  --am:            var(--navy);   /* couleur du parcours Asset Management */
+  --am-soft:       #dbe3ef;
+  --frm:           var(--teal);   /* couleur du parcours Risk Management */
+  --frm-soft:      var(--teal-soft);
+
+  --radius:        14px;
+  --radius-sm:     9px;
+  --shadow:        0 1px 2px rgba(18,41,74,.05), 0 8px 24px rgba(18,41,74,.07);
+  --shadow-lg:     0 12px 40px rgba(18,41,74,.14);
+  --maxw:          1160px;
+
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: "SF Mono", "JetBrains Mono", "Fira Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:        #0d141f;
+    --bg-soft:   #111a28;
+    --surface:   #15202f;
+    --surface-2: #1a2637;
+    --border:    #263449;
+    --ink:       #edf1f6;
+    --ink-soft:  #b3bdcc;
+    --ink-mute:  #808ba0;
+    --navy:      #6f9bd6;
+    --navy-2:    #8bb0e0;
+    --gold:      #d8b95e;
+    --gold-soft: #40391f;
+    --teal:      #4bb3aa;
+    --teal-soft: #17332f;
+    --crimson:   #d47a86;
+    --am-soft:   #1a2c46;
+    --frm-soft:  #16332f;
+    --shadow:    0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,.5);
+  }
+}
+:root[data-theme="dark"] {
+  --bg:        #0d141f;
+  --bg-soft:   #111a28;
+  --surface:   #15202f;
+  --surface-2: #1a2637;
+  --border:    #263449;
+  --ink:       #edf1f6;
+  --ink-soft:  #b3bdcc;
+  --ink-mute:  #808ba0;
+  --navy:      #6f9bd6;
+  --navy-2:    #8bb0e0;
+  --gold:      #d8b95e;
+  --gold-soft: #40391f;
+  --teal:      #4bb3aa;
+  --teal-soft: #17332f;
+  --crimson:   #d47a86;
+  --am-soft:   #1a2c46;
+  --frm-soft:  #16332f;
+  --shadow:    0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.5);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Bilinguisme : on masque la langue inactive */
+[data-lang] { display: none; }
+body[data-active-lang="fr"] [data-lang="fr"] { display: revert; }
+body[data-active-lang="en"] [data-lang="en"] { display: revert; }
+body[data-active-lang="nl"] [data-lang="nl"] { display: revert; }
+/* variantes en ligne */
+span[data-lang], a[data-lang], em[data-lang], strong[data-lang], code[data-lang] { display: none; }
+body[data-active-lang="fr"] span[data-lang="fr"],
+body[data-active-lang="fr"] a[data-lang="fr"],
+body[data-active-lang="fr"] em[data-lang="fr"],
+body[data-active-lang="fr"] strong[data-lang="fr"],
+body[data-active-lang="fr"] code[data-lang="fr"] { display: inline; }
+body[data-active-lang="en"] span[data-lang="en"],
+body[data-active-lang="en"] a[data-lang="en"],
+body[data-active-lang="en"] em[data-lang="en"],
+body[data-active-lang="en"] strong[data-lang="en"],
+body[data-active-lang="en"] code[data-lang="en"] { display: inline; }
+body[data-active-lang="nl"] span[data-lang="nl"],
+body[data-active-lang="nl"] a[data-lang="nl"],
+body[data-active-lang="nl"] em[data-lang="nl"],
+body[data-active-lang="nl"] strong[data-lang="nl"],
+body[data-active-lang="nl"] code[data-lang="nl"] { display: inline; }
+/* les pastilles inline-block conservent leur forme quand elles portent data-lang */
+body[data-active-lang="fr"] span.eyebrow[data-lang="fr"],
+body[data-active-lang="en"] span.eyebrow[data-lang="en"],
+body[data-active-lang="nl"] span.eyebrow[data-lang="nl"] { display: inline-block; }
+/* .callout .clabel force display:block — masquer les langues non actives et ne révéler que l'active */
+.callout .clabel[data-lang] { display: none; }
+body[data-active-lang="fr"] .callout .clabel[data-lang="fr"],
+body[data-active-lang="en"] .callout .clabel[data-lang="en"],
+body[data-active-lang="nl"] .callout .clabel[data-lang="nl"] { display: block; }
+/* garde-fou général : une règle de composant (ex. .sml-sliders label{display:block}) ne doit jamais
+   ré-afficher une langue non active. On masque toujours les langues non actives (!important). */
+body[data-active-lang="fr"] [data-lang]:not([data-lang="fr"]),
+body[data-active-lang="en"] [data-lang]:not([data-lang="en"]),
+body[data-active-lang="nl"] [data-lang]:not([data-lang="nl"]) { display: none !important; }
+
+a { color: var(--navy-2); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+/* ---------- En-tête / navigation ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.nav {
+  display: flex; align-items: center; gap: 20px;
+  height: 64px;
+}
+.brand { display: flex; align-items: baseline; gap: 10px; font-family: var(--serif); }
+.brand a { color: var(--ink); text-decoration: none; }
+.brand .logo {
+  font-size: 22px; font-weight: 700; letter-spacing: .5px;
+}
+.brand .logo b { color: var(--gold); }
+.brand .tag { font-size: 12.5px; color: var(--ink-mute); font-family: var(--sans); letter-spacing: .3px; }
+.nav .spacer { flex: 1; }
+.nav-links { display: flex; gap: 4px; }
+.nav-links a {
+  color: var(--ink-soft); font-size: 14.5px; font-weight: 500;
+  padding: 8px 12px; border-radius: 8px;
+}
+.nav-links a:hover { background: var(--bg-soft); color: var(--ink); text-decoration: none; }
+
+.controls { display: flex; align-items: center; gap: 8px; }
+.lang-toggle {
+  display: inline-flex; border: 1px solid var(--border); border-radius: 999px;
+  overflow: hidden; background: var(--surface-2);
+}
+.lang-toggle button {
+  border: 0; background: transparent; color: var(--ink-mute);
+  font: 600 13px/1 var(--sans); padding: 7px 13px; cursor: pointer;
+}
+.lang-toggle button.active { background: var(--navy); color: #fff; }
+:root[data-theme="dark"] .lang-toggle button.active,
+:root:not([data-theme="light"]) .lang-toggle button.active { color: #0d141f; }
+.icon-btn {
+  border: 1px solid var(--border); background: var(--surface-2);
+  width: 36px; height: 36px; border-radius: 999px; cursor: pointer;
+  font-size: 16px; color: var(--ink-soft); display: grid; place-items: center;
+}
+.icon-btn:hover { color: var(--ink); }
+.menu-btn { display: none; }
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative; overflow: hidden;
+  background:
+    radial-gradient(1200px 500px at 80% -10%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 60%),
+    linear-gradient(160deg, var(--navy) 0%, #0c1c34 65%, #0a1830 100%);
+  color: #eef2f8;
+}
+:root[data-theme="dark"] .hero,
+:root:not([data-theme="light"]) .hero {
+  background:
+    radial-gradient(1200px 500px at 80% -10%, rgba(216,185,94,.14), transparent 60%),
+    linear-gradient(160deg, #0b1524 0%, #0a1220 100%);
+}
+.hero .wrap { padding-top: 72px; padding-bottom: 76px; }
+.hero .eyebrow {
+  display: inline-block; font-size: 12.5px; letter-spacing: 2.2px; text-transform: uppercase;
+  color: var(--gold-soft); border: 1px solid rgba(231,217,176,.35);
+  padding: 5px 12px; border-radius: 999px; margin-bottom: 22px;
+}
+:root[data-theme="dark"] .hero .eyebrow,
+:root:not([data-theme="light"]) .hero .eyebrow { color: var(--gold); }
+.hero h1 {
+  font-family: var(--serif); font-weight: 700;
+  font-size: clamp(34px, 5.2vw, 58px); line-height: 1.08; margin: 0 0 20px;
+  max-width: 16ch;
+}
+.hero h1 .accent { color: var(--gold); }
+.hero p.lead { font-size: clamp(17px, 2.2vw, 21px); color: #cdd7e6; max-width: 60ch; margin: 0 0 32px; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; }
+.hero-stats { display: flex; gap: 40px; margin-top: 54px; flex-wrap: wrap; }
+.hero-stats .stat .n { font-family: var(--serif); font-size: 34px; color: #fff; font-weight: 700; }
+.hero-stats .stat .l { font-size: 13.5px; color: #a9b6c9; letter-spacing: .3px; }
+
+/* ---------- Boutons ---------- */
+.btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  font: 600 15px/1 var(--sans); padding: 13px 22px; border-radius: 10px;
+  cursor: pointer; border: 1px solid transparent; transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn:hover { text-decoration: none; transform: translateY(-1px); }
+.btn-gold { background: var(--gold); color: #241c05; }
+.btn-gold:hover { box-shadow: 0 8px 20px rgba(193,154,62,.35); }
+.btn-ghost { background: transparent; color: #eef2f8; border-color: rgba(255,255,255,.35); }
+.btn-ghost:hover { background: rgba(255,255,255,.08); }
+.btn-solid { background: var(--navy); color: #fff; }
+:root[data-theme="dark"] .btn-solid,
+:root:not([data-theme="light"]) .btn-solid { color: #0d141f; }
+.btn-solid:hover { box-shadow: var(--shadow); }
+.btn-outline { background: var(--surface); color: var(--ink); border-color: var(--border); }
+.btn-outline:hover { border-color: var(--navy-2); }
+
+/* ---------- Sections ---------- */
+section { padding: 66px 0; }
+.section-head { max-width: 720px; margin-bottom: 40px; }
+.section-head .kicker {
+  font-size: 12.5px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold); font-weight: 700; margin-bottom: 12px;
+}
+.section-head h2 { font-family: var(--serif); font-size: clamp(26px, 3.6vw, 38px); margin: 0 0 12px; line-height: 1.15; }
+.section-head p { color: var(--ink-soft); font-size: 18px; margin: 0; }
+
+/* ---------- Parcours (tracks) ---------- */
+.tracks { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.track {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 32px; box-shadow: var(--shadow); position: relative; overflow: hidden;
+}
+.track::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 5px; }
+.track.am::before { background: linear-gradient(var(--navy), var(--navy-2)); }
+.track.frm::before { background: linear-gradient(var(--teal), #0f5651); }
+.track .badge {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: 5px 11px; border-radius: 999px; margin-bottom: 16px;
+}
+.track.am .badge { background: var(--am-soft); color: var(--navy); }
+.track.frm .badge { background: var(--frm-soft); color: var(--teal); }
+.track h3 { font-family: var(--serif); font-size: 25px; margin: 0 0 8px; }
+.track p { color: var(--ink-soft); margin: 0 0 18px; font-size: 15.5px; }
+.track ul { list-style: none; padding: 0; margin: 0 0 22px; }
+.track ul li { padding: 7px 0 7px 26px; position: relative; font-size: 15px; border-top: 1px solid var(--border); }
+.track ul li:first-child { border-top: 0; }
+.track ul li::before {
+  content: "▸"; position: absolute; left: 4px; top: 7px; font-weight: 700;
+}
+.track.am ul li::before { color: var(--gold); }
+.track.frm ul li::before { color: var(--teal); }
+
+/* ---------- Curriculum ---------- */
+.curriculum { background: var(--bg-soft); }
+.curric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.curric-col h3 {
+  font-family: var(--serif); font-size: 22px; display: flex; align-items: center; gap: 10px;
+  padding-bottom: 14px; margin: 0 0 6px; border-bottom: 2px solid var(--border);
+}
+.curric-col.am h3 { color: var(--navy); }
+.curric-col.frm h3 { color: var(--teal); }
+.curric-col .dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.curric-col.am .dot { background: var(--navy); }
+.curric-col.frm .dot { background: var(--teal); }
+.mod {
+  display: flex; gap: 15px; align-items: flex-start;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 15px 17px; margin-top: 12px; transition: border-color .15s ease, transform .15s ease;
+}
+a.mod:hover { text-decoration: none; transform: translateX(3px); box-shadow: var(--shadow); }
+.curric-col.am a.mod:hover { border-color: var(--navy-2); }
+.curric-col.frm a.mod:hover { border-color: var(--teal); }
+.mod .num {
+  flex: none; width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center;
+  font-family: var(--serif); font-weight: 700; font-size: 15px;
+}
+.curric-col.am .mod .num { background: var(--am-soft); color: var(--navy); }
+.curric-col.frm .mod .num { background: var(--frm-soft); color: var(--teal); }
+.mod .mt { font-weight: 600; font-size: 15.5px; color: var(--ink); margin: 2px 0 2px; }
+.mod .md { font-size: 13.5px; color: var(--ink-mute); line-height: 1.5; }
+.mod .chip {
+  font-size: 11px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+  color: var(--gold); border: 1px solid var(--gold-soft); border-radius: 999px; padding: 2px 8px;
+  margin-left: auto; align-self: center; flex: none;
+}
+
+/* ---------- Bandeau méthode ---------- */
+.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.feature { padding: 6px 4px; }
+.feature .ic { font-size: 24px; margin-bottom: 10px; }
+.feature h4 { font-size: 17px; margin: 0 0 6px; }
+.feature p { color: var(--ink-soft); font-size: 14.5px; margin: 0; }
+
+/* ---------- CTA final ---------- */
+.cta-band {
+  background: linear-gradient(160deg, var(--navy), #0b1c35);
+  color: #eef2f8; border-radius: var(--radius); padding: 46px; text-align: center;
+}
+.cta-band h2 { font-family: var(--serif); font-size: clamp(24px, 3vw, 34px); margin: 0 0 12px; }
+.cta-band p { color: #c7d2e2; max-width: 54ch; margin: 0 auto 26px; }
+
+/* ---------- Pied de page ---------- */
+.site-footer { border-top: 1px solid var(--border); background: var(--surface); padding: 40px 0; margin-top: 20px; }
+.foot { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: center; }
+.foot .brand .logo { font-size: 18px; }
+.foot p { color: var(--ink-mute); font-size: 13.5px; margin: 0; }
+
+/* ==========================================================================
+   PAGES MODULE
+   ========================================================================== */
+.module-shell { display: grid; grid-template-columns: 264px 1fr; gap: 40px; align-items: start; }
+.module-shell .wrap-mod { max-width: var(--maxw); margin: 0 auto; padding: 40px 24px 80px; }
+
+/* barre latérale sommaire */
+.toc {
+  position: sticky; top: 84px; align-self: start;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px; box-shadow: var(--shadow); max-height: calc(100vh - 110px); overflow: auto;
+}
+.toc .toc-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ink-mute); font-weight: 700; margin-bottom: 12px; }
+.toc a { display: block; color: var(--ink-soft); font-size: 14px; padding: 6px 10px; border-radius: 7px; border-left: 2px solid transparent; }
+.toc a:hover { background: var(--bg-soft); text-decoration: none; }
+.toc a.active { color: var(--teal); background: var(--frm-soft); border-left-color: var(--teal); font-weight: 600; }
+
+/* fil d'ariane + entête module */
+.crumbs { font-size: 13.5px; color: var(--ink-mute); margin-bottom: 14px; }
+.crumbs a { color: var(--ink-mute); }
+.module-hero { border-bottom: 1px solid var(--border); padding-bottom: 26px; margin-bottom: 34px; }
+.module-hero .badge {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; padding: 5px 11px; border-radius: 999px;
+  background: var(--frm-soft); color: var(--teal); margin-bottom: 14px;
+}
+.module-hero h1 { font-family: var(--serif); font-size: clamp(30px, 4.4vw, 46px); line-height: 1.1; margin: 0 0 12px; }
+.module-hero .subtitle { font-size: 19px; color: var(--ink-soft); max-width: 65ch; margin: 0 0 18px; }
+.module-meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 13.5px; color: var(--ink-mute); }
+.module-meta span { display: inline-flex; align-items: center; gap: 6px; }
+
+/* objectifs */
+.objectives {
+  background: var(--surface-2); border: 1px solid var(--border); border-left: 4px solid var(--teal);
+  border-radius: var(--radius-sm); padding: 20px 24px; margin: 0 0 40px;
+}
+.objectives h4 { margin: 0 0 10px; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; color: var(--teal); }
+.objectives ul { margin: 0; padding-left: 20px; }
+.objectives li { margin: 5px 0; color: var(--ink-soft); }
+
+/* corps du module */
+.module-body h2 {
+  font-family: var(--serif); font-size: 29px; margin: 48px 0 14px; scroll-margin-top: 84px;
+  padding-top: 6px;
+}
+.module-body h3 { font-family: var(--serif); font-size: 22px; margin: 30px 0 10px; }
+.module-body p { margin: 0 0 16px; color: var(--ink); }
+.module-body ul, .module-body ol { margin: 0 0 18px; padding-left: 26px; }
+.module-body li { margin: 6px 0; }
+.module-body strong { color: var(--ink); }
+
+/* définitions et encadrés */
+.callout {
+  border-radius: var(--radius-sm); padding: 18px 20px; margin: 24px 0; border: 1px solid var(--border);
+  background: var(--surface-2); font-size: 15.5px;
+}
+.callout .clabel { font-weight: 700; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 6px; }
+.callout.def { border-left: 4px solid var(--navy); }
+.callout.def .clabel { color: var(--navy); }
+.callout.warn { border-left: 4px solid var(--crimson); background: color-mix(in srgb, var(--crimson) 7%, var(--surface)); }
+.callout.warn .clabel { color: var(--crimson); }
+.callout.tip { border-left: 4px solid var(--gold); }
+.callout.tip .clabel { color: var(--gold); }
+
+/* formules */
+.formula {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 22px 24px; margin: 22px 0; text-align: center; box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+.formula .eq { font-family: var(--serif); font-size: 22px; color: var(--ink); }
+.formula .eq em { color: var(--teal); font-style: italic; }
+.formula .caption { font-size: 13px; color: var(--ink-mute); margin-top: 12px; }
+sub, sup { font-size: .72em; }
+
+/* tableaux */
+.table-wrap { overflow-x: auto; margin: 22px 0; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; min-width: 460px; }
+thead th { background: var(--navy); color: #fff; text-align: left; padding: 11px 14px; font-weight: 600; font-size: 13.5px; }
+:root[data-theme="dark"] thead th,
+:root:not([data-theme="light"]) thead th { color: #0d141f; }
+tbody td { padding: 10px 14px; border-top: 1px solid var(--border); }
+tbody tr:nth-child(even) td { background: var(--surface-2); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); }
+
+/* exemple travaillé */
+.worked {
+  border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 28px 0;
+}
+.worked .whead { background: var(--am-soft); color: var(--navy); padding: 12px 20px; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+.worked .wbody { padding: 20px 22px; background: var(--surface); }
+.worked .step { padding: 12px 0; border-top: 1px dashed var(--border); }
+.worked .step:first-child { border-top: 0; }
+.worked .step .sn { font-weight: 700; color: var(--teal); font-size: 13.5px; letter-spacing: .5px; }
+
+/* calculateur interactif */
+.calc {
+  border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+  background: var(--surface); overflow: hidden; margin: 30px 0;
+}
+.calc .chead { background: linear-gradient(160deg, var(--teal), #0f5651); color: #fff; padding: 16px 22px; }
+.calc .chead h4 { margin: 0; font-family: var(--serif); font-size: 20px; }
+.calc .chead p { margin: 4px 0 0; font-size: 13.5px; color: #d5eee9; }
+.calc .cbody { padding: 22px; display: grid; grid-template-columns: 1fr 300px; gap: 26px; }
+.calc .inputs label { display: block; font-size: 13.5px; font-weight: 600; color: var(--ink-soft); margin: 14px 0 6px; }
+.calc .inputs input, .calc .inputs select {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface-2); color: var(--ink); font: 500 15px var(--sans);
+}
+.calc .inputs .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.calc .rangewrap { display: flex; align-items: center; gap: 12px; }
+.calc .rangewrap input[type=range] { flex: 1; }
+.calc .rangewrap output { font-family: var(--mono); font-weight: 600; min-width: 46px; text-align: right; color: var(--teal); }
+.calc .result {
+  background: var(--navy); color: #fff; border-radius: var(--radius-sm); padding: 22px; align-self: start;
+}
+:root[data-theme="dark"] .calc .result,
+:root:not([data-theme="light"]) .calc .result { background: #0c1b32; }
+.calc .result .rl { font-size: 12.5px; text-transform: uppercase; letter-spacing: 1px; color: #9fb0c8; }
+.calc .result .rv { font-family: var(--serif); font-size: 34px; font-weight: 700; margin: 4px 0 2px; }
+.calc .result .rv.gold { color: var(--gold); }
+.calc .result .rsub { font-size: 13px; color: #b9c6d8; }
+.calc .result hr { border: 0; border-top: 1px solid rgba(255,255,255,.15); margin: 16px 0; }
+
+/* quiz */
+.quiz { border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin: 30px 0; background: var(--surface); }
+.quiz h4 { margin: 0 0 4px; font-family: var(--serif); font-size: 20px; }
+.quiz .qsub { color: var(--ink-mute); font-size: 14px; margin: 0 0 18px; }
+.q { margin: 18px 0; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.q:last-of-type { border-bottom: 0; }
+.q .qtext { font-weight: 600; margin-bottom: 12px; }
+.q .opt {
+  display: block; width: 100%; text-align: left; padding: 11px 14px; margin: 7px 0;
+  border: 1px solid var(--border); border-radius: 9px; background: var(--surface-2); color: var(--ink);
+  cursor: pointer; font: 500 15px var(--sans); transition: all .12s ease;
+}
+.q .opt:hover { border-color: var(--teal); }
+.q .opt.correct { background: color-mix(in srgb, var(--teal) 16%, var(--surface)); border-color: var(--teal); color: var(--ink); }
+.q .opt.wrong { background: color-mix(in srgb, var(--crimson) 14%, var(--surface)); border-color: var(--crimson); }
+.q .explain { display: none; margin-top: 10px; font-size: 14px; color: var(--ink-soft); background: var(--surface-2); border-radius: 8px; padding: 12px 14px; border-left: 3px solid var(--teal); }
+.q .explain.show { display: block; }
+
+/* navigation entre modules */
+.module-nav { display: flex; justify-content: space-between; gap: 16px; margin-top: 50px; flex-wrap: wrap; }
+.module-nav a {
+  flex: 1; min-width: 220px; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 20px; background: var(--surface); transition: border-color .15s ease;
+}
+.module-nav a:hover { border-color: var(--teal); text-decoration: none; }
+.module-nav .dir { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-mute); }
+.module-nav .tt { font-weight: 600; color: var(--ink); margin-top: 3px; }
+.module-nav a.next { text-align: right; }
+
+/* progression de lecture */
+.progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--gold); width: 0; z-index: 60; transition: width .1s linear; }
+
+/* exercices chiffrés */
+.exo { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 18px; margin: 14px 0; background: var(--surface); box-shadow: var(--shadow); }
+.exo .ehead { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.exo .eid { font-size: 12px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--teal); }
+.exo .diff { font-size: 10.5px; letter-spacing: .5px; text-transform: uppercase; border: 1px solid var(--border); border-radius: 999px; padding: 2px 9px; color: var(--ink-mute); }
+.exo .estatement { margin: 0 0 6px; }
+.exo details { border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 10px; }
+.exo summary { cursor: pointer; font-weight: 600; font-size: 14px; color: var(--navy-2); list-style: none; }
+.exo summary::-webkit-details-marker { display: none; }
+.exo summary::before { content: "▸ "; color: var(--gold); }
+.exo details[open] summary::before { content: "▾ "; }
+.exo .ans { font-size: 14.5px; color: var(--ink-soft); margin-top: 8px; }
+.exo .ans b { color: var(--ink); }
+
+/* ---------- Thème parcours Asset Management (navy/or) sur pages module ----------
+   Les composants module utilisent --teal / --frm-soft (couleur FRM) par défaut.
+   Sur un module du parcours Asset Management, on remappe ces variables vers le navy. */
+body.track-am { --teal: var(--navy); --frm-soft: var(--am-soft); }
+body.track-am .calc .chead { background: linear-gradient(160deg, var(--navy), #0a1830); }
+body.track-am .module-hero .badge,
+body.track-am .worked .whead { background: var(--am-soft); color: var(--navy); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 940px) {
+  .module-shell { grid-template-columns: 1fr; }
+  .toc { display: none; }
+  .calc .cbody { grid-template-columns: 1fr; }
+}
+@media (max-width: 820px) {
+  .tracks, .curric-grid, .features { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .menu-btn { display: grid; }
+  .hero-stats { gap: 26px; }
+}
+
+/* ---------- Bibliographie & sources ---------- */
+.biblio { border-top: 2px solid var(--border); margin-top: 50px; padding-top: 8px; }
+.biblio .bcol { margin: 0 0 22px; }
+.biblio h4 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--ink-mute); margin: 0 0 10px; }
+.biblio ol, .biblio ul { margin: 0; padding-left: 22px; }
+.biblio li { font-size: 14px; color: var(--ink-soft); line-height: 1.65; margin: 8px 0; }
+.biblio li em { color: var(--ink); font-style: italic; }
+.biblio a { color: var(--navy-2); text-decoration: none; border-bottom: 1px solid var(--border); }
+.biblio a:hover { border-color: var(--navy-2); }
+.formula .caption.src, .src { color: var(--ink-mute); font-style: italic; font-size: 12.5px; }
+
+/* ==========================================================================
+   RESSOURCES TÉLÉCHARGEABLES · VIDÉO · SOUS-MODULES (ajout)
+   ========================================================================== */
+
+/* --- Bloc de fichiers à télécharger --- */
+.downloads { margin: 26px 0 8px; }
+.downloads h4 { font-family: var(--serif); font-size: 18px; margin: 0 0 12px; color: var(--ink); }
+.dl-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.dl-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface-2); text-decoration: none; color: var(--ink);
+  transition: border-color .15s, transform .15s;
+}
+.dl-item:hover { border-color: var(--teal); transform: translateY(-1px); }
+body.track-am .dl-item:hover { border-color: var(--navy-2); }
+.dl-ic {
+  flex: 0 0 auto; width: 38px; height: 38px; border-radius: 8px;
+  display: grid; place-items: center; font-size: 12px; font-weight: 800;
+  font-family: var(--sans); color: #fff; letter-spacing: .3px;
+}
+.dl-ic.xls { background: #1a7a4c; }
+.dl-ic.pdf { background: #b23a48; }
+.dl-ic.doc { background: #2a5db0; }
+.dl-ic.zip { background: #7a6a1a; }
+.dl-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dl-name { font-size: 14px; font-weight: 600; line-height: 1.25; }
+.dl-sub { font-size: 12px; color: var(--ink-mute); }
+.dl-note { font-size: 12.5px; color: var(--ink-mute); font-style: italic; margin-top: 10px; }
+
+/* --- Vidéo responsive (16:9) + placeholder --- */
+.video-embed { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--surface-2); margin: 8px 0; }
+.video-embed iframe, .video-embed video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video-embed.placeholder { display: grid; place-items: center; text-align: center; }
+.video-embed.placeholder .ph-inner { display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--ink-mute); padding: 20px; }
+.video-embed.placeholder .ph-play {
+  width: 62px; height: 62px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--teal); color: #fff; font-size: 24px; padding-left: 4px;
+}
+body.track-am .video-embed.placeholder .ph-play { background: var(--navy-2); }
+.video-embed.placeholder .ph-t { font-size: 14.5px; font-weight: 600; color: var(--ink-soft); }
+.video-embed.placeholder .ph-s { font-size: 12.5px; }
+
+/* --- Grille de sous-modules (cartes) --- */
+.subgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin: 18px 0 8px; }
+.subcard {
+  display: flex; flex-direction: column; gap: 6px; padding: 16px;
+  border: 1px solid var(--border); border-radius: 12px; background: var(--surface);
+  text-decoration: none; color: var(--ink); transition: border-color .15s, transform .15s, box-shadow .15s;
+}
+.subcard:hover { border-color: var(--navy-2); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+.subcard .sc-ic { font-size: 22px; }
+.subcard .sc-t { font-family: var(--serif); font-size: 16.5px; font-weight: 600; line-height: 1.2; }
+.subcard .sc-d { font-size: 12.5px; color: var(--ink-mute); line-height: 1.45; }
+.subcard.soon { opacity: .55; pointer-events: none; }
+.subcard.soon .sc-tag { font-size: 11px; font-weight: 700; color: var(--ink-mute); text-transform: uppercase; letter-spacing: .5px; }
+@media (max-width:520px){ .dl-list, .subgrid { grid-template-columns: 1fr; } }
+
+/* ===== Podcast : bandeau accueil + ligne du temps ===== */
+.pod-ribbon { display:flex; align-items:center; justify-content:center; gap:14px 18px; flex-wrap:wrap; background:linear-gradient(90deg, var(--navy), var(--teal)); color:#fff; padding:11px 20px; text-align:center; }
+.pod-ribbon .tt { font-weight:700; font-size:15px; letter-spacing:.01em; }
+.pod-ribbon .tt b { color:var(--gold-soft); font-weight:800; }
+.pod-ribbon .tt .em { opacity:.85; font-weight:600; }
+.pod-ribbon .rlink { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.34); color:#fff; padding:6px 15px; border-radius:22px; font-weight:700; font-size:13.5px; white-space:nowrap; }
+.pod-ribbon .rlink:hover { background:rgba(255,255,255,.26); text-decoration:none; transform:translateY(-1px); }
+
+.pod-page { padding:44px 0 76px; }
+.pod-head { text-align:center; max-width:680px; margin:0 auto 48px; }
+.pod-eyebrow { color:var(--teal); font-weight:800; letter-spacing:.14em; text-transform:uppercase; font-size:12px; }
+.pod-head h1 { font-size:clamp(28px,4vw,42px); color:var(--ink); margin:12px 0 14px; line-height:1.1; }
+.pod-head p { color:var(--ink-soft); font-size:17px; line-height:1.6; margin:0; }
+
+.pod-timeline { position:relative; max-width:820px; margin:0 auto; padding-left:40px; }
+.pod-timeline::before { content:""; position:absolute; left:11px; top:8px; bottom:8px; width:2px; background:linear-gradient(var(--teal), var(--gold)); opacity:.55; }
+.pod-item { position:relative; margin-bottom:26px; }
+.pod-item:last-child { margin-bottom:0; }
+.pod-node { position:absolute; left:-35px; top:24px; width:16px; height:16px; border-radius:50%; background:var(--surface); border:3px solid var(--teal); }
+.pod-item.live .pod-node { border-color:var(--gold); box-shadow:0 0 0 5px var(--gold-soft); }
+.pod-card { display:grid; grid-template-columns:200px 1fr; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); transition:transform .15s ease, box-shadow .15s ease; }
+.pod-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-lg); }
+.pod-thumb { position:relative; aspect-ratio:16/10; background:linear-gradient(135deg, var(--navy), var(--teal)); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.pod-thumb img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.pod-thumb .play { width:48px; height:48px; border-radius:50%; background:rgba(255,255,255,.92); color:var(--navy); display:flex; align-items:center; justify-content:center; font-size:17px; padding-left:3px; box-shadow:0 4px 14px rgba(0,0,0,.25); z-index:1; }
+.pod-thumb .epnum { position:absolute; top:9px; left:11px; color:#fff; font-weight:800; font-size:11.5px; letter-spacing:.09em; opacity:.92; z-index:1; }
+.pod-body { padding:16px 18px 15px; }
+.pod-chips { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:7px; }
+.pod-chip { font-size:11px; font-weight:700; padding:2px 10px; border-radius:20px; background:var(--surface-2); color:var(--ink-mute); border:1px solid var(--border); }
+.pod-chip.soon { color:var(--teal); }
+.pod-chip.live { background:var(--gold-soft); color:var(--gold); border-color:transparent; }
+.pod-body h3 { font-size:18px; color:var(--ink); margin:2px 0 6px; line-height:1.25; }
+.pod-body p { color:var(--ink-soft); font-size:14.5px; line-height:1.5; margin:0 0 10px; }
+.pod-link { font-weight:700; color:var(--teal); font-size:14px; }
+.pod-link:hover { text-decoration:underline; }
+.pod-soonmsg { font-size:13px; color:var(--ink-mute); font-style:italic; }
+@media (max-width:620px){ .pod-card { grid-template-columns:1fr; } .pod-thumb { aspect-ratio:16/7; } }
+
+</style>
+</head>
+<body data-active-lang="fr">
+
+<div class="progress-bar"></div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <div class="brand">
+      <a href="../index.html"><span class="logo">Avenir<b>.</b></span></a>
+      <span class="tag">Asset Management &amp; Risk</span>
+    </div>
+    <div class="spacer"></div>
+    <nav class="nav-links">
+      <a href="../index.html#parcours"><span data-lang="fr">Parcours</span><span data-lang="en">Tracks</span><span data-lang="nl">Trajecten</span></a>
+      <a href="../index.html#curriculum"><span data-lang="fr">Programme</span><span data-lang="en">Curriculum</span><span data-lang="nl">Programma</span></a>
+      <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a>
+    </nav>
+    <div class="controls">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-set-lang="fr">FR</button>
+        <button data-set-lang="en">EN</button>
+        <button data-set-lang="nl">NL</button>
+      </div>
+      <button id="theme-btn" class="icon-btn" aria-label="Thème">☾</button>
+      <button id="menu-btn" class="icon-btn menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap-mod">
+  <div class="module-shell">
+
+    <aside class="toc">
+      <div class="toc-title" data-lang="fr">Sommaire</div>
+      <div class="toc-title" data-lang="en">Contents</div>
+      <div class="toc-title" data-lang="nl">Inhoud</div>
+      <a href="#stationnarite"><span data-lang="fr">1. Stationnarité &amp; white noise</span><span data-lang="en">1. Stationarity &amp; white noise</span><span data-lang="nl">1. Stationariteit &amp; white noise</span></a>
+      <a href="#ar-ma"><span data-lang="fr">2. AR, MA, ARMA &amp; signatures</span><span data-lang="en">2. AR, MA, ARMA &amp; signatures</span><span data-lang="nl">2. AR, MA, ARMA &amp; signaturen</span></a>
+      <a href="#box-jenkins"><span data-lang="fr">3. Box-Jenkins &amp; prévision</span><span data-lang="en">3. Box-Jenkins &amp; forecasting</span><span data-lang="nl">3. Box-Jenkins &amp; voorspellen</span></a>
+      <a href="#non-stationnaire"><span data-lang="fr">4. Non-stationnarité : unit root</span><span data-lang="en">4. Non-stationarity: unit root</span><span data-lang="nl">4. Niet-stationariteit: unit root</span></a>
+      <a href="#adf"><span data-lang="fr">5. Test ADF &amp; régressions fallacieuses</span><span data-lang="en">5. ADF test &amp; spurious regressions</span><span data-lang="nl">5. ADF-toets &amp; schijnregressies</span></a>
+      <a href="#rendements"><span data-lang="fr">6. Rendements, volatilité &amp; dépendance</span><span data-lang="en">6. Returns, volatility &amp; dependence</span><span data-lang="nl">6. Rendementen, volatiliteit &amp; afhankelijkheid</span></a>
+      <a href="#ressources"><span data-lang="fr">Ressources</span><span data-lang="en">Resources</span><span data-lang="nl">Bronnen</span></a>
+      <a href="#retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></a>
+      <a href="#qcm"><span data-lang="fr">8. QCM (15)</span><span data-lang="en">8. MCQ (15)</span><span data-lang="nl">8. MCV (15)</span></a>
+      <a href="#exercices"><span data-lang="fr">9. Exercices</span><span data-lang="en">9. Exercises</span><span data-lang="nl">9. Oefeningen</span></a>
+      <a href="#biblio"><span data-lang="fr">Sources</span><span data-lang="en">Sources</span><span data-lang="nl">Bronnen</span></a>
+    </aside>
+
+    <main>
+      <div class="crumbs">
+        <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a> ·
+        <span>Financial Risk Management</span> ·
+        <span data-lang="fr">Analyse quantitative</span><span data-lang="en">Quantitative Analysis</span><span data-lang="nl">Kwantitatieve analyse</span>
+      </div>
+
+      <div class="module-hero">
+        <span class="badge">Analyse quantitative · <span data-lang="fr">Séries temporelles</span><span data-lang="en">Time series</span><span data-lang="nl">Tijdreeksen</span></span>
+        <h1 data-lang="fr">Séries temporelles</h1>
+        <h1 data-lang="en">Time series</h1>
+        <h1 data-lang="nl">Tijdreeksen</h1>
+        <p class="subtitle" data-lang="fr">Se servir du passé pour prévoir l'avenir. Cela n'a de sens que si la structure ne bouge pas dans le temps : c'est la stationnarité. On assemble des chocs en processus AR, MA et ARMA, on distingue une série qui revient vers sa moyenne d'une marche aléatoire qui dérive à jamais, et on mesure proprement rendements, volatilité et dépendance.</p>
+        <p class="subtitle" data-lang="en">Use the past to forecast the future. That only makes sense if the structure does not shift over time: that is stationarity. We assemble shocks into AR, MA and ARMA processes, tell a series that reverts to its mean from a random walk that drifts forever, and measure returns, volatility and dependence properly.</p>
+        <p class="subtitle" data-lang="nl">Het verleden gebruiken om de toekomst te voorspellen. Dat heeft enkel zin als de structuur niet verschuift in de tijd: dat is stationariteit. We bouwen schokken tot AR-, MA- en ARMA-processen, onderscheiden een reeks die naar haar gemiddelde terugkeert van een random walk die eeuwig wegdrijft, en meten rendementen, volatiliteit en afhankelijkheid correct.</p>
+        <div class="module-meta">
+          <span data-lang="fr">⏱ Lecture ~30 min</span><span data-lang="en">⏱ ~30 min read</span><span data-lang="nl">⏱ ~30 min lezen</span>
+          <span data-lang="fr">📶 Niveau avancé</span><span data-lang="en">📶 Advanced level</span><span data-lang="nl">📶 Gevorderd niveau</span>
+          <span>🎓 FRM I · QA</span>
+        </div>
+      </div>
+
+      <div class="objectives">
+        <h4 data-lang="fr">Objectifs d'apprentissage</h4>
+        <h4 data-lang="en">Learning objectives</h4>
+        <h4 data-lang="nl">Leerdoelen</h4>
+        <ul>
+          <li data-lang="fr">Définir la stationnarité de covariance et le rôle du white noise.</li>
+          <li data-lang="en">Define covariance stationarity and the role of white noise.</li>
+          <li data-lang="nl">Covariantiestationariteit definiëren en de rol van white noise.</li>
+          <li data-lang="fr">Reconnaître AR, MA et ARMA par leurs signatures ACF et PACF.</li>
+          <li data-lang="en">Recognise AR, MA and ARMA by their ACF and PACF signatures.</li>
+          <li data-lang="nl">AR, MA en ARMA herkennen aan hun ACF- en PACF-signaturen.</li>
+          <li data-lang="fr">Appliquer Box-Jenkins : identifier, sélectionner (AIC/BIC), valider (Ljung-Box), prévoir.</li>
+          <li data-lang="en">Apply Box-Jenkins: identify, select (AIC/BIC), validate (Ljung-Box), forecast.</li>
+          <li data-lang="nl">Box-Jenkins toepassen: identificeren, selecteren (AIC/BIC), valideren (Ljung-Box), voorspellen.</li>
+          <li data-lang="fr">Distinguer une série trend-stationary d'une unit root, et choisir le bon remède.</li>
+          <li data-lang="en">Distinguish a trend-stationary series from a unit root, and choose the right remedy.</li>
+          <li data-lang="nl">Een trend-stationaire reeks van een unit root onderscheiden, en het juiste middel kiezen.</li>
+          <li data-lang="fr">Conduire un test ADF et reconnaître une régression fallacieuse.</li>
+          <li data-lang="en">Run an ADF test and recognise a spurious regression.</li>
+          <li data-lang="nl">Een ADF-toets uitvoeren en een schijnregressie herkennen.</li>
+          <li data-lang="fr">Mesurer rendements (simple vs log), annualiser (√ du temps), tester la normalité et la dépendance non linéaire.</li>
+          <li data-lang="en">Measure returns (simple vs log), annualise (root-of-time), test normality and non-linear dependence.</li>
+          <li data-lang="nl">Rendementen meten (simpel vs log), annualiseren (wortel-van-de-tijd), normaliteit en niet-lineaire afhankelijkheid toetsen.</li>
+        </ul>
+      </div>
+
+      <div class="module-body">
+
+        <!-- 1. STATIONNARITÉ -->
+        <h2 id="stationnarite"><span data-lang="fr">1. Stationnarité &amp; white noise</span><span data-lang="en">1. Stationarity &amp; white noise</span><span data-lang="nl">1. Stationariteit &amp; white noise</span></h2>
+        <p data-lang="fr">Une série temporelle est une variable observée dans l'ordre du temps (un taux, un spread, un prix). On veut se servir du passé pour prévoir l'avenir, ce qui n'est possible que si la série est <strong>covariance-stationnaire</strong> : sa moyenne, sa variance et ses <em>autocovariances</em> restent identiques au fil du temps. Trois conditions : E[Yₜ] = µ constante ; V[Yₜ] = γ₀ &lt; ∞ constante ; et Cov[Yₜ, Yₜ₋ₕ] = γₕ ne dépend que de l'écart h, jamais de la date. Si la structure de dépendance change sans cesse, les paramètres estimés sur le passé ne disent rien du futur. On normalise l'autocovariance par la variance pour obtenir l'<strong>autocorrélation</strong> ρ(h) = γₕ/γ₀ ∈ [−1, 1] : c'est l'<strong>ACF</strong>. La <strong>PACF</strong> α(h) mesure la corrélation entre Yₜ et Yₜ₋ₕ une fois retiré l'effet des lags intermédiaires.</p>
+        <p data-lang="en">A time series is a variable observed in time order (a rate, a spread, a price). We want to use the past to forecast the future, which is only possible if the series is <strong>covariance-stationary</strong>: its mean, variance and <em>autocovariances</em> stay identical over time. Three conditions: E[Yₜ] = µ constant; V[Yₜ] = γ₀ &lt; ∞ constant; and Cov[Yₜ, Yₜ₋ₕ] = γₕ depends only on the gap h, never on the date. If the dependence structure keeps changing, parameters estimated on the past say nothing about the future. We normalise the autocovariance by the variance to get the <strong>autocorrelation</strong> ρ(h) = γₕ/γ₀ ∈ [−1, 1]: this is the <strong>ACF</strong>. The <strong>PACF</strong> α(h) measures the correlation between Yₜ and Yₜ₋ₕ once the effect of intermediate lags is removed.</p>
+        <p data-lang="nl">Een tijdreeks is een variabele waargenomen in tijdsvolgorde (een rente, een spread, een prijs). We willen het verleden gebruiken om de toekomst te voorspellen, wat enkel kan als de reeks <strong>covariantiestationair</strong> is: haar gemiddelde, variantie en <em>autocovarianties</em> blijven identiek in de tijd. Drie voorwaarden: E[Yₜ] = µ constant; V[Yₜ] = γ₀ &lt; ∞ constant; en Cov[Yₜ, Yₜ₋ₕ] = γₕ hangt enkel af van het verschil h, nooit van de datum. Verandert de afhankelijkheidsstructuur voortdurend, dan zeggen op het verleden geschatte parameters niets over de toekomst. We normaliseren de autocovariantie door de variantie voor de <strong>autocorrelatie</strong> ρ(h) = γₕ/γ₀ ∈ [−1, 1]: dat is de <strong>ACF</strong>. De <strong>PACF</strong> α(h) meet de correlatie tussen Yₜ en Yₜ₋ₕ nadat het effect van tussenliggende lags is verwijderd.</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">La brique de base : le white noise</span><span class="clabel" data-lang="en">The building block: white noise</span><span class="clabel" data-lang="nl">De basissteen: white noise</span>
+          <span data-lang="fr">Tous les modèles se construisent à partir du <strong>white noise</strong> εₜ ∼ WN(0, σ²) : un choc de moyenne nulle, de variance constante et surtout <strong>sans aucune autocorrélation</strong>. Cette dernière propriété force toute la dépendance temporelle à venir des paramètres du modèle, pas de liens entre les chocs. Le white noise n'impose aucune loi : supposer les chocs normaux est plus restrictif que nécessaire. Cas subtil et essentiel en finance : le <em>dependent white noise</em>, non corrélé mais pas indépendant (ex. un processus ARCH où la variance du choc dépend de l'ampleur du choc précédent), qui produit du <strong>volatility clustering</strong>. Le théorème de Wold justifie de modéliser toute série stationnaire comme une somme pondérée de chocs présents et passés.</span>
+          <span data-lang="en">Every model is built from <strong>white noise</strong> εₜ ∼ WN(0, σ²): a shock with zero mean, constant variance and above all <strong>no autocorrelation at all</strong>. This last property forces all temporal dependence to come from the model's parameters, not from links between shocks. White noise imposes no distribution: assuming normal shocks is more restrictive than needed. A subtle, essential case in finance: <em>dependent white noise</em>, uncorrelated but not independent (e.g. an ARCH process where the shock variance depends on the size of the previous shock), which produces <strong>volatility clustering</strong>. Wold's theorem justifies modelling any stationary series as a weighted sum of present and past shocks.</span>
+          <span data-lang="nl">Elk model wordt gebouwd uit <strong>white noise</strong> εₜ ∼ WN(0, σ²): een schok met gemiddelde nul, constante variantie en vooral <strong>geen enkele autocorrelatie</strong>. Deze laatste eigenschap dwingt alle temporele afhankelijkheid uit de modelparameters te komen, niet uit banden tussen schokken. White noise legt geen verdeling op: normale schokken veronderstellen is restrictiever dan nodig. Een subtiel, essentieel geval in finance: <em>dependent white noise</em>, ongecorreleerd maar niet onafhankelijk (bv. een ARCH-proces waar de schokvariantie afhangt van de omvang van de vorige schok), dat <strong>volatility clustering</strong> voortbrengt. De stelling van Wold rechtvaardigt elke stationaire reeks te modelleren als een gewogen som van huidige en vroegere schokken.</span>
+        </div>
+
+        <!-- 2. AR MA ARMA + INTERACTIF -->
+        <h2 id="ar-ma"><span data-lang="fr">2. AR, MA, ARMA &amp; leurs signatures</span><span data-lang="en">2. AR, MA, ARMA &amp; their signatures</span><span data-lang="nl">2. AR, MA, ARMA &amp; hun signaturen</span></h2>
+        <p data-lang="fr">Un processus <strong>AR</strong> (autorégressif) relie la valeur courante à ses propres valeurs passées : il a une <em>mémoire longue</em>. Un AR(1) s'écrit Yₜ = δ + ϕYₜ₋₁ + εₜ. Piège classique : sa moyenne de long terme n'est pas δ mais <strong>δ/(1−ϕ)</strong> (on prend l'espérance des deux côtés : µ = δ + ϕµ). Il n'est stationnaire que si <strong>|ϕ| &lt; 1</strong> ; sa variance γ₀ = σ²/(1−ϕ²) grandit avec la persistance. Signatures : une <strong>ACF qui décroît géométriquement</strong> (ρ(h) = ϕ^|h|) et une <strong>PACF qui se coupe net au lag 1</strong>. Un processus <strong>MA</strong> (moyenne mobile) relie la valeur courante aux <em>chocs</em> passés : mémoire courte, profil miroir (ACF qui se coupe au lag q, PACF qui décroît). Un MA est <strong>toujours stationnaire</strong>. Un <strong>ARMA</strong> combine les deux, et alors ACF et PACF décroissent toutes deux.</p>
+        <p data-lang="en">An <strong>AR</strong> (autoregressive) process links the current value to its own past values: it has a <em>long memory</em>. An AR(1) is Yₜ = δ + ϕYₜ₋₁ + εₜ. Classic trap: its long-run mean is not δ but <strong>δ/(1−ϕ)</strong> (take the expectation of both sides: µ = δ + ϕµ). It is stationary only if <strong>|ϕ| &lt; 1</strong>; its variance γ₀ = σ²/(1−ϕ²) grows with persistence. Signatures: an <strong>ACF that decays geometrically</strong> (ρ(h) = ϕ^|h|) and a <strong>PACF that cuts off at lag 1</strong>. An <strong>MA</strong> (moving average) process links the current value to past <em>shocks</em>: short memory, mirror profile (ACF cuts off at lag q, PACF decays). An MA is <strong>always stationary</strong>. An <strong>ARMA</strong> combines both, and then ACF and PACF both decay.</p>
+        <p data-lang="nl">Een <strong>AR</strong>-proces (autoregressief) verbindt de huidige waarde met haar eigen vroegere waarden: het heeft een <em>lang geheugen</em>. Een AR(1) is Yₜ = δ + ϕYₜ₋₁ + εₜ. Klassieke valstrik: het langetermijngemiddelde is niet δ maar <strong>δ/(1−ϕ)</strong> (neem de verwachting van beide zijden: µ = δ + ϕµ). Ze is enkel stationair als <strong>|ϕ| &lt; 1</strong>; haar variantie γ₀ = σ²/(1−ϕ²) groeit met de persistentie. Signaturen: een <strong>ACF die geometrisch daalt</strong> (ρ(h) = ϕ^|h|) en een <strong>PACF die net na lag 1 afkapt</strong>. Een <strong>MA</strong>-proces (voortschrijdend gemiddelde) verbindt de huidige waarde met vroegere <em>schokken</em>: kort geheugen, spiegelprofiel (ACF kapt af bij lag q, PACF daalt). Een MA is <strong>altijd stationair</strong>. Een <strong>ARMA</strong> combineert beide, en dan dalen ACF en PACF allebei.</p>
+
+        <div class="callout warn">
+          <span class="clabel" data-lang="fr">Le tableau des signatures (à connaître par cœur)</span><span class="clabel" data-lang="en">The signature table (know it by heart)</span><span class="clabel" data-lang="nl">De signaturentabel (uit het hoofd kennen)</span>
+          <span data-lang="fr"><strong>AR(p)</strong> : ACF décroît, PACF se coupe au lag p. <strong>MA(q)</strong> : ACF se coupe au lag q, PACF décroît (le miroir exact). <strong>ARMA</strong> : les deux décroissent. Côté estimation : un AR pur se traite par OLS (ses régresseurs, les Y retardés, sont observables ; l'estimateur est biaisé en petit échantillon mais consistant). Dès qu'une composante MA est présente, les chocs retardés ne sont pas observables : on passe au <strong>MLE</strong> (maximum de vraisemblance). Un AR stationnaire se réécrit MA(∞), un MA invertible se réécrit AR(∞).</span>
+          <span data-lang="en"><strong>AR(p)</strong>: ACF decays, PACF cuts off at lag p. <strong>MA(q)</strong>: ACF cuts off at lag q, PACF decays (the exact mirror). <strong>ARMA</strong>: both decay. On estimation: a pure AR is handled by OLS (its regressors, the lagged Y's, are observable; the estimator is biased in small samples but consistent). Once an MA component is present, the lagged shocks are not observable: we switch to <strong>MLE</strong> (maximum likelihood). A stationary AR rewrites as MA(∞), an invertible MA rewrites as AR(∞).</span>
+          <span data-lang="nl"><strong>AR(p)</strong>: ACF daalt, PACF kapt af bij lag p. <strong>MA(q)</strong>: ACF kapt af bij lag q, PACF daalt (de exacte spiegel). <strong>ARMA</strong>: beide dalen. Over schatten: een zuivere AR wordt met OLS behandeld (haar regressoren, de vertraagde Y's, zijn waarneembaar; de schatter is vertekend in kleine steekproeven maar consistent). Zodra een MA-component aanwezig is, zijn de vertraagde schokken niet waarneembaar: we schakelen over op <strong>MLE</strong> (maximum likelihood). Een stationaire AR herschrijft als MA(∞), een inverteerbare MA als AR(∞).</span>
+        </div>
+
+        <p data-lang="fr">Le graphe simule une trajectoire AR(1) Yₜ = δ + ϕYₜ₋₁ + εₜ. Faites glisser la <strong>persistance ϕ</strong> : à ϕ modéré, la série <em>revient vers sa moyenne</em> δ/(1−ϕ) (trait pointillé) — c'est la <strong>mean reversion</strong>. Plus ϕ approche de 1, plus le retour est lent. À <strong>ϕ = 1</strong>, la mean reversion disparaît : c'est une <strong>marche aléatoire</strong> (unit root), la série dérive sans jamais revenir et sa variance croît sans borne. Au-delà de 1, elle explose. Réglez aussi la dérive δ et l'ampleur des chocs σ.</p>
+        <p data-lang="en">The chart simulates an AR(1) path Yₜ = δ + ϕYₜ₋₁ + εₜ. Slide the <strong>persistence ϕ</strong>: at moderate ϕ, the series <em>reverts to its mean</em> δ/(1−ϕ) (dashed line) — this is <strong>mean reversion</strong>. The closer ϕ gets to 1, the slower the return. At <strong>ϕ = 1</strong>, mean reversion vanishes: it is a <strong>random walk</strong> (unit root), the series drifts and never returns, its variance growing without bound. Beyond 1, it explodes. Also set the drift δ and the shock size σ.</p>
+        <p data-lang="nl">De grafiek simuleert een AR(1)-pad Yₜ = δ + ϕYₜ₋₁ + εₜ. Schuif de <strong>persistentie ϕ</strong>: bij matige ϕ <em>keert de reeks terug naar haar gemiddelde</em> δ/(1−ϕ) (stippellijn) — dat is <strong>mean reversion</strong>. Hoe dichter ϕ bij 1 komt, hoe trager de terugkeer. Bij <strong>ϕ = 1</strong> verdwijnt de mean reversion: het is een <strong>random walk</strong> (unit root), de reeks drijft weg en keert nooit terug, haar variantie groeit onbegrensd. Voorbij 1 explodeert ze. Stel ook de drift δ en de schokomvang σ in.</p>
+
+        <style>
+          #ts-chart { width:100%; height:auto; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; }
+          #ts-chart .axis { stroke:var(--ink-mute); stroke-width:1.4; }
+          #ts-chart .tick { fill:var(--ink-mute); font-size:10px; font-family:var(--sans); }
+          #ts-chart .lab { fill:var(--ink-soft); font-size:11px; font-family:var(--sans); font-weight:700; }
+          .ts-sliders { display:grid; grid-template-columns:repeat(3,1fr); gap:12px 18px; margin-bottom:16px; }
+          .ts-sliders label { display:block; font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:4px; }
+          .ts-out { margin-top:14px; font-size:14.5px; color:var(--ink-soft); display:flex; gap:20px; flex-wrap:wrap; }
+          .ts-out b { color:var(--ink); font-family:var(--mono); }
+          .ts-verdict { font-weight:800; }
+          @media (max-width:640px){ .ts-sliders { grid-template-columns:1fr 1fr; } }
+        </style>
+
+        <div class="calc">
+          <div class="chead">
+            <h4 data-lang="fr">Trajectoire AR(1) — mean reversion vs marche aléatoire</h4>
+            <h4 data-lang="en">AR(1) path — mean reversion vs random walk</h4>
+            <h4 data-lang="nl">AR(1)-pad — mean reversion vs random walk</h4>
+            <p data-lang="fr">Yₜ = δ + ϕYₜ₋₁ + εₜ · stationnaire si |ϕ| &lt; 1</p>
+            <p data-lang="en">Yₜ = δ + ϕYₜ₋₁ + εₜ · stationary if |ϕ| &lt; 1</p>
+            <p data-lang="nl">Yₜ = δ + ϕYₜ₋₁ + εₜ · stationair als |ϕ| &lt; 1</p>
+          </div>
+          <div class="cbody" style="display:block">
+            <div class="ts-sliders">
+              <div>
+                <label><span data-lang="fr">Persistance ϕ</span><span data-lang="en">Persistence ϕ</span><span data-lang="nl">Persistentie ϕ</span></label>
+                <div class="rangewrap"><input type="range" id="ts-phi" min="0" max="1.05" step="0.01" value="0.7"><output id="ts-phi-o">0.70</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Dérive δ</span><span data-lang="en">Drift δ</span><span data-lang="nl">Drift δ</span></label>
+                <div class="rangewrap"><input type="range" id="ts-delta" min="0" max="6" step="0.1" value="3"><output id="ts-delta-o">3.0</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Choc σ</span><span data-lang="en">Shock σ</span><span data-lang="nl">Schok σ</span></label>
+                <div class="rangewrap"><input type="range" id="ts-sigma" min="0.5" max="8" step="0.5" value="3"><output id="ts-sigma-o">3.0</output></div>
+              </div>
+            </div>
+
+            <svg id="ts-chart" viewBox="0 0 520 300" role="img" aria-label="Trajectoire simulée d'un processus AR(1) avec sa moyenne de long terme"></svg>
+
+            <div class="ts-out">
+              <span><span data-lang="fr">Moyenne long terme :</span><span data-lang="en">Long-run mean:</span><span data-lang="nl">Langetermijngemiddelde:</span> <b id="ts-mean">—</b></span>
+              <span><span data-lang="fr">Variance :</span><span data-lang="en">Variance:</span><span data-lang="nl">Variantie:</span> <b id="ts-var">—</b></span>
+              <span><span data-lang="fr">Régime :</span><span data-lang="en">Regime:</span><span data-lang="nl">Regime:</span> <b id="ts-dec" class="ts-verdict">—</b></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. BOX-JENKINS -->
+        <h2 id="box-jenkins"><span data-lang="fr">3. Box-Jenkins : identifier, sélectionner, valider, prévoir</span><span data-lang="en">3. Box-Jenkins: identify, select, validate, forecast</span><span data-lang="nl">3. Box-Jenkins: identificeren, selecteren, valideren, voorspellen</span></h2>
+        <p data-lang="fr">La démarche pratique enchaîne trois étapes. On <strong>identifie</strong> le modèle candidat en lisant l'ACF et la PACF (leurs bandes de confiance sont ±1,96/√T ; un dépassement isolé est normal, environ un lag sur vingt, donc on ne conclut jamais sur un seul). On <strong>sélectionne</strong> parmi plusieurs candidats avec les critères d'information : minimiser le MSE seul sur-ajusterait toujours (ajouter des paramètres réduit toujours le MSE), alors <strong>AIC</strong> et <strong>BIC</strong> ajoutent une pénalité par paramètre. La pénalité est constante (2/paramètre) pour l'AIC, croissante (ln T) pour le BIC. Conséquences : le BIC choisit un modèle au plus aussi grand que l'AIC (dès T ≥ 8) et il est <em>consistant</em> (il retrouve le vrai modèle quand T → ∞) ; l'AIC tend à sur-sélectionner. On <strong>valide</strong> en vérifiant que les résidus sont du white noise avec le test de <strong>Ljung-Box</strong> (∼ χ²ₕ, préféré à Box-Pierce en petit échantillon).</p>
+        <p data-lang="en">The practical approach runs three steps. We <strong>identify</strong> the candidate model by reading the ACF and PACF (their confidence bands are ±1.96/√T; an isolated crossing is normal, about one lag in twenty, so we never conclude on a single one). We <strong>select</strong> among candidates with information criteria: minimising the MSE alone would always overfit (adding parameters always cuts the MSE), so <strong>AIC</strong> and <strong>BIC</strong> add a per-parameter penalty. The penalty is constant (2/parameter) for AIC, growing (ln T) for BIC. Consequences: BIC picks a model at most as large as AIC (from T ≥ 8) and is <em>consistent</em> (it recovers the true model as T → ∞); AIC tends to over-select. We <strong>validate</strong> by checking the residuals are white noise with the <strong>Ljung-Box</strong> test (∼ χ²ₕ, preferred over Box-Pierce in small samples).</p>
+        <p data-lang="nl">De praktische aanpak doorloopt drie stappen. We <strong>identificeren</strong> het kandidaatmodel door de ACF en PACF te lezen (hun betrouwbaarheidsbanden zijn ±1,96/√T; een geïsoleerde overschrijding is normaal, ongeveer één lag op twintig, dus we besluiten nooit op één). We <strong>selecteren</strong> tussen kandidaten met informatiecriteria: enkel de MSE minimaliseren zou altijd overfitten (parameters toevoegen verlaagt altijd de MSE), dus voegen <strong>AIC</strong> en <strong>BIC</strong> een straf per parameter toe. De straf is constant (2/parameter) voor AIC, groeiend (ln T) voor BIC. Gevolgen: BIC kiest een model hoogstens zo groot als AIC (vanaf T ≥ 8) en is <em>consistent</em> (het vindt het ware model als T → ∞); AIC neigt tot overselectie. We <strong>valideren</strong> door te controleren of de residuen white noise zijn met de <strong>Ljung-Box</strong>-toets (∼ χ²ₕ, verkozen boven Box-Pierce bij kleine steekproeven).</p>
+
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">Prévoir : la mean reversion en action</span><span class="clabel" data-lang="en">Forecasting: mean reversion in action</span><span class="clabel" data-lang="nl">Voorspellen: mean reversion in actie</span>
+          <span data-lang="fr">Une fois le modèle retenu, on prévoit <strong>récursivement</strong> : chaque prévision sert à calculer la suivante. On réinjecte les prévisions déjà calculées, jamais des valeurs futures réalisées (inconnues) ; les chocs futurs valent 0 en espérance, mais les chocs passés estimés, eux, ne sont pas nuls et doivent être utilisés. Point clé : toute prévision d'une série stationnaire <strong>converge vers la moyenne de long terme</strong> δ/(1−Σϕ). C'est la mean reversion, et c'est précisément ce qu'une série à unit root <em>ne fait pas</em> (sa meilleure prévision reste la dernière valeur observée, à tout horizon).</span>
+          <span data-lang="en">Once the model is chosen, we forecast <strong>recursively</strong>: each forecast feeds the next. We reinject already-computed forecasts, never realised future values (unknown); future shocks are 0 in expectation, but estimated past shocks are not zero and must be used. Key point: any forecast of a stationary series <strong>converges to the long-run mean</strong> δ/(1−Σϕ). That is mean reversion, and it is precisely what a unit-root series <em>does not do</em> (its best forecast stays the last observed value, at every horizon).</span>
+          <span data-lang="nl">Zodra het model gekozen is, voorspellen we <strong>recursief</strong>: elke voorspelling voedt de volgende. We herinjecteren reeds berekende voorspellingen, nooit gerealiseerde toekomstige waarden (onbekend); toekomstige schokken zijn 0 in verwachting, maar geschatte vroegere schokken zijn niet nul en moeten gebruikt worden. Kernpunt: elke voorspelling van een stationaire reeks <strong>convergeert naar het langetermijngemiddelde</strong> δ/(1−Σϕ). Dat is mean reversion, en dat is precies wat een unit-root-reeks <em>niet doet</em> (haar beste voorspelling blijft de laatst waargenomen waarde, op elke horizon).</span>
+        </div>
+
+        <!-- 4. NON-STATIONNAIRE -->
+        <h2 id="non-stationnaire"><span data-lang="fr">4. Non-stationnarité : trends, saisonnalité, unit root</span><span data-lang="en">4. Non-stationarity: trends, seasonality, unit root</span><span data-lang="nl">4. Niet-stationariteit: trends, seizoen, unit root</span></h2>
+        <p data-lang="fr">Trois sources de non-stationnarité, deux remèdes distincts. Les <strong>trends déterministes</strong> (la série croît avec le temps) et les <strong>saisonnalités</strong> (moyenne qui dépend du mois ou du trimestre) sont déterministes : il suffit de connaître la date pour les mesurer. On les modélise par un polynôme du temps (le modèle <em>log-linéaire</em> ln Yₜ = δ₀ + δ₁t + εₜ donne un taux de croissance constant, plus réaliste) et des <em>dummies</em> saisonnières (s−1 dummies + une constante, jamais les s avec la constante : ce serait la <strong>dummy variable trap</strong>). Une série <strong>trend-stationary</strong> se traite en la <em>détrendant</em>. La troisième source est stochastique : les <strong>unit roots</strong>, alias <strong>random walks</strong>, qui décrivent presque tous les prix d'actifs. Elles se traitent en <em>différenciant</em>. Appliquer le mauvais remède laisse le problème entier.</p>
+        <p data-lang="en">Three sources of non-stationarity, two distinct remedies. <strong>Deterministic trends</strong> (the series grows with time) and <strong>seasonalities</strong> (mean depending on month or quarter) are deterministic: knowing the date is enough to measure them. We model them with a polynomial in time (the <em>log-linear</em> model ln Yₜ = δ₀ + δ₁t + εₜ gives a constant growth rate, more realistic) and seasonal <em>dummies</em> (s−1 dummies + a constant, never the s with the constant: that would be the <strong>dummy variable trap</strong>). A <strong>trend-stationary</strong> series is handled by <em>detrending</em>. The third source is stochastic: <strong>unit roots</strong>, a.k.a. <strong>random walks</strong>, which describe almost all asset prices. They are handled by <em>differencing</em>. Applying the wrong remedy leaves the problem intact.</p>
+        <p data-lang="nl">Drie bronnen van niet-stationariteit, twee onderscheiden middelen. <strong>Deterministische trends</strong> (de reeks groeit met de tijd) en <strong>seizoenspatronen</strong> (gemiddelde dat afhangt van maand of kwartaal) zijn deterministisch: de datum kennen volstaat om ze te meten. We modelleren ze met een polynoom in de tijd (het <em>log-lineaire</em> model ln Yₜ = δ₀ + δ₁t + εₜ geeft een constante groeivoet, realistischer) en seizoens-<em>dummies</em> (s−1 dummies + een constante, nooit de s met de constante: dat zou de <strong>dummy variable trap</strong> zijn). Een <strong>trend-stationaire</strong> reeks wordt behandeld door <em>detrenden</em>. De derde bron is stochastisch: <strong>unit roots</strong>, alias <strong>random walks</strong>, die bijna alle activaprijzen beschrijven. Ze worden behandeld door <em>differentiëren</em>. Het verkeerde middel toepassen laat het probleem intact.</p>
+
+        <div class="formula">
+          <div class="eq">Random walk : Yₜ = Yₜ₋₁ + εₜ = Y₀ + Σεᵢ &nbsp;·&nbsp; V[Yₜ] = t·σ² &nbsp;·&nbsp; Eₜ[Yₜ₊ₕ] = Yₜ</div>
+          <div class="caption" data-lang="fr">Dans un random walk, la valeur d'aujourd'hui est celle d'hier plus un choc ; Yₜ est donc la somme de <strong>tous</strong> les chocs passés, chacun pesant également et <em>pour toujours</em>. Contraste avec l'AR(1) stationnaire, où un choc reçu il y a i périodes ne pèse plus que ϕ^i et finit par s'éteindre. Conséquences : la variance <strong>croît sans borne</strong> (t·σ²), il n'y a <strong>aucune mean reversion</strong>, et la meilleure prévision à tout horizon reste la dernière valeur. Sur-différencier une série déjà stationnaire fabrique un MA(1) non invertible (modèle inutilement lourd) ; sous-différencier laisse la série non-stationnaire.</div>
+          <div class="caption" data-lang="en">In a random walk, today's value is yesterday's plus a shock; Yₜ is thus the sum of <strong>all</strong> past shocks, each weighing equally and <em>forever</em>. Contrast with the stationary AR(1), where a shock received i periods ago now weighs only ϕ^i and eventually dies out. Consequences: the variance <strong>grows without bound</strong> (t·σ²), there is <strong>no mean reversion</strong>, and the best forecast at any horizon stays the last value. Over-differencing an already-stationary series creates a non-invertible MA(1) (needlessly heavy model); under-differencing leaves the series non-stationary.</div>
+          <div class="caption" data-lang="nl">In een random walk is de waarde van vandaag die van gisteren plus een schok; Yₜ is dus de som van <strong>alle</strong> vroegere schokken, elk even zwaar en <em>voor altijd</em>. Contrast met de stationaire AR(1), waar een schok van i perioden geleden nu enkel ϕ^i weegt en uiteindelijk uitdooft. Gevolgen: de variantie <strong>groeit onbegrensd</strong> (t·σ²), er is <strong>geen mean reversion</strong>, en de beste voorspelling op elke horizon blijft de laatste waarde. Overdifferentiëren van een reeds stationaire reeks maakt een niet-inverteerbare MA(1) (nodeloos zwaar model); onderdifferentiëren laat de reeks niet-stationair.</div>
+          <div class="caption src">Réf. — GARP QA-11 (Non-Stationary Time Series)</div>
+        </div>
+
+        <!-- 5. ADF -->
+        <h2 id="adf"><span data-lang="fr">5. Le test ADF &amp; les régressions fallacieuses</span><span data-lang="en">5. The ADF test &amp; spurious regressions</span><span data-lang="nl">5. De ADF-toets &amp; schijnregressies</span></h2>
+        <p data-lang="fr">Le test <strong>ADF</strong> (Augmented Dickey-Fuller) tranche entre unit root et stationnarité. On régresse la différence ΔYₜ sur le niveau retardé Yₜ₋₁, des termes déterministes (constante, trend) et quelques différences retardées. La statistique est le <em>t</em> de γ̂, le coefficient du niveau retardé. On teste <strong>H₀ : γ = 0</strong> (unit root, non-stationnaire) contre <strong>H₁ : γ &lt; 0</strong> (stationnaire) : le test est <strong>unilatéral à gauche</strong>, on ne rejette que si le t est <em>plus négatif</em> que la valeur critique. Piège majeur : les critiques ne sont <strong>pas</strong> ±1,96 mais celles de la distribution de <strong>Dickey-Fuller</strong> (asymétrique, queues épaisses) : pour n = 250, −1,94 sans terme, −2,87 avec constante, −3,34 avec constante et trend. Un γ̂ positif ne conduit jamais au rejet (processus explosif).</p>
+        <p data-lang="en">The <strong>ADF</strong> test (Augmented Dickey-Fuller) decides between unit root and stationarity. We regress the difference ΔYₜ on the lagged level Yₜ₋₁, deterministic terms (constant, trend) and a few lagged differences. The statistic is the <em>t</em> of γ̂, the lagged-level coefficient. We test <strong>H₀: γ = 0</strong> (unit root, non-stationary) against <strong>H₁: γ &lt; 0</strong> (stationary): the test is <strong>left-tailed</strong>, we reject only if the t is <em>more negative</em> than the critical value. Major trap: the critical values are <strong>not</strong> ±1.96 but those of the <strong>Dickey-Fuller</strong> distribution (asymmetric, fat tails): for n = 250, −1.94 with no term, −2.87 with a constant, −3.34 with constant and trend. A positive γ̂ never leads to rejection (explosive process).</p>
+        <p data-lang="nl">De <strong>ADF</strong>-toets (Augmented Dickey-Fuller) beslist tussen unit root en stationariteit. We regresseren het verschil ΔYₜ op het vertraagde niveau Yₜ₋₁, deterministische termen (constante, trend) en enkele vertraagde verschillen. De statistiek is de <em>t</em> van γ̂, de coëfficiënt van het vertraagde niveau. We toetsen <strong>H₀: γ = 0</strong> (unit root, niet-stationair) tegen <strong>H₁: γ &lt; 0</strong> (stationair): de toets is <strong>linkszijdig</strong>, we verwerpen enkel als de t <em>negatiever</em> is dan de kritieke waarde. Grote valstrik: de kritieke waarden zijn <strong>niet</strong> ±1,96 maar die van de <strong>Dickey-Fuller</strong>-verdeling (asymmetrisch, dikke staarten): voor n = 250, −1,94 zonder term, −2,87 met een constante, −3,34 met constante en trend. Een positieve γ̂ leidt nooit tot verwerping (explosief proces).</p>
+
+        <div class="callout warn">
+          <span class="clabel" data-lang="fr">Les régressions fallacieuses (spurious)</span><span class="clabel" data-lang="en">Spurious regressions</span><span class="clabel" data-lang="nl">Schijnregressies</span>
+          <span data-lang="fr">Régresser l'une sur l'autre deux séries à unit root <em>indépendantes</em> donne un t significatif dans plus de 75 % des cas (au lieu de 5 %), et ce taux tend vers 1 en grand échantillon : on conclut presque toujours à une relation forte qui n'existe pas. Exemple réel : le log du Russell 1000 régressé sur le log retardé du JPY/USD donne β̂ = −3,23, t = −65,9, R² = 67,6 % — spectaculaire mais entièrement <strong>spurious</strong>. La bonne façon : travailler sur les <em>rendements</em> (différences de logs, stationnaires), et là le R² s'effondre à 0,3 %. Garde-fou : <strong>vérifier la stationnarité avant de régresser</strong>, et différencier ce qui ne l'est pas. Sur une série non-stationnaire, le R² et les t sont gonflés mécaniquement par le trend et n'ont aucune valeur.</span>
+          <span data-lang="en">Regressing two <em>independent</em> unit-root series on each other gives a significant t in over 75% of cases (instead of 5%), and this rate tends to 1 in large samples: we almost always conclude a strong relationship that does not exist. Real example: log Russell 1000 regressed on lagged log JPY/USD gives β̂ = −3.23, t = −65.9, R² = 67.6% — spectacular but entirely <strong>spurious</strong>. The right way: work on <em>returns</em> (log differences, stationary), and there R² collapses to 0.3%. Safeguard: <strong>check stationarity before regressing</strong>, and difference what is not. On a non-stationary series, R² and t are mechanically inflated by the trend and are worthless.</span>
+          <span data-lang="nl">Twee <em>onafhankelijke</em> unit-root-reeksen op elkaar regresseren geeft een significante t in meer dan 75% van de gevallen (in plaats van 5%), en dat percentage neigt naar 1 in grote steekproeven: we besluiten bijna altijd een sterke relatie die niet bestaat. Echt voorbeeld: log Russell 1000 geregresseerd op vertraagde log JPY/USD geeft β̂ = −3,23, t = −65,9, R² = 67,6% — spectaculair maar volledig <strong>spurious</strong>. De juiste manier: werk op <em>rendementen</em> (logverschillen, stationair), en daar stort R² in tot 0,3%. Waarborg: <strong>controleer stationariteit vóór het regresseren</strong>, en differentieer wat het niet is. Op een niet-stationaire reeks zijn R² en t mechanisch opgeblazen door de trend en waardeloos.</span>
+        </div>
+
+        <!-- 6. RENDEMENTS -->
+        <h2 id="rendements"><span data-lang="fr">6. Rendements, volatilité &amp; dépendance</span><span data-lang="en">6. Returns, volatility &amp; dependence</span><span data-lang="nl">6. Rendementen, volatiliteit &amp; afhankelijkheid</span></h2>
+        <p data-lang="fr">Deux définitions du rendement, et le choix n'est pas neutre. Le <strong>rendement simple</strong> Rₜ = (Pₜ − Pₜ₋₁)/Pₜ₋₁ s'additionne <em>en coupe</em> (le rendement d'un portefeuille est la moyenne pondérée de ceux de ses actifs). Le <strong>rendement log</strong> rₜ = ln(Pₜ/Pₜ₋₁) s'additionne <em>dans le temps</em> (le rendement sur plusieurs jours est la somme des rendements quotidiens), ce qui en fait l'outil des modèles de volatilité. Le log return est <em>toujours inférieur</em> au simple, et l'écart grandit avec l'amplitude (1 + R = e^r). Annualisation sous absence d'autocorrélation : la moyenne et la variance se multiplient par h, mais la <strong>volatilité seulement par √h</strong> (règle de la racine du temps : σ_annuelle = √252 · σ_quotidienne).</p>
+        <p data-lang="en">Two definitions of return, and the choice is not neutral. The <strong>simple return</strong> Rₜ = (Pₜ − Pₜ₋₁)/Pₜ₋₁ adds up <em>cross-sectionally</em> (a portfolio's return is the weighted average of its assets'). The <strong>log return</strong> rₜ = ln(Pₜ/Pₜ₋₁) adds up <em>over time</em> (the multi-day return is the sum of daily returns), making it the tool of volatility models. The log return is <em>always below</em> the simple one, and the gap grows with magnitude (1 + R = e^r). Annualisation under no autocorrelation: the mean and variance are multiplied by h, but the <strong>volatility only by √h</strong> (root-of-time rule: σ_annual = √252 · σ_daily).</p>
+        <p data-lang="nl">Twee definities van rendement, en de keuze is niet neutraal. Het <strong>simpele rendement</strong> Rₜ = (Pₜ − Pₜ₋₁)/Pₜ₋₁ telt op <em>in de doorsnede</em> (het portefeuillerendement is het gewogen gemiddelde van dat van de activa). Het <strong>logrendement</strong> rₜ = ln(Pₜ/Pₜ₋₁) telt op <em>in de tijd</em> (het meerdaagse rendement is de som van de dagrendementen), wat het tot het instrument van volatiliteitsmodellen maakt. Het logrendement is <em>altijd lager</em> dan het simpele, en het verschil groeit met de omvang (1 + R = e^r). Annualisatie bij afwezigheid van autocorrelatie: het gemiddelde en de variantie worden met h vermenigvuldigd, maar de <strong>volatiliteit enkel met √h</strong> (wortel-van-de-tijd-regel: σ_jaar = √252 · σ_dag).</p>
+
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">Queues épaisses &amp; dépendance non linéaire</span><span class="clabel" data-lang="en">Fat tails &amp; non-linear dependence</span><span class="clabel" data-lang="nl">Dikke staarten &amp; niet-lineaire afhankelijkheid</span>
+          <span data-lang="fr">Les rendements ne sont ni normaux ni symétriques : <strong>fat-tailed</strong> (kurtosis &gt; 3, jusqu'à 23,8 pour le S&amp;P quotidien) et <strong>skewed</strong> (négative pour les actions, positive pour l'or, valeur refuge). Le test de <strong>Jarque-Bera</strong> teste conjointement skewness = 0 et kurtosis = 3 (∼ χ²₂, critiques 5,99 à 5 % et 9,21 à 1 %) et rejette la normalité presque partout en haute fréquence. Supposer la normalité sous-estime massivement le risque de queue : une perte &gt; 4σ a une probabilité de 0,003 % sous la normale mais 0,24 % sous une t à 4 degrés de liberté, soit <strong>80 fois plus</strong>. Côté dépendance, la corrélation de <strong>Pearson</strong> ne capte que le <em>linéaire</em> ; <strong>Spearman</strong> (sur les rangs) et le <strong>τ de Kendall</strong> (sur la concordance) captent le non-linéaire, résistent aux outliers et sont invariants aux transformations monotones. Signal de non-linéarité : Spearman et τ nettement <em>supérieurs</em> à Pearson.</span>
+          <span data-lang="en">Returns are neither normal nor symmetric: <strong>fat-tailed</strong> (kurtosis &gt; 3, up to 23.8 for daily S&amp;P) and <strong>skewed</strong> (negative for equities, positive for gold, a safe haven). The <strong>Jarque-Bera</strong> test jointly tests skewness = 0 and kurtosis = 3 (∼ χ²₂, critical 5.99 at 5% and 9.21 at 1%) and rejects normality almost everywhere at high frequency. Assuming normality massively underestimates tail risk: a loss &gt; 4σ has probability 0.003% under the normal but 0.24% under a t with 4 degrees of freedom, i.e. <strong>80 times more</strong>. On dependence, <strong>Pearson</strong> correlation captures only the <em>linear</em> part; <strong>Spearman</strong> (on ranks) and <strong>Kendall's τ</strong> (on concordance) capture the non-linear, resist outliers and are invariant to monotone transformations. Signal of non-linearity: Spearman and τ clearly <em>above</em> Pearson.</span>
+          <span data-lang="nl">Rendementen zijn noch normaal noch symmetrisch: <strong>fat-tailed</strong> (kurtosis &gt; 3, tot 23,8 voor dagelijkse S&amp;P) en <strong>scheef</strong> (negatief voor aandelen, positief voor goud, een vluchthaven). De <strong>Jarque-Bera</strong>-toets toetst gezamenlijk scheefheid = 0 en kurtosis = 3 (∼ χ²₂, kritiek 5,99 op 5% en 9,21 op 1%) en verwerpt normaliteit bijna overal bij hoge frequentie. Normaliteit veronderstellen onderschat het staartrisico massaal: een verlies &gt; 4σ heeft kans 0,003% onder de normale maar 0,24% onder een t met 4 vrijheidsgraden, dus <strong>80 keer meer</strong>. Over afhankelijkheid: <strong>Pearson</strong>-correlatie vangt enkel het <em>lineaire</em>; <strong>Spearman</strong> (op rangen) en <strong>Kendalls τ</strong> (op concordantie) vangen het niet-lineaire, weerstaan uitschieters en zijn invariant onder monotone transformaties. Signaal van niet-lineariteit: Spearman en τ duidelijk <em>boven</em> Pearson.</span>
+        </div>
+
+        <!-- RESSOURCES -->
+        <h2 id="ressources"><span data-lang="fr">Ressources à télécharger</span><span data-lang="en">Downloadable resources</span><span data-lang="nl">Downloadbare bronnen</span></h2>
+        <div class="downloads">
+          <div class="dl-list">
+            <a class="dl-item" data-lang="fr" href="files/qa4-exercice-corrige-fr.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Exercice et corrigé : séries temporelles</span>
+                <span class="dl-sub">PDF, énoncé et solution détaillée (français)</span>
+              </span>
+            </a>
+            <a class="dl-item" data-lang="en" href="files/qa4-exercice-corrige-en.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Exercise and solution: time series</span>
+                <span class="dl-sub">PDF, statement and worked solution (English)</span>
+              </span>
+            </a>
+            <a class="dl-item" data-lang="nl" href="files/qa4-exercice-corrige-nl.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Oefening en oplossing: tijdreeksen</span>
+                <span class="dl-sub">PDF, opgave en uitgewerkte oplossing (Nederlands)</span>
+              </span>
+            </a>
+          </div>
+          <p class="dl-note" data-lang="fr">Un énoncé progressif suivi de sa correction pas à pas, dans votre langue. Cliquez pour télécharger le PDF.</p>
+          <p class="dl-note" data-lang="en">A progressive problem set followed by its step-by-step solution, in your language. Click to download the PDF.</p>
+          <p class="dl-note" data-lang="nl">Een progressieve opgave gevolgd door de stapsgewijze oplossing, in uw taal. Klik om de PDF te downloaden.</p>
+        </div>
+
+        <!-- 7. À RETENIR -->
+        <h2 id="retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></h2>
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">L'essentiel</span><span class="clabel" data-lang="en">The essentials</span><span class="clabel" data-lang="nl">De kern</span>
+          <span data-lang="fr">Stationnarité de covariance = moyenne, variance et autocovariances constantes dans le temps. White noise = choc sans autocorrélation. AR : ACF décroît, PACF se coupe (lag p), moyenne δ/(1−ϕ), stationnaire si |ϕ| &lt; 1. MA : miroir (ACF se coupe au lag q, PACF décroît), toujours stationnaire. ARMA : les deux décroissent. Estimation : OLS pour AR pur, MLE dès qu'il y a du MA. Box-Jenkins : identifier (ACF/PACF, bandes ±1,96/√T), sélectionner (AIC/BIC ; BIC ≤ AIC et consistant), valider (Ljung-Box), prévoir (→ mean reversion vers la moyenne long terme). Non-stationnarité : trend et saisonnalité (déterministes → détrender), unit root/random walk (stochastique → différencier ; variance = tσ², pas de mean reversion). ADF : H₀ = unit root, test unilatéral gauche, critiques de Dickey-Fuller (pas ±1,96). Spurious : vérifier la stationnarité avant de régresser. Rendements : simple (additif en coupe), log (additif dans le temps) ; volatilité en √h. Rendements fat-tailed et skewed (Jarque-Bera rejette la normalité) ; Spearman/Kendall pour la dépendance non linéaire.</span>
+          <span data-lang="en">Covariance stationarity = mean, variance and autocovariances constant over time. White noise = shock with no autocorrelation. AR: ACF decays, PACF cuts off (lag p), mean δ/(1−ϕ), stationary if |ϕ| &lt; 1. MA: mirror (ACF cuts off at lag q, PACF decays), always stationary. ARMA: both decay. Estimation: OLS for pure AR, MLE once MA is present. Box-Jenkins: identify (ACF/PACF, bands ±1.96/√T), select (AIC/BIC; BIC ≤ AIC and consistent), validate (Ljung-Box), forecast (→ mean reversion to the long-run mean). Non-stationarity: trend and seasonality (deterministic → detrend), unit root/random walk (stochastic → difference; variance = tσ², no mean reversion). ADF: H₀ = unit root, left-tailed test, Dickey-Fuller critical values (not ±1.96). Spurious: check stationarity before regressing. Returns: simple (additive cross-sectionally), log (additive over time); volatility in √h. Returns fat-tailed and skewed (Jarque-Bera rejects normality); Spearman/Kendall for non-linear dependence.</span>
+          <span data-lang="nl">Covariantiestationariteit = gemiddelde, variantie en autocovarianties constant in de tijd. White noise = schok zonder autocorrelatie. AR: ACF daalt, PACF kapt af (lag p), gemiddelde δ/(1−ϕ), stationair als |ϕ| &lt; 1. MA: spiegel (ACF kapt af bij lag q, PACF daalt), altijd stationair. ARMA: beide dalen. Schatten: OLS voor zuivere AR, MLE zodra MA aanwezig is. Box-Jenkins: identificeren (ACF/PACF, banden ±1,96/√T), selecteren (AIC/BIC; BIC ≤ AIC en consistent), valideren (Ljung-Box), voorspellen (→ mean reversion naar het langetermijngemiddelde). Niet-stationariteit: trend en seizoen (deterministisch → detrenden), unit root/random walk (stochastisch → differentiëren; variantie = tσ², geen mean reversion). ADF: H₀ = unit root, linkszijdige toets, Dickey-Fuller kritieke waarden (niet ±1,96). Spurious: controleer stationariteit vóór het regresseren. Rendementen: simpel (additief in de doorsnede), log (additief in de tijd); volatiliteit in √h. Rendementen fat-tailed en scheef (Jarque-Bera verwerpt normaliteit); Spearman/Kendall voor niet-lineaire afhankelijkheid.</span>
+        </div>
+
+        <!-- 8. QCM -->
+        <h2 id="qcm"><span data-lang="fr">8. QCM — 15 questions</span><span data-lang="en">8. MCQ — 15 questions</span><span data-lang="nl">8. MCV — 15 vragen</span></h2>
+        <div class="quiz">
+          <h4 data-lang="fr">Auto-évaluation</h4><h4 data-lang="en">Self-assessment</h4><h4 data-lang="nl">Zelfevaluatie</h4>
+          <p class="qsub" data-lang="fr">Cliquez sur une réponse : la bonne s'affiche en vert et la justification apparaît.</p>
+          <p class="qsub" data-lang="en">Click an answer: the correct one turns green and the justification appears.</p>
+          <p class="qsub" data-lang="nl">Klik op een antwoord: het juiste kleurt groen en de verantwoording verschijnt.</p>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">1. Une série est covariance-stationnaire si…</div>
+            <div class="qtext" data-lang="en">1. A series is covariance-stationary if…</div>
+            <div class="qtext" data-lang="nl">1. Een reeks is covariantiestationair als…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Sa moyenne croît linéairement.</span><span data-lang="en">Its mean grows linearly.</span><span data-lang="nl">Haar gemiddelde lineair groeit.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Sa variance croît avec le temps.</span><span data-lang="en">Its variance grows with time.</span><span data-lang="nl">Haar variantie met de tijd groeit.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Sa moyenne, sa variance et ses autocovariances ne dépendent pas du temps.</span><span data-lang="en">Its mean, variance and autocovariances do not depend on time.</span><span data-lang="nl">Haar gemiddelde, variantie en autocovarianties niet afhangen van de tijd.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Les trois conditions : E[Yₜ] constante, V[Yₜ] finie et constante, Cov[Yₜ,Yₜ₋ₕ] = γₕ ne dépend que de l'écart h. Sans stationnarité, les paramètres estimés sur le passé ne prédisent pas le futur.</span><span data-lang="en">✔ The three conditions: E[Yₜ] constant, V[Yₜ] finite and constant, Cov[Yₜ,Yₜ₋ₕ] = γₕ depends only on the gap h. Without stationarity, parameters estimated on the past do not predict the future.</span><span data-lang="nl">✔ De drie voorwaarden: E[Yₜ] constant, V[Yₜ] eindig en constant, Cov[Yₜ,Yₜ₋ₕ] = γₕ hangt enkel af van het verschil h. Zonder stationariteit voorspellen op het verleden geschatte parameters de toekomst niet.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">2. La propriété la plus importante du white noise est…</div>
+            <div class="qtext" data-lang="en">2. The most important property of white noise is…</div>
+            <div class="qtext" data-lang="nl">2. De belangrijkste eigenschap van white noise is…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Que les chocs sont normaux.</span><span data-lang="en">That the shocks are normal.</span><span data-lang="nl">Dat de schokken normaal zijn.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Que les autocorrélations sont toutes nulles.</span><span data-lang="en">That the autocorrelations are all zero.</span><span data-lang="nl">Dat de autocorrelaties allemaal nul zijn.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Que la moyenne croît avec le temps.</span><span data-lang="en">That the mean grows with time.</span><span data-lang="nl">Dat het gemiddelde met de tijd groeit.</span></button>
+            <div class="explain"><span data-lang="fr">✔ L'absence d'autocorrélation force toute la dépendance temporelle à venir des paramètres du modèle. La normalité n'est pas requise (un dependent white noise, ex. ARCH, est non corrélé mais pas indépendant).</span><span data-lang="en">✔ The absence of autocorrelation forces all temporal dependence to come from the model parameters. Normality is not required (a dependent white noise, e.g. ARCH, is uncorrelated but not independent).</span><span data-lang="nl">✔ De afwezigheid van autocorrelatie dwingt alle temporele afhankelijkheid uit de modelparameters. Normaliteit is niet vereist (een dependent white noise, bv. ARCH, is ongecorreleerd maar niet onafhankelijk).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">3. La moyenne de long terme d'un AR(1) Yₜ = δ + ϕYₜ₋₁ + εₜ vaut…</div>
+            <div class="qtext" data-lang="en">3. The long-run mean of an AR(1) Yₜ = δ + ϕYₜ₋₁ + εₜ is…</div>
+            <div class="qtext" data-lang="nl">3. Het langetermijngemiddelde van een AR(1) Yₜ = δ + ϕYₜ₋₁ + εₜ is…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">δ/(1−ϕ).</span><span data-lang="en">δ/(1−ϕ).</span><span data-lang="nl">δ/(1−ϕ).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">δ.</span><span data-lang="en">δ.</span><span data-lang="nl">δ.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">δ·ϕ.</span><span data-lang="en">δ·ϕ.</span><span data-lang="nl">δ·ϕ.</span></button>
+            <div class="explain"><span data-lang="fr">✔ En prenant l'espérance : µ = δ + ϕµ, donc µ(1−ϕ) = δ et µ = δ/(1−ϕ). Le piège classique est de lire l'intercept δ comme la moyenne, alors que la persistance ϕ l'amplifie.</span><span data-lang="en">✔ Taking the expectation: µ = δ + ϕµ, so µ(1−ϕ) = δ and µ = δ/(1−ϕ). The classic trap is reading the intercept δ as the mean, whereas persistence ϕ amplifies it.</span><span data-lang="nl">✔ Verwachting nemen: µ = δ + ϕµ, dus µ(1−ϕ) = δ en µ = δ/(1−ϕ). De klassieke valstrik is het intercept δ als het gemiddelde lezen, terwijl persistentie ϕ het versterkt.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">4. Un AR(1) est covariance-stationnaire si et seulement si…</div>
+            <div class="qtext" data-lang="en">4. An AR(1) is covariance-stationary if and only if…</div>
+            <div class="qtext" data-lang="nl">4. Een AR(1) is covariantiestationair als en slechts als…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">ϕ = 1.</span><span data-lang="en">ϕ = 1.</span><span data-lang="nl">ϕ = 1.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">ϕ &gt; 1.</span><span data-lang="en">ϕ &gt; 1.</span><span data-lang="nl">ϕ &gt; 1.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">|ϕ| &lt; 1.</span><span data-lang="en">|ϕ| &lt; 1.</span><span data-lang="nl">|ϕ| &lt; 1.</span></button>
+            <div class="explain"><span data-lang="fr">✔ À |ϕ| &lt; 1 les chocs anciens s'éteignent (poids ϕ^i → 0) et la série revient vers sa moyenne. À ϕ = 1 c'est une marche aléatoire (unit root, non stationnaire) ; au-delà, le processus explose.</span><span data-lang="en">✔ At |ϕ| &lt; 1 old shocks die out (weight ϕ^i → 0) and the series reverts to its mean. At ϕ = 1 it is a random walk (unit root, non-stationary); beyond, the process explodes.</span><span data-lang="nl">✔ Bij |ϕ| &lt; 1 doven oude schokken uit (gewicht ϕ^i → 0) en keert de reeks terug naar haar gemiddelde. Bij ϕ = 1 is het een random walk (unit root, niet-stationair); daarboven explodeert het proces.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">5. Une ACF qui se coupe net au lag q et une PACF qui décroît sont la signature d'un…</div>
+            <div class="qtext" data-lang="en">5. An ACF that cuts off at lag q and a PACF that decays are the signature of a…</div>
+            <div class="qtext" data-lang="nl">5. Een ACF die afkapt bij lag q en een PACF die daalt zijn de signatuur van een…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">AR(q).</span><span data-lang="en">AR(q).</span><span data-lang="nl">AR(q).</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">MA(q).</span><span data-lang="en">MA(q).</span><span data-lang="nl">MA(q).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Random walk.</span><span data-lang="en">Random walk.</span><span data-lang="nl">Random walk.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le MA est le miroir de l'AR : ACF qui se coupe (au lag q), PACF qui décroît. L'AR fait l'inverse (ACF décroît, PACF se coupe au lag p). Ne pas inverser les deux.</span><span data-lang="en">✔ The MA is the mirror of the AR: ACF cuts off (at lag q), PACF decays. The AR does the opposite (ACF decays, PACF cuts off at lag p). Do not swap them.</span><span data-lang="nl">✔ De MA is de spiegel van de AR: ACF kapt af (bij lag q), PACF daalt. De AR doet het omgekeerde (ACF daalt, PACF kapt af bij lag p). Niet verwisselen.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">6. Un processus MA(q) est…</div>
+            <div class="qtext" data-lang="en">6. An MA(q) process is…</div>
+            <div class="qtext" data-lang="nl">6. Een MA(q)-proces is…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Toujours stationnaire (mémoire finie).</span><span data-lang="en">Always stationary (finite memory).</span><span data-lang="nl">Altijd stationair (eindig geheugen).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Stationnaire seulement si |θ| &lt; 1.</span><span data-lang="en">Stationary only if |θ| &lt; 1.</span><span data-lang="nl">Enkel stationair als |θ| &lt; 1.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Jamais stationnaire.</span><span data-lang="en">Never stationary.</span><span data-lang="nl">Nooit stationair.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Un MA est toujours stationnaire, sa mémoire étant finie (limitée à q périodes) : chercher une condition sur ses θ n'a aucun sens. Pour un ARMA, la stationnarité ne dépend que de la partie AR.</span><span data-lang="en">✔ An MA is always stationary, its memory being finite (limited to q periods): seeking a condition on its θ makes no sense. For an ARMA, stationarity depends only on the AR part.</span><span data-lang="nl">✔ Een MA is altijd stationair, haar geheugen is eindig (beperkt tot q perioden): een voorwaarde op haar θ zoeken is zinloos. Voor een ARMA hangt stationariteit enkel af van het AR-deel.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">7. Pour estimer un modèle avec une composante MA, on utilise…</div>
+            <div class="qtext" data-lang="en">7. To estimate a model with an MA component, we use…</div>
+            <div class="qtext" data-lang="nl">7. Om een model met een MA-component te schatten, gebruiken we…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">OLS, comme pour un AR pur.</span><span data-lang="en">OLS, as for a pure AR.</span><span data-lang="nl">OLS, zoals voor een zuivere AR.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le test de White.</span><span data-lang="en">The White test.</span><span data-lang="nl">De White-toets.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le MLE (maximum de vraisemblance).</span><span data-lang="en">MLE (maximum likelihood).</span><span data-lang="nl">MLE (maximum likelihood).</span></button>
+            <div class="explain"><span data-lang="fr">✔ Les chocs retardés εₜ₋ᵢ ne sont pas observables, donc OLS ne s'applique plus. Un AR pur, lui, se traite par OLS (ses régresseurs, les Y retardés, sont observables ; estimateur biaisé en petit échantillon mais consistant).</span><span data-lang="en">✔ The lagged shocks εₜ₋ᵢ are not observable, so OLS no longer applies. A pure AR is handled by OLS (its regressors, the lagged Y's, are observable; estimator biased in small samples but consistent).</span><span data-lang="nl">✔ De vertraagde schokken εₜ₋ᵢ zijn niet waarneembaar, dus OLS geldt niet meer. Een zuivere AR wordt met OLS behandeld (haar regressoren, de vertraagde Y's, zijn waarneembaar; schatter vertekend in kleine steekproeven maar consistent).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">8. Comparé à l'AIC, le BIC…</div>
+            <div class="qtext" data-lang="en">8. Compared to AIC, BIC…</div>
+            <div class="qtext" data-lang="nl">8. Vergeleken met AIC…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Sélectionne toujours un modèle plus grand.</span><span data-lang="en">Always selects a larger model.</span><span data-lang="nl">Selecteert altijd een groter model.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Sélectionne un modèle au plus aussi grand, et est consistant.</span><span data-lang="en">Selects a model at most as large, and is consistent.</span><span data-lang="nl">Selecteert een model hoogstens even groot, en is consistent.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Ne pénalise pas le nombre de paramètres.</span><span data-lang="en">Does not penalise the number of parameters.</span><span data-lang="nl">Bestraft het aantal parameters niet.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La pénalité du BIC (ln T par paramètre) dépasse celle de l'AIC (2 par paramètre) dès T ≥ 8, donc le BIC choisit un modèle ≤ celui de l'AIC. Le BIC est consistant (retrouve le vrai modèle) ; l'AIC tend à sur-sélectionner.</span><span data-lang="en">✔ BIC's penalty (ln T per parameter) exceeds AIC's (2 per parameter) from T ≥ 8, so BIC picks a model ≤ AIC's. BIC is consistent (recovers the true model); AIC tends to over-select.</span><span data-lang="nl">✔ BIC's straf (ln T per parameter) overtreft die van AIC (2 per parameter) vanaf T ≥ 8, dus BIC kiest een model ≤ dat van AIC. BIC is consistent (vindt het ware model); AIC neigt tot overselectie.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">9. Pour valider qu'un modèle capte bien la dépendance, on vérifie que les résidus sont du white noise avec…</div>
+            <div class="qtext" data-lang="en">9. To validate that a model captures the dependence, we check the residuals are white noise with…</div>
+            <div class="qtext" data-lang="nl">9. Om te valideren dat een model de afhankelijkheid vangt, controleren we dat de residuen white noise zijn met…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le test de Ljung-Box (∼ χ²ₕ).</span><span data-lang="en">The Ljung-Box test (∼ χ²ₕ).</span><span data-lang="nl">De Ljung-Box-toets (∼ χ²ₕ).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le test ADF.</span><span data-lang="en">The ADF test.</span><span data-lang="nl">De ADF-toets.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le test de Jarque-Bera.</span><span data-lang="en">The Jarque-Bera test.</span><span data-lang="nl">De Jarque-Bera-toets.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Ljung-Box teste conjointement ρ₁ = … = ρₕ = 0 sur les résidus (préféré à Box-Pierce en petit échantillon). L'ADF teste la unit root ; Jarque-Bera teste la normalité.</span><span data-lang="en">✔ Ljung-Box jointly tests ρ₁ = … = ρₕ = 0 on the residuals (preferred over Box-Pierce in small samples). ADF tests the unit root; Jarque-Bera tests normality.</span><span data-lang="nl">✔ Ljung-Box toetst gezamenlijk ρ₁ = … = ρₕ = 0 op de residuen (verkozen boven Box-Pierce bij kleine steekproeven). ADF toetst de unit root; Jarque-Bera toetst normaliteit.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">10. Pour un random walk Yₜ = Yₜ₋₁ + εₜ, la variance…</div>
+            <div class="qtext" data-lang="en">10. For a random walk Yₜ = Yₜ₋₁ + εₜ, the variance…</div>
+            <div class="qtext" data-lang="nl">10. Voor een random walk Yₜ = Yₜ₋₁ + εₜ, de variantie…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Est constante, comme pour un AR stationnaire.</span><span data-lang="en">Is constant, as for a stationary AR.</span><span data-lang="nl">Is constant, zoals voor een stationaire AR.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Tend vers zéro.</span><span data-lang="en">Tends to zero.</span><span data-lang="nl">Neigt naar nul.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Croît sans borne (t·σ²) et il n'y a pas de mean reversion.</span><span data-lang="en">Grows without bound (t·σ²) and there is no mean reversion.</span><span data-lang="nl">Groeit onbegrensd (t·σ²) en er is geen mean reversion.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Yₜ est la somme de tous les chocs passés, chacun pesant pour toujours : la variance vaut t·σ² et explose, la meilleure prévision à tout horizon reste la dernière valeur Yₜ, sans jamais revenir vers une moyenne.</span><span data-lang="en">✔ Yₜ is the sum of all past shocks, each weighing forever: the variance is t·σ² and explodes, the best forecast at any horizon stays the last value Yₜ, never returning to a mean.</span><span data-lang="nl">✔ Yₜ is de som van alle vroegere schokken, elk voor altijd wegend: de variantie is t·σ² en explodeert, de beste voorspelling op elke horizon blijft de laatste waarde Yₜ, nooit terugkerend naar een gemiddelde.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">11. Dans le test ADF, l'hypothèse nulle H₀ est…</div>
+            <div class="qtext" data-lang="en">11. In the ADF test, the null hypothesis H₀ is…</div>
+            <div class="qtext" data-lang="nl">11. In de ADF-toets is de nulhypothese H₀…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La stationnarité ; test bilatéral.</span><span data-lang="en">Stationarity; two-sided test.</span><span data-lang="nl">Stationariteit; tweezijdige toets.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">La présence d'une unit root (γ = 0) ; test unilatéral à gauche.</span><span data-lang="en">The presence of a unit root (γ = 0); left-tailed test.</span><span data-lang="nl">De aanwezigheid van een unit root (γ = 0); linkszijdige toets.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La normalité des résidus.</span><span data-lang="en">Normality of the residuals.</span><span data-lang="nl">Normaliteit van de residuen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ H₀ : γ = 0 (unit root) contre H₁ : γ &lt; 0 (stationnaire). On ne rejette que si le t de γ̂ est plus négatif que la critique de Dickey-Fuller. Un γ̂ positif (explosif) ne rejette jamais.</span><span data-lang="en">✔ H₀: γ = 0 (unit root) against H₁: γ &lt; 0 (stationary). We reject only if the t of γ̂ is more negative than the Dickey-Fuller critical value. A positive γ̂ (explosive) never rejects.</span><span data-lang="nl">✔ H₀: γ = 0 (unit root) tegen H₁: γ &lt; 0 (stationair). We verwerpen enkel als de t van γ̂ negatiever is dan de Dickey-Fuller kritieke waarde. Een positieve γ̂ (explosief) verwerpt nooit.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">12. Les valeurs critiques du test ADF…</div>
+            <div class="qtext" data-lang="en">12. The critical values of the ADF test…</div>
+            <div class="qtext" data-lang="nl">12. De kritieke waarden van de ADF-toets…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Suivent la distribution de Dickey-Fuller (ex. −2,87 avec constante).</span><span data-lang="en">Follow the Dickey-Fuller distribution (e.g. −2.87 with a constant).</span><span data-lang="nl">Volgen de Dickey-Fuller-verdeling (bv. −2,87 met een constante).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Sont ±1,96, comme un test normal.</span><span data-lang="en">Are ±1.96, like a normal test.</span><span data-lang="nl">Zijn ±1,96, zoals een normale toets.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Sont toujours positives.</span><span data-lang="en">Are always positive.</span><span data-lang="nl">Zijn altijd positief.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La distribution DF est asymétrique, à queues épaisses : pour n = 250, −1,94 (aucun terme), −2,87 (constante), −3,34 (constante + trend). Chaque terme déterministe ajouté pousse la critique vers la gauche et réduit la puissance.</span><span data-lang="en">✔ The DF distribution is asymmetric, fat-tailed: for n = 250, −1.94 (no term), −2.87 (constant), −3.34 (constant + trend). Each deterministic term added pushes the critical value left and reduces power.</span><span data-lang="nl">✔ De DF-verdeling is asymmetrisch, dikstaartig: voor n = 250, −1,94 (geen term), −2,87 (constante), −3,34 (constante + trend). Elke toegevoegde deterministische term duwt de kritieke waarde naar links en verlaagt het vermogen.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">13. Une régression fallacieuse (spurious) survient typiquement quand on régresse…</div>
+            <div class="qtext" data-lang="en">13. A spurious regression typically arises when regressing…</div>
+            <div class="qtext" data-lang="nl">13. Een schijnregressie ontstaat typisch bij het regresseren van…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Deux séries stationnaires.</span><span data-lang="en">Two stationary series.</span><span data-lang="nl">Twee stationaire reeksen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une série sur elle-même.</span><span data-lang="en">A series on itself.</span><span data-lang="nl">Een reeks op zichzelf.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Deux séries à unit root, sans les différencier au préalable.</span><span data-lang="en">Two unit-root series, without differencing them first.</span><span data-lang="nl">Twee unit-root-reeksen, zonder ze eerst te differentiëren.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Deux unit roots indépendantes donnent un t significatif dans plus de 75 % des cas (taux → 1 en grand échantillon). Remède : travailler sur les rendements (différences de logs, stationnaires). Toujours vérifier la stationnarité avant de régresser.</span><span data-lang="en">✔ Two independent unit roots give a significant t in over 75% of cases (rate → 1 in large samples). Remedy: work on returns (log differences, stationary). Always check stationarity before regressing.</span><span data-lang="nl">✔ Twee onafhankelijke unit roots geven een significante t in meer dan 75% van de gevallen (percentage → 1 in grote steekproeven). Middel: werk op rendementen (logverschillen, stationair). Controleer altijd stationariteit vóór het regresseren.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">14. Le rendement log s'additionne dans le temps, tandis que le rendement simple s'additionne…</div>
+            <div class="qtext" data-lang="en">14. The log return adds up over time, while the simple return adds up…</div>
+            <div class="qtext" data-lang="nl">14. Het logrendement telt op in de tijd, terwijl het simpele rendement optelt…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Aussi dans le temps, de façon identique.</span><span data-lang="en">Also over time, identically.</span><span data-lang="nl">Ook in de tijd, identiek.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">En coupe (le portefeuille est la moyenne pondérée des actifs).</span><span data-lang="en">Cross-sectionally (the portfolio is the weighted average of assets).</span><span data-lang="nl">In de doorsnede (de portefeuille is het gewogen gemiddelde van de activa).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Jamais (il ne s'additionne pas).</span><span data-lang="en">Never (it does not add up).</span><span data-lang="nl">Nooit (het telt niet op).</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le log return est additif dans le temps (somme des rendements quotidiens), donc idéal pour les modèles de volatilité ; le rendement simple est additif en coupe (portefeuille). Se tromper d'axe est une erreur classique. Rappel : le log return est toujours &lt; au simple (1 + R = e^r).</span><span data-lang="en">✔ The log return is additive over time (sum of daily returns), so ideal for volatility models; the simple return is additive cross-sectionally (portfolio). Mixing up the axis is a classic error. Recall: the log return is always &lt; the simple one (1 + R = e^r).</span><span data-lang="nl">✔ Het logrendement is additief in de tijd (som van dagrendementen), dus ideaal voor volatiliteitsmodellen; het simpele rendement is additief in de doorsnede (portefeuille). De as verwarren is een klassieke fout. Herinner: het logrendement is altijd &lt; het simpele (1 + R = e^r).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">15. Spearman et le τ de Kendall nettement supérieurs à la corrélation de Pearson signalent…</div>
+            <div class="qtext" data-lang="en">15. Spearman and Kendall's τ clearly above Pearson correlation signal…</div>
+            <div class="qtext" data-lang="nl">15. Spearman en Kendalls τ duidelijk boven de Pearson-correlatie wijzen op…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Une dépendance non linéaire mais monotone.</span><span data-lang="en">A non-linear but monotone dependence.</span><span data-lang="nl">Een niet-lineaire maar monotone afhankelijkheid.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une erreur de calcul.</span><span data-lang="en">A calculation error.</span><span data-lang="nl">Een rekenfout.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">L'indépendance des variables.</span><span data-lang="en">Independence of the variables.</span><span data-lang="nl">Onafhankelijkheid van de variabelen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Pearson ne capte que le linéaire. Une relation monotone courbée (ex. Y = e^{2X}) donne un Pearson faible mais des rangs très corrélés (Spearman, τ élevés). Attention : pour une normale bivariée, τ &lt; ρ est <em>normal</em> et n'indique rien.</span><span data-lang="en">✔ Pearson captures only the linear. A curved monotone relationship (e.g. Y = e^{2X}) gives a weak Pearson but strongly correlated ranks (high Spearman, τ). Note: for a bivariate normal, τ &lt; ρ is <em>normal</em> and indicates nothing.</span><span data-lang="nl">✔ Pearson vangt enkel het lineaire. Een gekromde monotone relatie (bv. Y = e^{2X}) geeft een zwakke Pearson maar sterk gecorreleerde rangen (hoge Spearman, τ). Let op: voor een bivariate normale is τ &lt; ρ <em>normaal</em> en wijst het op niets.</span></div>
+          </div>
+        </div>
+
+        <!-- 9. EXERCICES -->
+        <h2 id="exercices"><span data-lang="fr">9. Exercices</span><span data-lang="en">9. Exercises</span><span data-lang="nl">9. Oefeningen</span></h2>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice TS-1</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Un AR(1) s'écrit Yₜ = 1,2 + 0,6 Yₜ₋₁ + εₜ, avec σ² = 4. Calculez (a) la moyenne de long terme et (b) la variance γ₀.</p>
+          <p class="estatement" data-lang="en">An AR(1) is Yₜ = 1.2 + 0.6 Yₜ₋₁ + εₜ, with σ² = 4. Compute (a) the long-run mean and (b) the variance γ₀.</p>
+          <p class="estatement" data-lang="nl">Een AR(1) is Yₜ = 1,2 + 0,6 Yₜ₋₁ + εₜ, met σ² = 4. Bereken (a) het langetermijngemiddelde en (b) de variantie γ₀.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">(a) µ = δ/(1−ϕ) = 1,2/(1−0,6) = 1,2/0,4 = <b>3</b>. Ne pas lire δ = 1,2 comme la moyenne. (b) γ₀ = σ²/(1−ϕ²) = 4/(1−0,36) = 4/0,64 = <b>6,25</b>. La persistance ϕ amplifie à la fois la moyenne et la variance.</div>
+            <div class="ans" data-lang="en">(a) µ = δ/(1−ϕ) = 1.2/(1−0.6) = 1.2/0.4 = <b>3</b>. Do not read δ = 1.2 as the mean. (b) γ₀ = σ²/(1−ϕ²) = 4/(1−0.36) = 4/0.64 = <b>6.25</b>. Persistence ϕ amplifies both the mean and the variance.</div>
+            <div class="ans" data-lang="nl">(a) µ = δ/(1−ϕ) = 1,2/(1−0,6) = 1,2/0,4 = <b>3</b>. Lees δ = 1,2 niet als het gemiddelde. (b) γ₀ = σ²/(1−ϕ²) = 4/(1−0,36) = 4/0,64 = <b>6,25</b>. Persistentie ϕ versterkt zowel het gemiddelde als de variantie.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice TS-2</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Vous observez une série dont l'ACF décroît géométriquement et dont la PACF se coupe net après le lag 2. Quel modèle identifiez-vous, et par quelle méthode l'estimeriez-vous ?</p>
+          <p class="estatement" data-lang="en">You observe a series whose ACF decays geometrically and whose PACF cuts off after lag 2. Which model do you identify, and by which method would you estimate it?</p>
+          <p class="estatement" data-lang="nl">U observeert een reeks waarvan de ACF geometrisch daalt en de PACF net na lag 2 afkapt. Welk model identificeert u, en met welke methode zou u het schatten?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">ACF qui décroît + PACF qui se coupe au lag p = signature d'un <b>AR(2)</b> (le cutoff de la PACF donne l'ordre p = 2). Comme c'est un AR pur, ses régresseurs (Yₜ₋₁, Yₜ₋₂) sont observables : on l'estime par <b>OLS</b> (biaisé en petit échantillon mais consistant). On valide ensuite avec Ljung-Box sur les résidus.</div>
+            <div class="ans" data-lang="en">Decaying ACF + PACF cutting off at lag p = signature of an <b>AR(2)</b> (the PACF cutoff gives the order p = 2). Being a pure AR, its regressors (Yₜ₋₁, Yₜ₋₂) are observable: estimate by <b>OLS</b> (biased in small samples but consistent). Then validate with Ljung-Box on the residuals.</div>
+            <div class="ans" data-lang="nl">Dalende ACF + PACF die afkapt bij lag p = signatuur van een <b>AR(2)</b> (de PACF-cutoff geeft de orde p = 2). Als zuivere AR zijn de regressoren (Yₜ₋₁, Yₜ₋₂) waarneembaar: schat via <b>OLS</b> (vertekend in kleine steekproeven maar consistent). Valideer daarna met Ljung-Box op de residuen.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice TS-3</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Un test ADF avec constante (n = 250, critique 5 % = −2,87) sur le niveau d'une série donne un t de γ̂ = −2,10. Après différenciation, le t tombe à −7,4. Que concluez-vous, et quel est l'ordre d'intégration de la série ?</p>
+          <p class="estatement" data-lang="en">An ADF test with a constant (n = 250, 5% critical = −2.87) on the level of a series gives a t of γ̂ = −2.10. After differencing, the t drops to −7.4. What do you conclude, and what is the series' order of integration?</p>
+          <p class="estatement" data-lang="nl">Een ADF-toets met constante (n = 250, 5% kritiek = −2,87) op het niveau van een reeks geeft een t van γ̂ = −2,10. Na differentiëren zakt de t naar −7,4. Wat besluit u, en wat is de integratieorde van de reeks?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Sur le niveau : −2,10 est <b>moins négatif</b> que −2,87, donc on <b>ne rejette pas</b> H₀ : la série a une unit root (non stationnaire). Sur la différence : −7,4 est bien plus négatif que la critique, donc on <b>rejette</b> H₀ : la différence est stationnaire. La série est donc <b>I(1)</b> (une seule différenciation suffit), ce qui est la norme pour la plupart des séries macro et des prix d'actifs.</div>
+            <div class="ans" data-lang="en">On the level: −2.10 is <b>less negative</b> than −2.87, so we <b>do not reject</b> H₀: the series has a unit root (non-stationary). On the difference: −7.4 is far more negative than the critical value, so we <b>reject</b> H₀: the difference is stationary. The series is therefore <b>I(1)</b> (one differencing suffices), the norm for most macro series and asset prices.</div>
+            <div class="ans" data-lang="nl">Op het niveau: −2,10 is <b>minder negatief</b> dan −2,87, dus we <b>verwerpen niet</b> H₀: de reeks heeft een unit root (niet-stationair). Op het verschil: −7,4 is veel negatiever dan de kritieke waarde, dus we <b>verwerpen</b> H₀: het verschil is stationair. De reeks is dus <b>I(1)</b> (één differentiëring volstaat), de norm voor de meeste macroreeksen en activaprijzen.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice TS-4</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">La volatilité quotidienne d'un actif est de 1,5 %. En supposant l'absence d'autocorrélation des rendements, annualisez-la (252 jours de bourse). Pourquoi ne multiplie-t-on pas simplement par 252 ?</p>
+          <p class="estatement" data-lang="en">An asset's daily volatility is 1.5%. Assuming no autocorrelation of returns, annualise it (252 trading days). Why do we not simply multiply by 252?</p>
+          <p class="estatement" data-lang="nl">De dagvolatiliteit van een actief is 1,5%. Uitgaande van geen autocorrelatie van de rendementen, annualiseer ze (252 handelsdagen). Waarom vermenigvuldigen we niet gewoon met 252?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">σ_annuelle = √252 × 1,5 % ≈ 15,87 × 1,5 % = <b>23,8 %</b>. C'est la <b>variance</b> qui s'additionne dans le temps (×252 sous absence d'autocorrélation), et la volatilité est sa racine : elle grandit donc en √252, pas en 252. Multiplier la volatilité par 252 reviendrait à multiplier la variance par 252² = 63 504, ce qui est absurde. L'hypothèse de non-autocorrélation est cruciale : sans elle, les covariances croisées ne s'annulent pas et la variance ne s'additionne plus proprement.</div>
+            <div class="ans" data-lang="en">σ_annual = √252 × 1.5% ≈ 15.87 × 1.5% = <b>23.8%</b>. It is the <b>variance</b> that adds up over time (×252 under no autocorrelation), and volatility is its root: it grows in √252, not 252. Multiplying volatility by 252 would mean multiplying variance by 252² = 63,504, which is absurd. The no-autocorrelation assumption is crucial: without it, cross covariances do not cancel and variance no longer adds up cleanly.</div>
+            <div class="ans" data-lang="nl">σ_jaar = √252 × 1,5% ≈ 15,87 × 1,5% = <b>23,8%</b>. Het is de <b>variantie</b> die optelt in de tijd (×252 bij geen autocorrelatie), en volatiliteit is de wortel ervan: ze groeit in √252, niet 252. Volatiliteit met 252 vermenigvuldigen zou de variantie met 252² = 63.504 vermenigvuldigen, wat absurd is. De aanname van geen autocorrelatie is cruciaal: zonder haar heffen kruiscovarianties elkaar niet op en telt de variantie niet meer zuiver op.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice TS-5</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Un analyste régresse le niveau (en log) d'un indice boursier sur le niveau (en log) d'un taux de change et obtient R² = 68 %, t = −66. Fier de ce résultat, il conclut à un fort pouvoir prédictif. Où est l'erreur, et comment corriger l'analyse ?</p>
+          <p class="estatement" data-lang="en">An analyst regresses the (log) level of a stock index on the (log) level of an exchange rate and gets R² = 68%, t = −66. Proud of this, they conclude a strong predictive power. Where is the error, and how to fix the analysis?</p>
+          <p class="estatement" data-lang="nl">Een analist regresseert het (log)niveau van een aandelenindex op het (log)niveau van een wisselkoers en krijgt R² = 68%, t = −66. Trots hierop besluit hij tot sterke voorspelkracht. Waar zit de fout, en hoe corrigeren?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">C'est une <b>régression fallacieuse</b> (spurious). Les deux séries de niveaux ont chacune une unit root ; régresser deux séries à unit root indépendantes donne des R² et des t spectaculaires mais dénués de sens (le taux de faux positifs dépasse 75 % et tend vers 1). Preuve : un ADF sur les résidus ne rejette pas leur unit root. Correction : travailler sur les <b>rendements</b> (différences de logs, stationnaires). Sur les rendements, le R² s'effondrerait typiquement à quelques dixièmes de pour cent, révélant l'absence de vrai lien. Règle : vérifier la stationnarité avant de régresser.</div>
+            <div class="ans" data-lang="en">It is a <b>spurious regression</b>. Both level series each have a unit root; regressing two independent unit-root series gives spectacular but meaningless R² and t (the false-positive rate exceeds 75% and tends to 1). Proof: an ADF on the residuals does not reject their unit root. Fix: work on <b>returns</b> (log differences, stationary). On returns, R² would typically collapse to a few tenths of a percent, revealing the absence of a real link. Rule: check stationarity before regressing.</div>
+            <div class="ans" data-lang="nl">Het is een <b>schijnregressie</b>. Beide niveaureeksen hebben elk een unit root; twee onafhankelijke unit-root-reeksen regresseren geeft spectaculaire maar betekenisloze R² en t (het valse-positieven-percentage overschrijdt 75% en neigt naar 1). Bewijs: een ADF op de residuen verwerpt hun unit root niet. Oplossing: werk op <b>rendementen</b> (logverschillen, stationair). Op rendementen zou R² typisch instorten tot enkele tienden van een procent, wat de afwezigheid van een echt verband onthult. Regel: controleer stationariteit vóór het regresseren.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice TS-6</span><span class="diff" data-lang="fr">Réflexion</span><span class="diff" data-lang="en">Conceptual</span><span class="diff" data-lang="nl">Reflectie</span></div>
+          <p class="estatement" data-lang="fr">Un risk manager modélise les pertes d'un portefeuille avec une loi normale (µ, σ). Un collègue objecte que cela sous-estime le risque de queue. Expliquez pourquoi, en donnant un ordre de grandeur, et nommez le test qui trancherait.</p>
+          <p class="estatement" data-lang="en">A risk manager models a portfolio's losses with a normal law (µ, σ). A colleague objects that this underestimates tail risk. Explain why, giving an order of magnitude, and name the test that would settle it.</p>
+          <p class="estatement" data-lang="nl">Een risk manager modelleert de verliezen van een portefeuille met een normale wet (µ, σ). Een collega werpt op dat dit het staartrisico onderschat. Leg uit waarom, met een orde van grootte, en noem de toets die dit zou beslechten.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Les rendements financiers sont <b>fat-tailed</b> (kurtosis &gt; 3, jusqu'à ~24 en quotidien) et souvent <b>skewed</b> (négativement pour les actions). La normale a des queues fines : elle attribue une probabilité bien trop faible aux pertes extrêmes. Ordre de grandeur : une perte &gt; 4σ a une probabilité de 0,003 % sous la normale mais de 0,24 % sous une loi de Student à 4 degrés de liberté, soit <b>~80 fois plus</b>. Modéliser avec (µ, σ) et l'hypothèse normale sous-estime donc massivement le risque là où il compte le plus. Le test qui tranche est le <b>Jarque-Bera</b> (H₀ : skewness = 0 et kurtosis = 3 ; ∼ χ²₂, critiques 5,99 à 5 % et 9,21 à 1 %), qui rejette la normalité presque partout en haute fréquence. On complète en modélisant les queues par une loi de Student ou une power law.</div>
+            <div class="ans" data-lang="en">Financial returns are <b>fat-tailed</b> (kurtosis &gt; 3, up to ~24 daily) and often <b>skewed</b> (negatively for equities). The normal has thin tails: it assigns far too small a probability to extreme losses. Order of magnitude: a loss &gt; 4σ has probability 0.003% under the normal but 0.24% under a Student law with 4 degrees of freedom, i.e. <b>~80 times more</b>. Modelling with (µ, σ) and the normal assumption thus massively underestimates risk where it matters most. The settling test is <b>Jarque-Bera</b> (H₀: skewness = 0 and kurtosis = 3; ∼ χ²₂, critical 5.99 at 5% and 9.21 at 1%), which rejects normality almost everywhere at high frequency. Complement by modelling the tails with a Student law or a power law.</div>
+            <div class="ans" data-lang="nl">Financiële rendementen zijn <b>fat-tailed</b> (kurtosis &gt; 3, tot ~24 dagelijks) en vaak <b>scheef</b> (negatief voor aandelen). De normale heeft dunne staarten: ze kent een veel te kleine kans toe aan extreme verliezen. Orde van grootte: een verlies &gt; 4σ heeft kans 0,003% onder de normale maar 0,24% onder een Student-wet met 4 vrijheidsgraden, dus <b>~80 keer meer</b>. Modelleren met (µ, σ) en de normale aanname onderschat dus het risico massaal waar het het meest telt. De beslissende toets is <b>Jarque-Bera</b> (H₀: scheefheid = 0 en kurtosis = 3; ∼ χ²₂, kritiek 5,99 op 5% en 9,21 op 1%), die normaliteit bijna overal verwerpt bij hoge frequentie. Vul aan door de staarten te modelleren met een Student-wet of een power law.</div>
+          </details>
+        </div>
+
+        <section class="biblio">
+          <h2 id="biblio"><span data-lang="fr">Bibliographie &amp; pour aller plus loin</span><span data-lang="en">Bibliography &amp; further reading</span><span data-lang="nl">Bibliografie &amp; verder lezen</span></h2>
+          <div class="bcol">
+            <h4 data-lang="fr">Références</h4><h4 data-lang="en">References</h4><h4 data-lang="nl">Referenties</h4>
+            <ol>
+      <li>GARP (2024). <em>Financial Risk Manager (FRM) Part I: Quantitative Analysis</em>. Pearson.</li>
+      <li>Diebold, F. X. (2017). <em>Forecasting</em>. University of Pennsylvania (open textbook).</li>
+      <li>Tsay, R. S. (2010). <em>Analysis of Financial Time Series</em> (3rd ed.). Wiley.</li>
+      <li>Hamilton, J. D. (1994). <em>Time Series Analysis</em>. Princeton University Press.</li>
+      <li>Cont, R. (2001). Empirical Properties of Asset Returns: Stylized Facts and Statistical Issues. <em>Quantitative Finance</em>, 1(2), 223–236.</li>
+            </ol>
+          </div>
+          <div class="bcol">
+            <h4 data-lang="fr">Pour aller plus loin</h4><h4 data-lang="en">Further reading</h4><h4 data-lang="nl">Verder lezen</h4>
+            <ul>
+      <li>Investopedia — <a href="https://www.investopedia.com/terms/a/autocorrelation.asp" target="_blank" rel="noopener">Autocorrelation</a> · <a href="https://www.investopedia.com/terms/r/randomwalktheory.asp" target="_blank" rel="noopener">Random Walk</a> · <a href="https://www.investopedia.com/terms/u/unit-root.asp" target="_blank" rel="noopener">Unit Root</a>.</li>
+      <li><span data-lang="fr">Module précédent : Régression linéaire. Suite : Simulation &amp; machine learning.</span><span data-lang="en">Previous module: Linear regression. Next: Simulation &amp; machine learning.</span><span data-lang="nl">Vorige module: Lineaire regressie. Volgende: Simulatie &amp; machine learning.</span></li>
+            </ul>
+          </div>
+        </section>
+
+        <div class="module-nav">
+          <a class="prev" href="qa3-regression.html">
+            <div class="dir" data-lang="fr">← Module précédent</div><div class="dir" data-lang="en">← Previous module</div><div class="dir" data-lang="nl">← Vorige module</div>
+            <div class="tt" data-lang="fr">Régression linéaire</div><div class="tt" data-lang="en">Linear regression</div><div class="tt" data-lang="nl">Lineaire regressie</div>
+          </a>
+          <a class="next" href="../index.html#curriculum">
+            <div class="dir" data-lang="fr">Module suivant →</div><div class="dir" data-lang="en">Next module →</div><div class="dir" data-lang="nl">Volgende module →</div>
+            <div class="tt" data-lang="fr">Simulation &amp; machine learning</div><div class="tt" data-lang="en">Simulation &amp; machine learning</div><div class="tt" data-lang="nl">Simulatie &amp; machine learning</div>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap foot">
+    <div class="brand"><span class="logo">Avenir<b>.</b></span></div>
+    <p data-lang="fr">Financial Risk Management · Analyse quantitative · Séries temporelles</p>
+    <p data-lang="en">Financial Risk Management · Quantitative Analysis · Time series</p>
+    <p data-lang="nl">Financial Risk Management · Kwantitatieve analyse · Tijdreeksen</p>
+  </div>
+</footer>
+
+<script>
+/* ==========================================================================
+   AVENIR — Scripts partagés
+   Sélecteur de langue FR/EN, thème clair/sombre, sommaire actif, quiz
+   ========================================================================== */
+(function () {
+  "use strict";
+
+  var LS_LANG = "avenir-lang";
+  var LS_THEME = "avenir-theme";
+
+  function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  /* ---------- Langue ---------- */
+  function detectLang() {
+    var saved = safeGet(LS_LANG);
+    if (saved === "fr" || saved === "en" || saved === "nl") return saved;
+    var nav = (navigator.language || "fr").toLowerCase();
+    if (nav.indexOf("nl") === 0) return "nl";
+    if (nav.indexOf("en") === 0) return "en";
+    return "fr";
+  }
+
+  function setLang(lang) {
+    document.body.setAttribute("data-active-lang", lang);
+    document.documentElement.setAttribute("lang", lang);
+    safeSet(LS_LANG, lang);
+    document.querySelectorAll(".lang-toggle button").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-set-lang") === lang);
+    });
+  }
+
+  /* ---------- Thème ---------- */
+  function detectTheme() {
+    var saved = safeGet(LS_THEME);
+    if (saved === "light" || saved === "dark") return saved;
+    return null; // suit le système
+  }
+
+  function applyTheme(theme) {
+    if (theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      safeSet(LS_THEME, theme);
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+    updateThemeIcon();
+  }
+
+  function currentTheme() {
+    var attr = document.documentElement.getAttribute("data-theme");
+    if (attr) return attr;
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  function updateThemeIcon() {
+    var btn = document.getElementById("theme-btn");
+    if (btn) btn.textContent = currentTheme() === "dark" ? "☀" : "☾";
+  }
+
+  /* ---------- Initialisation ---------- */
+  document.addEventListener("DOMContentLoaded", function () {
+    setLang(detectLang());
+    applyTheme(detectTheme());
+
+    document.querySelectorAll(".lang-toggle button").forEach(function (b) {
+      b.addEventListener("click", function () { setLang(b.getAttribute("data-set-lang")); });
+    });
+
+    var themeBtn = document.getElementById("theme-btn");
+    if (themeBtn) themeBtn.addEventListener("click", function () {
+      applyTheme(currentTheme() === "dark" ? "light" : "dark");
+    });
+
+    var menuBtn = document.getElementById("menu-btn");
+    var navLinks = document.querySelector(".nav-links");
+    if (menuBtn && navLinks) menuBtn.addEventListener("click", function () {
+      var open = navLinks.style.display === "flex";
+      navLinks.style.display = open ? "" : "flex";
+      navLinks.style.position = "absolute";
+      navLinks.style.flexDirection = "column";
+      navLinks.style.top = "64px";
+      navLinks.style.right = "16px";
+      navLinks.style.background = "var(--surface)";
+      navLinks.style.border = "1px solid var(--border)";
+      navLinks.style.borderRadius = "12px";
+      navLinks.style.padding = "8px";
+      navLinks.style.boxShadow = "var(--shadow-lg)";
+    });
+
+    /* Sommaire actif + barre de progression (pages module) */
+    var toc = document.querySelector(".toc");
+    var bar = document.querySelector(".progress-bar");
+    if (toc || bar) {
+      var headings = Array.prototype.slice.call(document.querySelectorAll(".module-body h2[id]"));
+      var links = toc ? Array.prototype.slice.call(toc.querySelectorAll("a")) : [];
+      var onScroll = function () {
+        if (bar) {
+          var h = document.documentElement;
+          var pct = h.scrollTop / (h.scrollHeight - h.clientHeight);
+          bar.style.width = Math.max(0, Math.min(1, pct)) * 100 + "%";
+        }
+        if (headings.length && links.length) {
+          var pos = window.scrollY + 120, current = headings[0].id;
+          headings.forEach(function (hd) { if (hd.offsetTop <= pos) current = hd.id; });
+          links.forEach(function (a) {
+            a.classList.toggle("active", a.getAttribute("href") === "#" + current);
+          });
+        }
+      };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+    }
+  });
+
+  /* ---------- Quiz (exposé globalement pour les onclick) ---------- */
+  window.avenirAnswer = function (btn, correct) {
+    var q = btn.closest(".q");
+    if (q.getAttribute("data-done") === "1") return;
+    q.setAttribute("data-done", "1");
+    var opts = q.querySelectorAll(".opt");
+    opts.forEach(function (o) { o.disabled = true; });
+    if (correct) {
+      btn.classList.add("correct");
+    } else {
+      btn.classList.add("wrong");
+      opts.forEach(function (o) { if (o.getAttribute("data-correct") === "1") o.classList.add("correct"); });
+    }
+    var ex = q.querySelector(".explain");
+    if (ex) ex.classList.add("show");
+  };
+})();
+
+</script>
+<script>
+/* Trajectoire AR(1) : mean reversion (|ϕ|<1) vs marche aléatoire (ϕ=1) vs explosif (ϕ>1) */
+(function () {
+  var svg = document.getElementById("ts-chart");
+  if (!svg) return;
+  function v(id){ return parseFloat(document.getElementById(id).value); }
+  function setT(id,t){ var e=document.getElementById(id); if(e) e.textContent=t; }
+  function al(){ return document.body.getAttribute("data-active-lang")||"fr"; }
+
+  // Chocs déterministes (LCG + Box-Muller, seed fixe) : la trajectoire reste stable entre réglages
+  function makeNormals(count, seed){
+    var out=[];
+    function rnd(){ seed=(1103515245*seed+12345)&0x7fffffff; return seed/0x7fffffff; }
+    for (var i=0;i<count;i++){
+      var u1=Math.max(rnd(),1e-9), u2=rnd();
+      out.push(Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2));
+    }
+    return out;
+  }
+  var N=120, Z = makeNormals(N, 135792468);
+
+  function draw(){
+    var phi=v("ts-phi"), delta=v("ts-delta"), sigma=v("ts-sigma");
+    setT("ts-phi-o", phi.toFixed(2)); setT("ts-delta-o", delta.toFixed(1)); setT("ts-sigma-o", sigma.toFixed(1));
+
+    var stationary = phi < 1;
+    var mu = stationary ? delta/(1-phi) : null;
+    // trajectoire
+    var ys=[], y = stationary ? mu : 0; // départ : la moyenne si stationnaire, sinon 0
+    for (var i=0;i<N;i++){ y = delta + phi*y + sigma*Z[i]; ys.push(y); }
+
+    setT("ts-mean", stationary ? mu.toFixed(2) : (al()==="en"?"undefined":(al()==="nl"?"ongedefinieerd":"non définie")));
+    var vword;
+    if (phi < 1) vword = stationary ? (sigma*sigma/(1-phi*phi)).toFixed(2) : "—";
+    else vword = al()==="en"?"grows (t·σ²)":(al()==="nl"?"groeit (t·σ²)":"croît (t·σ²)");
+    setT("ts-var", vword);
+
+    var dec = document.getElementById("ts-dec");
+    var reg;
+    if (phi < 0.999){ reg = al()==="en"?"Stationary (mean reversion)":(al()==="nl"?"Stationair (mean reversion)":"Stationnaire (mean reversion)"); dec.style.color="var(--teal)"; }
+    else if (phi <= 1.001){ reg = al()==="en"?"Random walk (unit root)":(al()==="nl"?"Random walk (unit root)":"Marche aléatoire (unit root)"); dec.style.color="var(--gold)"; }
+    else { reg = al()==="en"?"Explosive":(al()==="nl"?"Explosief":"Explosif"); dec.style.color="var(--crimson)"; }
+    dec.textContent = reg;
+
+    // échelle
+    var W=520,H=300,L=44,R=16,T0=16,B=30, pw=W-L-R, ph=H-T0-B;
+    var ymin=Infinity,ymax=-Infinity;
+    for (i=0;i<N;i++){ if(ys[i]<ymin)ymin=ys[i]; if(ys[i]>ymax)ymax=ys[i]; }
+    if (stationary){ if(mu<ymin)ymin=mu; if(mu>ymax)ymax=mu; }
+    var pad=(ymax-ymin)*0.10||1; ymin-=pad; ymax+=pad;
+    function px(t){ return L + t/(N-1)*pw; }
+    function py(val){ return T0 + (1-(val-ymin)/(ymax-ymin))*ph; }
+
+    var g="";
+    // axes
+    g+='<line class="axis" x1="'+L+'" y1="'+(T0+ph)+'" x2="'+(L+pw)+'" y2="'+(T0+ph)+'"/>';
+    g+='<line class="axis" x1="'+L+'" y1="'+T0+'" x2="'+L+'" y2="'+(T0+ph)+'"/>';
+    // moyenne long terme (si stationnaire)
+    if (stationary){
+      var ym=py(mu);
+      g+='<line x1="'+L+'" y1="'+ym.toFixed(1)+'" x2="'+(L+pw)+'" y2="'+ym.toFixed(1)+'" stroke="var(--crimson)" stroke-width="1.4" stroke-dasharray="5 4"/>';
+      var mlab = al()==="en"?"long-run mean":(al()==="nl"?"LT-gemiddelde":"moyenne LT");
+      g+='<text class="tick" x="'+(L+pw)+'" y="'+(ym-4).toFixed(1)+'" text-anchor="end" fill="var(--crimson)">'+mlab+' '+mu.toFixed(1)+'</text>';
+    }
+    // trajectoire
+    var d="";
+    for (i=0;i<N;i++){ d+=(i===0?"M ":" L ")+px(i).toFixed(1)+","+py(ys[i]).toFixed(1); }
+    g+='<path d="'+d+'" fill="none" stroke="var(--teal)" stroke-width="2"/>';
+    // libellés axes
+    var xlab = al()==="en"?"time t":(al()==="nl"?"tijd t":"temps t");
+    g+='<text class="lab" x="'+(L+pw)+'" y="'+(T0+ph+16)+'" text-anchor="end">'+xlab+'</text>';
+    g+='<text class="lab" x="'+L+'" y="'+(T0-4)+'" text-anchor="start">Yₜ</text>';
+    svg.innerHTML=g;
+  }
+  ["ts-phi","ts-delta","ts-sigma"].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener("input", draw); });
+  document.querySelectorAll("[data-set-lang]").forEach(function(b){ b.addEventListener("click", function(){ setTimeout(draw,10); }); });
+  document.addEventListener("DOMContentLoaded", draw);
+  draw();
+})();
+</script>
+</body>
+</html>
