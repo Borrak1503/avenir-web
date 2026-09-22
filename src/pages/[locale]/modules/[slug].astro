@@ -1,0 +1,64 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { locales, withBase } from '../../../i18n';
+import varMod from '../../../data/modules/var.json';
+import am1Mod from '../../../data/modules/am1.json';
+import am2Mod from '../../../data/modules/am2.json';
+import am3Mod from '../../../data/modules/am3.json';
+import am4Mod from '../../../data/modules/am4.json';
+import am5Mod from '../../../data/modules/am5.json';
+import am6Mod from '../../../data/modules/am6.json';
+import am7Mod from '../../../data/modules/am7.json';
+import am8Mod from '../../../data/modules/am8.json';
+import frm1Mod from '../../../data/modules/frm1.json';
+import frm3Mod from '../../../data/modules/frm3.json';
+import frm4Mod from '../../../data/modules/frm4.json';
+import frm5Mod from '../../../data/modules/frm5.json';
+import frm6Mod from '../../../data/modules/frm6.json';
+import frm7Mod from '../../../data/modules/frm7.json';
+import frm8Mod from '../../../data/modules/frm8.json';
+import am4actionsMod from '../../../data/modules/am4-actions.json';
+import am4obligationsMod from '../../../data/modules/am4-obligations.json';
+import am4immobilierMod from '../../../data/modules/am4-immobilier.json';
+import am4matieresMod from '../../../data/modules/am4-matieres.json';
+import am4monetaireMod from '../../../data/modules/am4-monetaire.json';
+import qa1Mod from '../../../data/modules/qa1.json';
+import qa2Mod from '../../../data/modules/qa2.json';
+import qa3Mod from '../../../data/modules/qa3.json';
+import qa4Mod from '../../../data/modules/qa4.json';
+import qa5Mod from '../../../data/modules/qa5.json';
+import fmp1Mod from '../../../data/modules/fmp1.json';
+import fmp2Mod from '../../../data/modules/fmp2.json';
+import fmp3Mod from '../../../data/modules/fmp3.json';
+import fmp4Mod from '../../../data/modules/fmp4.json';
+import fmp5Mod from '../../../data/modules/fmp5.json';
+import vrm1Mod from '../../../data/modules/vrm1.json';
+
+const MODULES: Record<string, any> = { var: varMod, am1: am1Mod, am2: am2Mod, am3: am3Mod, am4: am4Mod, am5: am5Mod, am6: am6Mod, am7: am7Mod, am8: am8Mod, frm1: frm1Mod, frm3: frm3Mod, frm4: frm4Mod, frm5: frm5Mod, frm6: frm6Mod, frm7: frm7Mod, frm8: frm8Mod, 'am4-actions': am4actionsMod, 'am4-obligations': am4obligationsMod, 'am4-immobilier': am4immobilierMod, 'am4-matieres': am4matieresMod, 'am4-monetaire': am4monetaireMod, qa1: qa1Mod, qa2: qa2Mod, qa3: qa3Mod, qa4: qa4Mod, qa5: qa5Mod, fmp1: fmp1Mod, fmp2: fmp2Mod, fmp3: fmp3Mod, fmp4: fmp4Mod, fmp5: fmp5Mod, vrm1: vrm1Mod };
+
+export function getStaticPaths() {
+  const slugs = ['var', 'am1', 'am2', 'am3', 'am4', 'am5', 'am6', 'am7', 'am8', 'frm1', 'frm3', 'frm4', 'frm5', 'frm6', 'frm7', 'frm8', 'am4-actions', 'am4-obligations', 'am4-immobilier', 'am4-matieres', 'am4-monetaire', 'qa1', 'qa2', 'qa3', 'qa4', 'qa5', 'fmp1', 'fmp2', 'fmp3', 'fmp4', 'fmp5', 'vrm1'];
+  const paths: any[] = [];
+  for (const locale of locales) {
+    for (const slug of slugs) {
+      paths.push({ params: { locale, slug } });
+    }
+  }
+  return paths;
+}
+
+const { locale, slug } = Astro.params;
+const mod = MODULES[slug as string];
+const body = withBase(mod.body[locale as string]);
+const calc: string = mod.calc || '';
+---
+<Base
+  locale={locale as any}
+  title={mod.titles[locale as string]}
+  subpath={`modules/${slug}/`}
+  trackAm={mod.trackAm}
+  progress={true}
+>
+  <Fragment set:html={body} />
+  {calc && <script is:inline set:html={calc} />}
+</Base>
