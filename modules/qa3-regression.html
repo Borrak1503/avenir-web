@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Régression linéaire — Avenir</title>
+<meta name="description" content="La régression OLS de bout en bout : le modèle Y = α + βX + ε, les estimateurs β̂ = cov/var = ρ·σy/σx et la correction n−2, les cinq hypothèses et les biais (variable omise, attenuation, sélection), l'inférence (t-stat, R², significativité), la régression multiple avec F-test et R̄², puis les diagnostics (hétéroscédasticité et test de White, multicolinéarité et VIF, outliers et distance de Cook, BLUE et BUE). Nuage de points et droite ajustée interactifs, QCM et exercices.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-active-lang="fr">
+
+<div class="progress-bar"></div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <div class="brand">
+      <a href="../index.html"><span class="logo">Avenir<b>.</b></span></a>
+      <span class="tag">Asset Management &amp; Risk</span>
+    </div>
+    <div class="spacer"></div>
+    <nav class="nav-links">
+      <a href="../index.html#parcours"><span data-lang="fr">Parcours</span><span data-lang="en">Tracks</span><span data-lang="nl">Trajecten</span></a>
+      <a href="../index.html#curriculum"><span data-lang="fr">Programme</span><span data-lang="en">Curriculum</span><span data-lang="nl">Programma</span></a>
+      <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a>
+    </nav>
+    <div class="controls">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-set-lang="fr">FR</button>
+        <button data-set-lang="en">EN</button>
+        <button data-set-lang="nl">NL</button>
+      </div>
+      <button id="theme-btn" class="icon-btn" aria-label="Thème">☾</button>
+      <button id="menu-btn" class="icon-btn menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap-mod">
+  <div class="module-shell">
+
+    <aside class="toc">
+      <div class="toc-title" data-lang="fr">Sommaire</div>
+      <div class="toc-title" data-lang="en">Contents</div>
+      <div class="toc-title" data-lang="nl">Inhoud</div>
+      <a href="#pourquoi"><span data-lang="fr">1. Pourquoi régresser</span><span data-lang="en">1. Why regress</span><span data-lang="nl">1. Waarom regresseren</span></a>
+      <a href="#ols"><span data-lang="fr">2. OLS : les estimateurs</span><span data-lang="en">2. OLS: the estimators</span><span data-lang="nl">2. OLS: de schatters</span></a>
+      <a href="#hypotheses"><span data-lang="fr">3. Cinq hypothèses &amp; biais</span><span data-lang="en">3. Five assumptions &amp; biases</span><span data-lang="nl">3. Vijf aannames &amp; vertekeningen</span></a>
+      <a href="#inference"><span data-lang="fr">4. Inférence : t &amp; R²</span><span data-lang="en">4. Inference: t &amp; R²</span><span data-lang="nl">4. Inferentie: t &amp; R²</span></a>
+      <a href="#multiple"><span data-lang="fr">5. Régression multiple &amp; F-test</span><span data-lang="en">5. Multiple regression &amp; F-test</span><span data-lang="nl">5. Meervoudige regressie &amp; F-toets</span></a>
+      <a href="#diagnostics"><span data-lang="fr">6. Diagnostics : White, VIF, Cook</span><span data-lang="en">6. Diagnostics: White, VIF, Cook</span><span data-lang="nl">6. Diagnostiek: White, VIF, Cook</span></a>
+      <a href="#ressources"><span data-lang="fr">Ressources</span><span data-lang="en">Resources</span><span data-lang="nl">Bronnen</span></a>
+      <a href="#retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></a>
+      <a href="#qcm"><span data-lang="fr">8. QCM (15)</span><span data-lang="en">8. MCQ (15)</span><span data-lang="nl">8. MCV (15)</span></a>
+      <a href="#exercices"><span data-lang="fr">9. Exercices</span><span data-lang="en">9. Exercises</span><span data-lang="nl">9. Oefeningen</span></a>
+      <a href="#biblio"><span data-lang="fr">Sources</span><span data-lang="en">Sources</span><span data-lang="nl">Bronnen</span></a>
+    </aside>
+
+    <main>
+      <div class="crumbs">
+        <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a> ·
+        <span>Financial Risk Management</span> ·
+        <span data-lang="fr">Analyse quantitative</span><span data-lang="en">Quantitative Analysis</span><span data-lang="nl">Kwantitatieve analyse</span>
+      </div>
+
+      <div class="module-hero">
+        <span class="badge">Analyse quantitative · <span data-lang="fr">Régression</span><span data-lang="en">Regression</span><span data-lang="nl">Regressie</span></span>
+        <h1 data-lang="fr">Régression linéaire</h1>
+        <h1 data-lang="en">Linear regression</h1>
+        <h1 data-lang="nl">Lineaire regressie</h1>
+        <p class="subtitle" data-lang="fr">L'outil central de la finance empirique : une droite qui relie deux variables, estimée par moindres carrés. Elle mesure l'exposition à un facteur, calibre une couverture, évalue un gérant. Puis on l'étend à plusieurs variables et on vérifie qu'elle tient.</p>
+        <p class="subtitle" data-lang="en">The central tool of empirical finance: a line linking two variables, estimated by least squares. It measures factor exposure, calibrates a hedge, evaluates a manager. Then we extend it to several variables and check that it holds.</p>
+        <p class="subtitle" data-lang="nl">Het centrale instrument van de empirische finance: een lijn die twee variabelen verbindt, geschat via kleinste kwadraten. Ze meet factorblootstelling, kalibreert een hedge, evalueert een beheerder. Daarna breiden we uit naar meerdere variabelen en controleren dat ze standhoudt.</p>
+        <div class="module-meta">
+          <span data-lang="fr">⏱ Lecture ~28 min</span><span data-lang="en">⏱ ~28 min read</span><span data-lang="nl">⏱ ~28 min lezen</span>
+          <span data-lang="fr">📶 Niveau intermédiaire</span><span data-lang="en">📶 Intermediate level</span><span data-lang="nl">📶 Gemiddeld niveau</span>
+          <span>🎓 FRM I · QA</span>
+        </div>
+      </div>
+
+      <div class="objectives">
+        <h4 data-lang="fr">Objectifs d'apprentissage</h4>
+        <h4 data-lang="en">Learning objectives</h4>
+        <h4 data-lang="nl">Leerdoelen</h4>
+        <ul>
+          <li data-lang="fr">Estimer une droite par OLS et lire la pente comme cov/var = ρ·σy/σx.</li>
+          <li data-lang="en">Estimate a line by OLS and read the slope as cov/var = ρ·σy/σx.</li>
+          <li data-lang="nl">Een lijn schatten via OLS en de helling lezen als cov/var = ρ·σy/σx.</li>
+          <li data-lang="fr">Énoncer les cinq hypothèses et reconnaître les biais (variable omise, attenuation, sélection).</li>
+          <li data-lang="en">State the five assumptions and recognise the biases (omitted variable, attenuation, selection).</li>
+          <li data-lang="nl">De vijf aannames formuleren en de vertekeningen herkennen (weggelaten variabele, attenuatie, selectie).</li>
+          <li data-lang="fr">Tester un coefficient (t-stat, CI) et interpréter le R².</li>
+          <li data-lang="en">Test a coefficient (t-stat, CI) and interpret R².</li>
+          <li data-lang="nl">Een coëfficiënt toetsen (t-stat, CI) en R² interpreteren.</li>
+          <li data-lang="fr">Passer à plusieurs variables : contribution unique, R̄², F-test des hypothèses jointes.</li>
+          <li data-lang="en">Move to several variables: unique contribution, R̄², F-test of joint hypotheses.</li>
+          <li data-lang="nl">Overgaan naar meerdere variabelen: unieke bijdrage, R̄², F-toets van gezamenlijke hypothesen.</li>
+          <li data-lang="fr">Diagnostiquer un modèle : hétéroscédasticité (White), multicolinéarité (VIF), outliers (Cook).</li>
+          <li data-lang="en">Diagnose a model: heteroskedasticity (White), multicollinearity (VIF), outliers (Cook).</li>
+          <li data-lang="nl">Een model diagnosticeren: heteroskedasticiteit (White), multicollineariteit (VIF), uitschieters (Cook).</li>
+        </ul>
+      </div>
+
+      <div class="module-body">
+
+        <!-- 1. POURQUOI -->
+        <h2 id="pourquoi"><span data-lang="fr">1. Pourquoi régresser</span><span data-lang="en">1. Why regress</span><span data-lang="nl">1. Waarom regresseren</span></h2>
+        <p data-lang="fr">La régression bivariée relie une variable à expliquer <em>Y</em> à une seule variable explicative <em>X</em> par l'équation <strong>Y = α + βX + ε</strong>. C'est l'outil central de la finance empirique parce qu'il résout trois problèmes concrets avec le même appareil : <strong>mesurer l'exposition</strong> d'un portefeuille à un facteur (le CAPM régresse le rendement du portefeuille sur celui du marché), <strong>calibrer une couverture</strong> (le β est directement le hedge ratio optimal), et <strong>évaluer un gérant</strong> (un α positif et significatif signale une vraie surperformance). Chaque terme a une lecture précise : β est la <em>sensibilité</em> de Y à X, α la valeur de Y quand X = 0, et ε le <em>choc</em>, la part de Y que X n'explique pas. La causalité est asymétrique, X → Y, ce qui distingue la régression de la simple corrélation.</p>
+        <p data-lang="en">Bivariate regression links a dependent variable <em>Y</em> to a single explanatory variable <em>X</em> through the equation <strong>Y = α + βX + ε</strong>. It is the central tool of empirical finance because it solves three concrete problems with one machinery: <strong>measuring exposure</strong> of a portfolio to a factor (the CAPM regresses the portfolio return on the market's), <strong>calibrating a hedge</strong> (β is directly the optimal hedge ratio), and <strong>evaluating a manager</strong> (a positive, significant α signals genuine outperformance). Each term has a precise reading: β is the <em>sensitivity</em> of Y to X, α the value of Y when X = 0, and ε the <em>shock</em>, the part of Y that X does not explain. Causality is asymmetric, X → Y, which distinguishes regression from mere correlation.</p>
+        <p data-lang="nl">Bivariate regressie verbindt een te verklaren variabele <em>Y</em> met één verklarende variabele <em>X</em> via de vergelijking <strong>Y = α + βX + ε</strong>. Het is het centrale instrument van de empirische finance omdat het drie concrete problemen met dezelfde machinerie oplost: <strong>blootstelling meten</strong> van een portefeuille aan een factor (het CAPM regresseert het portefeuillerendement op dat van de markt), <strong>een hedge kalibreren</strong> (β is meteen de optimale hedge ratio), en <strong>een beheerder evalueren</strong> (een positieve, significante α wijst op echte outperformance). Elke term heeft een precieze lezing: β is de <em>gevoeligheid</em> van Y voor X, α de waarde van Y als X = 0, en ε de <em>schok</em>, het deel van Y dat X niet verklaart. Causaliteit is asymmetrisch, X → Y, wat regressie onderscheidt van louter correlatie.</p>
+
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">« Linéaire » ne veut pas dire « droite »</span><span class="clabel" data-lang="en">“Linear” does not mean “straight line”</span><span class="clabel" data-lang="nl">“Lineair” betekent niet “rechte lijn”</span>
+          <span data-lang="fr">Le mot <em>linéaire</em> qualifie les <strong>coefficients</strong>, pas la forme de la relation. On reste libre de transformer les variables : un terme en X² (polynôme) donne une courbe tout en restant linéaire dans les paramètres ; un modèle log-log (ln Y = ln α + β ln X) rend β égal à l'<strong>élasticité</strong> (% de Y pour 1 % de X) ; une <em>dummy</em> D ∈ {0,1} décale l'intercept, et interagie (X × D) elle change la pente. Ce qui est exclu, c'est un terme comme βX^γ où deux inconnues se multiplient.</span>
+          <span data-lang="en">The word <em>linear</em> qualifies the <strong>coefficients</strong>, not the shape of the relationship. We remain free to transform the variables: an X² term (polynomial) gives a curve while staying linear in the parameters; a log-log model (ln Y = ln α + β ln X) makes β equal to the <strong>elasticity</strong> (% of Y per 1% of X); a <em>dummy</em> D ∈ {0,1} shifts the intercept, and interacted (X × D) it changes the slope. What is excluded is a term like βX^γ where two unknowns multiply.</span>
+          <span data-lang="nl">Het woord <em>lineair</em> slaat op de <strong>coëfficiënten</strong>, niet op de vorm van de relatie. We blijven vrij om de variabelen te transformeren: een X²-term (polynoom) geeft een kromme en blijft toch lineair in de parameters; een log-log-model (ln Y = ln α + β ln X) maakt β gelijk aan de <strong>elasticiteit</strong> (% van Y per 1% van X); een <em>dummy</em> D ∈ {0,1} verschuift het intercept, en geïnteracteerd (X × D) verandert ze de helling. Uitgesloten is een term als βX^γ waar twee onbekenden vermenigvuldigen.</span>
+        </div>
+
+        <!-- 2. OLS -->
+        <h2 id="ols"><span data-lang="fr">2. OLS : les estimateurs</span><span data-lang="en">2. OLS: the estimators</span><span data-lang="nl">2. OLS: de schatters</span></h2>
+        <p data-lang="fr">On estime α et β par <strong>OLS</strong> (moindres carrés ordinaires), qui choisit la droite minimisant la <em>somme des carrés des résidus</em>. On met les écarts au carré pour que résidus positifs et négatifs ne se compensent pas. La solution a une <strong>forme fermée</strong> : la pente apparaît comme un ratio covariance / variance. Cette écriture révèle un fait à retenir absolument : <strong>β est proportionnelle à la corrélation</strong>, donc β = 0 ⟺ ρ = 0. Régresser, c'est au fond tester si deux variables sont corrélées.</p>
+        <p data-lang="en">We estimate α and β by <strong>OLS</strong> (ordinary least squares), which picks the line minimising the <em>sum of squared residuals</em>. We square the deviations so positive and negative residuals do not cancel. The solution has a <strong>closed form</strong>: the slope appears as a covariance / variance ratio. This writing reveals a fact to remember absolutely: <strong>β is proportional to the correlation</strong>, so β = 0 ⟺ ρ = 0. To regress is, at bottom, to test whether two variables are correlated.</p>
+        <p data-lang="nl">We schatten α en β via <strong>OLS</strong> (gewone kleinste kwadraten), die de lijn kiest die de <em>som van de kwadratische residuen</em> minimaliseert. We kwadrateren de afwijkingen zodat positieve en negatieve residuen elkaar niet opheffen. De oplossing heeft een <strong>gesloten vorm</strong>: de helling verschijnt als een covariantie / variantie-verhouding. Dit onthult een absoluut te onthouden feit: <strong>β is evenredig met de correlatie</strong>, dus β = 0 ⟺ ρ = 0. Regresseren is in wezen toetsen of twee variabelen gecorreleerd zijn.</p>
+
+        <div class="formula">
+          <div class="eq">β̂ = σ̂XY / σ̂X² = ρ̂ · (σ̂y / σ̂x) &nbsp;·&nbsp; α̂ = ȳ − β̂ x̄ &nbsp;·&nbsp; s² = RSS/(n−2)</div>
+          <div class="caption" data-lang="fr">La pente est le rapport covariance sur variance de X ; l'intercept se déduit pour que la droite passe par le point moyen (x̄, ȳ). Pour la variance des chocs s², on divise par <strong>n−2</strong> et non par n : on « paie » les deux paramètres (α et β) déjà estimés sur les mêmes données. Deux propriétés découlent mécaniquement de la minimisation : les résidus sont de moyenne nulle et orthogonaux à X.</div>
+          <div class="caption" data-lang="en">The slope is the ratio of covariance to variance of X; the intercept is deduced so the line passes through the mean point (x̄, ȳ). For the shock variance s², divide by <strong>n−2</strong>, not by n: we “pay” for the two parameters (α and β) already estimated from the same data. Two properties follow mechanically from minimisation: residuals have zero mean and are orthogonal to X.</div>
+          <div class="caption" data-lang="nl">De helling is de verhouding van covariantie tot variantie van X; het intercept wordt afgeleid zodat de lijn door het gemiddelde punt (x̄, ȳ) gaat. Voor de schokvariantie s² delen we door <strong>n−2</strong>, niet door n: we “betalen” voor de twee parameters (α en β) al geschat uit dezelfde data. Twee eigenschappen volgen mechanisch uit de minimalisatie: residuen hebben gemiddelde nul en zijn orthogonaal op X.</div>
+          <div class="caption src">Réf. — GARP QA-7 (Linear Regression) ; Wooldridge (2019) ch. 2</div>
+        </div>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">Exemple fil rouge : secteur minier vs marché</span><span class="clabel" data-lang="en">Worked example: mining sector vs market</span><span class="clabel" data-lang="nl">Voorbeeld: mijnbouwsector vs markt</span>
+          <span data-lang="fr">On régresse le rendement excédentaire du secteur minier (Y, moyenne ȳ = 15,4 %) sur celui du marché (X, moyenne x̄ = 7,77 %), sur 20 ans. La covariance vaut σ̂XY = 512,3 et la variance de X vaut σ̂X² = 337,3, d'où <strong>β̂ = 512,3 / 337,3 = 1,52</strong> : quand le marché gagne 1 %, le secteur minier gagne en moyenne 1,52 %. L'intercept s'en déduit : α̂ = 15,4 − 1,52 × 7,77 = <strong>3,60 %</strong>, le rendement du secteur quand le marché est à zéro.</span>
+          <span data-lang="en">We regress the mining sector's excess return (Y, mean ȳ = 15.4%) on the market's (X, mean x̄ = 7.77%), over 20 years. The covariance is σ̂XY = 512.3 and the variance of X is σ̂X² = 337.3, hence <strong>β̂ = 512.3 / 337.3 = 1.52</strong>: when the market gains 1%, mining gains on average 1.52%. The intercept follows: α̂ = 15.4 − 1.52 × 7.77 = <strong>3.60%</strong>, the sector's return when the market is at zero.</span>
+          <span data-lang="nl">We regresseren het excess-rendement van de mijnbouwsector (Y, gemiddelde ȳ = 15,4%) op dat van de markt (X, gemiddelde x̄ = 7,77%), over 20 jaar. De covariantie is σ̂XY = 512,3 en de variantie van X is σ̂X² = 337,3, dus <strong>β̂ = 512,3 / 337,3 = 1,52</strong>: als de markt 1% wint, wint mijnbouw gemiddeld 1,52%. Het intercept volgt: α̂ = 15,4 − 1,52 × 7,77 = <strong>3,60%</strong>, het sectorrendement wanneer de markt op nul staat.</span>
+        </div>
+
+        <!-- 3. HYPOTHESES -->
+        <h2 id="hypotheses"><span data-lang="fr">3. Les cinq hypothèses &amp; les biais</span><span data-lang="en">3. The five assumptions &amp; the biases</span><span data-lang="nl">3. De vijf aannames &amp; de vertekeningen</span></h2>
+        <p data-lang="fr">Cinq hypothèses garantissent que les estimateurs sont <strong>non biaisés, consistants et asymptotiquement normaux</strong> : (1) <em>mean independence</em>, E[ε | X] = 0 (connaître X n'informe pas sur la position du choc) — la plus importante et la moins vérifiable ; (2) données <em>iid</em> ; (3) variance de X strictement positive ; (4) <em>homoscédasticité</em>, V[ε | X] constante ; (5) pas d'<em>outliers</em>. Dès que la normalité asymptotique est acquise, l'inférence redevient la mécanique du test : on construit une t-stat, on en tire une p-value, on encadre par un CI.</p>
+        <p data-lang="en">Five assumptions guarantee the estimators are <strong>unbiased, consistent and asymptotically normal</strong>: (1) <em>mean independence</em>, E[ε | X] = 0 (knowing X gives no information on the shock's position) — the most important and least testable; (2) <em>iid</em> data; (3) strictly positive variance of X; (4) <em>homoskedasticity</em>, V[ε | X] constant; (5) no <em>outliers</em>. Once asymptotic normality holds, inference becomes the test machinery again: build a t-stat, derive a p-value, bracket with a CI.</p>
+        <p data-lang="nl">Vijf aannames garanderen dat de schatters <strong>zuiver, consistent en asymptotisch normaal</strong> zijn: (1) <em>mean independence</em>, E[ε | X] = 0 (X kennen informeert niet over de positie van de schok) — de belangrijkste en minst toetsbare; (2) <em>iid</em>-data; (3) strikt positieve variantie van X; (4) <em>homoskedasticiteit</em>, V[ε | X] constant; (5) geen <em>uitschieters</em>. Zodra asymptotische normaliteit geldt, wordt inferentie weer de toetsmachinerie: bouw een t-stat, leid een p-waarde af, omkader met een CI.</p>
+
+        <div class="callout warn">
+          <span class="clabel" data-lang="fr">Quatre façons de violer l'hypothèse 1</span><span class="clabel" data-lang="en">Four ways to violate assumption 1</span><span class="clabel" data-lang="nl">Vier manieren om aanname 1 te schenden</span>
+          <span data-lang="fr">Tous rendent OLS trompeur. Le <strong>selection / survivorship bias</strong> : l'échantillon cesse d'être représentatif (les fonds disparus ne figurent plus dans les bases, on n'étudie que des survivants). Le <strong>simultaneity bias</strong> : X et Y se déterminent mutuellement (prix / quantité). Les <strong>omitted variables</strong> : un déterminant de Y laissé hors du modèle biaise les coefficients inclus. L'<strong>attenuation bias</strong> : un X mesuré avec erreur aplatit systématiquement la pente vers 0 (l'« iron law of econometrics »).</span>
+          <span data-lang="en">All make OLS misleading. <strong>Selection / survivorship bias</strong>: the sample stops being representative (defunct funds drop out of databases, we study only survivors). <strong>Simultaneity bias</strong>: X and Y determine each other (price / quantity). <strong>Omitted variables</strong>: a determinant of Y left out of the model biases the included coefficients. <strong>Attenuation bias</strong>: an X measured with error systematically flattens the slope towards 0 (the “iron law of econometrics”).</span>
+          <span data-lang="nl">Alle maken OLS misleidend. <strong>Selection / survivorship bias</strong>: de steekproef is niet meer representatief (verdwenen fondsen vallen uit databanken, we bestuderen enkel overlevers). <strong>Simultaneity bias</strong>: X en Y bepalen elkaar (prijs / hoeveelheid). <strong>Weggelaten variabelen</strong>: een determinant van Y buiten het model vertekent de opgenomen coëfficiënten. <strong>Attenuatievertekening</strong>: een met fout gemeten X vlakt de helling systematisch af naar 0 (de “iron law of econometrics”).</span>
+        </div>
+
+        <!-- 4. INFERENCE + INTERACTIF -->
+        <h2 id="inference"><span data-lang="fr">4. Inférence : t-stat, R² et significativité</span><span data-lang="en">4. Inference: t-stat, R² and significance</span><span data-lang="nl">4. Inferentie: t-stat, R² en significantie</span></h2>
+        <p data-lang="fr">Deux moments pilotent la précision de la pente. Sa variance <strong>croît avec le bruit σ²</strong> (données bruitées → pente floue) et <strong>décroît avec la dispersion des X</strong> (des points étalés horizontalement contraignent davantage l'inclinaison), ainsi qu'avec n. On teste H₀ : β = 0 avec la <strong>t-statistic</strong> t = β̂ / s.e.(β̂), rejetée si |t| &gt; 1,96 à 5 %. La conclusion se lit de trois façons équivalentes : <strong>|t| &gt; 1,96 ⟺ p &lt; 5 % ⟺ 0 ∉ CI</strong>. Le <strong>R²</strong> mesure la part de la variance de Y expliquée par X ; en régression simple, R² = ρ̂², et il est symétrique en X↔Y alors que la pente, elle, ne l'est pas.</p>
+        <p data-lang="en">Two moments drive the slope's precision. Its variance <strong>rises with the noise σ²</strong> (noisy data → fuzzy slope) and <strong>falls with the spread of X</strong> (points spread horizontally constrain the tilt more), as well as with n. We test H₀: β = 0 with the <strong>t-statistic</strong> t = β̂ / s.e.(β̂), rejected if |t| &gt; 1.96 at 5%. The conclusion reads three equivalent ways: <strong>|t| &gt; 1.96 ⟺ p &lt; 5% ⟺ 0 ∉ CI</strong>. The <strong>R²</strong> measures the share of Y's variance explained by X; in simple regression, R² = ρ̂², and it is symmetric in X↔Y whereas the slope is not.</p>
+        <p data-lang="nl">Twee momenten sturen de precisie van de helling. Haar variantie <strong>stijgt met de ruis σ²</strong> (ruizige data → wazige helling) en <strong>daalt met de spreiding van X</strong> (horizontaal gespreide punten beperken de kanteling meer), evenals met n. We toetsen H₀: β = 0 met de <strong>t-statistiek</strong> t = β̂ / s.e.(β̂), verworpen als |t| &gt; 1,96 op 5%. De conclusie leest op drie gelijkwaardige manieren: <strong>|t| &gt; 1,96 ⟺ p &lt; 5% ⟺ 0 ∉ CI</strong>. De <strong>R²</strong> meet het aandeel van de variantie van Y verklaard door X; bij enkelvoudige regressie is R² = ρ̂², en ze is symmetrisch in X↔Y terwijl de helling dat niet is.</p>
+
+        <p data-lang="fr">Le graphe régresse Y sur X sur un nuage de points. Réglez la <strong>pente vraie</strong> β, le <strong>bruit</strong> σ (dispersion autour de la droite) et la <strong>taille</strong> n. Observez la droite OLS ajustée (trait sombre) et lisez β̂ estimée, le R² et la t-stat. Augmenter le bruit fait chuter le R² et la t-stat ; augmenter n renforce la significativité. Quand le nuage devient un brouillard (fort bruit, petit n), la t-stat peut passer sous 1,96 : l'effet cesse d'être détectable.</p>
+        <p data-lang="en">The chart regresses Y on X over a scatter of points. Set the <strong>true slope</strong> β, the <strong>noise</strong> σ (spread around the line) and the <strong>size</strong> n. Watch the fitted OLS line (dark) and read the estimated β̂, the R² and the t-stat. Raising noise sinks R² and the t-stat; raising n strengthens significance. When the cloud becomes a fog (high noise, small n), the t-stat can drop below 1.96: the effect ceases to be detectable.</p>
+        <p data-lang="nl">De grafiek regresseert Y op X over een puntenwolk. Stel de <strong>ware helling</strong> β, de <strong>ruis</strong> σ (spreiding rond de lijn) en de <strong>grootte</strong> n in. Bekijk de gefitte OLS-lijn (donker) en lees de geschatte β̂, de R² en de t-stat. Meer ruis doet R² en de t-stat dalen; meer n versterkt de significantie. Wanneer de wolk een mist wordt (veel ruis, kleine n), kan de t-stat onder 1,96 zakken: het effect is niet meer detecteerbaar.</p>
+
+        <style>
+          #rg-chart { width:100%; height:auto; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; }
+          #rg-chart .axis { stroke:var(--ink-mute); stroke-width:1.4; }
+          #rg-chart .tick { fill:var(--ink-mute); font-size:10px; font-family:var(--sans); }
+          #rg-chart .lab { fill:var(--ink-soft); font-size:11px; font-family:var(--sans); font-weight:700; }
+          .rg-sliders { display:grid; grid-template-columns:repeat(3,1fr); gap:12px 18px; margin-bottom:16px; }
+          .rg-sliders label { display:block; font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:4px; }
+          .rg-out { margin-top:14px; font-size:14.5px; color:var(--ink-soft); display:flex; gap:20px; flex-wrap:wrap; }
+          .rg-out b { color:var(--ink); font-family:var(--mono); }
+          .rg-verdict { font-weight:800; }
+          @media (max-width:640px){ .rg-sliders { grid-template-columns:1fr 1fr; } }
+        </style>
+
+        <div class="calc">
+          <div class="chead">
+            <h4 data-lang="fr">Régression OLS — nuage de points &amp; droite ajustée</h4>
+            <h4 data-lang="en">OLS regression — scatter &amp; fitted line</h4>
+            <h4 data-lang="nl">OLS-regressie — puntenwolk &amp; gefitte lijn</h4>
+            <p data-lang="fr">H₀ : β = 0, testée à 5 % (|t| &gt; 1,96)</p>
+            <p data-lang="en">H₀: β = 0, tested at 5% (|t| &gt; 1.96)</p>
+            <p data-lang="nl">H₀: β = 0, getoetst op 5% (|t| &gt; 1,96)</p>
+          </div>
+          <div class="cbody" style="display:block">
+            <div class="rg-sliders">
+              <div>
+                <label><span data-lang="fr">Pente vraie β</span><span data-lang="en">True slope β</span><span data-lang="nl">Ware helling β</span></label>
+                <div class="rangewrap"><input type="range" id="rg-beta" min="-0.5" max="2.5" step="0.02" value="1.52"><output id="rg-beta-o">1.52</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Bruit σ</span><span data-lang="en">Noise σ</span><span data-lang="nl">Ruis σ</span></label>
+                <div class="rangewrap"><input type="range" id="rg-noise" min="1" max="40" step="0.5" value="14"><output id="rg-noise-o">14</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Taille n</span><span data-lang="en">Sample size n</span><span data-lang="nl">Steekproef n</span></label>
+                <div class="rangewrap"><input type="range" id="rg-n" min="8" max="120" step="1" value="40"><output id="rg-n-o">40</output></div>
+              </div>
+            </div>
+
+            <svg id="rg-chart" viewBox="0 0 520 300" role="img" aria-label="Nuage de points et droite de régression ajustée"></svg>
+
+            <div class="rg-out">
+              <span><span data-lang="fr">Pente estimée :</span><span data-lang="en">Estimated slope:</span><span data-lang="nl">Geschatte helling:</span> <b id="rg-bhat">—</b></span>
+              <span>R² : <b id="rg-r2">—</b></span>
+              <span>t : <b id="rg-t">—</b></span>
+              <span><span data-lang="fr">Décision :</span><span data-lang="en">Decision:</span><span data-lang="nl">Beslissing:</span> <b id="rg-dec" class="rg-verdict">—</b></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. MULTIPLE -->
+        <h2 id="multiple"><span data-lang="fr">5. Régression multiple &amp; F-test</span><span data-lang="en">5. Multiple regression &amp; F-test</span><span data-lang="nl">5. Meervoudige regressie &amp; F-toets</span></h2>
+        <p data-lang="fr">Avec plusieurs variables, Y = α + β₁X₁ + … + βₖXₖ + ε, chaque coefficient mesure la <strong>contribution unique</strong> de sa variable : l'effet d'une hausse de Xⱼ <em>toutes autres variables constantes</em>. Mécaniquement, β̂₁ s'obtient en régressant les résidus de Y sur les résidus de X₁, tous deux purgés des autres X : c'est la logique des <strong>variables de contrôle</strong>. Omettre un contrôle produit l'<em>omitted variable bias</em>. Une hypothèse nouvelle apparaît : <strong>pas de colinéarité parfaite</strong> (chaque X doit garder une variation propre). L'application phare est le modèle à trois facteurs de <strong>Fama-French</strong> : marché + <em>size</em> (SMB, small − big) + <em>value</em> (HML, high − low book-to-market).</p>
+        <p data-lang="en">With several variables, Y = α + β₁X₁ + … + βₖXₖ + ε, each coefficient measures the <strong>unique contribution</strong> of its variable: the effect of a rise in Xⱼ <em>all other variables held constant</em>. Mechanically, β̂₁ is obtained by regressing the residuals of Y on the residuals of X₁, both purged of the other X's: this is the logic of <strong>control variables</strong>. Omitting a control produces <em>omitted variable bias</em>. A new assumption appears: <strong>no perfect collinearity</strong> (each X must keep its own variation). The flagship application is the <strong>Fama-French</strong> three-factor model: market + <em>size</em> (SMB, small − big) + <em>value</em> (HML, high − low book-to-market).</p>
+        <p data-lang="nl">Met meerdere variabelen, Y = α + β₁X₁ + … + βₖXₖ + ε, meet elke coëfficiënt de <strong>unieke bijdrage</strong> van zijn variabele: het effect van een stijging van Xⱼ <em>alle andere variabelen constant</em>. Mechanisch verkrijgt men β̂₁ door de residuen van Y op de residuen van X₁ te regresseren, beide gezuiverd van de andere X'en: dit is de logica van <strong>controlevariabelen</strong>. Een controle weglaten geeft <em>weggelaten-variabelevertekening</em>. Een nieuwe aanname verschijnt: <strong>geen perfecte collineariteit</strong> (elke X moet eigen variatie behouden). De vlaggenschiptoepassing is het driefactormodel van <strong>Fama-French</strong>: markt + <em>size</em> (SMB, small − big) + <em>value</em> (HML, high − low book-to-market).</p>
+
+        <div class="formula">
+          <div class="eq">TSS = ESS + RSS &nbsp;·&nbsp; R² = ESS/TSS &nbsp;·&nbsp; R̄² = 1 − (n−1)/(n−k−1) · (1 − R²)</div>
+          <div class="caption" data-lang="fr">Le R² ne <strong>diminue jamais</strong> quand on ajoute une variable, même inutile (le RSS ne peut que baisser). Le <strong>R̄² (adjusted)</strong> corrige ce défaut en pénalisant les degrés de liberté consommés : ajouter une variable fait baisser le RSS mais gonfle le facteur de pénalité ; si l'apport est négligeable, R̄² diminue et peut même devenir négatif. Dans le dénominateur n−k−1, <strong>k compte les régresseurs hors constante</strong> — erreur de comptage classique.</div>
+          <div class="caption" data-lang="en">The R² <strong>never falls</strong> when a variable is added, even a useless one (RSS can only drop). The <strong>adjusted R̄²</strong> corrects this flaw by penalising the degrees of freedom consumed: adding a variable lowers RSS but inflates the penalty factor; if the gain is negligible, R̄² falls and can even go negative. In the denominator n−k−1, <strong>k counts the regressors excluding the constant</strong> — a classic counting error.</div>
+          <div class="caption" data-lang="nl">De R² <strong>daalt nooit</strong> wanneer een variabele wordt toegevoegd, zelfs een nutteloze (RSS kan enkel dalen). De <strong>adjusted R̄²</strong> corrigeert dit door de verbruikte vrijheidsgraden te bestraffen: een variabele toevoegen verlaagt RSS maar verhoogt de strafffactor; is de winst verwaarloosbaar, dan daalt R̄² en kan zelfs negatief worden. In de noemer n−k−1 telt <strong>k de regressoren zonder de constante</strong> — een klassieke telfout.</div>
+          <div class="caption src">Réf. — GARP QA-8 (Multiple Regression), Box 8.4</div>
+        </div>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">Le F-test des hypothèses jointes</span><span class="clabel" data-lang="en">The F-test of joint hypotheses</span><span class="clabel" data-lang="nl">De F-toets van gezamenlijke hypothesen</span>
+          <span data-lang="fr">Pour tester <em>plusieurs</em> coefficients à la fois, les t-tests individuels ne suffisent pas : les estimateurs sont corrélés. On utilise le <strong>F-test</strong>, qui compare le fit d'un modèle <em>restricted</em> (où H₀ est imposée) à celui du modèle <em>unrestricted</em> : F = [(RSS_R − RSS_U)/q] / [RSS_U/(n−k−1)]. Si H₀ est vraie, la restriction ne dégrade presque pas le fit et F est petit. Toujours F ≥ 0, et pour une seule restriction F = t². <strong>F et t peuvent se contredire</strong> : F rejette sans qu'aucun t ne rejette ⇒ multicolinéarité ; un t rejette sans le F ⇒ variable morte qui dilue le test joint.</span>
+          <span data-lang="en">To test <em>several</em> coefficients at once, individual t-tests do not suffice: the estimators are correlated. We use the <strong>F-test</strong>, comparing the fit of a <em>restricted</em> model (where H₀ is imposed) to the <em>unrestricted</em> one: F = [(RSS_R − RSS_U)/q] / [RSS_U/(n−k−1)]. If H₀ is true, the restriction barely degrades the fit and F is small. Always F ≥ 0, and for a single restriction F = t². <strong>F and t can contradict</strong>: F rejects while no t rejects ⇒ multicollinearity; a t rejects without F ⇒ a dead variable diluting the joint test.</span>
+          <span data-lang="nl">Om <em>meerdere</em> coëfficiënten tegelijk te toetsen volstaan individuele t-toetsen niet: de schatters zijn gecorreleerd. We gebruiken de <strong>F-toets</strong>, die de fit van een <em>restricted</em> model (waar H₀ opgelegd is) vergelijkt met het <em>unrestricted</em> model: F = [(RSS_R − RSS_U)/q] / [RSS_U/(n−k−1)]. Is H₀ waar, dan verslechtert de restrictie de fit nauwelijks en is F klein. Altijd F ≥ 0, en voor één restrictie F = t². <strong>F en t kunnen elkaar tegenspreken</strong>: F verwerpt terwijl geen enkele t verwerpt ⇒ multicollineariteit; een t verwerpt zonder F ⇒ een dode variabele die de gezamenlijke toets verdunt.</span>
+        </div>
+
+        <!-- 6. DIAGNOSTICS -->
+        <h2 id="diagnostics"><span data-lang="fr">6. Diagnostics : White, VIF, Cook</span><span data-lang="en">6. Diagnostics: White, VIF, Cook</span><span data-lang="nl">6. Diagnostiek: White, VIF, Cook</span></h2>
+        <p data-lang="fr">Une fois le modèle estimé, le travail n'est pas fini : il faut vérifier sa spécification. Le premier arbitrage est le choix des variables (<strong>bias-variance tradeoff</strong>) : omettre une variable pertinente <em>biaise</em> les coefficients (β̂₁ → β₁ + β₂δ dès qu'il y a corrélation) ; en inclure une superflue ne biaise pas mais <em>gonfle les erreurs-types</em>. On arbitre par sélection de modèle (general-to-specific, cross-validation où le critère est le <strong>RSS out-of-sample</strong>).</p>
+        <p data-lang="en">Once the model is estimated, the work is not over: its specification must be checked. The first trade-off is variable choice (<strong>bias-variance tradeoff</strong>): omitting a relevant variable <em>biases</em> the coefficients (β̂₁ → β₁ + β₂δ as soon as there is correlation); including a superfluous one does not bias but <em>inflates the standard errors</em>. We arbitrate by model selection (general-to-specific, cross-validation where the criterion is the <strong>out-of-sample RSS</strong>).</p>
+        <p data-lang="nl">Zodra het model geschat is, is het werk niet klaar: de specificatie moet gecontroleerd worden. De eerste afweging is de variabelekeuze (<strong>bias-variance tradeoff</strong>): een relevante variabele weglaten <em>vertekent</em> de coëfficiënten (β̂₁ → β₁ + β₂δ zodra er correlatie is); een overbodige opnemen vertekent niet maar <em>blaast de standaardfouten op</em>. We arbitreren via modelselectie (general-to-specific, kruisvalidatie waar het criterium de <strong>out-of-sample RSS</strong> is).</p>
+
+        <div class="callout warn">
+          <span class="clabel" data-lang="fr">Trois diagnostics, trois outils</span><span class="clabel" data-lang="en">Three diagnostics, three tools</span><span class="clabel" data-lang="nl">Drie diagnoses, drie instrumenten</span>
+          <span data-lang="fr"><strong>Hétéroscédasticité</strong> (variance du choc qui change avec X) : détectée par le <em>test de White</em> (régression auxiliaire des résidus au carré, stat = nR² ∼ χ²). Point crucial : elle laisse les coefficients <em>corrects</em>, seuls les s.e. sont faux ⇒ on corrige avec des <em>s.e. robustes</em> (souvent plus grands, donc des t plus petits) ou WLS. <strong>Multicolinéarité</strong> : quantifiée par le <em>VIF</em> = 1/(1−R²ⱼ), seuil &gt; 10, soit R²ⱼ &gt; 90 % (⟺ |ρ| &gt; 0,948 à deux variables) ; ce n'est pas une faute technique, juste un problème de lisibilité. <strong>Outliers</strong> : la <em>distance de Cook</em> Dⱼ &gt; 1 signale une observation qui, retirée, déplacerait fortement les coefficients.</span>
+          <span data-lang="en"><strong>Heteroskedasticity</strong> (shock variance changing with X): detected by the <em>White test</em> (auxiliary regression of squared residuals, stat = nR² ∼ χ²). Crucial point: it leaves the coefficients <em>correct</em>, only the s.e. are wrong ⇒ correct with <em>robust s.e.</em> (often larger, so smaller t's) or WLS. <strong>Multicollinearity</strong>: quantified by the <em>VIF</em> = 1/(1−R²ⱼ), threshold &gt; 10, i.e. R²ⱼ &gt; 90% (⟺ |ρ| &gt; 0.948 with two variables); it is not a technical fault, just a readability problem. <strong>Outliers</strong>: <em>Cook's distance</em> Dⱼ &gt; 1 flags an observation that, removed, would strongly shift the coefficients.</span>
+          <span data-lang="nl"><strong>Heteroskedasticiteit</strong> (schokvariantie die verandert met X): opgespoord met de <em>White-toets</em> (hulpregressie van gekwadrateerde residuen, stat = nR² ∼ χ²). Cruciaal: ze laat de coëfficiënten <em>correct</em>, enkel de s.e. zijn fout ⇒ corrigeer met <em>robuuste s.e.</em> (vaak groter, dus kleinere t's) of WLS. <strong>Multicollineariteit</strong>: gekwantificeerd met de <em>VIF</em> = 1/(1−R²ⱼ), drempel &gt; 10, d.w.z. R²ⱼ &gt; 90% (⟺ |ρ| &gt; 0,948 bij twee variabelen); geen technische fout, enkel een leesbaarheidsprobleem. <strong>Uitschieters</strong>: <em>Cook's afstand</em> Dⱼ &gt; 1 markeert een waarneming die, verwijderd, de coëfficiënten sterk zou verschuiven.</span>
+        </div>
+
+        <p data-lang="fr">Si tous ces contrôles passent, on dispose d'un argument fort : sous les cinq hypothèses, OLS est le <strong>BLUE</strong> (meilleur estimateur linéaire sans biais, théorème de Gauss-Markov), et si l'on ajoute la normalité des erreurs, il devient le <strong>BUE</strong> (meilleur parmi tous les estimateurs sans biais, même non linéaires). La normalité n'est <em>pas</em> requise pour la consistance : elle ne fait que renforcer BLUE en BUE. Une mise en garde propre à la finance : <strong>supprimer un outlier de rendement peut sous-estimer le risque</strong> — cet événement extrême a réellement eu lieu et peut se reproduire.</p>
+        <p data-lang="en">If all these checks pass, we have a strong argument: under the five assumptions, OLS is the <strong>BLUE</strong> (best linear unbiased estimator, Gauss-Markov theorem), and adding error normality it becomes the <strong>BUE</strong> (best among all unbiased estimators, even non-linear). Normality is <em>not</em> required for consistency: it only strengthens BLUE into BUE. A finance-specific caveat: <strong>deleting a return outlier can underestimate risk</strong> — that extreme event actually happened and can recur.</p>
+        <p data-lang="nl">Slagen al deze controles, dan hebben we een sterk argument: onder de vijf aannames is OLS de <strong>BLUE</strong> (beste lineaire zuivere schatter, stelling van Gauss-Markov), en met normaliteit van de fouten wordt ze de <strong>BUE</strong> (beste onder alle zuivere schatters, ook niet-lineaire). Normaliteit is <em>niet</em> vereist voor consistentie: ze versterkt enkel BLUE tot BUE. Een finance-specifieke waarschuwing: <strong>een rendementsuitschieter verwijderen kan het risico onderschatten</strong> — die extreme gebeurtenis vond echt plaats en kan zich herhalen.</p>
+
+        <!-- RESSOURCES -->
+        <h2 id="ressources"><span data-lang="fr">Ressources à télécharger</span><span data-lang="en">Downloadable resources</span><span data-lang="nl">Downloadbare bronnen</span></h2>
+        <div class="downloads">
+          <div class="dl-list">
+            <a class="dl-item" data-lang="fr" href="@@BASE@@files/qa3-exercice-corrige-fr.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Exercice et corrigé : régression OLS</span>
+                <span class="dl-sub">PDF, énoncé et solution détaillée (français)</span>
+              </span>
+            </a>
+            <a class="dl-item" data-lang="en" href="@@BASE@@files/qa3-exercice-corrige-en.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Exercise and solution: OLS regression</span>
+                <span class="dl-sub">PDF, statement and worked solution (English)</span>
+              </span>
+            </a>
+            <a class="dl-item" data-lang="nl" href="@@BASE@@files/qa3-exercice-corrige-nl.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Oefening en oplossing: OLS-regressie</span>
+                <span class="dl-sub">PDF, opgave en uitgewerkte oplossing (Nederlands)</span>
+              </span>
+            </a>
+          </div>
+          <p class="dl-note" data-lang="fr">Un énoncé progressif suivi de sa correction pas à pas, dans votre langue. Cliquez pour télécharger le PDF.</p>
+          <p class="dl-note" data-lang="en">A progressive problem set followed by its step-by-step solution, in your language. Click to download the PDF.</p>
+          <p class="dl-note" data-lang="nl">Een progressieve opgave gevolgd door de stapsgewijze oplossing, in uw taal. Klik om de PDF te downloaden.</p>
+        </div>
+
+        <!-- 7. À RETENIR -->
+        <h2 id="retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></h2>
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">L'essentiel</span><span class="clabel" data-lang="en">The essentials</span><span class="clabel" data-lang="nl">De kern</span>
+          <span data-lang="fr">Y = α + βX + ε, estimé par OLS. Pente β̂ = cov/var = ρ·σy/σx, donc β = 0 ⟺ ρ = 0 ; intercept α̂ = ȳ − β̂x̄ ; variance des chocs divisée par n−2. Cinq hypothèses (mean independence, iid, var(X) &gt; 0, homoscédasticité, pas d'outliers) ⇒ estimateurs non biaisés, consistants, asymptotiquement normaux. Biais à connaître : variable omise, attenuation (vers 0), sélection, simultanéité. Inférence : t = β̂/s.e., rejet si |t| &gt; 1,96 ; |t| &gt; 1,96 ⟺ p &lt; 5 % ⟺ 0 ∉ CI. R² = part expliquée = ρ² (symétrique) ; R̄² pénalise k. Hypothèse jointe ⇒ F-test (jamais des t enchaînés) ; F ≥ 0, une restriction ⇒ F = t². Diagnostics : White (hétéroscédasticité, corrige les s.e.), VIF &gt; 10 (multicolinéarité), Cook &gt; 1 (outlier). OLS = BLUE ; + normalité ⇒ BUE.</span>
+          <span data-lang="en">Y = α + βX + ε, estimated by OLS. Slope β̂ = cov/var = ρ·σy/σx, so β = 0 ⟺ ρ = 0; intercept α̂ = ȳ − β̂x̄; shock variance divided by n−2. Five assumptions (mean independence, iid, var(X) &gt; 0, homoskedasticity, no outliers) ⇒ unbiased, consistent, asymptotically normal estimators. Biases to know: omitted variable, attenuation (towards 0), selection, simultaneity. Inference: t = β̂/s.e., reject if |t| &gt; 1.96; |t| &gt; 1.96 ⟺ p &lt; 5% ⟺ 0 ∉ CI. R² = explained share = ρ² (symmetric); R̄² penalises k. Joint hypothesis ⇒ F-test (never chained t's); F ≥ 0, one restriction ⇒ F = t². Diagnostics: White (heteroskedasticity, fixes the s.e.), VIF &gt; 10 (multicollinearity), Cook &gt; 1 (outlier). OLS = BLUE; + normality ⇒ BUE.</span>
+          <span data-lang="nl">Y = α + βX + ε, geschat via OLS. Helling β̂ = cov/var = ρ·σy/σx, dus β = 0 ⟺ ρ = 0; intercept α̂ = ȳ − β̂x̄; schokvariantie gedeeld door n−2. Vijf aannames (mean independence, iid, var(X) &gt; 0, homoskedasticiteit, geen uitschieters) ⇒ zuivere, consistente, asymptotisch normale schatters. Te kennen vertekeningen: weggelaten variabele, attenuatie (naar 0), selectie, simultaneïteit. Inferentie: t = β̂/s.e., verwerp als |t| &gt; 1,96; |t| &gt; 1,96 ⟺ p &lt; 5% ⟺ 0 ∉ CI. R² = verklaard aandeel = ρ² (symmetrisch); R̄² bestraft k. Gezamenlijke hypothese ⇒ F-toets (nooit geketende t's); F ≥ 0, één restrictie ⇒ F = t². Diagnostiek: White (heteroskedasticiteit, corrigeert de s.e.), VIF &gt; 10 (multicollineariteit), Cook &gt; 1 (uitschieter). OLS = BLUE; + normaliteit ⇒ BUE.</span>
+        </div>
+
+        <!-- 8. QCM -->
+        <h2 id="qcm"><span data-lang="fr">8. QCM — 15 questions</span><span data-lang="en">8. MCQ — 15 questions</span><span data-lang="nl">8. MCV — 15 vragen</span></h2>
+        <div class="quiz">
+          <h4 data-lang="fr">Auto-évaluation</h4><h4 data-lang="en">Self-assessment</h4><h4 data-lang="nl">Zelfevaluatie</h4>
+          <p class="qsub" data-lang="fr">Cliquez sur une réponse : la bonne s'affiche en vert et la justification apparaît.</p>
+          <p class="qsub" data-lang="en">Click an answer: the correct one turns green and the justification appears.</p>
+          <p class="qsub" data-lang="nl">Klik op een antwoord: het juiste kleurt groen en de verantwoording verschijnt.</p>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">1. L'estimateur OLS de la pente s'écrit…</div>
+            <div class="qtext" data-lang="en">1. The OLS slope estimator is written…</div>
+            <div class="qtext" data-lang="nl">1. De OLS-hellingschatter wordt geschreven…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">β̂ = σ̂X² / σ̂XY.</span><span data-lang="en">β̂ = σ̂X² / σ̂XY.</span><span data-lang="nl">β̂ = σ̂X² / σ̂XY.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">β̂ = σ̂XY / σ̂X² = ρ̂ · σy/σx.</span><span data-lang="en">β̂ = σ̂XY / σ̂X² = ρ̂ · σy/σx.</span><span data-lang="nl">β̂ = σ̂XY / σ̂X² = ρ̂ · σy/σx.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">β̂ = ȳ / x̄.</span><span data-lang="en">β̂ = ȳ / x̄.</span><span data-lang="nl">β̂ = ȳ / x̄.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La pente est un ratio covariance / variance de X, égal à la corrélation multipliée par le rapport des écarts-types. D'où β = 0 ⟺ ρ = 0.</span><span data-lang="en">✔ The slope is a covariance / variance-of-X ratio, equal to the correlation times the ratio of standard deviations. Hence β = 0 ⟺ ρ = 0.</span><span data-lang="nl">✔ De helling is een covariantie / variantie-van-X-verhouding, gelijk aan de correlatie maal de verhouding van standaardafwijkingen. Vandaar β = 0 ⟺ ρ = 0.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">2. Dans une régression simple, la pente est nulle exactement quand…</div>
+            <div class="qtext" data-lang="en">2. In a simple regression, the slope is zero exactly when…</div>
+            <div class="qtext" data-lang="nl">2. In een enkelvoudige regressie is de helling nul precies wanneer…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">La corrélation entre X et Y est nulle.</span><span data-lang="en">The correlation between X and Y is zero.</span><span data-lang="nl">De correlatie tussen X en Y nul is.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La moyenne de X est nulle.</span><span data-lang="en">The mean of X is zero.</span><span data-lang="nl">Het gemiddelde van X nul is.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">L'intercept est nul.</span><span data-lang="en">The intercept is zero.</span><span data-lang="nl">Het intercept nul is.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Puisque β = ρ·σy/σx, β = 0 ⟺ ρ = 0. Régresser revient à tester formellement l'existence d'une corrélation.</span><span data-lang="en">✔ Since β = ρ·σy/σx, β = 0 ⟺ ρ = 0. Regressing amounts to formally testing for a correlation.</span><span data-lang="nl">✔ Aangezien β = ρ·σy/σx, β = 0 ⟺ ρ = 0. Regresseren komt neer op een formele toets op correlatie.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">3. La variance des chocs s² se divise par…</div>
+            <div class="qtext" data-lang="en">3. The shock variance s² is divided by…</div>
+            <div class="qtext" data-lang="nl">3. De schokvariantie s² wordt gedeeld door…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">n.</span><span data-lang="en">n.</span><span data-lang="nl">n.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">n − 1.</span><span data-lang="en">n − 1.</span><span data-lang="nl">n − 1.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">n − 2.</span><span data-lang="en">n − 2.</span><span data-lang="nl">n − 2.</span></button>
+            <div class="explain"><span data-lang="fr">✔ On retire un degré de liberté par paramètre estimé, et il y en a deux (α et β) : d'où n−2, contre n−1 pour une variance d'échantillon ordinaire.</span><span data-lang="en">✔ One degree of freedom is removed per estimated parameter, and there are two (α and β): hence n−2, versus n−1 for an ordinary sample variance.</span><span data-lang="nl">✔ Eén vrijheidsgraad per geschatte parameter, en er zijn er twee (α en β): vandaar n−2, tegenover n−1 voor een gewone steekproefvariantie.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">4. Dans une régression simple, le R² est égal à…</div>
+            <div class="qtext" data-lang="en">4. In a simple regression, R² equals…</div>
+            <div class="qtext" data-lang="nl">4. In een enkelvoudige regressie is R² gelijk aan…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La pente β.</span><span data-lang="en">The slope β.</span><span data-lang="nl">De helling β.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le carré de la corrélation, ρ².</span><span data-lang="en">The square of the correlation, ρ².</span><span data-lang="nl">Het kwadraat van de correlatie, ρ².</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La covariance de X et Y.</span><span data-lang="en">The covariance of X and Y.</span><span data-lang="nl">De covariantie van X en Y.</span></button>
+            <div class="explain"><span data-lang="fr">✔ R² = ρ², la part de variance de Y expliquée par X. Conséquence : R² est symétrique (Y sur X ou X sur Y donne le même R²), alors que la pente ne l'est pas.</span><span data-lang="en">✔ R² = ρ², the share of Y's variance explained by X. Consequence: R² is symmetric (Y on X or X on Y gives the same R²), whereas the slope is not.</span><span data-lang="nl">✔ R² = ρ², het aandeel van de variantie van Y verklaard door X. Gevolg: R² is symmetrisch (Y op X of X op Y geeft dezelfde R²), terwijl de helling dat niet is.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">5. Un X mesuré avec erreur produit un biais qui…</div>
+            <div class="qtext" data-lang="en">5. An X measured with error produces a bias that…</div>
+            <div class="qtext" data-lang="nl">5. Een met fout gemeten X geeft een vertekening die…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Tire toujours la pente vers 0 (attenuation bias).</span><span data-lang="en">Always pulls the slope towards 0 (attenuation bias).</span><span data-lang="nl">De helling altijd naar 0 trekt (attenuatievertekening).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Amplifie toujours la pente.</span><span data-lang="en">Always amplifies the slope.</span><span data-lang="nl">De helling altijd versterkt.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">N'a aucun effet sur la pente.</span><span data-lang="en">Has no effect on the slope.</span><span data-lang="nl">Geen effect heeft op de helling.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le bruit de mesure aplatit systématiquement la pente vers 0 en valeur absolue, jamais ne l'amplifie : c'est l'« iron law of econometrics ».</span><span data-lang="en">✔ Measurement noise systematically flattens the slope towards 0 in absolute value, never amplifies it: the “iron law of econometrics”.</span><span data-lang="nl">✔ Meetruis vlakt de helling systematisch af naar 0 in absolute waarde, versterkt ze nooit: de “iron law of econometrics”.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">6. En régression multiple, un coefficient βⱼ mesure…</div>
+            <div class="qtext" data-lang="en">6. In multiple regression, a coefficient βⱼ measures…</div>
+            <div class="qtext" data-lang="nl">6. In meervoudige regressie meet een coëfficiënt βⱼ…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">L'effet total de Xⱼ, autres variables incluses.</span><span data-lang="en">The total effect of Xⱼ, other variables included.</span><span data-lang="nl">Het totale effect van Xⱼ, andere variabelen inbegrepen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La corrélation brute entre Xⱼ et Y.</span><span data-lang="en">The raw correlation between Xⱼ and Y.</span><span data-lang="nl">De ruwe correlatie tussen Xⱼ en Y.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">L'effet d'une hausse de Xⱼ, toutes autres variables constantes.</span><span data-lang="en">The effect of a rise in Xⱼ, all other variables held constant.</span><span data-lang="nl">Het effect van een stijging van Xⱼ, alle andere variabelen constant.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Chaque coefficient est la contribution unique de sa variable (β̂ⱼ = régression des résidus sur les résidus, purgés des autres X). C'est la logique des contrôles.</span><span data-lang="en">✔ Each coefficient is its variable's unique contribution (β̂ⱼ = regression of residuals on residuals, purged of the other X's). This is the logic of controls.</span><span data-lang="nl">✔ Elke coëfficiënt is de unieke bijdrage van zijn variabele (β̂ⱼ = regressie van residuen op residuen, gezuiverd van de andere X'en). Dit is de logica van controles.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">7. Ajouter une variable même inutile à un modèle…</div>
+            <div class="qtext" data-lang="en">7. Adding even a useless variable to a model…</div>
+            <div class="qtext" data-lang="nl">7. Een zelfs nutteloze variabele aan een model toevoegen…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Fait toujours baisser le R².</span><span data-lang="en">Always lowers R².</span><span data-lang="nl">Verlaagt altijd R².</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Ne fait jamais baisser le R², mais peut faire baisser le R̄².</span><span data-lang="en">Never lowers R², but can lower R̄².</span><span data-lang="nl">Verlaagt R² nooit, maar kan R̄² verlagen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Fait toujours monter le R̄².</span><span data-lang="en">Always raises R̄².</span><span data-lang="nl">Verhoogt altijd R̄².</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le RSS ne peut que baisser à TSS constant, donc R² ne diminue jamais. Le R̄² pénalise les degrés de liberté : il peut baisser, voire devenir négatif si le fit est pauvre.</span><span data-lang="en">✔ RSS can only fall at constant TSS, so R² never decreases. R̄² penalises degrees of freedom: it can fall, even go negative if the fit is poor.</span><span data-lang="nl">✔ RSS kan enkel dalen bij constante TSS, dus R² daalt nooit. R̄² bestraft vrijheidsgraden: ze kan dalen, zelfs negatief worden bij een slechte fit.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">8. Une hypothèse jointe (plusieurs coefficients à la fois) se teste avec…</div>
+            <div class="qtext" data-lang="en">8. A joint hypothesis (several coefficients at once) is tested with…</div>
+            <div class="qtext" data-lang="nl">8. Een gezamenlijke hypothese (meerdere coëfficiënten tegelijk) wordt getoetst met…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Un F-test (restricted vs unrestricted).</span><span data-lang="en">An F-test (restricted vs unrestricted).</span><span data-lang="nl">Een F-toets (restricted vs unrestricted).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une série de t-tests individuels.</span><span data-lang="en">A series of individual t-tests.</span><span data-lang="nl">Een reeks individuele t-toetsen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le R² du modèle.</span><span data-lang="en">The model's R².</span><span data-lang="nl">De R² van het model.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Les estimateurs sont corrélés : enchaîner des t individuels fausse le test. Le F compare le fit du modèle restreint (H₀ imposée) à celui du modèle complet.</span><span data-lang="en">✔ The estimators are correlated: chaining individual t's distorts the test. The F compares the restricted model's fit (H₀ imposed) to the full model's.</span><span data-lang="nl">✔ De schatters zijn gecorreleerd: individuele t's ketenen vervormt de toets. De F vergelijkt de fit van het restricted model (H₀ opgelegd) met het volledige model.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">9. Un F significatif alors qu'aucun t individuel ne l'est signale typiquement…</div>
+            <div class="qtext" data-lang="en">9. A significant F while no individual t is signals typically…</div>
+            <div class="qtext" data-lang="nl">9. Een significante F terwijl geen enkele individuele t significant is, wijst typisch op…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">De l'hétéroscédasticité.</span><span data-lang="en">Heteroskedasticity.</span><span data-lang="nl">Heteroskedasticiteit.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une erreur de calcul.</span><span data-lang="en">A calculation error.</span><span data-lang="nl">Een rekenfout.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">De la multicolinéarité.</span><span data-lang="en">Multicollinearity.</span><span data-lang="nl">Multicollineariteit.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le groupe de variables explique bien Y (F rejette), mais des régresseurs quasi identiques empêchent d'attribuer l'effet à l'un précisément (t faibles). L'inverse (t sans F) = variable morte.</span><span data-lang="en">✔ The group of variables explains Y well (F rejects), but near-identical regressors prevent attributing the effect to any one (weak t's). The reverse (t without F) = a dead variable.</span><span data-lang="nl">✔ De groep variabelen verklaart Y goed (F verwerpt), maar bijna identieke regressoren verhinderen de toewijzing aan één (zwakke t's). Het omgekeerde (t zonder F) = een dode variabele.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">10. L'hétéroscédasticité affecte…</div>
+            <div class="qtext" data-lang="en">10. Heteroskedasticity affects…</div>
+            <div class="qtext" data-lang="nl">10. Heteroskedasticiteit beïnvloedt…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les coefficients, qui deviennent biaisés.</span><span data-lang="en">The coefficients, which become biased.</span><span data-lang="nl">De coëfficiënten, die vertekend raken.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Seulement les erreurs-types ; les coefficients restent corrects.</span><span data-lang="en">Only the standard errors; the coefficients stay correct.</span><span data-lang="nl">Enkel de standaardfouten; de coëfficiënten blijven correct.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le R², qui devient négatif.</span><span data-lang="en">The R², which turns negative.</span><span data-lang="nl">De R², die negatief wordt.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Piège classique : répondre « estimateurs biaisés » est faux. Les coefficients restent non biaisés et consistants ; seuls les s.e. sont faux, d'où l'usage de s.e. robustes.</span><span data-lang="en">✔ Classic trap: answering “biased estimators” is wrong. The coefficients stay unbiased and consistent; only the s.e. are wrong, hence robust s.e.</span><span data-lang="nl">✔ Klassieke valstrik: “vertekende schatters” antwoorden is fout. De coëfficiënten blijven zuiver en consistent; enkel de s.e. zijn fout, vandaar robuuste s.e.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">11. Le test de White détecte l'hétéroscédasticité en…</div>
+            <div class="qtext" data-lang="en">11. The White test detects heteroskedasticity by…</div>
+            <div class="qtext" data-lang="nl">11. De White-toets detecteert heteroskedasticiteit door…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Régressant le carré des résidus sur les X, leurs carrés et produits croisés.</span><span data-lang="en">Regressing squared residuals on the X's, their squares and cross-products.</span><span data-lang="nl">De gekwadrateerde residuen op de X'en, hun kwadraten en kruisproducten te regresseren.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Comparant deux R² de modèles emboîtés.</span><span data-lang="en">Comparing two R² of nested models.</span><span data-lang="nl">Twee R² van geneste modellen te vergelijken.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Calculant la distance de Cook.</span><span data-lang="en">Computing Cook's distance.</span><span data-lang="nl">Cook's afstand te berekenen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Régression auxiliaire des résidus² ; la statistique nR² suit un χ². Sous homoscédasticité, aucun terme n'explique les résidus². Breusch-Pagan retire les produits croisés.</span><span data-lang="en">✔ Auxiliary regression of residuals²; the statistic nR² follows a χ². Under homoskedasticity, no term explains the residuals². Breusch-Pagan drops the cross-products.</span><span data-lang="nl">✔ Hulpregressie van residuen²; de statistiek nR² volgt een χ². Onder homoskedasticiteit verklaart geen term de residuen². Breusch-Pagan laat de kruisproducten weg.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">12. Le VIF signale une multicolinéarité excessive dès que…</div>
+            <div class="qtext" data-lang="en">12. The VIF signals excessive multicollinearity as soon as…</div>
+            <div class="qtext" data-lang="nl">12. De VIF wijst op overmatige multicollineariteit zodra…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">VIF &gt; 1.</span><span data-lang="en">VIF &gt; 1.</span><span data-lang="nl">VIF &gt; 1.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">VIF &lt; 0.</span><span data-lang="en">VIF &lt; 0.</span><span data-lang="nl">VIF &lt; 0.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">VIF &gt; 10 (soit R²ⱼ &gt; 0,90, ⟺ |ρ| &gt; 0,948 à deux variables).</span><span data-lang="en">VIF &gt; 10 (i.e. R²ⱼ &gt; 0.90, ⟺ |ρ| &gt; 0.948 with two variables).</span><span data-lang="nl">VIF &gt; 10 (d.w.z. R²ⱼ &gt; 0,90, ⟺ |ρ| &gt; 0,948 bij twee variabelen).</span></button>
+            <div class="explain"><span data-lang="fr">✔ VIF = 1/(1−R²ⱼ) ; VIF &gt; 10 ⟺ R²ⱼ &gt; 90 %. La multicolinéarité n'est pas une faute technique (aucune hypothèse violée), juste un problème de lisibilité.</span><span data-lang="en">✔ VIF = 1/(1−R²ⱼ); VIF &gt; 10 ⟺ R²ⱼ &gt; 90%. Multicollinearity is not a technical fault (no assumption violated), just a readability problem.</span><span data-lang="nl">✔ VIF = 1/(1−R²ⱼ); VIF &gt; 10 ⟺ R²ⱼ &gt; 90%. Multicollineariteit is geen technische fout (geen aanname geschonden), enkel een leesbaarheidsprobleem.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">13. La distance de Cook Dⱼ signale un outlier lorsque…</div>
+            <div class="qtext" data-lang="en">13. Cook's distance Dⱼ flags an outlier when…</div>
+            <div class="qtext" data-lang="nl">13. Cook's afstand Dⱼ markeert een uitschieter wanneer…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Dⱼ &lt; 0,05.</span><span data-lang="en">Dⱼ &lt; 0.05.</span><span data-lang="nl">Dⱼ &lt; 0,05.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Dⱼ &gt; 1.</span><span data-lang="en">Dⱼ &gt; 1.</span><span data-lang="nl">Dⱼ &gt; 1.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Dⱼ = R².</span><span data-lang="en">Dⱼ = R².</span><span data-lang="nl">Dⱼ = R².</span></button>
+            <div class="explain"><span data-lang="fr">✔ Dⱼ &gt; 1 : l'observation, retirée, déplacerait fortement les valeurs ajustées. En finance, attention : effacer un outlier de rendement peut sous-estimer le risque.</span><span data-lang="en">✔ Dⱼ &gt; 1: the observation, removed, would strongly shift the fitted values. In finance, beware: erasing a return outlier can underestimate risk.</span><span data-lang="nl">✔ Dⱼ &gt; 1: de waarneming, verwijderd, zou de gefitte waarden sterk verschuiven. In finance opgelet: een rendementsuitschieter wissen kan het risico onderschatten.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">14. Sous les cinq hypothèses, OLS est le BLUE. Il devient le BUE si l'on ajoute…</div>
+            <div class="qtext" data-lang="en">14. Under the five assumptions, OLS is the BLUE. It becomes the BUE if we add…</div>
+            <div class="qtext" data-lang="nl">14. Onder de vijf aannames is OLS de BLUE. Ze wordt de BUE als we toevoegen…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">La normalité des erreurs.</span><span data-lang="en">Normality of the errors.</span><span data-lang="nl">Normaliteit van de fouten.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Un plus grand échantillon.</span><span data-lang="en">A larger sample.</span><span data-lang="nl">Een grotere steekproef.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une pente positive.</span><span data-lang="en">A positive slope.</span><span data-lang="nl">Een positieve helling.</span></button>
+            <div class="explain"><span data-lang="fr">✔ BLUE = meilleur estimateur linéaire sans biais (Gauss-Markov). Avec des erreurs normales, OLS devient BUE : meilleur parmi tous les estimateurs sans biais, même non linéaires. La normalité n'est pas requise pour la consistance.</span><span data-lang="en">✔ BLUE = best linear unbiased estimator (Gauss-Markov). With normal errors, OLS becomes BUE: best among all unbiased estimators, even non-linear. Normality is not required for consistency.</span><span data-lang="nl">✔ BLUE = beste lineaire zuivere schatter (Gauss-Markov). Met normale fouten wordt OLS BUE: beste onder alle zuivere schatters, ook niet-lineaire. Normaliteit is niet vereist voor consistentie.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">15. Dans un modèle log-log (ln Y = ln α + β ln X), le coefficient β s'interprète comme…</div>
+            <div class="qtext" data-lang="en">15. In a log-log model (ln Y = ln α + β ln X), the coefficient β is interpreted as…</div>
+            <div class="qtext" data-lang="nl">15. In een log-log-model (ln Y = ln α + β ln X) wordt de coëfficiënt β geïnterpreteerd als…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une variation absolue de Y par unité de X.</span><span data-lang="en">An absolute change in Y per unit of X.</span><span data-lang="nl">Een absolute verandering in Y per eenheid van X.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le R² du modèle.</span><span data-lang="en">The model's R².</span><span data-lang="nl">De R² van het model.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Une élasticité : % de variation de Y pour 1 % de variation de X.</span><span data-lang="en">An elasticity: % change in Y per 1% change in X.</span><span data-lang="nl">Een elasticiteit: % verandering in Y per 1% verandering in X.</span></button>
+            <div class="explain"><span data-lang="fr">✔ En log-log, β est l'élasticité. En log-lin (seul Y en log), β donne le % de variation de Y pour une variation d'une unité de X. Transformer les variables garde le modèle linéaire dans les paramètres.</span><span data-lang="en">✔ In log-log, β is the elasticity. In log-lin (only Y in log), β gives the % change in Y per one-unit change in X. Transforming variables keeps the model linear in the parameters.</span><span data-lang="nl">✔ In log-log is β de elasticiteit. In log-lin (enkel Y in log) geeft β de % verandering in Y per eenheidsverandering in X. Variabelen transformeren houdt het model lineair in de parameters.</span></div>
+          </div>
+        </div>
+
+        <!-- 9. EXERCICES -->
+        <h2 id="exercices"><span data-lang="fr">9. Exercices</span><span data-lang="en">9. Exercises</span><span data-lang="nl">9. Oefeningen</span></h2>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice RG-1</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">On régresse Y sur X avec σ̂XY = 480, σ̂X² = 300, ȳ = 12 % et x̄ = 6 %. Calculez la pente β̂ et l'intercept α̂.</p>
+          <p class="estatement" data-lang="en">We regress Y on X with σ̂XY = 480, σ̂X² = 300, ȳ = 12% and x̄ = 6%. Compute the slope β̂ and the intercept α̂.</p>
+          <p class="estatement" data-lang="nl">We regresseren Y op X met σ̂XY = 480, σ̂X² = 300, ȳ = 12% en x̄ = 6%. Bereken de helling β̂ en het intercept α̂.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">β̂ = σ̂XY / σ̂X² = 480 / 300 = <b>1,60</b>. Puis α̂ = ȳ − β̂ x̄ = 12 − 1,60 × 6 = 12 − 9,6 = <b>2,40 %</b>. Quand le marché bouge de 1 %, Y bouge de 1,60 % en moyenne, et Y vaut 2,40 % quand X est nul.</div>
+            <div class="ans" data-lang="en">β̂ = σ̂XY / σ̂X² = 480 / 300 = <b>1.60</b>. Then α̂ = ȳ − β̂ x̄ = 12 − 1.60 × 6 = 12 − 9.6 = <b>2.40%</b>. When the market moves 1%, Y moves 1.60% on average, and Y equals 2.40% when X is zero.</div>
+            <div class="ans" data-lang="nl">β̂ = σ̂XY / σ̂X² = 480 / 300 = <b>1,60</b>. Dan α̂ = ȳ − β̂ x̄ = 12 − 1,60 × 6 = 12 − 9,6 = <b>2,40%</b>. Als de markt 1% beweegt, beweegt Y gemiddeld 1,60%, en Y is 2,40% wanneer X nul is.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice RG-2</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Une pente estimée vaut β̂ = 1,52 avec une erreur-type s.e. = 0,40. Calculez la t-statistic pour H₀ : β = 0, concluez à 5 %, et donnez le CI 95 %.</p>
+          <p class="estatement" data-lang="en">An estimated slope is β̂ = 1.52 with standard error s.e. = 0.40. Compute the t-statistic for H₀: β = 0, conclude at 5%, and give the 95% CI.</p>
+          <p class="estatement" data-lang="nl">Een geschatte helling is β̂ = 1,52 met standaardfout s.e. = 0,40. Bereken de t-statistiek voor H₀: β = 0, besluit op 5%, en geef het 95% CI.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">t = β̂ / s.e. = 1,52 / 0,40 = <b>3,80</b>. Comme 3,80 &gt; 1,96, on <b>rejette H₀</b> à 5 % : la pente est significativement différente de 0. CI 95 % = 1,52 ± 1,96 × 0,40 = 1,52 ± 0,784 = <b>[0,74 ; 2,30]</b>, qui ne contient pas 0 — même conclusion, deuxième lecture.</div>
+            <div class="ans" data-lang="en">t = β̂ / s.e. = 1.52 / 0.40 = <b>3.80</b>. Since 3.80 &gt; 1.96, we <b>reject H₀</b> at 5%: the slope is significantly different from 0. 95% CI = 1.52 ± 1.96 × 0.40 = 1.52 ± 0.784 = <b>[0.74; 2.30]</b>, which does not contain 0 — same conclusion, second reading.</div>
+            <div class="ans" data-lang="nl">t = β̂ / s.e. = 1,52 / 0,40 = <b>3,80</b>. Aangezien 3,80 &gt; 1,96, verwerpen we <b>H₀</b> op 5%: de helling verschilt significant van 0. 95% CI = 1,52 ± 1,96 × 0,40 = 1,52 ± 0,784 = <b>[0,74; 2,30]</b>, dat 0 niet bevat — dezelfde conclusie, tweede lezing.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice RG-3</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Un modèle à k = 3 régresseurs sur n = 24 observations donne un R² = 0,60. Calculez le R̄² (adjusted). Que se passe-t-il si l'on ajoute un 4ᵉ régresseur qui ne change pas le R² ?</p>
+          <p class="estatement" data-lang="en">A model with k = 3 regressors on n = 24 observations gives R² = 0.60. Compute the adjusted R̄². What happens if we add a 4th regressor that does not change R²?</p>
+          <p class="estatement" data-lang="nl">Een model met k = 3 regressoren op n = 24 waarnemingen geeft R² = 0,60. Bereken de adjusted R̄². Wat gebeurt er als we een 4de regressor toevoegen die R² niet verandert?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">R̄² = 1 − (n−1)/(n−k−1) × (1 − R²) = 1 − 23/20 × 0,40 = 1 − 1,15 × 0,40 = 1 − 0,46 = <b>0,54</b>. Avec un 4ᵉ régresseur inutile (R² inchangé à 0,60), le facteur devient 23/19 = 1,21 : R̄² = 1 − 1,21 × 0,40 = <b>0,516</b>. Le R̄² <b>baisse</b> : la pénalité l'emporte car la nouvelle variable n'apporte rien.</div>
+            <div class="ans" data-lang="en">R̄² = 1 − (n−1)/(n−k−1) × (1 − R²) = 1 − 23/20 × 0.40 = 1 − 1.15 × 0.40 = 1 − 0.46 = <b>0.54</b>. With a useless 4th regressor (R² unchanged at 0.60), the factor becomes 23/19 = 1.21: R̄² = 1 − 1.21 × 0.40 = <b>0.516</b>. R̄² <b>falls</b>: the penalty wins because the new variable adds nothing.</div>
+            <div class="ans" data-lang="nl">R̄² = 1 − (n−1)/(n−k−1) × (1 − R²) = 1 − 23/20 × 0,40 = 1 − 1,15 × 0,40 = 1 − 0,46 = <b>0,54</b>. Met een nutteloze 4de regressor (R² onveranderd op 0,60) wordt de factor 23/19 = 1,21: R̄² = 1 − 1,21 × 0,40 = <b>0,516</b>. R̄² <b>daalt</b>: de straf wint want de nieuwe variabele voegt niets toe.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice RG-4</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Le vrai modèle est Y = 2 + 1,2 X₁ − 2,1 X₂ + ε, avec Cov(X₁,X₂)/V(X₁) = δ = 0,60. On omet X₂. Vers quelle valeur converge le coefficient estimé de X₁ ? Commentez.</p>
+          <p class="estatement" data-lang="en">The true model is Y = 2 + 1.2 X₁ − 2.1 X₂ + ε, with Cov(X₁,X₂)/V(X₁) = δ = 0.60. We omit X₂. What value does the estimated coefficient of X₁ converge to? Comment.</p>
+          <p class="estatement" data-lang="nl">Het ware model is Y = 2 + 1,2 X₁ − 2,1 X₂ + ε, met Cov(X₁,X₂)/V(X₁) = δ = 0,60. We laten X₂ weg. Naar welke waarde convergeert de geschatte coëfficiënt van X₁? Becommentarieer.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Formule du biais de variable omise : β̂₁ → β₁ + β₂δ = 1,2 + (−2,1) × 0,60 = 1,2 − 1,26 = <b>−0,06</b>. Le biais est si fort que le <b>signe s'inverse</b> : un vrai effet positif (+1,2) apparaît négatif. Deux conditions étaient réunies : X₂ compte (β₂ ≠ 0) et X₁, X₂ sont corrélés (δ ≠ 0). Sans corrélation, aucun biais.</div>
+            <div class="ans" data-lang="en">Omitted variable bias formula: β̂₁ → β₁ + β₂δ = 1.2 + (−2.1) × 0.60 = 1.2 − 1.26 = <b>−0.06</b>. The bias is so strong that the <b>sign flips</b>: a truly positive effect (+1.2) appears negative. Two conditions held: X₂ matters (β₂ ≠ 0) and X₁, X₂ are correlated (δ ≠ 0). Without correlation, no bias.</div>
+            <div class="ans" data-lang="nl">Formule van de weggelaten-variabelevertekening: β̂₁ → β₁ + β₂δ = 1,2 + (−2,1) × 0,60 = 1,2 − 1,26 = <b>−0,06</b>. De vertekening is zo sterk dat het <b>teken omdraait</b>: een echt positief effect (+1,2) lijkt negatief. Twee voorwaarden waren vervuld: X₂ telt (β₂ ≠ 0) en X₁, X₂ zijn gecorreleerd (δ ≠ 0). Zonder correlatie geen vertekening.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice RG-5</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Dans un modèle à deux régresseurs, la corrélation entre X₁ et X₂ vaut ρ = 0,96. Calculez le R²ⱼ de la régression de X₁ sur X₂, puis le VIF. Y a-t-il un problème de multicolinéarité ?</p>
+          <p class="estatement" data-lang="en">In a two-regressor model, the correlation between X₁ and X₂ is ρ = 0.96. Compute the R²ⱼ of regressing X₁ on X₂, then the VIF. Is there a multicollinearity problem?</p>
+          <p class="estatement" data-lang="nl">In een model met twee regressoren is de correlatie tussen X₁ en X₂ ρ = 0,96. Bereken de R²ⱼ van de regressie van X₁ op X₂, daarna de VIF. Is er een multicollineariteitsprobleem?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">À deux variables, R²ⱼ = ρ² = 0,96² = <b>0,9216</b>. VIF = 1/(1−R²ⱼ) = 1/(1−0,9216) = 1/0,0784 ≈ <b>12,8</b>. Comme 12,8 &gt; 10, la multicolinéarité est <b>excessive</b> (le seuil |ρ| = 0,948 est dépassé). Ce n'est pas une faute technique : on peut ignorer le problème ou retirer une des deux variables redondantes, les fitted values changeront peu.</div>
+            <div class="ans" data-lang="en">With two variables, R²ⱼ = ρ² = 0.96² = <b>0.9216</b>. VIF = 1/(1−R²ⱼ) = 1/(1−0.9216) = 1/0.0784 ≈ <b>12.8</b>. Since 12.8 &gt; 10, multicollinearity is <b>excessive</b> (the |ρ| = 0.948 threshold is exceeded). It is not a technical fault: one can ignore it or drop one of the two redundant variables, the fitted values will barely change.</div>
+            <div class="ans" data-lang="nl">Met twee variabelen, R²ⱼ = ρ² = 0,96² = <b>0,9216</b>. VIF = 1/(1−R²ⱼ) = 1/(1−0,9216) = 1/0,0784 ≈ <b>12,8</b>. Aangezien 12,8 &gt; 10 is de multicollineariteit <b>overmatig</b> (de drempel |ρ| = 0,948 is overschreden). Geen technische fout: men kan het negeren of één van de twee redundante variabelen verwijderen, de gefitte waarden veranderen nauwelijks.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice RG-6</span><span class="diff" data-lang="fr">Réflexion</span><span class="diff" data-lang="en">Conceptual</span><span class="diff" data-lang="nl">Reflectie</span></div>
+          <p class="estatement" data-lang="fr">Un analyste teste le facteur <em>size</em> d'un portefeuille. En supposant l'homoscédasticité, le t vaut −3,2 (significatif). Avec des erreurs-types robustes, le t tombe à −1,3. Que s'est-il passé, et quelle conclusion doit-il retenir ?</p>
+          <p class="estatement" data-lang="en">An analyst tests a portfolio's <em>size</em> factor. Assuming homoskedasticity, the t is −3.2 (significant). With robust standard errors, the t drops to −1.3. What happened, and which conclusion should they keep?</p>
+          <p class="estatement" data-lang="nl">Een analist toetst de <em>size</em>-factor van een portefeuille. Onder homoskedasticiteit is de t −3,2 (significant). Met robuuste standaardfouten zakt de t naar −1,3. Wat is er gebeurd, en welke conclusie moet hij behouden?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Les données sont <b>hétéroscédastiques</b> : la variance du choc dépend de X. Les s.e. usuels sont alors <em>trop petits</em>, ce qui gonfle artificiellement la t-stat. Les s.e. robustes (généralement plus grands) corrigent cela, et la t-stat retombe à −1,3, sous 1,96 en valeur absolue : le facteur <b>n'est plus significatif</b>. Il faut retenir la conclusion robuste. Point clé : les <em>coefficients</em> n'ont pas changé (l'hétéroscédasticité ne les biaise pas), seule leur précision était mal estimée. C'est le piège classique qui fait basculer une conclusion de significativité.</div>
+            <div class="ans" data-lang="en">The data are <b>heteroskedastic</b>: the shock variance depends on X. The usual s.e. are then <em>too small</em>, artificially inflating the t-stat. Robust s.e. (generally larger) correct this, and the t-stat falls to −1.3, below 1.96 in absolute value: the factor is <b>no longer significant</b>. The robust conclusion should be kept. Key point: the <em>coefficients</em> did not change (heteroskedasticity does not bias them), only their precision was mis-estimated. This is the classic trap that flips a significance conclusion.</div>
+            <div class="ans" data-lang="nl">De data zijn <b>heteroskedastisch</b>: de schokvariantie hangt af van X. De gewone s.e. zijn dan <em>te klein</em>, wat de t-stat kunstmatig opblaast. Robuuste s.e. (doorgaans groter) corrigeren dit, en de t-stat zakt naar −1,3, onder 1,96 in absolute waarde: de factor is <b>niet meer significant</b>. De robuuste conclusie moet behouden blijven. Kernpunt: de <em>coëfficiënten</em> veranderden niet (heteroskedasticiteit vertekent ze niet), enkel hun precisie was verkeerd geschat. Dit is de klassieke valstrik die een significantieconclusie doet omslaan.</div>
+          </details>
+        </div>
+
+        <section class="biblio">
+          <h2 id="biblio"><span data-lang="fr">Bibliographie &amp; pour aller plus loin</span><span data-lang="en">Bibliography &amp; further reading</span><span data-lang="nl">Bibliografie &amp; verder lezen</span></h2>
+          <div class="bcol">
+            <h4 data-lang="fr">Références</h4><h4 data-lang="en">References</h4><h4 data-lang="nl">Referenties</h4>
+            <ol>
+      <li>GARP (2024). <em>Financial Risk Manager (FRM) Part I: Quantitative Analysis</em>. Pearson.</li>
+      <li>Wooldridge, J. M. (2019). <em>Introductory Econometrics: A Modern Approach</em> (7th ed.). Cengage.</li>
+      <li>Stock, J. H. &amp; Watson, M. W. (2020). <em>Introduction to Econometrics</em> (4th ed.). Pearson.</li>
+      <li>Fama, E. F. &amp; French, K. R. (1993). Common Risk Factors in the Returns on Stocks and Bonds. <em>Journal of Financial Economics</em>, 33(1), 3–56.</li>
+      <li>Miller, M. B. (2018). <em>Mathematics and Statistics for Financial Risk Management</em> (2nd ed.). Wiley.</li>
+            </ol>
+          </div>
+          <div class="bcol">
+            <h4 data-lang="fr">Pour aller plus loin</h4><h4 data-lang="en">Further reading</h4><h4 data-lang="nl">Verder lezen</h4>
+            <ul>
+      <li>Investopedia — <a href="https://www.investopedia.com/terms/r/regression.asp" target="_blank" rel="noopener">Regression</a> · <a href="https://www.investopedia.com/terms/r/r-squared.asp" target="_blank" rel="noopener">R-Squared</a> · <a href="https://www.investopedia.com/terms/m/multicollinearity.asp" target="_blank" rel="noopener">Multicollinearity</a>.</li>
+      <li><span data-lang="fr">Module précédent : Échantillons &amp; tests d'hypothèse. Suite : Séries temporelles.</span><span data-lang="en">Previous module: Samples &amp; hypothesis testing. Next: Time series.</span><span data-lang="nl">Vorige module: Steekproeven &amp; hypothesetoetsing. Volgende: Tijdreeksen.</span></li>
+            </ul>
+          </div>
+        </section>
+
+        <div class="module-nav">
+          <a class="prev" href="qa2-echantillons.html">
+            <div class="dir" data-lang="fr">← Module précédent</div><div class="dir" data-lang="en">← Previous module</div><div class="dir" data-lang="nl">← Vorige module</div>
+            <div class="tt" data-lang="fr">Échantillons &amp; tests d'hypothèse</div><div class="tt" data-lang="en">Samples &amp; hypothesis testing</div><div class="tt" data-lang="nl">Steekproeven &amp; hypothesetoetsing</div>
+          </a>
+          <a class="next" href="../index.html#curriculum">
+            <div class="dir" data-lang="fr">Module suivant →</div><div class="dir" data-lang="en">Next module →</div><div class="dir" data-lang="nl">Volgende module →</div>
+            <div class="tt" data-lang="fr">Séries temporelles</div><div class="tt" data-lang="en">Time series</div><div class="tt" data-lang="nl">Tijdreeksen</div>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap foot">
+    <div class="brand"><span class="logo">Avenir<b>.</b></span></div>
+    <p data-lang="fr">Financial Risk Management · Analyse quantitative · Régression linéaire</p>
+    <p data-lang="en">Financial Risk Management · Quantitative Analysis · Linear regression</p>
+    <p data-lang="nl">Financial Risk Management · Kwantitatieve analyse · Lineaire regressie</p>
+  </div>
+</footer>
+
+<script src="../assets/script.js"></script>
+<script>
+/* Régression OLS : nuage de points déterministe + droite ajustée + β̂, R², t-stat */
+(function () {
+  var svg = document.getElementById("rg-chart");
+  if (!svg) return;
+  function v(id){ return parseFloat(document.getElementById(id).value); }
+  function setT(id,t){ var e=document.getElementById(id); if(e) e.textContent=t; }
+  function al(){ return document.body.getAttribute("data-active-lang")||"fr"; }
+
+  // Générateur pseudo-aléatoire déterministe (LCG) + Box-Muller, seed fixe
+  function makeNormals(count, seed){
+    var out=[];
+    function rnd(){ seed=(1103515245*seed+12345)&0x7fffffff; return seed/0x7fffffff; }
+    for (var i=0;i<count;i++){
+      var u1=Math.max(rnd(),1e-9), u2=rnd();
+      out.push(Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2));
+    }
+    return out;
+  }
+  var ZX = makeNormals(120, 987654321);   // écarts pour X
+  var ZE = makeNormals(120, 246813579);   // chocs pour Y (séquence indépendante)
+  var XMEAN=7.77, XSD=6.0, ALPHA=3.6;
+
+  function draw(){
+    var beta=v("rg-beta"), noise=v("rg-noise"), n=Math.round(v("rg-n"));
+    setT("rg-beta-o", beta.toFixed(2)); setT("rg-noise-o", noise.toFixed(0)); setT("rg-n-o", n.toFixed(0));
+
+    // Construire l'échantillon. On rend le choc orthogonal à X dans l'échantillon
+    // (résidu de ZE régressé sur X) : β̂ suit alors la pente vraie, et le bruit ne
+    // pilote plus que la dispersion, le R² et la t-stat — plus lisible pédagogiquement.
+    var xs=[], i;
+    for (i=0;i<n;i++){ xs.push(XMEAN + XSD*ZX[i]); }
+    var mxx=0, mze=0; for (i=0;i<n;i++){ mxx+=xs[i]; mze+=ZE[i]; } mxx/=n; mze/=n;
+    var sxx0=0, sxe0=0;
+    for (i=0;i<n;i++){ var dx0=xs[i]-mxx; sxx0+=dx0*dx0; sxe0+=dx0*(ZE[i]-mze); }
+    var g0 = sxx0>0 ? sxe0/sxx0 : 0;
+    var ys=[];
+    for (i=0;i<n;i++){
+      var e = (ZE[i]-mze) - g0*(xs[i]-mxx);   // choc orthogonal à X
+      ys.push(ALPHA + beta*xs[i] + noise*e);
+    }
+    // Moments
+    var mx=0,my=0; for (i=0;i<n;i++){ mx+=xs[i]; my+=ys[i]; } mx/=n; my/=n;
+    var Sxx=0,Syy=0,Sxy=0;
+    for (i=0;i<n;i++){ var dx=xs[i]-mx, dy=ys[i]-my; Sxx+=dx*dx; Syy+=dy*dy; Sxy+=dx*dy; }
+    var bhat = Sxx>0 ? Sxy/Sxx : 0;
+    var ahat = my - bhat*mx;
+    var RSS=0; for (i=0;i<n;i++){ var r=ys[i]-(ahat+bhat*xs[i]); RSS+=r*r; }
+    var s2 = n>2 ? RSS/(n-2) : 0;
+    var seB = (Sxx>0 && s2>0) ? Math.sqrt(s2/Sxx) : 0;
+    var t = seB>0 ? bhat/seB : 0;
+    var R2 = (Sxx>0 && Syy>0) ? (Sxy*Sxy)/(Sxx*Syy) : 0;
+
+    setT("rg-bhat", bhat.toFixed(2)); setT("rg-r2", R2.toFixed(3)); setT("rg-t", t.toFixed(2));
+    var reject = Math.abs(t) > 1.96;
+    var dec = document.getElementById("rg-dec");
+    var sig = al()==="en"?"Significant":(al()==="nl"?"Significant":"Significatif");
+    var ns  = al()==="en"?"Not significant":(al()==="nl"?"Niet significant":"Non significatif");
+    dec.textContent = reject ? sig : ns;
+    dec.style.color = reject ? "var(--teal)" : "var(--crimson)";
+
+    // Échelle du dessin
+    var W=520,H=300,L=44,R=16,T0=16,B=34, pw=W-L-R, ph=H-T0-B;
+    var xmin=Infinity,xmax=-Infinity,ymin=Infinity,ymax=-Infinity;
+    for (i=0;i<n;i++){ if(xs[i]<xmin)xmin=xs[i]; if(xs[i]>xmax)xmax=xs[i]; if(ys[i]<ymin)ymin=ys[i]; if(ys[i]>ymax)ymax=ys[i]; }
+    var xpad=(xmax-xmin)*0.08||1, ypad=(ymax-ymin)*0.08||1;
+    xmin-=xpad; xmax+=xpad; ymin-=ypad; ymax+=ypad;
+    function px(x){ return L + (x-xmin)/(xmax-xmin)*pw; }
+    function py(y){ return T0 + (1-(y-ymin)/(ymax-ymin))*ph; }
+
+    var g="";
+    // axes
+    g+='<line class="axis" x1="'+L+'" y1="'+(T0+ph)+'" x2="'+(L+pw)+'" y2="'+(T0+ph)+'"/>';
+    g+='<line class="axis" x1="'+L+'" y1="'+T0+'" x2="'+L+'" y2="'+(T0+ph)+'"/>';
+    // ligne y=0 si visible
+    if (ymin<0 && ymax>0){ g+='<line x1="'+L+'" y1="'+py(0).toFixed(1)+'" x2="'+(L+pw)+'" y2="'+py(0).toFixed(1)+'" stroke="var(--ink-mute)" stroke-width="1" stroke-dasharray="2 4" opacity="0.5"/>'; }
+    // droite OLS ajustée
+    var x0=xmin, x1=xmax;
+    g+='<line x1="'+px(x0).toFixed(1)+'" y1="'+py(ahat+bhat*x0).toFixed(1)+'" x2="'+px(x1).toFixed(1)+'" y2="'+py(ahat+bhat*x1).toFixed(1)+'" stroke="var(--ink)" stroke-width="2.4"/>';
+    // nuage de points
+    for (i=0;i<n;i++){ g+='<circle cx="'+px(xs[i]).toFixed(1)+'" cy="'+py(ys[i]).toFixed(1)+'" r="3.1" fill="var(--teal)" opacity="0.72"/>'; }
+    // libellés d'axes
+    var xlab = al()==="en"?"X — factor / market":(al()==="nl"?"X — factor / markt":"X — facteur / marché");
+    var ylab = al()==="en"?"Y — asset return":(al()==="nl"?"Y — activarendement":"Y — rendement actif");
+    g+='<text class="lab" x="'+(L+pw)+'" y="'+(T0+ph+16)+'" text-anchor="end">'+xlab+'</text>';
+    g+='<text class="lab" x="'+L+'" y="'+(T0-4)+'" text-anchor="start">'+ylab+'</text>';
+    svg.innerHTML=g;
+  }
+  ["rg-beta","rg-noise","rg-n"].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener("input", draw); });
+  document.querySelectorAll("[data-set-lang]").forEach(function(b){ b.addEventListener("click", function(){ setTimeout(draw,10); }); });
+  document.addEventListener("DOMContentLoaded", draw);
+  draw();
+})();
+</script>
+</body>
+</html>

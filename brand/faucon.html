@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le faucon — direction symbole</title>
+<style>
+  :root{
+    --navy:#0c1e3a; --navy2:#12294a; --deep:#0a1424;
+    --gold:#c6a15b; --gold-hi:#dcbd76; --paper:#f5f2ea; --ink:#0f1b2d;
+    --muted:#93a3ba; --line:rgba(255,255,255,.12);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--sans);color:#eaf0f8;
+    background:radial-gradient(1100px 520px at 78% -8%,rgba(198,161,91,.14),transparent 60%),linear-gradient(160deg,#0b1a30,#0a1424 72%);}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px;}
+  header{padding:54px 0 22px;}
+  .eyebrow{font-size:12px;letter-spacing:2.6px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+  h1{font-family:var(--serif);font-size:clamp(28px,4.6vw,44px);margin:0 0 12px;}
+  header p{color:#c8d3e3;max-width:64ch;font-size:16.5px;margin:0;}
+
+  section{padding:30px 0;border-top:1px solid var(--line);margin-top:24px;}
+  .lbl{font-size:11.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:18px;}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .tile{border-radius:16px;padding:32px;display:flex;align-items:center;gap:24px;border:1px solid var(--line);min-height:140px;}
+  .tile.dark{background:linear-gradient(160deg,var(--navy2),var(--navy));}
+  .tile.light{background:var(--paper);}
+  .lock{display:flex;align-items:center;gap:18px;}
+  .nm{font-family:var(--serif);font-weight:700;letter-spacing:.16em;line-height:1;}
+  .sub{font-size:9.5px;letter-spacing:2.4px;text-transform:uppercase;margin-top:8px;}
+  .dark .nm{color:#fff;} .dark .sub{color:#9fb0c8;}
+  .light .nm{color:var(--ink);} .light .sub{color:#6b7688;}
+  .mini{display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+  .fav{border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.35);}
+  .names{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;}
+  .chip{font-family:var(--serif);font-size:15px;color:#eaf0f8;border:1px solid var(--line);border-radius:999px;padding:7px 16px;letter-spacing:.08em;}
+  .chip b{color:var(--gold);font-weight:700;}
+  footer{padding:26px 0 60px;color:#c3cfe0;font-size:15px;max-width:72ch;}
+  @media(max-width:680px){.row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#dcbd76"/><stop offset="1" stop-color="#b6863b"/></linearGradient>
+
+  <!-- Faucon héraldique stylisé, ailes déployées vers le haut -->
+  <g id="falcon">
+    <!-- aile gauche -->
+    <path d="M60 58 C50 50 40 46 22 30 C26 46 34 56 46 60 C40 62 34 63 30 66 C40 66 52 64 60 60 Z" fill="url(#gg)"/>
+    <!-- aile droite -->
+    <path d="M60 58 C70 50 80 46 98 30 C94 46 86 56 74 60 C80 62 86 63 90 66 C80 66 68 64 60 60 Z" fill="url(#gg)"/>
+    <!-- tête -->
+    <circle cx="60" cy="46" r="6" fill="url(#gg)"/>
+    <!-- corps / serres -->
+    <path d="M60 60 L56 84 L60 78 L64 84 Z" fill="url(#gg)"/>
+  </g>
+  <g id="falcon-ivory">
+    <path d="M60 58 C50 50 40 46 22 30 C26 46 34 56 46 60 C40 62 34 63 30 66 C40 66 52 64 60 60 Z" fill="#f2eee2"/>
+    <path d="M60 58 C70 50 80 46 98 30 C94 46 86 56 74 60 C80 62 86 63 90 66 C80 66 68 64 60 60 Z" fill="#f2eee2"/>
+    <circle cx="60" cy="46" r="6" fill="#f2eee2"/>
+    <path d="M60 60 L56 84 L60 78 L64 84 Z" fill="#f2eee2"/>
+  </g>
+
+  <g id="badge-dark"><rect x="3" y="3" width="114" height="114" rx="27" fill="#0a1424" stroke="#22385c" stroke-width="1.5"/><use href="#falcon"/></g>
+  <g id="badge-light"><rect x="3" y="3" width="114" height="114" rx="27" fill="#0c1e3a"/><use href="#falcon"/></g>
+</defs></svg>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Avenir · Direction « faucon »</div>
+    <h1>Le faucon comme symbole</h1>
+    <p>Vision perçante, précision, rapidité, prestige — l'imagerie que tu cherchais avec « Falcone », mais posée sur un nom propre et sans les mauvaises associations. Le symbole reste, le nom devient sûr.</p>
+  </div>
+</header>
+
+<section style="border-top:0;margin-top:8px;">
+  <div class="wrap">
+    <div class="lbl">Le symbole, sur fond bleu et clair</div>
+    <div class="row">
+      <div class="tile dark">
+        <div class="lock">
+          <svg width="76" height="76" viewBox="0 0 120 120" aria-label="Faucon"><use href="#badge-dark"/></svg>
+          <div><div class="nm" style="font-size:30px">TALVOR</div><div class="sub">Financial Risk &amp; Portfolio Mgmt</div></div>
+        </div>
+      </div>
+      <div class="tile light">
+        <div class="lock">
+          <svg width="76" height="76" viewBox="0 0 120 120" aria-label="Faucon"><use href="#badge-light"/></svg>
+          <div><div class="nm" style="font-size:30px">TALVOR</div><div class="sub">Financial Risk &amp; Portfolio Mgmt</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="lbl">Symbole seul · favicon · monochrome</div>
+    <div class="mini">
+      <svg width="96" height="96" viewBox="0 0 120 120" class="fav"><use href="#badge-dark"/></svg>
+      <svg width="60" height="60" viewBox="0 0 120 120" class="fav"><use href="#badge-light"/></svg>
+      <svg width="34" height="34" viewBox="0 0 120 120" class="fav"><use href="#badge-dark"/></svg>
+      <span style="width:16px"></span>
+      <svg width="80" height="80" viewBox="0 0 120 120"><rect x="3" y="3" width="114" height="114" rx="27" fill="none" stroke="#eaf0f8" stroke-width="2" opacity=".25"/><use href="#falcon-ivory"/></svg>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="lbl">Le faucon se marie avec n'importe lequel de tes noms « propres »</div>
+    <div class="names">
+      <span class="chip"><b>Talvor</b></span>
+      <span class="chip"><b>Nordael</b></span>
+      <span class="chip"><b>Aldevar</b></span>
+      <span class="chip">+ ta piste</span>
+    </div>
+    <p style="color:#c3cfe0;font-size:15px;max-width:70ch;margin-top:16px;">
+      Si tu tiens vraiment à la sonorité « faucon » dans le nom lui-même, on peut aussi coiner une forme dérivée et vérifiée (ex. une racine <em>Fal-</em> revisitée) — mais « Falcone » tel quel est à éviter.
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Dis-moi : est-ce que cette direction « faucon » te plaît comme <b>symbole</b> ? Si oui, sur quel <b>nom</b> on le pose (Talvor, Nordael, Aldevar, ou une forme dérivée du faucon que je vérifierai) ? Une fois les deux calés, je finalise le logo complet et je remplace le placeholder sur le site.
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fondamentaux de la gestion d'actifs — Avenir</title>
+<meta name="description" content="Module fondateur du parcours Asset Management : métier, cadre fiduciaire & réglementaire, buy/sell-side, chaîne de valeur, véhicules, mandats, modèle économique, actif/passif, 15 QCM et exercices chiffrés.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-active-lang="fr" class="track-am">
+
+<div class="progress-bar"></div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <div class="brand">
+      <a href="../index.html"><span class="logo">Avenir<b>.</b></span></a>
+      <span class="tag">Asset Management &amp; Risk</span>
+    </div>
+    <div class="spacer"></div>
+    <nav class="nav-links">
+      <a href="../index.html#parcours"><span data-lang="fr">Parcours</span><span data-lang="en">Tracks</span><span data-lang="nl">Trajecten</span></a>
+      <a href="../index.html#curriculum"><span data-lang="fr">Programme</span><span data-lang="en">Curriculum</span><span data-lang="nl">Programma</span></a>
+      <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a>
+    </nav>
+    <div class="controls">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-set-lang="fr">FR</button>
+        <button data-set-lang="en">EN</button>
+        <button data-set-lang="nl">NL</button>
+      </div>
+      <button id="theme-btn" class="icon-btn" aria-label="Thème">☾</button>
+      <button id="menu-btn" class="icon-btn menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap-mod">
+  <div class="module-shell">
+
+    <!-- ============ SOMMAIRE ============ -->
+    <aside class="toc">
+      <div class="toc-title" data-lang="fr">Sommaire</div>
+      <div class="toc-title" data-lang="en">Contents</div>
+      <div class="toc-title" data-lang="nl">Inhoud</div>
+      <a href="#metier"><span data-lang="fr">1. Métier &amp; cadre fiduciaire</span><span data-lang="en">1. Business &amp; fiduciary frame</span><span data-lang="nl">1. Vak &amp; fiduciair kader</span></a>
+      <a href="#buyside"><span data-lang="fr">2. Buy-side vs sell-side</span><span data-lang="en">2. Buy-side vs sell-side</span><span data-lang="nl">2. Buy-side vs sell-side</span></a>
+      <a href="#chaine"><span data-lang="fr">3. Chaîne de valeur &amp; véhicules</span><span data-lang="en">3. Value chain &amp; vehicles</span><span data-lang="nl">3. Waardeketen &amp; vehikels</span></a>
+      <a href="#mandats"><span data-lang="fr">4. Mandats, benchmark &amp; IPS</span><span data-lang="en">4. Mandates, benchmark &amp; IPS</span><span data-lang="nl">4. Mandaten, benchmark &amp; IPS</span></a>
+      <a href="#economie"><span data-lang="fr">5. Modèle économique</span><span data-lang="en">5. Business model</span><span data-lang="nl">5. Verdienmodel</span></a>
+      <a href="#calc"><span data-lang="fr">6. Calculateur de frais</span><span data-lang="en">6. Fee calculator</span><span data-lang="nl">6. Kostencalculator</span></a>
+      <a href="#actif-passif"><span data-lang="fr">7. Actif vs passif</span><span data-lang="en">7. Active vs passive</span><span data-lang="nl">7. Actief vs passief</span></a>
+      <a href="#qcm"><span data-lang="fr">8. QCM (15)</span><span data-lang="en">8. MCQ (15)</span><span data-lang="nl">8. MCV (15)</span></a>
+      <a href="#exercices"><span data-lang="fr">9. Exercices chiffrés</span><span data-lang="en">9. Numerical exercises</span><span data-lang="nl">9. Cijferoefeningen</span></a>
+    </aside>
+
+    <!-- ============ CONTENU ============ -->
+    <main>
+      <div class="crumbs">
+        <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a> ·
+        <span>Asset Management</span> ·
+        <span data-lang="fr">Module 1</span><span data-lang="en">Module 1</span><span data-lang="nl">Module 1</span>
+      </div>
+
+      <div class="module-hero">
+        <span class="badge">Asset Management · 01</span>
+        <h1 data-lang="fr">Fondamentaux de la gestion d'actifs</h1>
+        <h1 data-lang="en">Foundations of asset management</h1>
+        <h1 data-lang="nl">Grondslagen van vermogensbeheer</h1>
+        <p class="subtitle" data-lang="fr">Qui gère l'argent des autres, dans quel cadre légal, comment l'industrie est organisée, et comment elle gagne sa vie.</p>
+        <p class="subtitle" data-lang="en">Who manages other people's money, under which legal frame, how the industry is organised, and how it earns its living.</p>
+        <p class="subtitle" data-lang="nl">Wie het geld van anderen beheert, binnen welk juridisch kader, hoe de sector is georganiseerd, en hoe hij zijn brood verdient.</p>
+        <div class="module-meta">
+          <span data-lang="fr">⏱ Lecture ~24 min</span><span data-lang="en">⏱ ~24 min read</span><span data-lang="nl">⏱ ~24 min lezen</span>
+          <span data-lang="fr">📶 Niveau fondamental</span><span data-lang="en">📶 Foundational level</span><span data-lang="nl">📶 Basisniveau</span>
+          <span>🎓 CFA I</span>
+        </div>
+      </div>
+
+      <div class="objectives">
+        <h4 data-lang="fr">Objectifs d'apprentissage</h4>
+        <h4 data-lang="en">Learning objectives</h4>
+        <h4 data-lang="nl">Leerdoelen</h4>
+        <ul>
+          <li data-lang="fr">Définir la gestion d'actifs, le devoir fiduciaire et le cadre réglementaire européen.</li>
+          <li data-lang="en">Define asset management, fiduciary duty and the European regulatory frame.</li>
+          <li data-lang="nl">Vermogensbeheer, de fiduciaire plicht en het Europese regelgevend kader definiëren.</li>
+          <li data-lang="fr">Distinguer buy-side et sell-side, fonds et mandat, véhicules (UCITS, ETF, SICAV/FCP).</li>
+          <li data-lang="en">Distinguish buy-side from sell-side, fund from mandate, vehicles (UCITS, ETF, SICAV/FCP).</li>
+          <li data-lang="nl">Buy-side van sell-side, fonds van mandaat, vehikels (UCITS, ETF, SICAV/FCP) onderscheiden.</li>
+          <li data-lang="fr">Décrire la chaîne de valeur, les mandats, le benchmark et l'IPS.</li>
+          <li data-lang="en">Describe the value chain, mandates, the benchmark and the IPS.</li>
+          <li data-lang="nl">De waardeketen, de mandaten, de benchmark en de IPS beschrijven.</li>
+          <li data-lang="fr">Maîtriser le modèle économique (bps, TER, commission de performance) et l'impact des frais.</li>
+          <li data-lang="en">Master the business model (bps, TER, performance fee) and the impact of fees.</li>
+          <li data-lang="nl">Het verdienmodel (bps, TER, prestatievergoeding) en de impact van kosten beheersen.</li>
+        </ul>
+      </div>
+
+      <div class="module-body">
+
+        <!-- 1. LE MÉTIER & CADRE -->
+        <h2 id="metier"><span data-lang="fr">1. Le métier &amp; le cadre fiduciaire</span><span data-lang="en">1. The business &amp; the fiduciary frame</span><span data-lang="nl">1. Het vak &amp; het fiduciair kader</span></h2>
+
+        <p data-lang="fr">La <strong>gestion d'actifs</strong> (<em>asset management</em>) consiste à investir l'argent de tiers — épargnants, familles fortunées, entreprises, fonds de pension, assureurs — dans des actifs financiers, afin d'en faire fructifier la valeur selon un objectif de rendement et un niveau de risque convenus. Le point cardinal : le gérant ne détient pas cet argent, il en a la <strong>responsabilité</strong>. Tout le métier découle de cette asymétrie.</p>
+        <p data-lang="en"><strong>Asset management</strong> is the business of investing other people's money — savers, wealthy families, companies, pension funds, insurers — in financial assets, in order to grow it according to an agreed return objective and risk level. The cardinal point: the manager does not own the money, they are <strong>responsible</strong> for it. The whole profession flows from this asymmetry.</p>
+        <p data-lang="nl"><strong>Vermogensbeheer</strong> is het beleggen van andermans geld — spaarders, vermogende families, bedrijven, pensioenfondsen, verzekeraars — in financiële activa, om het te laten groeien volgens een afgesproken rendementsdoel en risiconiveau. Het cardinale punt: de beheerder bezit het geld niet, hij is er <strong>verantwoordelijk</strong> voor. Het hele vak vloeit voort uit deze asymmetrie.</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">Devoir fiduciaire</span><span class="clabel" data-lang="en">Fiduciary duty</span><span class="clabel" data-lang="nl">Fiduciaire plicht</span>
+          <span data-lang="fr">Le gérant agit dans l'<strong>intérêt exclusif du client</strong>, avant le sien. Ce devoir de loyauté et de prudence est le socle éthique et légal du métier : il justifie la réglementation, la transparence des frais, la gestion des conflits d'intérêts et la séparation des actifs.</span>
+          <span data-lang="en">The manager acts in the <strong>client's sole interest</strong>, ahead of their own. This duty of loyalty and prudence is the ethical and legal bedrock of the profession: it justifies regulation, fee transparency, conflict-of-interest management and asset segregation.</span>
+          <span data-lang="nl">De beheerder handelt in het <strong>uitsluitende belang van de cliënt</strong>, vóór dat van zichzelf. Deze plicht tot loyaliteit en voorzichtigheid is de ethische en juridische basis van het vak: ze rechtvaardigt regelgeving, kostentransparantie, het beheer van belangenconflicten en de scheiding van activa.</span>
+        </div>
+
+        <p data-lang="fr">En Europe, ce devoir est encadré par la loi. La directive <strong>MiFID II</strong> impose notamment la <em>connaissance du client</em> (KYC) et le <em>test d'adéquation</em> (<em>suitability</em>) : on ne peut recommander un produit sans vérifier qu'il correspond au profil, aux objectifs et à la tolérance au risque du client. Les fonds grand public relèvent du régime <strong>UCITS</strong> (protection et diversification), les fonds alternatifs de l'<strong>AIFMD</strong>. La lutte anti-blanchiment (<em>AML</em>) complète le dispositif.</p>
+        <p data-lang="en">In Europe, this duty is codified in law. The <strong>MiFID II</strong> directive notably requires <em>know-your-client</em> (KYC) and the <em>suitability test</em>: a product cannot be recommended without checking it fits the client's profile, objectives and risk tolerance. Retail funds fall under the <strong>UCITS</strong> regime (protection and diversification), alternative funds under <strong>AIFMD</strong>. Anti-money-laundering (<em>AML</em>) completes the framework.</p>
+        <p data-lang="nl">In Europa is deze plicht wettelijk verankerd. De richtlijn <strong>MiFID II</strong> vereist onder meer <em>ken-uw-cliënt</em> (KYC) en de <em>geschiktheidstoets</em> (<em>suitability</em>): een product mag niet worden aanbevolen zonder te controleren of het past bij het profiel, de doelen en de risicotolerantie van de cliënt. Retailfondsen vallen onder het <strong>UCITS</strong>-regime (bescherming en spreiding), alternatieve fondsen onder <strong>AIFMD</strong>. De antiwitwaswetgeving (<em>AML</em>) vervolledigt het geheel.</p>
+
+        <p data-lang="fr">On mesure la taille d'un gérant par ses <strong>actifs sous gestion</strong> (<em>Assets under Management</em>, AuM) : la valeur totale des portefeuilles qu'il gère. Les AuM déterminent à la fois l'influence sur les marchés et — on le verra — l'essentiel des revenus.</p>
+        <p data-lang="en">A manager's size is measured by its <strong>assets under management</strong> (AuM): the total value of the portfolios it manages. AuM drive both market influence and — as we will see — most of the revenue.</p>
+        <p data-lang="nl">De omvang van een beheerder wordt gemeten aan zijn <strong>beheerd vermogen</strong> (<em>Assets under Management</em>, AuM): de totale waarde van de beheerde portefeuilles. AuM bepalen zowel de invloed op de markten als — zoals we zullen zien — het grootste deel van de inkomsten.</p>
+
+        <!-- 2. BUY-SIDE VS SELL-SIDE -->
+        <h2 id="buyside"><span data-lang="fr">2. Buy-side vs sell-side</span><span data-lang="en">2. Buy-side vs sell-side</span><span data-lang="nl">2. Buy-side vs sell-side</span></h2>
+        <p data-lang="fr">La finance de marché se divise en deux camps. Le <strong>buy-side</strong> <em>achète et détient</em> des actifs pour le compte de ses clients : c'est le monde de la gestion d'actifs (gérants de fonds, assureurs, fonds de pension, hedge funds). Le <strong>sell-side</strong> <em>fabrique, vend et intermédie</em> : banques d'investissement, courtiers, analystes sell-side, qui émettent des titres, exécutent les ordres et publient de la recherche.</p>
+        <p data-lang="en">Market finance splits into two camps. The <strong>buy-side</strong> <em>buys and holds</em> assets on behalf of clients: the world of asset management (fund managers, insurers, pension funds, hedge funds). The <strong>sell-side</strong> <em>manufactures, sells and intermediates</em>: investment banks, brokers and sell-side analysts, who issue securities, execute orders and publish research.</p>
+        <p data-lang="nl">De marktfinanciering valt uiteen in twee kampen. De <strong>buy-side</strong> <em>koopt en houdt</em> activa aan namens cliënten: de wereld van het vermogensbeheer (fondsbeheerders, verzekeraars, pensioenfondsen, hedgefondsen). De <strong>sell-side</strong> <em>maakt, verkoopt en bemiddelt</em>: zakenbanken, brokers en sell-side-analisten, die effecten uitgeven, orders uitvoeren en onderzoek publiceren.</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Buy-side</th>
+                <th>Sell-side</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-lang="fr"><strong>Rôle</strong></td><td data-lang="en"><strong>Role</strong></td><td data-lang="nl"><strong>Rol</strong></td>
+                <td data-lang="fr">Investir, détenir, gérer le risque</td><td data-lang="en">Invest, hold, manage risk</td><td data-lang="nl">Beleggen, aanhouden, risico beheren</td>
+                <td data-lang="fr">Émettre, vendre, exécuter, conseiller</td><td data-lang="en">Issue, sell, execute, advise</td><td data-lang="nl">Uitgeven, verkopen, uitvoeren, adviseren</td>
+              </tr>
+              <tr>
+                <td data-lang="fr"><strong>Acteurs</strong></td><td data-lang="en"><strong>Players</strong></td><td data-lang="nl"><strong>Spelers</strong></td>
+                <td data-lang="fr">Sociétés de gestion, assureurs, fonds de pension, hedge funds</td><td data-lang="en">Asset managers, insurers, pension funds, hedge funds</td><td data-lang="nl">Vermogensbeheerders, verzekeraars, pensioenfondsen, hedgefondsen</td>
+                <td data-lang="fr">Banques d'investissement, brokers, market makers</td><td data-lang="en">Investment banks, brokers, market makers</td><td data-lang="nl">Zakenbanken, brokers, market makers</td>
+              </tr>
+              <tr>
+                <td data-lang="fr"><strong>Revenus</strong></td><td data-lang="en"><strong>Revenue</strong></td><td data-lang="nl"><strong>Inkomsten</strong></td>
+                <td data-lang="fr">Frais de gestion sur les AuM</td><td data-lang="en">Management fees on AuM</td><td data-lang="nl">Beheerkosten op de AuM</td>
+                <td data-lang="fr">Commissions, spreads, mandats</td><td data-lang="en">Commissions, spreads, mandates</td><td data-lang="nl">Commissies, spreads, mandaten</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">Repère de carrière</span><span class="clabel" data-lang="en">Career note</span><span class="clabel" data-lang="nl">Carrièretip</span>
+          <span data-lang="fr">« Passer buy-side » est un objectif classique : on quitte l'exécution et la vente pour la décision d'investissement. Les deux mondes coopèrent en permanence — le buy-side est le client du sell-side, dont il consomme la recherche et l'exécution.</span>
+          <span data-lang="en">“Moving to the buy-side” is a classic goal: you leave execution and sales for the investment decision itself. The two worlds cooperate constantly — the buy-side is the sell-side's client, consuming its research and execution.</span>
+          <span data-lang="nl">“Naar de buy-side gaan” is een klassiek doel: je verlaat uitvoering en verkoop voor de beleggingsbeslissing zelf. Beide werelden werken voortdurend samen — de buy-side is de cliënt van de sell-side, wiens onderzoek en uitvoering hij afneemt.</span>
+        </div>
+
+        <!-- 3. CHAÎNE DE VALEUR & VÉHICULES -->
+        <h2 id="chaine"><span data-lang="fr">3. La chaîne de valeur &amp; les véhicules</span><span data-lang="en">3. The value chain &amp; the vehicles</span><span data-lang="nl">3. De waardeketen &amp; de vehikels</span></h2>
+        <p data-lang="fr">De l'épargnant au marché, l'argent traverse une chaîne d'acteurs et de fonctions, souvent découpée en trois blocs. <strong>Front office</strong> — ceux qui créent la valeur et font face au client ou au marché : gérants de portefeuille, analystes, relation client, <em>traders</em> d'exécution. <strong>Middle office</strong> — le contrôle : gestion des risques, conformité, contrôle de gestion, mesure de performance. <strong>Back office</strong> — le traitement : règlement-livraison, comptabilité des fonds, conservation (<em>custody</em>), reporting.</p>
+        <p data-lang="en">From the saver to the market, money travels through a chain of players and functions, often split into three blocks. <strong>Front office</strong> — those who create value and face the client or market: portfolio managers, analysts, client relationship, execution traders. <strong>Middle office</strong> — control: risk management, compliance, controlling, performance measurement. <strong>Back office</strong> — processing: settlement, fund accounting, custody, reporting.</p>
+        <p data-lang="nl">Van de spaarder tot de markt doorloopt het geld een keten van spelers en functies, vaak verdeeld in drie blokken. <strong>Front office</strong> — wie waarde creëert en de cliënt of markt bedient: portefeuillebeheerders, analisten, cliëntrelatie, executietraders. <strong>Middle office</strong> — de controle: risicobeheer, compliance, controlling, prestatiemeting. <strong>Back office</strong> — de verwerking: settlement, fondsadministratie, bewaring (custody), rapportering.</p>
+
+        <h3 data-lang="fr">Fonds ou mandat, et quels véhicules ?</h3>
+        <h3 data-lang="en">Fund or mandate, and which vehicles?</h3>
+        <h3 data-lang="nl">Fonds of mandaat, en welke vehikels?</h3>
+        <p data-lang="fr">On peut gérer l'argent d'un client de deux façons. Dans un <strong>fonds</strong> (véhicule collectif), l'épargne de milliers d'investisseurs est mise en commun ; chacun détient des <em>parts</em>. Dans un <strong>mandat</strong> (compte dédié), le portefeuille appartient à un seul client. Côté fonds européens : les <strong>UCITS</strong> (OPCVM) sont des fonds réglementés, liquides et distribuables au grand public ; juridiquement, une <strong>SICAV</strong> est une société d'investissement à capital variable, un <strong>FCP</strong> une copropriété sans personnalité juridique. Un <strong>ETF</strong> est un fonds (souvent indiciel) coté en Bourse, qu'on achète et vend en séance comme une action.</p>
+        <p data-lang="en">A client's money can be managed in two ways. In a <strong>fund</strong> (collective vehicle), the savings of thousands of investors are pooled; each owns <em>units/shares</em>. In a <strong>mandate</strong> (dedicated account), the portfolio belongs to a single client. On the European fund side: <strong>UCITS</strong> are regulated, liquid funds distributable to the retail public; legally, a <strong>SICAV</strong> is an open-ended investment company, an <strong>FCP</strong> a co-ownership with no legal personality. An <strong>ETF</strong> is a fund (often index-tracking) listed on an exchange, bought and sold intraday like a share.</p>
+        <p data-lang="nl">Het geld van een cliënt kan op twee manieren worden beheerd. In een <strong>fonds</strong> (collectief vehikel) wordt het spaargeld van duizenden beleggers samengevoegd; elk bezit <em>deelbewijzen</em>. In een <strong>mandaat</strong> (toegewijde rekening) behoort de portefeuille aan één cliënt. Aan Europese fondszijde: <strong>UCITS</strong> zijn gereglementeerde, liquide fondsen die aan het brede publiek mogen worden verdeeld; juridisch is een <strong>SICAV</strong> een beleggingsvennootschap met veranderlijk kapitaal, een <strong>FCP</strong> een mede-eigendom zonder rechtspersoonlijkheid. Een <strong>ETF</strong> is een (vaak indexvolgend) fonds dat op de beurs noteert en intraday als een aandeel wordt verhandeld.</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">Valeur nette d'inventaire (VNI / NAV) &amp; dépositaire</span><span class="clabel" data-lang="en">Net asset value (NAV) &amp; custodian</span><span class="clabel" data-lang="nl">Netto-inventariswaarde (NAV) &amp; custodian</span>
+          <span data-lang="fr">La <strong>VNI</strong> d'une part = (actif total du fonds − dettes) ⁄ nombre de parts. C'est le prix auquel on souscrit ou rachète. Les titres sont conservés par un <strong>dépositaire indépendant</strong>, séparé du gérant : même si la société de gestion fait faillite, les actifs du client sont protégés.</span>
+          <span data-lang="en">A unit's <strong>NAV</strong> = (total fund assets − liabilities) ⁄ number of units. It is the price at which you subscribe or redeem. Securities are held by an <strong>independent custodian</strong>, separate from the manager: even if the management company fails, client assets are protected.</span>
+          <span data-lang="nl">De <strong>NAV</strong> van een deelbewijs = (totale fondsactiva − schulden) ⁄ aantal deelbewijzen. Het is de prijs waartegen je inschrijft of terugkoopt. Effecten worden bewaard door een <strong>onafhankelijke custodian</strong>, gescheiden van de beheerder: zelfs als de beheervennootschap failliet gaat, zijn de cliëntactiva beschermd.</span>
+        </div>
+
+        <!-- 4. MANDATS, BENCHMARK & IPS -->
+        <h2 id="mandats"><span data-lang="fr">4. Mandats, benchmark &amp; segmentation</span><span data-lang="en">4. Mandates, benchmark &amp; segmentation</span><span data-lang="nl">4. Mandaten, benchmark &amp; segmentatie</span></h2>
+        <p data-lang="fr">Deux grandes façons de gérer pour un client. En gestion <strong>discrétionnaire</strong>, le client délègue les décisions : le gérant achète et vend dans le cadre d'un mandat, sans validation au coup par coup. En gestion <strong>conseil</strong> (<em>advisory</em>), le gérant recommande, mais le client décide et exécute chaque opération.</p>
+        <p data-lang="en">Two broad ways to manage for a client. Under <strong>discretionary</strong> management, the client delegates decisions: the manager buys and sells within a mandate, without case-by-case approval. Under <strong>advisory</strong> management, the manager recommends, but the client decides and executes each transaction.</p>
+        <p data-lang="nl">Twee grote manieren om voor een cliënt te beheren. Bij <strong>discretionair</strong> beheer delegeert de cliënt de beslissingen: de beheerder koopt en verkoopt binnen een mandaat, zonder goedkeuring per geval. Bij <strong>advies</strong>beheer (<em>advisory</em>) beveelt de beheerder aan, maar beslist en voert de cliënt elke verrichting uit.</p>
+
+        <p data-lang="fr">Toute gestion s'appuie sur deux repères. Le <strong>benchmark</strong> (indice de référence, ex. le MSCI World) sert d'étalon : on juge le gérant à sa performance <em>relative</em> à cet indice. L'<strong>IPS</strong> (<em>Investment Policy Statement</em>) est le contrat d'investissement : il fixe les objectifs, l'horizon, la tolérance au risque, les contraintes (liquidité, fiscalité, exclusions ESG) et l'allocation cible. C'est la boussole de tout mandat.</p>
+        <p data-lang="en">All management rests on two references. The <strong>benchmark</strong> (reference index, e.g. the MSCI World) is the yardstick: a manager is judged on performance <em>relative</em> to it. The <strong>IPS</strong> (Investment Policy Statement) is the investment contract: it sets objectives, horizon, risk tolerance, constraints (liquidity, tax, ESG exclusions) and the target allocation. It is the compass of every mandate.</p>
+        <p data-lang="nl">Elk beheer steunt op twee ijkpunten. De <strong>benchmark</strong> (referentie-index, bv. de MSCI World) is de maatstaf: een beheerder wordt beoordeeld op zijn prestatie <em>ten opzichte van</em> die index. De <strong>IPS</strong> (Investment Policy Statement) is het beleggingscontract: het legt de doelen, horizon, risicotolerantie, beperkingen (liquiditeit, fiscaliteit, ESG-uitsluitingen) en de doelallocatie vast. Het is het kompas van elk mandaat.</p>
+
+        <p data-lang="fr">La clientèle se segmente du plus grand public au plus institutionnel : <strong>retail</strong> (particuliers, via fonds et distribution de masse), <strong>private banking</strong> et <strong>wealth management</strong> (patrimoines élevés, service sur mesure), et <strong>institutionnel</strong> (fonds de pension, assureurs, entreprises, fondations — gros tickets, exigences élevées). Plus le patrimoine est élevé, plus le service est personnalisé.</p>
+        <p data-lang="en">Clients are segmented from the most retail to the most institutional: <strong>retail</strong> (individuals, via funds and mass distribution), <strong>private banking</strong> and <strong>wealth management</strong> (high net worth, bespoke service), and <strong>institutional</strong> (pension funds, insurers, corporates, foundations — large tickets, high requirements). The greater the wealth, the more tailored the service.</p>
+        <p data-lang="nl">Cliënten worden gesegmenteerd van het meest retail tot het meest institutioneel: <strong>retail</strong> (particulieren, via fondsen en massadistributie), <strong>private banking</strong> en <strong>wealth management</strong> (grote vermogens, maatwerk), en <strong>institutioneel</strong> (pensioenfondsen, verzekeraars, bedrijven, stichtingen — grote tickets, hoge eisen). Hoe groter het vermogen, hoe meer op maat de dienstverlening.</p>
+
+        <!-- 5. MODÈLE ÉCONOMIQUE -->
+        <h2 id="economie"><span data-lang="fr">5. Le modèle économique</span><span data-lang="en">5. The business model</span><span data-lang="nl">5. Het verdienmodel</span></h2>
+        <p data-lang="fr">Le revenu principal d'un gérant est le <strong>frais de gestion</strong> : un pourcentage annuel des AuM, exprimé en points de base (<em>bps</em> ; 1 bp = 0,01 %). Un fonds actions à 100 bps prélève 1,00 % de la valeur par an. Côté client, le <strong>TER</strong> (<em>Total Expense Ratio</em>) agrège tous les frais courants du fonds (gestion + dépositaire + audit + distribution) : c'est le coût réel, plus élevé que le seul frais de gestion.</p>
+        <p data-lang="en">A manager's main revenue is the <strong>management fee</strong>: an annual percentage of AuM, quoted in basis points (<em>bps</em>; 1 bp = 0.01%). An equity fund at 100 bps charges 1.00% of value per year. On the client side, the <strong>TER</strong> (Total Expense Ratio) aggregates all the fund's ongoing costs (management + custody + audit + distribution): it is the true cost, higher than the management fee alone.</p>
+        <p data-lang="nl">De belangrijkste inkomsten van een beheerder zijn de <strong>beheervergoeding</strong>: een jaarlijks percentage van de AuM, uitgedrukt in basispunten (<em>bps</em>; 1 bp = 0,01%). Een aandelenfonds tegen 100 bps rekent 1,00% van de waarde per jaar aan. Aan cliëntzijde brengt de <strong>TER</strong> (Total Expense Ratio) alle lopende kosten van het fonds samen (beheer + custody + audit + distributie): dat is de echte kost, hoger dan de beheervergoeding alleen.</p>
+
+        <div class="formula">
+          <div class="eq"><span data-lang="fr">Revenu annuel</span><span data-lang="en">Annual revenue</span><span data-lang="nl">Jaarinkomsten</span> = <em>AuM</em> × <em>frais</em> (bps ⁄ 10 000)</div>
+          <div class="caption" data-lang="fr">Exemple : 500 M€ d'AuM × 75 bps = 3,75 M€ de revenus de gestion par an.</div>
+          <div class="caption" data-lang="en">Example: €500m AuM × 75 bps = €3.75m of management revenue per year.</div>
+          <div class="caption" data-lang="nl">Voorbeeld: 500 mln € AuM × 75 bps = 3,75 mln € beheerinkomsten per jaar.</div>
+        </div>
+
+        <p data-lang="fr">Certains fonds ajoutent une <strong>commission de performance</strong> : une part de la surperformance (typiquement 10–20 %) au-delà d'un <em>hurdle</em> (seuil minimal) et sous condition de <strong>high-water mark</strong> — la commission n'est prélevée que si la VNI dépasse son plus haut historique, pour ne pas facturer deux fois la même hausse. Les hedge funds affichent le fameux modèle « <strong>2 &amp; 20</strong> » : 2 % de gestion + 20 % de performance. À l'opposé, un ETF indiciel peut coûter 5 à 20 bps.</p>
+        <p data-lang="en">Some funds add a <strong>performance fee</strong>: a share of the outperformance (typically 10–20%) above a <em>hurdle</em> (minimum threshold) and subject to a <strong>high-water mark</strong> — the fee is charged only if the NAV exceeds its historical peak, so the same gain is never billed twice. Hedge funds show the famous “<strong>2 &amp; 20</strong>” model: 2% management + 20% performance. At the other end, an index ETF can cost 5–20 bps.</p>
+        <p data-lang="nl">Sommige fondsen voegen een <strong>prestatievergoeding</strong> toe: een deel van de outperformance (doorgaans 10–20%) boven een <em>hurdle</em> (minimumdrempel) en onder voorbehoud van een <strong>high-water mark</strong> — de vergoeding wordt enkel aangerekend als de NAV zijn historische piek overschrijdt, zodat dezelfde winst nooit tweemaal wordt gefactureerd. Hedgefondsen tonen het beroemde “<strong>2 &amp; 20</strong>”-model: 2% beheer + 20% prestatie. Aan de andere kant kan een index-ETF 5–20 bps kosten.</p>
+
+        <div class="callout warn">
+          <span class="clabel" data-lang="fr">Les frais rongent le rendement</span><span class="clabel" data-lang="en">Fees erode returns</span><span class="clabel" data-lang="nl">Kosten knagen aan het rendement</span>
+          <span data-lang="fr">Ce qui est revenu pour le gérant est coût pour le client — et il se <strong>capitalise</strong>. 1 % de frais par an sur 20 ans, ce n'est pas 20 % : à cause des intérêts composés perdus, la ponction dépasse largement le cumul brut. Le calculateur ci-dessous le rend visible.</span>
+          <span data-lang="en">What is revenue for the manager is a cost for the client — and it <strong>compounds</strong>. 1% of fees per year over 20 years is not 20%: because of the lost compounding, the drag is far larger than the raw sum. The calculator below makes it visible.</span>
+          <span data-lang="nl">Wat inkomsten zijn voor de beheerder, is een kost voor de cliënt — en die <strong>kapitaliseert</strong>. 1% kosten per jaar over 20 jaar is geen 20%: door het verloren samengestelde effect is de aderlating veel groter dan de brute som. De calculator hieronder maakt het zichtbaar.</span>
+        </div>
+
+        <!-- 6. CALCULATEUR -->
+        <h2 id="calc"><span data-lang="fr">6. Calculateur — revenus &amp; impact des frais</span><span data-lang="en">6. Calculator — revenue &amp; impact of fees</span><span data-lang="nl">6. Calculator — inkomsten &amp; impact van kosten</span></h2>
+        <p data-lang="fr">Le même mandat, vu des deux côtés : ce que les frais rapportent au gérant, et ce qu'ils coûtent au client dans le temps.</p>
+        <p data-lang="en">The same mandate seen from both sides: what the fee earns the manager, and what it costs the client over time.</p>
+        <p data-lang="nl">Hetzelfde mandaat vanuit beide kanten: wat de vergoeding de beheerder oplevert, en wat ze de cliënt kost door de tijd.</p>
+
+        <div class="calc">
+          <div class="chead">
+            <h4 data-lang="fr">Calculateur — Économie d'un mandat</h4>
+            <h4 data-lang="en">Calculator — Economics of a mandate</h4>
+            <h4 data-lang="nl">Calculator — Economie van een mandaat</h4>
+            <p data-lang="fr">Frais prélevés chaque année sur la valeur du portefeuille</p>
+            <p data-lang="en">Fee charged each year on the portfolio value</p>
+            <p data-lang="nl">Vergoeding wordt jaarlijks op de portefeuillewaarde ingehouden</p>
+          </div>
+          <div class="cbody">
+            <div class="inputs">
+              <label data-lang="fr">Capital investi (€)</label>
+              <label data-lang="en">Invested capital (€)</label>
+              <label data-lang="nl">Belegd kapitaal (€)</label>
+              <input type="number" id="c-cap" value="100000" min="0" step="10000">
+
+              <div class="row2">
+                <div>
+                  <label data-lang="fr">Frais de gestion</label>
+                  <label data-lang="en">Management fee</label>
+                  <label data-lang="nl">Beheervergoeding</label>
+                  <div class="rangewrap">
+                    <input type="range" id="c-fee" min="0" max="250" step="5" value="100">
+                    <output id="c-fee-out">100 bps</output>
+                  </div>
+                </div>
+                <div>
+                  <label data-lang="fr">Rendement brut annuel</label>
+                  <label data-lang="en">Gross annual return</label>
+                  <label data-lang="nl">Bruto jaarrendement</label>
+                  <div class="rangewrap">
+                    <input type="range" id="c-ret" min="-2" max="12" step="0.5" value="6">
+                    <output id="c-ret-out">6%</output>
+                  </div>
+                </div>
+              </div>
+
+              <label data-lang="fr">Horizon (années)</label>
+              <label data-lang="en">Horizon (years)</label>
+              <label data-lang="nl">Horizon (jaren)</label>
+              <div class="rangewrap">
+                <input type="range" id="c-yrs" min="1" max="40" step="1" value="20">
+                <output id="c-yrs-out">20</output>
+              </div>
+            </div>
+
+            <div class="result">
+              <div class="rl" data-lang="fr">Valeur finale nette (client)</div>
+              <div class="rl" data-lang="en">Net final value (client)</div>
+              <div class="rl" data-lang="nl">Netto eindwaarde (cliënt)</div>
+              <div class="rv gold" id="r-net">—</div>
+              <div class="rsub" id="r-netann">—</div>
+              <hr>
+              <div class="rl" data-lang="fr">Total des frais payés</div>
+              <div class="rl" data-lang="en">Total fees paid</div>
+              <div class="rl" data-lang="nl">Totaal betaalde kosten</div>
+              <div class="rv" id="r-fees" style="font-size:26px">—</div>
+              <div class="rsub" id="r-drag">—</div>
+              <hr>
+              <div class="rsub" id="r-detail">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. ACTIF VS PASSIF -->
+        <h2 id="actif-passif"><span data-lang="fr">7. Gestion active vs passive</span><span data-lang="en">7. Active vs passive management</span><span data-lang="nl">7. Actief vs passief beheer</span></h2>
+        <p data-lang="fr">Deux philosophies structurent l'industrie. La gestion <strong>active</strong> cherche à <em>battre</em> un indice de référence par la sélection de titres et le <em>timing</em> — au prix de frais plus élevés. La gestion <strong>passive</strong> (fonds indiciels, ETF) cherche à <em>répliquer</em> l'indice au coût le plus bas possible, en assumant qu'il est difficile de le battre durablement après frais.</p>
+        <p data-lang="en">Two philosophies structure the industry. <strong>Active</strong> management seeks to <em>beat</em> a benchmark through security selection and timing — at the price of higher fees. <strong>Passive</strong> management (index funds, ETFs) seeks to <em>replicate</em> the index at the lowest possible cost, assuming it is hard to beat durably after fees.</p>
+        <p data-lang="nl">Twee filosofieën structureren de sector. <strong>Actief</strong> beheer wil een referentie-index <em>verslaan</em> via effectenselectie en timing — tegen de prijs van hogere kosten. <strong>Passief</strong> beheer (indexfondsen, ETF's) wil de index <em>repliceren</em> tegen de laagst mogelijke kost, ervan uitgaande dat hem na kosten duurzaam verslaan moeilijk is.</p>
+
+        <p data-lang="fr">On mesure l'écart d'un gérant à son indice par la <strong>tracking error</strong> : l'écart-type de la différence de rendement entre le fonds et son benchmark. Une gestion vraiment passive a une tracking error minime ; une gestion active l'assume pour viser de la surperformance. Piège classique : le <em>closet indexing</em> — un fonds facturé « actif » qui, en réalité, colle à l'indice tout en prélevant des frais élevés. Le choix actif/passif est l'un des grands arbitrages de la construction de portefeuille — on y consacrera un module entier.</p>
+        <p data-lang="en">A manager's deviation from its index is measured by the <strong>tracking error</strong>: the standard deviation of the return difference between fund and benchmark. Truly passive management has minimal tracking error; active management accepts it to aim for outperformance. A classic trap: <em>closet indexing</em> — a fund billed as “active” that actually hugs the index while charging high fees. The active/passive choice is one of the great trade-offs of portfolio construction — a whole module is devoted to it.</p>
+        <p data-lang="nl">De afwijking van een beheerder t.o.v. zijn index wordt gemeten door de <strong>tracking error</strong>: de standaardafwijking van het rendementsverschil tussen fonds en benchmark. Echt passief beheer heeft een minimale tracking error; actief beheer aanvaardt ze om outperformance na te streven. Een klassieke valstrik: <em>closet indexing</em> — een als “actief” gefactureerd fonds dat in werkelijkheid de index volgt terwijl het hoge kosten aanrekent. De keuze actief/passief is een van de grote afwegingen van portefeuilleconstructie — er is een volledige module aan gewijd.</p>
+
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">À retenir</span><span class="clabel" data-lang="en">Key takeaway</span><span class="clabel" data-lang="nl">Onthoud</span>
+          <span data-lang="fr">La gestion d'actifs, c'est investir l'argent des autres sous devoir fiduciaire et cadre réglementaire ; le buy-side décide, le sell-side intermédie ; on gère via fonds ou mandat ; l'industrie vit de frais sur les AuM — et ces frais, qui se capitalisent, sont le premier ennemi du rendement net du client.</span>
+          <span data-lang="en">Asset management is investing other people's money under a fiduciary duty and regulatory frame; the buy-side decides, the sell-side intermediates; you manage via funds or mandates; the industry lives on fees on AuM — and those fees, which compound, are the first enemy of the client's net return.</span>
+          <span data-lang="nl">Vermogensbeheer is andermans geld beleggen onder een fiduciaire plicht en regelgevend kader; de buy-side beslist, de sell-side bemiddelt; je beheert via fondsen of mandaten; de sector leeft van kosten op de AuM — en die kosten, die kapitaliseren, zijn de eerste vijand van het nettorendement van de cliënt.</span>
+        </div>
+
+        <!-- 8. QCM -->
+        <h2 id="qcm"><span data-lang="fr">8. QCM — 15 questions</span><span data-lang="en">8. MCQ — 15 questions</span><span data-lang="nl">8. MCV — 15 vragen</span></h2>
+        <div class="quiz">
+          <h4 data-lang="fr">Auto-évaluation</h4>
+          <h4 data-lang="en">Self-assessment</h4>
+          <h4 data-lang="nl">Zelfevaluatie</h4>
+          <p class="qsub" data-lang="fr">Cliquez sur une réponse : la bonne s'affiche en vert et la justification apparaît.</p>
+          <p class="qsub" data-lang="en">Click an answer: the correct one turns green and the justification appears.</p>
+          <p class="qsub" data-lang="nl">Klik op een antwoord: het juiste kleurt groen en de verantwoording verschijnt.</p>
+
+          <!-- Q1 -->
+          <div class="q">
+            <div class="qtext" data-lang="fr">1. Une société qui investit pour ses clients relève du…</div>
+            <div class="qtext" data-lang="en">1. A firm that invests on behalf of its clients belongs to the…</div>
+            <div class="qtext" data-lang="nl">1. Een firma die voor haar cliënten belegt, behoort tot de…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Buy-side.</span><span data-lang="en">Buy-side.</span><span data-lang="nl">Buy-side.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Sell-side.</span><span data-lang="en">Sell-side.</span><span data-lang="nl">Sell-side.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Ni l'un ni l'autre — un dépositaire.</span><span data-lang="en">Neither — a custodian.</span><span data-lang="nl">Geen van beide — een custodian.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le buy-side achète et détient des actifs pour ses clients ; le sell-side (banques, brokers) émet et intermédie.</span><span data-lang="en">✔ The buy-side buys and holds assets for clients; the sell-side (banks, brokers) issues and intermediates.</span><span data-lang="nl">✔ De buy-side koopt en houdt activa voor cliënten; de sell-side (banken, brokers) geeft uit en bemiddelt.</span></div>
+          </div>
+
+          <!-- Q2 -->
+          <div class="q">
+            <div class="qtext" data-lang="fr">2. Le devoir fiduciaire impose au gérant de…</div>
+            <div class="qtext" data-lang="en">2. The fiduciary duty requires the manager to…</div>
+            <div class="qtext" data-lang="nl">2. De fiduciaire plicht verplicht de beheerder om…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Agir dans l'intérêt exclusif du client, avant le sien.</span><span data-lang="en">Act in the client's sole interest, ahead of their own.</span><span data-lang="nl">Te handelen in het uitsluitende belang van de cliënt, vóór dat van zichzelf.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Maximiser d'abord ses propres commissions.</span><span data-lang="en">Maximise their own commissions first.</span><span data-lang="nl">Eerst zijn eigen commissies te maximaliseren.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Garantir un rendement positif chaque année.</span><span data-lang="en">Guarantee a positive return every year.</span><span data-lang="nl">Elk jaar een positief rendement te garanderen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Loyauté et prudence dans l'intérêt du client : c'est le socle du métier. Aucun rendement n'est jamais garanti.</span><span data-lang="en">✔ Loyalty and prudence in the client's interest: the bedrock of the profession. No return is ever guaranteed.</span><span data-lang="nl">✔ Loyaliteit en voorzichtigheid in het belang van de cliënt: de basis van het vak. Geen enkel rendement is ooit gegarandeerd.</span></div>
+          </div>
+
+          <!-- Q3 -->
+          <div class="q">
+            <div class="qtext" data-lang="fr">3. Les actifs sous gestion (AuM) désignent…</div>
+            <div class="qtext" data-lang="en">3. Assets under management (AuM) refer to…</div>
+            <div class="qtext" data-lang="nl">3. Beheerd vermogen (AuM) verwijst naar…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">La valeur totale des portefeuilles gérés.</span><span data-lang="en">The total value of the portfolios managed.</span><span data-lang="nl">De totale waarde van de beheerde portefeuilles.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le bénéfice annuel de la société de gestion.</span><span data-lang="en">The management company's annual profit.</span><span data-lang="nl">De jaarwinst van de beheervennootschap.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les liquidités détenues par la société.</span><span data-lang="en">The cash held by the firm.</span><span data-lang="nl">De liquiditeiten die de firma aanhoudt.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Les AuM = la taille des portefeuilles gérés pour les clients ; ils déterminent l'influence et l'essentiel des revenus.</span><span data-lang="en">✔ AuM = the size of the portfolios managed for clients; they drive influence and most revenue.</span><span data-lang="nl">✔ AuM = de omvang van de voor cliënten beheerde portefeuilles; ze bepalen invloed en het grootste deel van de inkomsten.</span></div>
+          </div>
+
+          <!-- Q4 -->
+          <div class="q">
+            <div class="qtext" data-lang="fr">4. En gestion discrétionnaire, qui prend les décisions d'achat/vente ?</div>
+            <div class="qtext" data-lang="en">4. Under discretionary management, who makes the buy/sell decisions?</div>
+            <div class="qtext" data-lang="nl">4. Bij discretionair beheer, wie neemt de koop-/verkoopbeslissingen?</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le gérant, dans le cadre du mandat.</span><span data-lang="en">The manager, within the mandate.</span><span data-lang="nl">De beheerder, binnen het mandaat.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le client, opération par opération.</span><span data-lang="en">The client, transaction by transaction.</span><span data-lang="nl">De cliënt, verrichting per verrichting.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le dépositaire.</span><span data-lang="en">The custodian.</span><span data-lang="nl">De custodian.</span></button>
+            <div class="explain"><span data-lang="fr">✔ En discrétionnaire, le client délègue ; le gérant décide seul dans les limites du mandat. En conseil, le client décide de chaque opération.</span><span data-lang="en">✔ Under discretionary, the client delegates; the manager decides alone within the mandate. Under advisory, the client decides each transaction.</span><span data-lang="nl">✔ Bij discretionair delegeert de cliënt; de beheerder beslist alleen binnen het mandaat. Bij advies beslist de cliënt elke verrichting.</span></div>
+          </div>
+
+          <!-- Q5 -->
+          <div class="q">
+            <div class="qtext" data-lang="fr">5. Le dépositaire indépendant sert surtout à…</div>
+            <div class="qtext" data-lang="en">5. The independent custodian mainly serves to…</div>
+            <div class="qtext" data-lang="nl">5. De onafhankelijke custodian dient vooral om…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Conserver et séparer les actifs du client.</span><span data-lang="en">Hold and segregate the client's assets.</span><span data-lang="nl">De activa van de cliënt te bewaren en te scheiden.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Choisir les titres du portefeuille.</span><span data-lang="en">Pick the portfolio's securities.</span><span data-lang="nl">De effecten van de portefeuille te kiezen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Fixer les frais de gestion.</span><span data-lang="en">Set the management fees.</span><span data-lang="nl">De beheerkosten vast te leggen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La séparation des actifs protège l'investisseur : la faillite du gérant n'atteint pas les titres du client.</span><span data-lang="en">✔ Asset segregation protects the investor: the manager's failure does not reach the client's securities.</span><span data-lang="nl">✔ De scheiding van activa beschermt de belegger: het faillissement van de beheerder raakt de effecten van de cliënt niet.</span></div>
+          </div>
+
+          <!-- Q6 -->
+          <div class="q">
+            <div class="qtext" data-lang="fr">6. La gestion des risques et la conformité relèvent du…</div>
+            <div class="qtext" data-lang="en">6. Risk management and compliance belong to the…</div>
+            <div class="qtext" data-lang="nl">6. Risicobeheer en compliance behoren tot de…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Middle office.</span><span data-lang="en">Middle office.</span><span data-lang="nl">Middle office.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Front office.</span><span data-lang="en">Front office.</span><span data-lang="nl">Front office.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Back office.</span><span data-lang="en">Back office.</span><span data-lang="nl">Back office.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le middle office contrôle (risques, conformité, performance). Le front décide/exécute, le back traite (règlement, comptabilité).</span><span data-lang="en">✔ The middle office controls (risk, compliance, performance). The front decides/executes, the back processes (settlement, accounting).</span><span data-lang="nl">✔ De middle office controleert (risico, compliance, prestatie). De front beslist/voert uit, de back verwerkt (settlement, boekhouding).</span></div>
+          </div>
+
+          <!-- Q7 -->
+          <div class="q">
+            <div class="qtext" data-lang="fr">7. Un fonds de 250 M€ facture 80 bps. Revenu de gestion annuel ?</div>
+            <div class="qtext" data-lang="en">7. A €250m fund charges 80 bps. Annual management revenue?</div>
+            <div class="qtext" data-lang="nl">7. Een fonds van 250 mln € rekent 80 bps aan. Jaarlijkse beheerinkomsten?</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">2 M€.</span><span data-lang="en">€2m.</span><span data-lang="nl">2 mln €.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">20 M€.</span><span data-lang="en">€20m.</span><span data-lang="nl">20 mln €.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">200 000 €.</span><span data-lang="en">€200,000.</span><span data-lang="nl">200 000 €.</span></button>
+            <div class="explain"><span data-lang="fr">✔ 80 bps = 0,80 % ; 250 M€ × 0,0080 = 2 M€.</span><span data-lang="en">✔ 80 bps = 0.80%; €250m × 0.0080 = €2m.</span><span data-lang="nl">✔ 80 bps = 0,80%; 250 mln € × 0,0080 = 2 mln €.</span></div>
+          </div>
+
+          <!-- Q8 -->
+          <div class="q">
+            <div class="qtext" data-lang="fr">8. Pourquoi 1 % de frais annuels coûte-t-il bien plus que « 20 % » sur 20 ans ?</div>
+            <div class="qtext" data-lang="en">8. Why does a 1% annual fee cost far more than “20%” over 20 years?</div>
+            <div class="qtext" data-lang="nl">8. Waarom kost 1% jaarlijkse kosten veel meer dan “20%” over 20 jaar?</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Parce que le taux de frais augmente chaque année.</span><span data-lang="en">Because the fee rate rises every year.</span><span data-lang="nl">Omdat het kostentarief elk jaar stijgt.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Parce qu'on perd aussi les intérêts composés que ces frais auraient générés.</span><span data-lang="en">Because you also lose the compounding those fees would have earned.</span><span data-lang="nl">Omdat je ook het samengestelde effect verliest dat die kosten hadden opgebracht.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Parce que le rendement brut est garanti.</span><span data-lang="en">Because the gross return is guaranteed.</span><span data-lang="nl">Omdat het brutorendement gegarandeerd is.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Chaque euro prélevé ne compose plus. Sur un long horizon, le manque à gagner cumulé dépasse largement la somme des frais annuels.</span><span data-lang="en">✔ Every euro taken out no longer compounds. Over a long horizon, the cumulative shortfall far exceeds the sum of annual fees.</span><span data-lang="nl">✔ Elke onttrokken euro kapitaliseert niet meer. Over een lange horizon overtreft het cumulatieve verlies ruimschoots de som van de jaarlijkse kosten.</span></div>
+          </div>
+
+          <!-- Q9 -->
+          <div class="q">
+            <div class="qtext" data-lang="fr">9. Un fonds UCITS est…</div>
+            <div class="qtext" data-lang="en">9. A UCITS fund is…</div>
+            <div class="qtext" data-lang="nl">9. Een UCITS-fonds is…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Un fonds européen réglementé, liquide, distribuable au retail.</span><span data-lang="en">A regulated, liquid European fund, distributable to retail.</span><span data-lang="nl">Een gereglementeerd, liquide Europees fonds, verdeelbaar aan retail.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Un hedge fund non régulé.</span><span data-lang="en">An unregulated hedge fund.</span><span data-lang="nl">Een niet-gereglementeerd hedgefonds.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Un produit dérivé complexe.</span><span data-lang="en">A complex derivative product.</span><span data-lang="nl">Een complex derivatenproduct.</span></button>
+            <div class="explain"><span data-lang="fr">✔ UCITS = cadre européen de fonds réglementés (diversification, liquidité, protection) destinés notamment au grand public. Les alternatifs relèvent de l'AIFMD.</span><span data-lang="en">✔ UCITS = the European framework for regulated funds (diversification, liquidity, protection) aimed notably at the retail public. Alternatives fall under AIFMD.</span><span data-lang="nl">✔ UCITS = het Europese kader voor gereglementeerde fondsen (spreiding, liquiditeit, bescherming), met name voor het brede publiek. Alternatieven vallen onder AIFMD.</span></div>
+          </div>
+
+          <!-- Q10 -->
+          <div class="q">
+            <div class="qtext" data-lang="fr">10. La valeur nette d'inventaire (VNI / NAV) d'une part, c'est…</div>
+            <div class="qtext" data-lang="en">10. A unit's net asset value (NAV) is…</div>
+            <div class="qtext" data-lang="nl">10. De netto-inventariswaarde (NAV) van een deelbewijs is…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">(Actif − dettes) ⁄ nombre de parts.</span><span data-lang="en">(Assets − liabilities) ⁄ number of units.</span><span data-lang="nl">(Activa − schulden) ⁄ aantal deelbewijzen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le rendement annuel du fonds.</span><span data-lang="en">The fund's annual return.</span><span data-lang="nl">Het jaarrendement van het fonds.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le total des frais du fonds.</span><span data-lang="en">The fund's total fees.</span><span data-lang="nl">De totale kosten van het fonds.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La VNI est la valeur d'une part : c'est le prix de souscription/rachat, recalculé (souvent quotidiennement).</span><span data-lang="en">✔ The NAV is the value of one unit: the subscription/redemption price, recomputed (often daily).</span><span data-lang="nl">✔ De NAV is de waarde van één deelbewijs: de inschrijvings-/terugkoopprijs, (vaak dagelijks) herberekend.</span></div>
+          </div>
+
+          <!-- Q11 -->
+          <div class="q">
+            <div class="qtext" data-lang="fr">11. Le high-water mark garantit que la commission de performance…</div>
+            <div class="qtext" data-lang="en">11. The high-water mark ensures the performance fee is…</div>
+            <div class="qtext" data-lang="nl">11. De high-water mark zorgt ervoor dat de prestatievergoeding…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">N'est prélevée que sur les nouveaux plus-hauts de VNI.</span><span data-lang="en">Only charged on new NAV highs.</span><span data-lang="nl">Enkel wordt aangerekend op nieuwe NAV-toppen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Est un montant fixe chaque année.</span><span data-lang="en">A fixed amount every year.</span><span data-lang="nl">Een vast bedrag per jaar is.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Double après une année de baisse.</span><span data-lang="en">Doubled after a down year.</span><span data-lang="nl">Verdubbelt na een verliesjaar.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le high-water mark évite de facturer deux fois la même hausse : après une baisse, il faut d'abord revenir au plus haut avant toute nouvelle commission.</span><span data-lang="en">✔ The high-water mark avoids billing the same gain twice: after a drawdown, the NAV must first regain its peak before any new fee.</span><span data-lang="nl">✔ De high-water mark voorkomt dat dezelfde winst tweemaal wordt gefactureerd: na een terugval moet de NAV eerst zijn piek herwinnen vóór een nieuwe vergoeding.</span></div>
+          </div>
+
+          <!-- Q12 -->
+          <div class="q">
+            <div class="qtext" data-lang="fr">12. Une gestion passive cherche à…</div>
+            <div class="qtext" data-lang="en">12. Passive management seeks to…</div>
+            <div class="qtext" data-lang="nl">12. Passief beheer wil…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Répliquer un indice au coût le plus bas.</span><span data-lang="en">Replicate an index at the lowest cost.</span><span data-lang="nl">Een index repliceren tegen de laagste kost.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Battre l'indice par la sélection de titres.</span><span data-lang="en">Beat the index through stock selection.</span><span data-lang="nl">De index verslaan via effectenselectie.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Éliminer tout risque de marché.</span><span data-lang="en">Eliminate all market risk.</span><span data-lang="nl">Alle marktrisico elimineren.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le passif réplique l'indice à bas coût ; c'est l'actif qui cherche à le battre. Le risque de marché demeure dans les deux cas.</span><span data-lang="en">✔ Passive replicates the index at low cost; active tries to beat it. Market risk remains in both cases.</span><span data-lang="nl">✔ Passief repliceert de index tegen lage kost; actief probeert hem te verslaan. Marktrisico blijft in beide gevallen.</span></div>
+          </div>
+
+          <!-- Q13 -->
+          <div class="q">
+            <div class="qtext" data-lang="fr">13. La tracking error mesure…</div>
+            <div class="qtext" data-lang="en">13. The tracking error measures…</div>
+            <div class="qtext" data-lang="nl">13. De tracking error meet…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">L'écart-type de la différence de rendement fonds − indice.</span><span data-lang="en">The standard deviation of the fund − index return difference.</span><span data-lang="nl">De standaardafwijking van het rendementsverschil fonds − index.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le total des frais du fonds.</span><span data-lang="en">The fund's total fees.</span><span data-lang="nl">De totale kosten van het fonds.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le rendement absolu du fonds.</span><span data-lang="en">The fund's absolute return.</span><span data-lang="nl">Het absolute rendement van het fonds.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Elle quantifie l'écart de trajectoire au benchmark : faible pour du passif, plus élevé pour de l'actif assumé.</span><span data-lang="en">✔ It quantifies the deviation from the benchmark's path: low for passive, higher for genuine active.</span><span data-lang="nl">✔ Ze kwantificeert de afwijking van het benchmarkpad: laag voor passief, hoger voor echt actief.</span></div>
+          </div>
+
+          <!-- Q14 -->
+          <div class="q">
+            <div class="qtext" data-lang="fr">14. Le test d'adéquation (suitability) sous MiFID II vise à…</div>
+            <div class="qtext" data-lang="en">14. The MiFID II suitability test aims to…</div>
+            <div class="qtext" data-lang="nl">14. De geschiktheidstoets onder MiFID II beoogt…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Vérifier qu'un produit convient au profil et aux objectifs du client.</span><span data-lang="en">Check that a product fits the client's profile and objectives.</span><span data-lang="nl">Na te gaan of een product past bij het profiel en de doelen van de cliënt.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Maximiser les ventes de la banque.</span><span data-lang="en">Maximise the bank's sales.</span><span data-lang="nl">De verkoop van de bank te maximaliseren.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Fixer la VNI du fonds.</span><span data-lang="en">Set the fund's NAV.</span><span data-lang="nl">De NAV van het fonds vast te leggen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La <em>suitability</em> matérialise le devoir fiduciaire : pas de recommandation sans adéquation au profil, objectifs et tolérance au risque.</span><span data-lang="en">✔ Suitability operationalises the fiduciary duty: no recommendation without a fit to profile, objectives and risk tolerance.</span><span data-lang="nl">✔ Suitability maakt de fiduciaire plicht concreet: geen aanbeveling zonder aansluiting op profiel, doelen en risicotolerantie.</span></div>
+          </div>
+
+          <!-- Q15 -->
+          <div class="q">
+            <div class="qtext" data-lang="fr">15. Un fonds de pension qui confie 500 M€ à gérer est un client…</div>
+            <div class="qtext" data-lang="en">15. A pension fund handing €500m to manage is a … client.</div>
+            <div class="qtext" data-lang="nl">15. Een pensioenfonds dat 500 mln € laat beheren, is een … cliënt.</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Institutionnel.</span><span data-lang="en">Institutional.</span><span data-lang="nl">Institutionele.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Retail.</span><span data-lang="en">Retail.</span><span data-lang="nl">Retail-.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Private banking.</span><span data-lang="en">Private banking.</span><span data-lang="nl">Private banking-.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Fonds de pension, assureurs, entreprises et fondations forment la clientèle institutionnelle : gros tickets, exigences et gouvernance élevées.</span><span data-lang="en">✔ Pension funds, insurers, corporates and foundations form the institutional client base: large tickets, high requirements and governance.</span><span data-lang="nl">✔ Pensioenfondsen, verzekeraars, bedrijven en stichtingen vormen het institutionele cliënteel: grote tickets, hoge eisen en governance.</span></div>
+          </div>
+        </div>
+
+        <!-- 9. EXERCICES -->
+        <h2 id="exercices"><span data-lang="fr">9. Exercices chiffrés</span><span data-lang="en">9. Numerical exercises</span><span data-lang="nl">9. Cijferoefeningen</span></h2>
+        <p data-lang="fr">Six exercices pour manier l'économie du métier. Cliquez sur « Réponse » pour la solution courte ; les <strong>corrigés détaillés</strong> seront rassemblés sur une page « Solutions » dédiée.</p>
+        <p data-lang="en">Six exercises to handle the economics of the business. Click “Answer” for the short solution; the <strong>full worked solutions</strong> will be gathered on a dedicated “Solutions” page.</p>
+        <p data-lang="nl">Zes oefeningen om de economie van het vak te hanteren. Klik op “Antwoord” voor de korte oplossing; de <strong>uitgewerkte oplossingen</strong> komen samen op een aparte “Oplossingen”-pagina.</p>
+
+        <!-- E1 -->
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM1-1</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Une société gère <strong>1,2 Md€</strong> d'AuM à des frais moyens de <strong>65 bps</strong>. (a) Quel est son revenu de gestion annuel ? (b) Si les AuM progressent de 15 %, quel est le nouveau revenu ?</p>
+          <p class="estatement" data-lang="en">A firm manages <strong>€1.2bn</strong> of AuM at an average fee of <strong>65 bps</strong>. (a) What is its annual management revenue? (b) If AuM grow by 15%, what is the new revenue?</p>
+          <p class="estatement" data-lang="nl">Een firma beheert <strong>1,2 mld €</strong> AuM tegen een gemiddelde vergoeding van <strong>65 bps</strong>. (a) Wat zijn haar jaarlijkse beheerinkomsten? (b) Als de AuM met 15% stijgen, wat zijn de nieuwe inkomsten?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">(a) 1,2 Md€ × 0,0065 = <b>7,80 M€</b>. (b) 1,2 Md€ × 1,15 × 0,0065 = <b>8,97 M€</b>.</div>
+            <div class="ans" data-lang="en">(a) €1.2bn × 0.0065 = <b>€7.80m</b>. (b) €1.2bn × 1.15 × 0.0065 = <b>€8.97m</b>.</div>
+            <div class="ans" data-lang="nl">(a) 1,2 mld € × 0,0065 = <b>7,80 mln €</b>. (b) 1,2 mld € × 1,15 × 0,0065 = <b>8,97 mln €</b>.</div>
+          </details>
+        </div>
+
+        <!-- E2 -->
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM1-2</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Un gérant a deux poches : <strong>300 M€</strong> institutionnel à <strong>50 bps</strong> et <strong>120 M€</strong> retail à <strong>140 bps</strong>. Calculez le revenu total et le <strong>frais moyen pondéré</strong> (en bps) de l'ensemble.</p>
+          <p class="estatement" data-lang="en">A manager has two pools: <strong>€300m</strong> institutional at <strong>50 bps</strong> and <strong>€120m</strong> retail at <strong>140 bps</strong>. Compute the total revenue and the <strong>blended (weighted-average) fee</strong> in bps.</p>
+          <p class="estatement" data-lang="nl">Een beheerder heeft twee compartimenten: <strong>300 mln €</strong> institutioneel tegen <strong>50 bps</strong> en <strong>120 mln €</strong> retail tegen <strong>140 bps</strong>. Bereken de totale inkomsten en de <strong>gewogen gemiddelde vergoeding</strong> in bps.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">1,50 M€ + 1,68 M€ = <b>3,18 M€</b> ; frais moyen = 3,18 M€ ⁄ 420 M€ = <b>75,7 bps</b>.</div>
+            <div class="ans" data-lang="en">€1.50m + €1.68m = <b>€3.18m</b>; blended fee = €3.18m ⁄ €420m = <b>75.7 bps</b>.</div>
+            <div class="ans" data-lang="nl">1,50 mln € + 1,68 mln € = <b>3,18 mln €</b>; gemiddelde vergoeding = 3,18 mln € ⁄ 420 mln € = <b>75,7 bps</b>.</div>
+          </details>
+        </div>
+
+        <!-- E3 -->
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM1-3</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Un fonds part d'une VNI de <strong>100</strong> (high-water mark 100), avec un <em>hurdle</em> de <strong>5 %</strong> et une commission de performance de <strong>15 %</strong>. En fin d'année, la VNI brute atteint <strong>112</strong>. Calculez la commission de performance par part, la VNI nette, et le nouveau high-water mark.</p>
+          <p class="estatement" data-lang="en">A fund starts at a NAV of <strong>100</strong> (high-water mark 100), with a <strong>5%</strong> hurdle and a <strong>15%</strong> performance fee. At year-end the gross NAV reaches <strong>112</strong>. Compute the performance fee per unit, the net NAV, and the new high-water mark.</p>
+          <p class="estatement" data-lang="nl">Een fonds start op een NAV van <strong>100</strong> (high-water mark 100), met een <em>hurdle</em> van <strong>5%</strong> en een prestatievergoeding van <strong>15%</strong>. Op jaareinde bereikt de bruto-NAV <strong>112</strong>. Bereken de prestatievergoeding per deelbewijs, de netto-NAV en de nieuwe high-water mark.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Seuil = 100 × 1,05 = 105. Excédent = 112 − 105 = 7. Commission = 15 % × 7 = <b>1,05 par part</b>. VNI nette = 112 − 1,05 = <b>110,95</b>. Nouveau HWM = <b>110,95</b>.</div>
+            <div class="ans" data-lang="en">Threshold = 100 × 1.05 = 105. Excess = 112 − 105 = 7. Fee = 15% × 7 = <b>1.05 per unit</b>. Net NAV = 112 − 1.05 = <b>110.95</b>. New HWM = <b>110.95</b>.</div>
+            <div class="ans" data-lang="nl">Drempel = 100 × 1,05 = 105. Overschot = 112 − 105 = 7. Vergoeding = 15% × 7 = <b>1,05 per deelbewijs</b>. Netto-NAV = 112 − 1,05 = <b>110,95</b>. Nieuwe HWM = <b>110,95</b>.</div>
+          </details>
+        </div>
+
+        <!-- E4 -->
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM1-4</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr"><strong>250 000 €</strong> sont investis à un rendement brut de <strong>7 %/an</strong>, frais de <strong>90 bps</strong>, sur <strong>15 ans</strong> (frais prélevés en fin d'année). Donnez la valeur nette finale, le total des frais payés et le manque à gagner vs sans frais. Vérifiez avec le calculateur ci-dessus.</p>
+          <p class="estatement" data-lang="en"><strong>€250,000</strong> is invested at a <strong>7%/yr</strong> gross return, <strong>90 bps</strong> fee, over <strong>15 years</strong> (fee charged at year-end). Give the net final value, total fees paid and the shortfall vs no fees. Check with the calculator above.</p>
+          <p class="estatement" data-lang="nl"><strong>250 000 €</strong> wordt belegd tegen een brutorendement van <strong>7%/jaar</strong>, kosten <strong>90 bps</strong>, over <strong>15 jaar</strong> (kosten op jaareinde). Geef de netto eindwaarde, de totale betaalde kosten en het manco t.o.v. zonder kosten. Controleer met de calculator hierboven.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Valeur nette ≈ <b>602 300 €</b> ; frais payés ≈ <b>56 200 €</b> ; valeur brute ≈ 689 800 € → manque à gagner ≈ <b>87 500 €</b> (rendement net ≈ 6,04 %).</div>
+            <div class="ans" data-lang="en">Net value ≈ <b>€602,300</b>; fees paid ≈ <b>€56,200</b>; gross value ≈ €689,800 → shortfall ≈ <b>€87,500</b> (net return ≈ 6.04%).</div>
+            <div class="ans" data-lang="nl">Nettowaarde ≈ <b>602 300 €</b>; betaalde kosten ≈ <b>56 200 €</b>; brutowaarde ≈ 689 800 € → manco ≈ <b>87 500 €</b> (nettorendement ≈ 6,04%).</div>
+          </details>
+        </div>
+
+        <!-- E5 -->
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM1-5</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Deux fonds, même rendement brut de <strong>6 %/an</strong> sur <strong>10 ans</strong>, <strong>100 000 €</strong> investis. Fonds A : TER <strong>1,20 %</strong> ; Fonds B (ETF) : TER <strong>0,25 %</strong>. Quel est l'écart de valeur finale entre B et A ?</p>
+          <p class="estatement" data-lang="en">Two funds, same <strong>6%/yr</strong> gross return over <strong>10 years</strong>, <strong>€100,000</strong> invested. Fund A: TER <strong>1.20%</strong>; Fund B (ETF): TER <strong>0.25%</strong>. What is the final-value gap between B and A?</p>
+          <p class="estatement" data-lang="nl">Twee fondsen, zelfde brutorendement van <strong>6%/jaar</strong> over <strong>10 jaar</strong>, <strong>100 000 €</strong> belegd. Fonds A: TER <strong>1,20%</strong>; Fonds B (ETF): TER <strong>0,25%</strong>. Wat is het verschil in eindwaarde tussen B en A?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">A ≈ 158 700 € ; B ≈ 174 700 € → écart ≈ <b>15 900 €</b> en faveur de l'ETF, pour un même rendement brut.</div>
+            <div class="ans" data-lang="en">A ≈ €158,700; B ≈ €174,700 → gap ≈ <b>€15,900</b> in the ETF's favour, for the same gross return.</div>
+            <div class="ans" data-lang="nl">A ≈ 158 700 € ; B ≈ 174 700 € → verschil ≈ <b>15 900 €</b> in het voordeel van de ETF, bij eenzelfde brutorendement.</div>
+          </details>
+        </div>
+
+        <!-- E6 -->
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM1-6</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Une boutique veut atteindre <strong>5 M€</strong> de revenus annuels. (a) Quels AuM lui faut-il à un frais moyen de <strong>80 bps</strong> ? (b) Et si la pression sur les frais les ramène à <strong>60 bps</strong> ?</p>
+          <p class="estatement" data-lang="en">A boutique wants to reach <strong>€5m</strong> of annual revenue. (a) What AuM does it need at an average fee of <strong>80 bps</strong>? (b) And if fee pressure brings it down to <strong>60 bps</strong>?</p>
+          <p class="estatement" data-lang="nl">Een boutique wil <strong>5 mln €</strong> jaarinkomsten bereiken. (a) Welke AuM heeft ze nodig tegen een gemiddelde vergoeding van <strong>80 bps</strong>? (b) En als kostendruk die naar <strong>60 bps</strong> brengt?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">(a) 5 M€ ⁄ 0,0080 = <b>625 M€</b>. (b) 5 M€ ⁄ 0,0060 = <b>833 M€</b> → il faut ~33 % d'AuM en plus pour le même revenu.</div>
+            <div class="ans" data-lang="en">(a) €5m ⁄ 0.0080 = <b>€625m</b>. (b) €5m ⁄ 0.0060 = <b>€833m</b> → ~33% more AuM needed for the same revenue.</div>
+            <div class="ans" data-lang="nl">(a) 5 mln € ⁄ 0,0080 = <b>625 mln €</b>. (b) 5 mln € ⁄ 0,0060 = <b>833 mln €</b> → ~33% meer AuM nodig voor dezelfde inkomsten.</div>
+          </details>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="module-nav">
+          <a class="prev" href="../index.html">
+            <div class="dir" data-lang="fr">← Retour</div><div class="dir" data-lang="en">← Back</div><div class="dir" data-lang="nl">← Terug</div>
+            <div class="tt" data-lang="fr">Accueil &amp; programme</div><div class="tt" data-lang="en">Home &amp; curriculum</div><div class="tt" data-lang="nl">Home &amp; programma</div>
+          </a>
+          <a class="next" href="../index.html#curriculum">
+            <div class="dir" data-lang="fr">Module suivant →</div><div class="dir" data-lang="en">Next module →</div><div class="dir" data-lang="nl">Volgende module →</div>
+            <div class="tt" data-lang="fr">2. Théorie moderne du portefeuille</div><div class="tt" data-lang="en">2. Modern portfolio theory</div><div class="tt" data-lang="nl">2. Moderne portefeuilletheorie</div>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap foot">
+    <div class="brand"><span class="logo">Avenir<b>.</b></span></div>
+    <p data-lang="fr">Asset Management · Module 1 · Fondamentaux de la gestion d'actifs</p>
+    <p data-lang="en">Asset Management · Module 1 · Foundations of asset management</p>
+    <p data-lang="nl">Asset Management · Module 1 · Grondslagen van vermogensbeheer</p>
+  </div>
+</footer>
+
+<script src="../assets/script.js"></script>
+<script>
+/* Calculateur — économie d'un mandat / impact des frais */
+(function () {
+  function lang(){ return document.body.getAttribute("data-active-lang") || "fr"; }
+  function locale(){ var l=lang(); return l==="en" ? "en-US" : (l==="nl" ? "nl-BE" : "fr-FR"); }
+  function money(x){ return new Intl.NumberFormat(locale(), {style:"currency", currency:"EUR", maximumFractionDigits:0}).format(x); }
+  function pct(x){ return (x*100).toFixed(2).replace(".", lang()==="en" ? "." : ",") + "%"; }
+  function $(id){ return document.getElementById(id); }
+
+  function compute(){
+    var V   = parseFloat($("c-cap").value) || 0;
+    var fee = parseFloat($("c-fee").value)/10000;
+    var gr  = parseFloat($("c-ret").value)/100;
+    var N   = parseInt($("c-yrs").value,10);
+
+    $("c-fee-out").textContent = $("c-fee").value + " bps";
+    $("c-ret-out").textContent = $("c-ret").value + "%";
+    $("c-yrs-out").textContent = N;
+
+    var value = V, feesPaid = 0;
+    for (var i=0;i<N;i++){
+      var gross = value*(1+gr);
+      var feeAmt = gross*fee;
+      value = gross - feeAmt;
+      feesPaid += feeAmt;
+    }
+    var FVn = value;
+    var FVg = V*Math.pow(1+gr, N);
+    var drag = FVg - FVn;
+    var netAnn = N>0 ? Math.pow(FVn/V, 1/N)-1 : 0;
+
+    $("r-net").textContent  = money(FVn);
+    $("r-netann").textContent = (lang()==="en"?"Net annualised: ":(lang()==="nl"?"Netto geannualiseerd: ":"Rendement net annualisé : ")) + pct(netAnn);
+    $("r-fees").textContent = money(feesPaid);
+    $("r-drag").textContent = (lang()==="en"?"Shortfall vs no fees: ":(lang()==="nl"?"Manco vs zonder kosten: ":"Manque à gagner vs sans frais : ")) + money(drag);
+    var grossLbl = lang()==="en"?"Gross value (no fees): ":(lang()==="nl"?"Brutowaarde (zonder kosten): ":"Valeur brute (sans frais) : ");
+    $("r-detail").textContent = grossLbl + money(FVg);
+  }
+
+  ["c-cap","c-fee","c-ret","c-yrs"].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el){ el.addEventListener("input", compute); }
+  });
+  document.querySelectorAll(".lang-toggle button").forEach(function(b){
+    b.addEventListener("click", function(){ setTimeout(compute, 0); });
+  });
+  document.addEventListener("DOMContentLoaded", compute);
+  compute();
+})();
+</script>
+</body>
+</html>

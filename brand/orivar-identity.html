@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orivar — Identité</title>
+<style>
+  :root{
+    --navy:#0c1e3a; --navy2:#12294a; --deep:#0a1424;
+    --gold:#c6a15b; --gold-hi:#dcbd76;
+    --paper:#f5f2ea; --ink:#0f1b2d;
+    --muted:#93a3ba; --line:rgba(255,255,255,.12);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--sans);color:#eaf0f8;
+    background:radial-gradient(1100px 520px at 78% -8%,rgba(198,161,91,.14),transparent 60%),linear-gradient(160deg,#0b1a30,#0a1424 72%);}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px;}
+  header{padding:56px 0 20px;}
+  .eyebrow{font-size:12px;letter-spacing:2.6px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
+  h1{font-family:var(--serif);font-size:clamp(30px,5vw,50px);margin:0 0 10px;}
+  header p{color:#c8d3e3;max-width:60ch;font-size:17px;margin:0;}
+  .story{background:rgba(255,255,255,.04);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:12px;padding:18px 22px;margin:26px 0 8px;font-size:15.5px;color:#d7e0ee;}
+  .story b{color:#fff;}
+
+  section{padding:34px 0;border-top:1px solid var(--line);margin-top:26px;}
+  .lbl{font-size:11.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:18px;}
+
+  /* Hero monogram */
+  .hero{display:flex;gap:40px;align-items:center;flex-wrap:wrap;padding:40px 0 8px;}
+  .wordmark{font-family:var(--serif);font-weight:700;letter-spacing:.14em;}
+
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .tile{border-radius:16px;padding:34px;display:flex;align-items:center;gap:24px;border:1px solid var(--line);min-height:130px;}
+  .tile.dark{background:linear-gradient(160deg,var(--navy2),var(--navy));}
+  .tile.light{background:var(--paper);}
+  .lock{display:flex;align-items:center;gap:18px;}
+  .lock .nm{font-family:var(--serif);font-weight:700;letter-spacing:.14em;line-height:1;}
+  .lock .sub{font-size:9.5px;letter-spacing:2.4px;text-transform:uppercase;margin-top:8px;}
+  .dark .nm{color:#fff;} .dark .sub{color:#9fb0c8;}
+  .light .nm{color:var(--ink);} .light .sub{color:#6b7688;}
+  .stacked{flex-direction:column;gap:14px;text-align:center;justify-content:center;}
+
+  .mini{display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+  .fav{border-radius:10px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.35);}
+
+  .pal{display:flex;gap:20px;flex-wrap:wrap;}
+  .sw{display:flex;align-items:center;gap:11px;font-size:12.5px;color:var(--muted);}
+  .chip{width:40px;height:40px;border-radius:10px;border:1px solid rgba(255,255,255,.14);}
+  .monoTxt{font-family:ui-monospace,Menlo,Consolas,monospace;}
+
+  .alts{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .alt{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;gap:16px;align-items:center;}
+  .alt .an{font-family:var(--serif);font-size:20px;margin:0 0 3px;}
+  .alt .ad{font-size:13px;color:#bfcadb;line-height:1.5;margin:0;}
+  .flag{font-size:11.5px;color:var(--gold);margin-top:6px;}
+  footer{padding:30px 0 64px;color:#c3cfe0;font-size:14.5px;max-width:74ch;}
+  @media(max-width:720px){.row,.alts{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- Monogramme réutilisé : symbol id -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="goldg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dcbd76"/><stop offset="1" stop-color="#b6863b"/>
+    </linearGradient>
+    <g id="mono-dark">
+      <rect x="3" y="3" width="114" height="114" rx="27" fill="#0a1424" stroke="#22385c" stroke-width="1.5"/>
+      <circle cx="60" cy="61" r="27" fill="none" stroke="#f2eee2" stroke-width="8"/>
+      <circle cx="79" cy="42" r="8" fill="url(#goldg)" stroke="#0a1424" stroke-width="3.5"/>
+    </g>
+    <g id="mono-light">
+      <rect x="3" y="3" width="114" height="114" rx="27" fill="#0c1e3a"/>
+      <circle cx="60" cy="61" r="27" fill="none" stroke="#f2eee2" stroke-width="8"/>
+      <circle cx="79" cy="42" r="8" fill="url(#goldg)" stroke="#0c1e3a" stroke-width="3.5"/>
+    </g>
+    <g id="mono-flat">
+      <rect x="3" y="3" width="114" height="114" rx="27" fill="none" stroke="currentColor" stroke-width="3" opacity=".25"/>
+      <circle cx="60" cy="61" r="27" fill="none" stroke="currentColor" stroke-width="8"/>
+      <circle cx="79" cy="42" r="8" fill="currentColor" stroke="#0a1424" stroke-width="0"/>
+    </g>
+  </defs>
+</svg>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Avenir · Proposition de marque</div>
+    <h1>Orivar</h1>
+    <p>La direction que je te recommande — vérifiée : aucune société financière ne porte ce nom aujourd'hui.</p>
+    <div class="story">
+      <b>or</b> (l'or, la valeur — en français) <b>+ VaR</b> (Value at Risk, la mesure reine du risque, et ton tout premier module).
+      <br><b>Orivar = la valeur et le risque, réunis.</b> Court, premium, à consonance financière, prononçable dans les quatre langues du site, et unique. Le monogramme : un <b>O</b> épuré (la valeur, le portefeuille) marqué d'un <b>point d'or</b> — le point optimal sur la frontière risque-rendement.
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section style="border-top:0;margin-top:0;">
+  <div class="wrap">
+    <div class="hero">
+      <svg width="150" height="150" viewBox="0 0 120 120" aria-label="Orivar"><use href="#mono-dark"/></svg>
+      <div>
+        <div class="wordmark" style="font-size:clamp(40px,7vw,72px);color:#fff;">ORIVAR</div>
+        <div style="letter-spacing:.34em;font-size:12px;text-transform:uppercase;color:var(--gold);margin-top:10px;">Financial Risk &amp; Portfolio Management</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOCK-UPS -->
+<section>
+  <div class="wrap">
+    <div class="lbl">Déclinaisons principales</div>
+    <div class="row">
+      <div class="tile dark">
+        <div class="lock">
+          <svg width="66" height="66" viewBox="0 0 120 120" aria-label="Orivar"><use href="#mono-dark"/></svg>
+          <div><div class="nm" style="font-size:30px">ORIVAR</div><div class="sub">Financial Risk &amp; Portfolio Mgmt</div></div>
+        </div>
+      </div>
+      <div class="tile light">
+        <div class="lock">
+          <svg width="66" height="66" viewBox="0 0 120 120" aria-label="Orivar"><use href="#mono-light"/></svg>
+          <div><div class="nm" style="font-size:30px">ORIVAR</div><div class="sub">Financial Risk &amp; Portfolio Mgmt</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MONOGRAMME SEUL + FAVICON + MONO -->
+<section>
+  <div class="wrap">
+    <div class="lbl">Symbole seul · favicon · version monochrome</div>
+    <div class="mini">
+      <svg width="96" height="96" viewBox="0 0 120 120" class="fav"><use href="#mono-dark"/></svg>
+      <svg width="64" height="64" viewBox="0 0 120 120" class="fav"><use href="#mono-light"/></svg>
+      <svg width="40" height="40" viewBox="0 0 120 120" class="fav"><use href="#mono-dark"/></svg>
+      <svg width="26" height="26" viewBox="0 0 120 120" class="fav"><use href="#mono-dark"/></svg>
+      <span style="width:22px"></span>
+      <svg width="72" height="72" viewBox="0 0 120 120" style="color:#eaf0f8"><use href="#mono-flat"/></svg>
+      <svg width="72" height="72" viewBox="0 0 120 120" style="color:#c6a15b"><use href="#mono-flat"/></svg>
+    </div>
+  </div>
+</section>
+
+<!-- PALETTE -->
+<section>
+  <div class="wrap">
+    <div class="lbl">Palette</div>
+    <div class="pal">
+      <div class="sw"><span class="chip" style="background:#0a1424"></span><span>Bleu abyssal<br><span class="monoTxt">#0A1424</span></span></div>
+      <div class="sw"><span class="chip" style="background:#0c1e3a"></span><span>Bleu nuit<br><span class="monoTxt">#0C1E3A</span></span></div>
+      <div class="sw"><span class="chip" style="background:#c6a15b"></span><span>Or<br><span class="monoTxt">#C6A15B</span></span></div>
+      <div class="sw"><span class="chip" style="background:#f2eee2"></span><span>Ivoire<br><span class="monoTxt">#F2EEE2</span></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ALTERNATIVES -->
+<section>
+  <div class="wrap">
+    <div class="lbl">Si Orivar ne te convainc pas — 2 autres noms vérifiés libres</div>
+    <div class="alts">
+      <div class="alt">
+        <svg width="58" height="58" viewBox="0 0 120 120">
+          <rect x="3" y="3" width="114" height="114" rx="26" fill="#0a1424" stroke="#22385c" stroke-width="1.5"/>
+          <text x="60" y="80" text-anchor="middle" font-family="Iowan Old Style,Palatino,Georgia,serif" font-size="60" font-weight="700" fill="#f2eee2">V</text>
+          <circle cx="82" cy="42" r="5" fill="#c6a15b"/>
+        </svg>
+        <div>
+          <div class="an">Valquan</div>
+          <p class="ad">Value + Quant : la valeur pilotée par la donnée. Aucun résultat trouvé — le plus « vierge » des noms testés.</p>
+          <div class="flag">✓ Libre côté finance</div>
+        </div>
+      </div>
+      <div class="alt">
+        <svg width="58" height="58" viewBox="0 0 120 120">
+          <rect x="3" y="3" width="114" height="114" rx="26" fill="#0a1424" stroke="#22385c" stroke-width="1.5"/>
+          <path d="M40 82 Q47 52 60 47 Q73 42 82 41" fill="none" stroke="#c6a15b" stroke-width="3" stroke-linecap="round"/>
+          <text x="60" y="80" text-anchor="middle" font-family="Iowan Old Style,Palatino,Georgia,serif" font-size="52" font-weight="700" fill="#f2eee2" opacity=".92">F</text>
+        </svg>
+        <div>
+          <div class="an">Frontela</div>
+          <p class="ad">De la frontière efficiente de Markowitz. Élégant — à noter : proche de « Frontera Capital » (US), donc à départager.</p>
+          <div class="flag">✓ Libre, mais nom voisin existant</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Ces vérifications portent sur l'usage par des sociétés financières (recherche web) — pour une marque déposée, un contrôle registre (classe 36) et nom de domaine reste recommandé avant dépôt, mais aucune des trois n'est utilisée par un acteur financier aujourd'hui. Dis-moi si <b>Orivar</b> est le bon : je le décline alors en fichiers SVG (symbole, logo horizontal, monochrome, fond bleu), PNG haute résolution et favicon, prêts à remplacer « Avenir » sur le site.
+  </div>
+</footer>
+
+</body>
+</html>

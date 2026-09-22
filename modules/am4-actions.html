@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actions — classe d'actifs — Avenir</title>
+<meta name="description" content="Sous-module de la classe d'actifs Actions : titre de propriété, sources de rendement, prime de risque actions, segments et styles, valorisation par le modèle de Gordon, rôle en portefeuille. Vidéo, calculateur Gordon interactif, QCM, exercices et ressources téléchargeables.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-active-lang="fr" class="track-am">
+
+<div class="progress-bar"></div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <div class="brand">
+      <a href="../index.html"><span class="logo">Avenir<b>.</b></span></a>
+      <span class="tag">Asset Management &amp; Risk</span>
+    </div>
+    <div class="spacer"></div>
+    <nav class="nav-links">
+      <a href="../index.html#parcours"><span data-lang="fr">Parcours</span><span data-lang="en">Tracks</span><span data-lang="nl">Trajecten</span></a>
+      <a href="../index.html#curriculum"><span data-lang="fr">Programme</span><span data-lang="en">Curriculum</span><span data-lang="nl">Programma</span></a>
+      <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a>
+    </nav>
+    <div class="controls">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-set-lang="fr">FR</button>
+        <button data-set-lang="en">EN</button>
+        <button data-set-lang="nl">NL</button>
+      </div>
+      <button id="theme-btn" class="icon-btn" aria-label="Thème">☾</button>
+      <button id="menu-btn" class="icon-btn menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap-mod">
+  <div class="module-shell">
+
+    <aside class="toc">
+      <div class="toc-title" data-lang="fr">Sommaire</div>
+      <div class="toc-title" data-lang="en">Contents</div>
+      <div class="toc-title" data-lang="nl">Inhoud</div>
+      <a href="#video"><span data-lang="fr">Vidéo</span><span data-lang="en">Video</span><span data-lang="nl">Video</span></a>
+      <a href="#definition"><span data-lang="fr">1. Qu'est-ce qu'une action ?</span><span data-lang="en">1. What is a share?</span><span data-lang="nl">1. Wat is een aandeel?</span></a>
+      <a href="#rr"><span data-lang="fr">2. Rendement &amp; risque</span><span data-lang="en">2. Return &amp; risk</span><span data-lang="nl">2. Rendement &amp; risico</span></a>
+      <a href="#segments"><span data-lang="fr">3. Segments &amp; styles</span><span data-lang="en">3. Segments &amp; styles</span><span data-lang="nl">3. Segmenten &amp; stijlen</span></a>
+      <a href="#valo"><span data-lang="fr">4. Valorisation (Gordon)</span><span data-lang="en">4. Valuation (Gordon)</span><span data-lang="nl">4. Waardering (Gordon)</span></a>
+      <a href="#role"><span data-lang="fr">5. Rôle en portefeuille</span><span data-lang="en">5. Role in the portfolio</span><span data-lang="nl">5. Rol in de portefeuille</span></a>
+      <a href="#ressources"><span data-lang="fr">Ressources</span><span data-lang="en">Resources</span><span data-lang="nl">Bronnen</span></a>
+      <a href="#retenir"><span data-lang="fr">6. À retenir</span><span data-lang="en">6. Key takeaways</span><span data-lang="nl">6. Onthouden</span></a>
+      <a href="#qcm"><span data-lang="fr">7. QCM (15)</span><span data-lang="en">7. MCQ (15)</span><span data-lang="nl">7. MCV (15)</span></a>
+      <a href="#exercices"><span data-lang="fr">8. Exercices</span><span data-lang="en">8. Exercises</span><span data-lang="nl">8. Oefeningen</span></a>
+      <a href="#biblio"><span data-lang="fr">Sources</span><span data-lang="en">Sources</span><span data-lang="nl">Bronnen</span></a>
+    </aside>
+
+    <main>
+      <div class="crumbs">
+        <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a> ·
+        <span>Asset Management</span> ·
+        <a href="am4-classes-actifs.html"><span data-lang="fr">Classes d'actifs</span><span data-lang="en">Asset classes</span><span data-lang="nl">Activaklassen</span></a> ·
+        <span data-lang="fr">Actions</span><span data-lang="en">Equities</span><span data-lang="nl">Aandelen</span>
+      </div>
+
+      <div class="module-hero">
+        <span class="badge">Asset Management · <span data-lang="fr">Actions</span><span data-lang="en">Equities</span><span data-lang="nl">Aandelen</span></span>
+        <h1 data-lang="fr">Les actions</h1>
+        <h1 data-lang="en">Equities</h1>
+        <h1 data-lang="nl">Aandelen</h1>
+        <p class="subtitle" data-lang="fr">Détenir une action, c'est posséder un morceau d'entreprise — et le moteur de rendement long terme le plus puissant, au prix de la plus forte volatilité. Sources de rendement, prime de risque, valorisation et rôle en portefeuille.</p>
+        <p class="subtitle" data-lang="en">To hold a share is to own a slice of a company — and the most powerful long-term return engine, at the cost of the highest volatility. Sources of return, risk premium, valuation and portfolio role.</p>
+        <p class="subtitle" data-lang="nl">Een aandeel bezitten is een stuk van een onderneming bezitten — en de krachtigste motor van langetermijnrendement, tegen de prijs van de hoogste volatiliteit. Bronnen van rendement, risicopremie, waardering en portefeuillerol.</p>
+        <div class="module-meta">
+          <span data-lang="fr">⏱ Lecture ~22 min</span><span data-lang="en">⏱ ~22 min read</span><span data-lang="nl">⏱ ~22 min lezen</span>
+          <span data-lang="fr">📶 Niveau intermédiaire</span><span data-lang="en">📶 Intermediate level</span><span data-lang="nl">📶 Gemiddeld niveau</span>
+          <span>🎓 AM · <span data-lang="fr">Classe d'actifs</span><span data-lang="en">Asset class</span><span data-lang="nl">Activaklasse</span></span>
+        </div>
+      </div>
+
+      <div class="module-body">
+
+        <!-- VIDÉO -->
+        <h2 id="video"><span data-lang="fr">Vidéo — l'essentiel en quelques minutes</span><span data-lang="en">Video — the essentials in a few minutes</span><span data-lang="nl">Video — de essentie in enkele minuten</span></h2>
+        <div class="video-embed placeholder">
+          <div class="ph-inner">
+            <div class="ph-play">▶</div>
+            <div class="ph-t" data-lang="fr">Vidéo explicative à venir</div><div class="ph-t" data-lang="en">Explanatory video coming soon</div><div class="ph-t" data-lang="nl">Uitlegvideo binnenkort</div>
+            <div class="ph-s" data-lang="fr">Remplacez ce bloc par l'embed YouTube/Vimeo (voir le commentaire dans le code).</div><div class="ph-s" data-lang="en">Replace this block with the YouTube/Vimeo embed (see the comment in the code).</div><div class="ph-s" data-lang="nl">Vervang dit blok door de YouTube/Vimeo-embed (zie de opmerking in de code).</div>
+          </div>
+        </div>
+        <!-- ▶ POUR ACTIVER LA VIDÉO : remplacer tout le bloc <div class="video-embed placeholder">…</div> ci-dessus par :
+        <div class="video-embed">
+          <iframe src="https://www.youtube.com/embed/IDENTIFIANT_VIDEO" title="Actions — Avenir" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        (Vimeo : src="https://player.vimeo.com/video/IDENTIFIANT". La vidéo peut être non-répertoriée.) -->
+
+        <!-- 1. DÉFINITION -->
+        <h2 id="definition"><span data-lang="fr">1. Qu'est-ce qu'une action ?</span><span data-lang="en">1. What is a share?</span><span data-lang="nl">1. Wat is een aandeel?</span></h2>
+        <p data-lang="fr">Une <strong>action</strong> est un <strong>titre de propriété</strong> : elle représente une part du capital d'une entreprise. L'actionnaire n'est pas un prêteur (comme le détenteur d'obligation) mais un <em>copropriétaire</em>. À ce titre, il a droit à une fraction des bénéfices (dividendes) et des votes en assemblée — mais il est aussi <strong>créancier résiduel</strong> : en cas de faillite, il est payé <em>en dernier</em>, après l'État, les salariés et tous les créanciers. C'est le prix de son potentiel de gain illimité.</p>
+        <p data-lang="en">A <strong>share</strong> is a <strong>title of ownership</strong>: it represents a slice of a company's capital. The shareholder is not a lender (like a bondholder) but a <em>co-owner</em>. As such, they are entitled to a fraction of profits (dividends) and to votes at the general meeting — but they are also the <strong>residual claimant</strong>: in bankruptcy, they are paid <em>last</em>, after the state, employees and all creditors. That is the price of unlimited upside.</p>
+        <p data-lang="nl">Een <strong>aandeel</strong> is een <strong>eigendomstitel</strong>: het vertegenwoordigt een deel van het kapitaal van een onderneming. De aandeelhouder is geen kredietverstrekker (zoals een obligatiehouder) maar een <em>mede-eigenaar</em>. Als zodanig heeft hij recht op een deel van de winst (dividenden) en op stemmen op de algemene vergadering — maar hij is ook de <strong>residuele schuldeiser</strong>: bij faillissement wordt hij <em>als laatste</em> betaald, na de staat, de werknemers en alle schuldeisers. Dat is de prijs van onbeperkt opwaarts potentieel.</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">Deux sources de rendement</span><span class="clabel" data-lang="en">Two sources of return</span><span class="clabel" data-lang="nl">Twee bronnen van rendement</span>
+          <span data-lang="fr">Le rendement d'une action a deux composantes : le <strong>dividende</strong> (la part des bénéfices distribuée, un revenu) et la <strong>plus-value</strong> (l'appréciation du cours, un gain en capital). Rendement total = (dividende + variation du prix) / prix initial. Certaines entreprises ne versent aucun dividende et réinvestissent tout : le rendement vient alors entièrement de la plus-value.</span>
+          <span data-lang="en">A share's return has two components: the <strong>dividend</strong> (the share of profits distributed, an income) and the <strong>capital gain</strong> (the price appreciation). Total return = (dividend + price change) / initial price. Some companies pay no dividend and reinvest everything: the return then comes entirely from the capital gain.</span>
+          <span data-lang="nl">Het rendement van een aandeel heeft twee componenten: het <strong>dividend</strong> (het uitgekeerde deel van de winst, een inkomen) en de <strong>meerwaarde</strong> (de koersstijging, een kapitaalwinst). Totaalrendement = (dividend + prijsverandering) / beginprijs. Sommige ondernemingen keren geen dividend uit en herinvesteren alles: het rendement komt dan volledig uit de meerwaarde.</span>
+        </div>
+
+        <!-- 2. RENDEMENT & RISQUE -->
+        <h2 id="rr"><span data-lang="fr">2. Rendement &amp; risque</span><span data-lang="en">2. Return &amp; risk</span><span data-lang="nl">2. Rendement &amp; risico</span></h2>
+        <p data-lang="fr">Historiquement, les actions offrent le <strong>rendement réel le plus élevé</strong> de toutes les grandes classes d'actifs sur le long terme (de l'ordre de 5–7 % réel par an sur un siècle, selon Dimson-Marsh-Staunton). Ce surcroît de rendement par rapport à l'actif sans risque est la <strong>prime de risque actions</strong> (<em>Equity Risk Premium</em>, ERP) — la compensation exigée pour supporter la volatilité et le risque de perte.</p>
+        <p data-lang="en">Historically, equities offer the <strong>highest real return</strong> of all major asset classes over the long run (on the order of 5–7% real per year over a century, per Dimson-Marsh-Staunton). This excess over the risk-free asset is the <strong>equity risk premium</strong> (ERP) — the compensation demanded for bearing volatility and the risk of loss.</p>
+        <p data-lang="nl">Historisch bieden aandelen het <strong>hoogste reële rendement</strong> van alle grote activaklassen op lange termijn (in de orde van 5–7% reëel per jaar over een eeuw, volgens Dimson-Marsh-Staunton). Dit surplus boven het risicovrije actief is de <strong>aandelenrisicopremie</strong> (ERP) — de vergoeding geëist voor het dragen van volatiliteit en het risico van verlies.</p>
+
+        <div class="callout warn">
+          <span class="clabel" data-lang="fr">Le prix à payer : la volatilité</span><span class="clabel" data-lang="en">The price to pay: volatility</span><span class="clabel" data-lang="nl">De prijs: volatiliteit</span>
+          <span data-lang="fr">Un indice actions large a une volatilité annuelle typique de <strong>15 à 20 %</strong>, et subit périodiquement des <strong>chutes sévères</strong> (drawdowns) : −50 % en 2008, −34 % en mars 2020. Ce risque a deux visages : le <strong>risque de marché</strong> (systématique, non diversifiable, mesuré par le bêta — cf. module CAPM) et le <strong>risque spécifique</strong> (propre à l'entreprise, lui, diversifiable en détenant beaucoup de titres). C'est pourquoi on détient rarement une seule action.</span>
+          <span data-lang="en">A broad equity index has a typical annual volatility of <strong>15 to 20%</strong>, and periodically suffers <strong>severe drawdowns</strong>: −50% in 2008, −34% in March 2020. This risk has two faces: <strong>market risk</strong> (systematic, non-diversifiable, measured by beta — see the CAPM module) and <strong>specific risk</strong> (firm-specific, diversifiable by holding many names). That is why one rarely holds a single stock.</span>
+          <span data-lang="nl">Een brede aandelenindex heeft een typische jaarvolatiliteit van <strong>15 tot 20%</strong>, en lijdt periodiek <strong>zware dalingen</strong> (drawdowns): −50% in 2008, −34% in maart 2020. Dit risico heeft twee gezichten: <strong>marktrisico</strong> (systematisch, niet-diversifieerbaar, gemeten door de bèta — zie de CAPM-module) en <strong>specifiek risico</strong> (ondernemingsspecifiek, diversifieerbaar door veel namen aan te houden). Daarom houdt men zelden één enkel aandeel aan.</span>
+        </div>
+
+        <!-- 3. SEGMENTS -->
+        <h2 id="segments"><span data-lang="fr">3. Segments &amp; styles</span><span data-lang="en">3. Segments &amp; styles</span><span data-lang="nl">3. Segmenten &amp; stijlen</span></h2>
+        <p data-lang="fr">Toutes les actions ne se ressemblent pas. On les segmente par <strong>taille</strong> (grandes / moyennes / petites capitalisations), par <strong>secteur</strong> (technologie, banques, énergie…), par <strong>géographie</strong> (marchés développés vs émergents) et par <strong>style</strong>. Ce dernier axe oppose les titres <em>value</em> (bon marché par rapport à leurs fondamentaux) aux titres <em>growth</em> (forte croissance attendue) — une distinction approfondie dans le module « Styles &amp; primes de facteurs ».</p>
+        <p data-lang="en">Not all equities are alike. We segment them by <strong>size</strong> (large / mid / small caps), by <strong>sector</strong> (technology, banks, energy…), by <strong>geography</strong> (developed vs emerging markets) and by <strong>style</strong>. The latter axis contrasts <em>value</em> stocks (cheap relative to fundamentals) with <em>growth</em> stocks (high expected growth) — a distinction deepened in the “Styles &amp; factor premia” module.</p>
+        <p data-lang="nl">Niet alle aandelen zijn gelijk. We segmenteren ze naar <strong>omvang</strong> (large / mid / small caps), naar <strong>sector</strong> (technologie, banken, energie…), naar <strong>geografie</strong> (ontwikkelde vs opkomende markten) en naar <strong>stijl</strong>. Die laatste as stelt <em>value</em>-aandelen (goedkoop t.o.v. de fundamentals) tegenover <em>growth</em>-aandelen (hoge verwachte groei) — een onderscheid uitgediept in de module “Stijlen &amp; factorpremies”.</p>
+
+        <p data-lang="fr">La <strong>taille</strong> mérite une mention : historiquement, les petites capitalisations ont offert un rendement supérieur (la « prime de taille », le facteur SMB de Fama-French), mais avec plus de risque et moins de liquidité. Diversifier à travers tailles, secteurs et géographies réduit le risque spécifique sans sacrifier la prime de risque actions.</p>
+        <p data-lang="en">The <strong>size</strong> axis deserves a mention: historically, small caps have delivered a higher return (the “size premium”, Fama-French's SMB factor), but with more risk and less liquidity. Diversifying across sizes, sectors and geographies reduces specific risk without sacrificing the equity risk premium.</p>
+        <p data-lang="nl">De <strong>omvang</strong>-as verdient vermelding: historisch leverden small caps een hoger rendement (de “omvangpremie”, de SMB-factor van Fama-French), maar met meer risico en minder liquiditeit. Diversifiëren over omvang, sectoren en geografieën vermindert het specifieke risico zonder de aandelenrisicopremie op te geven.</p>
+
+        <!-- 4. VALORISATION + INTERACTIF -->
+        <h2 id="valo"><span data-lang="fr">4. Valorisation : le modèle de Gordon</span><span data-lang="en">4. Valuation: the Gordon model</span><span data-lang="nl">4. Waardering: het Gordon-model</span></h2>
+        <p data-lang="fr">Combien vaut une action ? Une réponse fondatrice : elle vaut la <strong>valeur actualisée de ses dividendes futurs</strong>. Si l'on suppose un dividende qui croît à un taux constant <em>g</em>, on obtient la formule de <strong>Gordon-Shapiro</strong> (modèle de croissance des dividendes), d'une simplicité célèbre.</p>
+        <p data-lang="en">What is a share worth? A founding answer: it is worth the <strong>present value of its future dividends</strong>. Assuming a dividend growing at a constant rate <em>g</em>, we obtain the famous <strong>Gordon-Shapiro</strong> formula (dividend growth model).</p>
+        <p data-lang="nl">Wat is een aandeel waard? Een grondleggend antwoord: het is de <strong>contante waarde van zijn toekomstige dividenden</strong> waard. Als we een dividend veronderstellen dat groeit tegen een constante voet <em>g</em>, krijgen we de beroemde <strong>Gordon-Shapiro</strong>-formule (dividendgroeimodel).</p>
+
+        <div class="formula">
+          <div class="eq">P₀ = D₁ / (r − g)</div>
+          <div class="caption" data-lang="fr">P₀ = prix aujourd'hui · D₁ = dividende de l'an prochain · r = rendement exigé · g = taux de croissance du dividende. La formule n'a de sens que si <strong>g &lt; r</strong> (sinon le prix diverge). Elle montre qu'une action est d'autant plus chère que sa croissance approche le rendement exigé — d'où la sensibilité extrême des valeurs de croissance.</div>
+          <div class="caption" data-lang="en">P₀ = price today · D₁ = next year's dividend · r = required return · g = dividend growth rate. The formula only makes sense if <strong>g &lt; r</strong> (otherwise the price diverges). It shows a share is worth more the closer its growth gets to the required return — hence the extreme sensitivity of growth stocks.</div>
+          <div class="caption" data-lang="nl">P₀ = prijs vandaag · D₁ = dividend van volgend jaar · r = vereist rendement · g = dividendgroeivoet. De formule heeft enkel zin als <strong>g &lt; r</strong> (anders divergeert de prijs). Ze toont dat een aandeel meer waard is naarmate zijn groei het vereiste rendement nadert — vandaar de extreme gevoeligheid van groeiaandelen.</div>
+          <div class="caption src">Réf. — Gordon &amp; Shapiro (1956) ; Williams (1938)</div>
+        </div>
+
+        <p data-lang="fr">Le calculateur ci-dessous trace le prix de Gordon en fonction du taux de croissance <em>g</em>, pour un dividende et un rendement exigé donnés. Observez comment le prix <strong>explose</strong> quand <em>g</em> s'approche de <em>r</em> : c'est toute la fragilité de la valorisation des actions de croissance, dont le prix repose sur des hypothèses de croissance lointaines.</p>
+        <p data-lang="en">The calculator below plots the Gordon price against the growth rate <em>g</em>, for a given dividend and required return. Watch how the price <strong>explodes</strong> as <em>g</em> approaches <em>r</em>: this is the whole fragility of valuing growth stocks, whose price rests on distant growth assumptions.</p>
+        <p data-lang="nl">De calculator hieronder zet de Gordon-prijs uit tegen de groeivoet <em>g</em>, voor een gegeven dividend en vereist rendement. Kijk hoe de prijs <strong>explodeert</strong> naarmate <em>g</em> <em>r</em> nadert: dat is de hele kwetsbaarheid van het waarderen van groeiaandelen, waarvan de prijs op verre groeiaannames rust.</p>
+
+        <style>
+          #eq-chart { width:100%; height:auto; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; }
+          #eq-chart .axis { stroke:var(--ink-mute); stroke-width:1.4; }
+          #eq-chart .tick { fill:var(--ink-mute); font-size:10px; font-family:var(--sans); }
+          #eq-chart .lab { fill:var(--ink-soft); font-size:11px; font-family:var(--sans); font-weight:700; }
+          .eq-sliders { display:grid; grid-template-columns:repeat(3,1fr); gap:12px 18px; margin-bottom:16px; }
+          .eq-sliders label { display:block; font-size:12.5px; font-weight:600; color:var(--ink-soft); margin-bottom:4px; }
+          .eq-out { margin-top:14px; font-size:14.5px; color:var(--ink-soft); display:flex; gap:22px; flex-wrap:wrap; }
+          .eq-out b { color:var(--ink); font-family:var(--mono); }
+          @media (max-width:640px){ .eq-sliders { grid-template-columns:1fr 1fr; } }
+        </style>
+
+        <div class="calc">
+          <div class="chead">
+            <h4 data-lang="fr">Calculateur de Gordon — prix d'une action</h4>
+            <h4 data-lang="en">Gordon calculator — share price</h4>
+            <h4 data-lang="nl">Gordon-calculator — aandelenprijs</h4>
+            <p data-lang="fr">P₀ = D₁ / (r − g) · nécessite g &lt; r</p>
+            <p data-lang="en">P₀ = D₁ / (r − g) · requires g &lt; r</p>
+            <p data-lang="nl">P₀ = D₁ / (r − g) · vereist g &lt; r</p>
+          </div>
+          <div class="cbody" style="display:block">
+            <div class="eq-sliders">
+              <div>
+                <label><span data-lang="fr">Dividende D₁ (€)</span><span data-lang="en">Dividend D₁ (€)</span><span data-lang="nl">Dividend D₁ (€)</span></label>
+                <div class="rangewrap"><input type="range" id="eq-d" min="0.5" max="5" step="0.1" value="2"><output id="eq-d-o">2.0</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Rendement exigé r</span><span data-lang="en">Required return r</span><span data-lang="nl">Vereist rendement r</span></label>
+                <div class="rangewrap"><input type="range" id="eq-r" min="4" max="15" step="0.5" value="8"><output id="eq-r-o">8%</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Croissance g</span><span data-lang="en">Growth g</span><span data-lang="nl">Groei g</span></label>
+                <div class="rangewrap"><input type="range" id="eq-g" min="0" max="12" step="0.5" value="3"><output id="eq-g-o">3%</output></div>
+              </div>
+            </div>
+
+            <svg id="eq-chart" viewBox="0 0 520 260" role="img" aria-label="Prix de Gordon en fonction de la croissance"></svg>
+
+            <div class="eq-out">
+              <span><span data-lang="fr">Prix P₀ :</span><span data-lang="en">Price P₀:</span><span data-lang="nl">Prijs P₀:</span> <b id="eq-price">—</b></span>
+              <span><span data-lang="fr">Rendement du dividende (D₁/P₀) :</span><span data-lang="en">Dividend yield (D₁/P₀):</span><span data-lang="nl">Dividendrendement (D₁/P₀):</span> <b id="eq-yield">—</b></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. RÔLE EN PORTEFEUILLE -->
+        <h2 id="role"><span data-lang="fr">5. Le rôle en portefeuille</span><span data-lang="en">5. Role in the portfolio</span><span data-lang="nl">5. Rol in de portefeuille</span></h2>
+        <p data-lang="fr">Dans une allocation, les actions sont le <strong>moteur de performance</strong> de long terme : c'est la classe qui fait croître le capital réel au-delà de l'inflation. En contrepartie, elles imposent d'accepter des reculs marqués à court terme. Leur poids dépend donc surtout de l'<strong>horizon</strong> et de la <strong>tolérance au risque</strong> : plus l'horizon est long, plus l'investisseur peut « encaisser » la volatilité et laisser la prime de risque actions jouer. C'est pourquoi un jeune épargnant en retraite lointaine détient une part d'actions élevée, un retraité une part réduite.</p>
+        <p data-lang="en">In an allocation, equities are the long-term <strong>performance engine</strong>: the class that grows real capital beyond inflation. In return, they require accepting sharp short-term setbacks. Their weight therefore depends mainly on <strong>horizon</strong> and <strong>risk tolerance</strong>: the longer the horizon, the more the investor can absorb volatility and let the equity risk premium work. That is why a young saver with a distant retirement holds a high equity share, a retiree a reduced one.</p>
+        <p data-lang="nl">In een allocatie zijn aandelen de <strong>prestatiemotor</strong> op lange termijn: de klasse die het reële kapitaal boven de inflatie laat groeien. In ruil vereisen ze het aanvaarden van scherpe kortetermijnterugvallen. Hun gewicht hangt dus vooral af van de <strong>horizon</strong> en de <strong>risicotolerantie</strong>: hoe langer de horizon, hoe meer de belegger volatiliteit kan opvangen en de aandelenrisicopremie kan laten werken. Daarom houdt een jonge spaarder met een verre pensionering een hoog aandelenaandeel aan, een gepensioneerde een beperkt aandeel.</p>
+
+        <!-- RESSOURCES -->
+        <h2 id="ressources"><span data-lang="fr">Ressources à télécharger</span><span data-lang="en">Downloadable resources</span><span data-lang="nl">Downloadbare bronnen</span></h2>
+        <div class="downloads">
+          <div class="dl-list">
+            <a class="dl-item" href="@@BASE@@files/am4-actions-fiche.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name" data-lang="fr">Fiche de synthèse — Actions</span><span class="dl-name" data-lang="en">Summary sheet — Equities</span><span class="dl-name" data-lang="nl">Samenvatting — Aandelen</span>
+                <span class="dl-sub">PDF</span>
+              </span>
+            </a>
+            <a class="dl-item" href="@@BASE@@files/am4-actions-donnees.xlsx" download>
+              <span class="dl-ic xls">XLS</span>
+              <span class="dl-meta">
+                <span class="dl-name" data-lang="fr">Données &amp; exercices</span><span class="dl-name" data-lang="en">Data &amp; exercises</span><span class="dl-name" data-lang="nl">Data &amp; oefeningen</span>
+                <span class="dl-sub">Excel</span>
+              </span>
+            </a>
+          </div>
+          <p class="dl-note" data-lang="fr">Les fichiers seront disponibles une fois déposés dans le dossier <code>public/files/</code>.</p>
+          <p class="dl-note" data-lang="en">Files will be available once placed in the <code>public/files/</code> folder.</p>
+          <p class="dl-note" data-lang="nl">Bestanden komen beschikbaar zodra ze in de map <code>public/files/</code> staan.</p>
+        </div>
+
+        <!-- 6. À RETENIR -->
+        <h2 id="retenir"><span data-lang="fr">6. À retenir</span><span data-lang="en">6. Key takeaways</span><span data-lang="nl">6. Onthouden</span></h2>
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">L'essentiel</span><span class="clabel" data-lang="en">The essentials</span><span class="clabel" data-lang="nl">De kern</span>
+          <span data-lang="fr">Une action est un titre de propriété (créancier résiduel), pas une créance. Son rendement = dividende + plus-value. Sur le long terme elle offre le rendement réel le plus élevé (prime de risque actions ≈ 5–7 % réel), au prix d'une volatilité de 15–20 % et de drawdowns sévères. On distingue risque de marché (systématique, bêta) et risque spécifique (diversifiable). On segmente par taille, secteur, géographie, style (value/growth). La valorisation de Gordon P₀ = D₁/(r−g) exige g &lt; r et explose quand g → r (fragilité des valeurs de croissance). En portefeuille, les actions sont le moteur de performance long terme : leur poids suit l'horizon et la tolérance au risque.</span>
+          <span data-lang="en">A share is a title of ownership (residual claimant), not a debt. Its return = dividend + capital gain. Over the long run it offers the highest real return (equity risk premium ≈ 5–7% real), at the cost of 15–20% volatility and severe drawdowns. We distinguish market risk (systematic, beta) from specific risk (diversifiable). We segment by size, sector, geography, style (value/growth). Gordon valuation P₀ = D₁/(r−g) requires g &lt; r and explodes as g → r (the fragility of growth stocks). In a portfolio, equities are the long-term performance engine: their weight follows horizon and risk tolerance.</span>
+          <span data-lang="nl">Een aandeel is een eigendomstitel (residuele schuldeiser), geen schuld. Het rendement = dividend + meerwaarde. Op lange termijn biedt het het hoogste reële rendement (aandelenrisicopremie ≈ 5–7% reëel), tegen de prijs van 15–20% volatiliteit en zware drawdowns. We onderscheiden marktrisico (systematisch, bèta) van specifiek risico (diversifieerbaar). We segmenteren naar omvang, sector, geografie, stijl (value/growth). Gordon-waardering P₀ = D₁/(r−g) vereist g &lt; r en explodeert als g → r (de kwetsbaarheid van groeiaandelen). In een portefeuille zijn aandelen de langetermijnprestatiemotor: hun gewicht volgt de horizon en de risicotolerantie.</span>
+        </div>
+
+        <!-- 7. QCM -->
+        <h2 id="qcm"><span data-lang="fr">7. QCM — 15 questions</span><span data-lang="en">7. MCQ — 15 questions</span><span data-lang="nl">7. MCV — 15 vragen</span></h2>
+        <div class="quiz">
+          <h4 data-lang="fr">Auto-évaluation</h4><h4 data-lang="en">Self-assessment</h4><h4 data-lang="nl">Zelfevaluatie</h4>
+          <p class="qsub" data-lang="fr">Cliquez sur une réponse : la bonne s'affiche en vert et la justification apparaît.</p>
+          <p class="qsub" data-lang="en">Click an answer: the correct one turns green and the justification appears.</p>
+          <p class="qsub" data-lang="nl">Klik op een antwoord: het juiste kleurt groen en de verantwoording verschijnt.</p>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">1. Une action représente…</div>
+            <div class="qtext" data-lang="en">1. A share represents…</div>
+            <div class="qtext" data-lang="nl">1. Een aandeel vertegenwoordigt…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Une part de propriété de l'entreprise.</span><span data-lang="en">A slice of ownership of the company.</span><span data-lang="nl">Een deel van de eigendom van de onderneming.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Un prêt accordé à l'entreprise.</span><span data-lang="en">A loan made to the company.</span><span data-lang="nl">Een lening aan de onderneming.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une garantie de dividende fixe.</span><span data-lang="en">A guarantee of a fixed dividend.</span><span data-lang="nl">Een garantie van een vast dividend.</span></button>
+            <div class="explain"><span data-lang="fr">✔ L'actionnaire est copropriétaire, pas prêteur (ça, c'est l'obligataire). Le dividende n'est jamais garanti.</span><span data-lang="en">✔ The shareholder is a co-owner, not a lender (that's the bondholder). The dividend is never guaranteed.</span><span data-lang="nl">✔ De aandeelhouder is mede-eigenaar, geen kredietverstrekker (dat is de obligatiehouder). Het dividend is nooit gegarandeerd.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">2. En cas de faillite, l'actionnaire est payé…</div>
+            <div class="qtext" data-lang="en">2. In bankruptcy, the shareholder is paid…</div>
+            <div class="qtext" data-lang="nl">2. Bij faillissement wordt de aandeelhouder betaald…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">En premier, avant les créanciers.</span><span data-lang="en">First, before creditors.</span><span data-lang="nl">Eerst, vóór de schuldeisers.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">En même temps que l'État.</span><span data-lang="en">At the same time as the state.</span><span data-lang="nl">Tegelijk met de staat.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">En dernier (créancier résiduel).</span><span data-lang="en">Last (residual claimant).</span><span data-lang="nl">Als laatste (residuele schuldeiser).</span></button>
+            <div class="explain"><span data-lang="fr">✔ L'actionnaire est créancier résiduel : il touche ce qui reste après tous les autres — souvent rien. C'est le revers de son potentiel illimité.</span><span data-lang="en">✔ The shareholder is the residual claimant: they get what's left after everyone else — often nothing. It's the flip side of unlimited upside.</span><span data-lang="nl">✔ De aandeelhouder is residuele schuldeiser: hij krijgt wat overblijft na alle anderen — vaak niets. Het is de keerzijde van onbeperkt opwaarts potentieel.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">3. Le rendement total d'une action combine…</div>
+            <div class="qtext" data-lang="en">3. A share's total return combines…</div>
+            <div class="qtext" data-lang="nl">3. Het totaalrendement van een aandeel combineert…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Uniquement le dividende.</span><span data-lang="en">Only the dividend.</span><span data-lang="nl">Alleen het dividend.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le dividende et la plus-value.</span><span data-lang="en">The dividend and the capital gain.</span><span data-lang="nl">Het dividend en de meerwaarde.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Uniquement la plus-value.</span><span data-lang="en">Only the capital gain.</span><span data-lang="nl">Alleen de meerwaarde.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Rendement total = (dividende + variation du prix) / prix initial. Une action sans dividende ne rapporte que par la plus-value.</span><span data-lang="en">✔ Total return = (dividend + price change) / initial price. A non-dividend stock only pays through the capital gain.</span><span data-lang="nl">✔ Totaalrendement = (dividend + prijsverandering) / beginprijs. Een aandeel zonder dividend levert enkel op via de meerwaarde.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">4. La « prime de risque actions » (ERP) désigne…</div>
+            <div class="qtext" data-lang="en">4. The “equity risk premium” (ERP) is…</div>
+            <div class="qtext" data-lang="nl">4. De “aandelenrisicopremie” (ERP) is…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le rendement des actions au-delà de l'actif sans risque.</span><span data-lang="en">The return of equities above the risk-free asset.</span><span data-lang="nl">Het rendement van aandelen boven het risicovrije actief.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le dividende moyen du marché.</span><span data-lang="en">The market's average dividend.</span><span data-lang="nl">Het gemiddelde dividend van de markt.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le coût de courtage d'une action.</span><span data-lang="en">The brokerage cost of a share.</span><span data-lang="nl">De makelaarskosten van een aandeel.</span></button>
+            <div class="explain"><span data-lang="fr">✔ L'ERP = rendement attendu des actions − taux sans risque : la compensation pour supporter le risque actions (≈ 5–7 % réel sur le long terme).</span><span data-lang="en">✔ ERP = expected equity return − risk-free rate: the compensation for bearing equity risk (≈ 5–7% real over the long run).</span><span data-lang="nl">✔ ERP = verwacht aandelenrendement − risicovrije rente: de vergoeding voor het dragen van aandelenrisico (≈ 5–7% reëel op lange termijn).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">5. La volatilité annuelle typique d'un indice actions large est de l'ordre de…</div>
+            <div class="qtext" data-lang="en">5. The typical annual volatility of a broad equity index is around…</div>
+            <div class="qtext" data-lang="nl">5. De typische jaarvolatiliteit van een brede aandelenindex ligt rond…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">1–2 %.</span><span data-lang="en">1–2%.</span><span data-lang="nl">1–2%.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">60–80 %.</span><span data-lang="en">60–80%.</span><span data-lang="nl">60–80%.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">15–20 %.</span><span data-lang="en">15–20%.</span><span data-lang="nl">15–20%.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Un indice large tourne autour de 15–20 % de vol annuelle, avec des pics en crise. Une action isolée est bien plus volatile.</span><span data-lang="en">✔ A broad index runs around 15–20% annual vol, spiking in crises. A single stock is far more volatile.</span><span data-lang="nl">✔ Een brede index draait rond 15–20% jaarvol, met pieken in crisissen. Een enkel aandeel is veel volatieler.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">6. La formule de Gordon-Shapiro s'écrit…</div>
+            <div class="qtext" data-lang="en">6. The Gordon-Shapiro formula is written…</div>
+            <div class="qtext" data-lang="nl">6. De Gordon-Shapiro-formule wordt geschreven…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">P₀ = D₁ × (r − g).</span><span data-lang="en">P₀ = D₁ × (r − g).</span><span data-lang="nl">P₀ = D₁ × (r − g).</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">P₀ = D₁ / (r − g).</span><span data-lang="en">P₀ = D₁ / (r − g).</span><span data-lang="nl">P₀ = D₁ / (r − g).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">P₀ = D₁ / (r + g).</span><span data-lang="en">P₀ = D₁ / (r + g).</span><span data-lang="nl">P₀ = D₁ / (r + g).</span></button>
+            <div class="explain"><span data-lang="fr">✔ P₀ = D₁/(r−g) : la valeur actualisée d'un dividende croissant à taux constant g, avec r le rendement exigé.</span><span data-lang="en">✔ P₀ = D₁/(r−g): the present value of a dividend growing at constant rate g, with r the required return.</span><span data-lang="nl">✔ P₀ = D₁/(r−g): de contante waarde van een dividend dat groeit tegen constante voet g, met r het vereiste rendement.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">7. Dans le modèle de Gordon, si g se rapproche de r, le prix…</div>
+            <div class="qtext" data-lang="en">7. In the Gordon model, as g approaches r, the price…</div>
+            <div class="qtext" data-lang="nl">7. In het Gordon-model, naarmate g r nadert, doet de prijs…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Explose (tend vers l'infini).</span><span data-lang="en">Explodes (tends to infinity).</span><span data-lang="nl">Exploderen (naar oneindig neigen).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Tend vers zéro.</span><span data-lang="en">Tends to zero.</span><span data-lang="nl">Naar nul neigen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Reste constant.</span><span data-lang="en">Stays constant.</span><span data-lang="nl">Constant blijven.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le dénominateur (r−g) → 0, donc P₀ → ∞. C'est pourquoi les valeurs de forte croissance sont si sensibles aux hypothèses et aux taux.</span><span data-lang="en">✔ The denominator (r−g) → 0, so P₀ → ∞. That's why high-growth stocks are so sensitive to assumptions and to rates.</span><span data-lang="nl">✔ De noemer (r−g) → 0, dus P₀ → ∞. Daarom zijn groeiaandelen zo gevoelig voor aannames en rentes.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">8. Le modèle de Gordon n'est valable que si…</div>
+            <div class="qtext" data-lang="en">8. The Gordon model is only valid if…</div>
+            <div class="qtext" data-lang="nl">8. Het Gordon-model is enkel geldig als…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">g &gt; r.</span><span data-lang="en">g &gt; r.</span><span data-lang="nl">g &gt; r.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">g = r.</span><span data-lang="en">g = r.</span><span data-lang="nl">g = r.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">g &lt; r.</span><span data-lang="en">g &lt; r.</span><span data-lang="nl">g &lt; r.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Si g ≥ r, la formule donne un prix négatif ou infini — économiquement absurde. Une croissance ne peut dépasser durablement le rendement exigé.</span><span data-lang="en">✔ If g ≥ r, the formula gives a negative or infinite price — economically absurd. Growth cannot sustainably exceed the required return.</span><span data-lang="nl">✔ Als g ≥ r geeft de formule een negatieve of oneindige prijs — economisch absurd. Groei kan het vereiste rendement niet duurzaam overtreffen.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">9. Un ratio cours/bénéfice (P/E) élevé signifie généralement que…</div>
+            <div class="qtext" data-lang="en">9. A high price/earnings (P/E) ratio generally means that…</div>
+            <div class="qtext" data-lang="nl">9. Een hoge koers/winst (P/E)-verhouding betekent doorgaans dat…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">L'action verse toujours un gros dividende.</span><span data-lang="en">The stock always pays a large dividend.</span><span data-lang="nl">Het aandeel altijd een groot dividend uitkeert.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">L'action est chère par euro de bénéfice — souvent une forte croissance attendue.</span><span data-lang="en">The stock is expensive per euro of earnings — often high expected growth.</span><span data-lang="nl">Het aandeel duur is per euro winst — vaak hoge verwachte groei.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">L'entreprise est en faillite.</span><span data-lang="en">The company is bankrupt.</span><span data-lang="nl">De onderneming failliet is.</span></button>
+            <div class="explain"><span data-lang="fr">✔ P/E = prix / bénéfice par action. Élevé = on paie cher chaque euro de profit, généralement parce qu'on anticipe une forte croissance (titre « growth »).</span><span data-lang="en">✔ P/E = price / earnings per share. High = paying a lot for each euro of profit, usually because high growth is expected (“growth” stock).</span><span data-lang="nl">✔ P/E = prijs / winst per aandeel. Hoog = veel betalen voor elke euro winst, meestal omdat hoge groei wordt verwacht (“growth”-aandeel).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">10. La « prime de taille » (facteur SMB) suggère qu'historiquement…</div>
+            <div class="qtext" data-lang="en">10. The “size premium” (SMB factor) suggests that historically…</div>
+            <div class="qtext" data-lang="nl">10. De “omvangpremie” (SMB-factor) suggereert dat historisch…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Les petites capitalisations ont offert un rendement supérieur (avec plus de risque).</span><span data-lang="en">Small caps delivered a higher return (with more risk).</span><span data-lang="nl">Small caps een hoger rendement leverden (met meer risico).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les grandes capitalisations rapportent le plus.</span><span data-lang="en">Large caps return the most.</span><span data-lang="nl">Large caps het meest opbrengen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La taille n'a aucun effet sur le rendement.</span><span data-lang="en">Size has no effect on return.</span><span data-lang="nl">Omvang geen effect heeft op rendement.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le facteur SMB (Small Minus Big) de Fama-French : les petites capitalisations ont surperformé en moyenne, en échange de plus de risque et de moins de liquidité.</span><span data-lang="en">✔ Fama-French's SMB (Small Minus Big) factor: small caps outperformed on average, in exchange for more risk and less liquidity.</span><span data-lang="nl">✔ De SMB (Small Minus Big)-factor van Fama-French: small caps presteerden gemiddeld beter, in ruil voor meer risico en minder liquiditeit.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">11. Les titres « value » se caractérisent par…</div>
+            <div class="qtext" data-lang="en">11. “Value” stocks are characterised by…</div>
+            <div class="qtext" data-lang="nl">11. “Value”-aandelen worden gekenmerkt door…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une croissance des bénéfices très élevée.</span><span data-lang="en">Very high earnings growth.</span><span data-lang="nl">Zeer hoge winstgroei.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">L'absence totale de risque.</span><span data-lang="en">A total absence of risk.</span><span data-lang="nl">Een totale afwezigheid van risico.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Un prix bas par rapport à leurs fondamentaux.</span><span data-lang="en">A low price relative to their fundamentals.</span><span data-lang="nl">Een lage prijs t.o.v. hun fundamentals.</span></button>
+            <div class="explain"><span data-lang="fr">✔ « Value » = bon marché (P/E, P/B faibles) ; « growth » = forte croissance attendue (multiples élevés). Voir le module Styles &amp; facteurs.</span><span data-lang="en">✔ “Value” = cheap (low P/E, P/B); “growth” = high expected growth (high multiples). See the Styles &amp; factors module.</span><span data-lang="nl">✔ “Value” = goedkoop (lage P/E, P/B); “growth” = hoge verwachte groei (hoge multiples). Zie de module Stijlen &amp; factoren.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">12. Le risque « spécifique » d'une action (propre à l'entreprise) est…</div>
+            <div class="qtext" data-lang="en">12. The “specific” risk of a stock (firm-specific) is…</div>
+            <div class="qtext" data-lang="nl">12. Het “specifieke” risico van een aandeel (ondernemingsspecifiek) is…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Non diversifiable.</span><span data-lang="en">Non-diversifiable.</span><span data-lang="nl">Niet-diversifieerbaar.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Diversifiable en détenant de nombreux titres.</span><span data-lang="en">Diversifiable by holding many names.</span><span data-lang="nl">Diversifieerbaar door veel namen aan te houden.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le même pour toutes les entreprises.</span><span data-lang="en">The same for all companies.</span><span data-lang="nl">Hetzelfde voor alle ondernemingen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le risque spécifique se dilue dans un portefeuille diversifié ; seul le risque de marché (systématique, bêta) subsiste et est rémunéré.</span><span data-lang="en">✔ Specific risk dilutes away in a diversified portfolio; only market risk (systematic, beta) remains and is rewarded.</span><span data-lang="nl">✔ Specifiek risico verdunt in een gediversifieerde portefeuille; enkel marktrisico (systematisch, bèta) blijft en wordt beloond.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">13. Sur le long terme, par rapport aux obligations et au monétaire, les actions ont historiquement…</div>
+            <div class="qtext" data-lang="en">13. Over the long run, compared with bonds and cash, equities have historically…</div>
+            <div class="qtext" data-lang="nl">13. Op lange termijn, vergeleken met obligaties en cash, hebben aandelen historisch…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le rendement réel le plus élevé, avec le plus de risque.</span><span data-lang="en">The highest real return, with the most risk.</span><span data-lang="nl">Het hoogste reële rendement, met het meeste risico.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le rendement réel le plus faible.</span><span data-lang="en">The lowest real return.</span><span data-lang="nl">Het laagste reële rendement.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Un rendement garanti chaque année.</span><span data-lang="en">A guaranteed return every year.</span><span data-lang="nl">Een gegarandeerd rendement elk jaar.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Les études longues (Dimson-Marsh-Staunton) confirment : les actions dominent en rendement réel sur des décennies, au prix de la plus forte variabilité.</span><span data-lang="en">✔ Long studies (Dimson-Marsh-Staunton) confirm: equities dominate in real return over decades, at the cost of the highest variability.</span><span data-lang="nl">✔ Lange studies (Dimson-Marsh-Staunton) bevestigen: aandelen domineren in reëel rendement over decennia, tegen de prijs van de hoogste variabiliteit.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">14. Le poids des actions dans une allocation dépend surtout…</div>
+            <div class="qtext" data-lang="en">14. The weight of equities in an allocation depends mainly on…</div>
+            <div class="qtext" data-lang="nl">14. Het gewicht van aandelen in een allocatie hangt vooral af van…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La couleur préférée de l'investisseur.</span><span data-lang="en">The investor's favourite colour.</span><span data-lang="nl">De favoriete kleur van de belegger.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Du seul niveau des taux d'intérêt.</span><span data-lang="en">Interest-rate levels alone.</span><span data-lang="nl">Enkel het renteniveau.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">De l'horizon et de la tolérance au risque.</span><span data-lang="en">Horizon and risk tolerance.</span><span data-lang="nl">De horizon en de risicotolerantie.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Plus l'horizon est long et la tolérance au risque élevée, plus la part d'actions peut être grande — le temps permet d'encaisser la volatilité.</span><span data-lang="en">✔ The longer the horizon and the higher the risk tolerance, the larger the equity share can be — time lets one absorb volatility.</span><span data-lang="nl">✔ Hoe langer de horizon en hoe hoger de risicotolerantie, hoe groter het aandelenaandeel kan zijn — tijd laat toe volatiliteit op te vangen.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">15. Pourquoi détient-on rarement une seule action ?</div>
+            <div class="qtext" data-lang="en">15. Why does one rarely hold a single stock?</div>
+            <div class="qtext" data-lang="nl">15. Waarom houdt men zelden één enkel aandeel aan?</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Parce que c'est interdit par la loi.</span><span data-lang="en">Because it is forbidden by law.</span><span data-lang="nl">Omdat het bij wet verboden is.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Pour diversifier le risque spécifique, non rémunéré.</span><span data-lang="en">To diversify away specific risk, which is not rewarded.</span><span data-lang="nl">Om het specifieke risico weg te diversifiëren, dat niet beloond wordt.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Parce qu'une seule action ne verse jamais de dividende.</span><span data-lang="en">Because a single stock never pays a dividend.</span><span data-lang="nl">Omdat één aandeel nooit dividend uitkeert.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Concentrer sur un titre expose au risque spécifique (faillite, scandale) que le marché ne rémunère pas — la diversification l'élimine presque gratuitement.</span><span data-lang="en">✔ Concentrating in one name exposes you to specific risk (bankruptcy, scandal) that the market does not reward — diversification removes it almost for free.</span><span data-lang="nl">✔ Concentreren op één naam stelt je bloot aan specifiek risico (faillissement, schandaal) dat de markt niet beloont — diversificatie verwijdert het bijna gratis.</span></div>
+          </div>
+        </div>
+
+        <!-- 8. EXERCICES -->
+        <h2 id="exercices"><span data-lang="fr">8. Exercices chiffrés</span><span data-lang="en">8. Numerical exercises</span><span data-lang="nl">8. Cijferoefeningen</span></h2>
+        <p data-lang="fr">Réponses courtes à révéler ; corrigés détaillés sur la page « Solutions ».</p>
+        <p data-lang="en">Short answers to reveal; full solutions on the “Solutions” page.</p>
+        <p data-lang="nl">Korte antwoorden te onthullen; uitgewerkte oplossingen op de “Oplossingen”-pagina.</p>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice EQ-1</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Vous achetez une action 100 €, touchez 3 € de dividende et la revendez 112 €. Quel est le rendement total ?</p>
+          <p class="estatement" data-lang="en">You buy a share for €100, receive a €3 dividend and sell it for €112. What is the total return?</p>
+          <p class="estatement" data-lang="nl">U koopt een aandeel voor €100, ontvangt €3 dividend en verkoopt het voor €112. Wat is het totaalrendement?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">R = (112 − 100 + 3) / 100 = 15/100 = <b>15 %</b> (12 % de plus-value + 3 % de rendement du dividende).</div>
+            <div class="ans" data-lang="en">R = (112 − 100 + 3) / 100 = 15/100 = <b>15%</b> (12% capital gain + 3% dividend yield).</div>
+            <div class="ans" data-lang="nl">R = (112 − 100 + 3) / 100 = 15/100 = <b>15%</b> (12% meerwaarde + 3% dividendrendement).</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice EQ-2</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Le rendement attendu des actions est de 9 % et le taux sans risque de 3 %. Quelle est la prime de risque actions ?</p>
+          <p class="estatement" data-lang="en">The expected equity return is 9% and the risk-free rate 3%. What is the equity risk premium?</p>
+          <p class="estatement" data-lang="nl">Het verwachte aandelenrendement is 9% en de risicovrije rente 3%. Wat is de aandelenrisicopremie?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">ERP = 9 % − 3 % = <b>6 %</b>.</div>
+            <div class="ans" data-lang="en">ERP = 9% − 3% = <b>6%</b>.</div>
+            <div class="ans" data-lang="nl">ERP = 9% − 3% = <b>6%</b>.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice EQ-3</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Une action versera 2,50 € de dividende l'an prochain, avec une croissance attendue de 4 % et un rendement exigé de 9 %. Quelle est sa valeur selon Gordon ?</p>
+          <p class="estatement" data-lang="en">A share will pay a €2.50 dividend next year, with expected growth of 4% and a required return of 9%. What is its Gordon value?</p>
+          <p class="estatement" data-lang="nl">Een aandeel keert volgend jaar €2,50 dividend uit, met verwachte groei van 4% en een vereist rendement van 9%. Wat is de Gordon-waarde?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">P₀ = D₁/(r−g) = 2,50 / (0,09 − 0,04) = 2,50 / 0,05 = <b>50 €</b>.</div>
+            <div class="ans" data-lang="en">P₀ = D₁/(r−g) = 2.50 / (0.09 − 0.04) = 2.50 / 0.05 = <b>€50</b>.</div>
+            <div class="ans" data-lang="nl">P₀ = D₁/(r−g) = 2,50 / (0,09 − 0,04) = 2,50 / 0,05 = <b>€50</b>.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice EQ-4</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Reprenez EQ-3, mais la croissance attendue passe de 4 % à 5 %. Quel est le nouveau prix, et de combien varie-t-il ?</p>
+          <p class="estatement" data-lang="en">Take EQ-3, but expected growth rises from 4% to 5%. What is the new price, and by how much does it change?</p>
+          <p class="estatement" data-lang="nl">Neem EQ-3, maar de verwachte groei stijgt van 4% naar 5%. Wat is de nieuwe prijs, en hoeveel verandert hij?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">P₀ = 2,50 / (0,09 − 0,05) = 2,50 / 0,04 = <b>62,50 €</b>, soit <b>+25 %</b> pour seulement +1 pt de croissance : la sensibilité explose près de r.</div>
+            <div class="ans" data-lang="en">P₀ = 2.50 / (0.09 − 0.05) = 2.50 / 0.04 = <b>€62.50</b>, i.e. <b>+25%</b> for just +1 pt of growth: sensitivity explodes near r.</div>
+            <div class="ans" data-lang="nl">P₀ = 2,50 / (0,09 − 0,05) = 2,50 / 0,04 = <b>€62,50</b>, oftewel <b>+25%</b> voor slechts +1 pt groei: de gevoeligheid explodeert nabij r.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice EQ-5</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Une action cote 40 € et son bénéfice par action est de 2,50 €. Calculez le P/E et le rendement des bénéfices (earnings yield).</p>
+          <p class="estatement" data-lang="en">A share trades at €40 and its earnings per share is €2.50. Compute the P/E and the earnings yield.</p>
+          <p class="estatement" data-lang="nl">Een aandeel noteert €40 en de winst per aandeel is €2,50. Bereken de P/E en het winstrendement (earnings yield).</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">P/E = 40 / 2,50 = <b>16</b>. Earnings yield = 1/16 = <b>6,25 %</b> (l'inverse du P/E).</div>
+            <div class="ans" data-lang="en">P/E = 40 / 2.50 = <b>16</b>. Earnings yield = 1/16 = <b>6.25%</b> (the inverse of the P/E).</div>
+            <div class="ans" data-lang="nl">P/E = 40 / 2,50 = <b>16</b>. Earnings yield = 1/16 = <b>6,25%</b> (de inverse van de P/E).</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice EQ-6</span><span class="diff" data-lang="fr">Réflexion</span><span class="diff" data-lang="en">Conceptual</span><span class="diff" data-lang="nl">Reflectie</span></div>
+          <p class="estatement" data-lang="fr">Malgré une volatilité de 15–20 %, pourquoi conseille-t-on aux jeunes épargnants une part d'actions élevée ?</p>
+          <p class="estatement" data-lang="en">Despite 15–20% volatility, why are young savers advised to hold a high equity share?</p>
+          <p class="estatement" data-lang="nl">Ondanks 15–20% volatiliteit, waarom wordt jonge spaarders een hoog aandelenaandeel aangeraden?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Parce que l'<b>horizon long</b> change tout : sur des décennies, la prime de risque actions tend à dominer la volatilité de court terme, la probabilité de perte diminue, et un horizon lointain permet de <b>traverser les drawdowns sans vendre au pire moment</b>. Le jeune épargnant a le temps de « laisser travailler » les actions ; le retraité, non (risque de devoir vendre en baisse). Nuance : ce n'est pas une garantie — le risque de séquence des rendements subsiste.</div>
+            <div class="ans" data-lang="en">Because the <b>long horizon</b> changes everything: over decades, the equity risk premium tends to dominate short-term volatility, the probability of loss falls, and a distant horizon lets one <b>ride out drawdowns without selling at the worst moment</b>. The young saver has time to “let equities work”; the retiree does not (risk of having to sell in a downturn). Caveat: it is no guarantee — sequence-of-returns risk remains.</div>
+            <div class="ans" data-lang="nl">Omdat de <b>lange horizon</b> alles verandert: over decennia domineert de aandelenrisicopremie doorgaans de kortetermijnvolatiliteit, daalt de kans op verlies, en laat een verre horizon toe <b>drawdowns te doorstaan zonder op het slechtste moment te verkopen</b>. De jonge spaarder heeft tijd om aandelen te “laten werken”; de gepensioneerde niet (risico te moeten verkopen in een daling). Nuance: het is geen garantie — sequentierisico van rendementen blijft.</div>
+          </details>
+        </div>
+
+        <section class="biblio">
+          <h2 id="biblio"><span data-lang="fr">Bibliographie &amp; pour aller plus loin</span><span data-lang="en">Bibliography &amp; further reading</span><span data-lang="nl">Bibliografie &amp; verder lezen</span></h2>
+          <div class="bcol">
+            <h4 data-lang="fr">Références</h4><h4 data-lang="en">References</h4><h4 data-lang="nl">Referenties</h4>
+            <ol>
+      <li>Williams, J. B. (1938). <em>The Theory of Investment Value</em>. Harvard University Press.</li>
+      <li>Gordon, M. J. &amp; Shapiro, E. (1956). Capital Equipment Analysis: The Required Rate of Profit. <em>Management Science</em>, 3(1), 102–110. <a href="https://doi.org/10.1287/mnsc.3.1.102" target="_blank" rel="noopener">doi:10.1287/mnsc.3.1.102</a></li>
+      <li>Fama, E. F. &amp; French, K. R. (1993). Common Risk Factors in the Returns on Stocks and Bonds. <em>Journal of Financial Economics</em>, 33(1), 3–56. <a href="https://doi.org/10.1016/0304-405X(93)90023-5" target="_blank" rel="noopener">doi:10.1016/0304-405X(93)90023-5</a></li>
+      <li>Dimson, E., Marsh, P. &amp; Staunton, M. (2002). <em>Triumph of the Optimists: 101 Years of Global Investment Returns</em>. Princeton University Press.</li>
+      <li>Bodie, Z., Kane, A. &amp; Marcus, A. (2018). <em>Investments</em> (11th ed.), ch. sur les actions. McGraw-Hill.</li>
+            </ol>
+          </div>
+          <div class="bcol">
+            <h4 data-lang="fr">Pour aller plus loin</h4><h4 data-lang="en">Further reading</h4><h4 data-lang="nl">Verder lezen</h4>
+            <ul>
+      <li><a href="am4-classes-actifs.html"><span data-lang="fr">← Retour au module « Classes d'actifs »</span><span data-lang="en">← Back to the “Asset classes” module</span><span data-lang="nl">← Terug naar de module “Activaklassen”</span></a></li>
+      <li>Investopedia — <a href="https://www.investopedia.com/terms/s/stock.asp" target="_blank" rel="noopener">Stock</a> · <a href="https://www.investopedia.com/terms/g/gordongrowthmodel.asp" target="_blank" rel="noopener">Gordon Growth Model</a> · <a href="https://www.investopedia.com/terms/e/equityriskpremium.asp" target="_blank" rel="noopener">Equity Risk Premium</a>.</li>
+      <li>Credit Suisse / UBS — <em>Global Investment Returns Yearbook</em> (Dimson-Marsh-Staunton, mis à jour chaque année).</li>
+            </ul>
+          </div>
+        </section>
+
+        <div class="module-nav">
+          <a class="prev" href="am4-classes-actifs.html">
+            <div class="dir" data-lang="fr">← Module parent</div><div class="dir" data-lang="en">← Parent module</div><div class="dir" data-lang="nl">← Bovenliggende module</div>
+            <div class="tt" data-lang="fr">Les classes d'actifs</div><div class="tt" data-lang="en">Asset classes</div><div class="tt" data-lang="nl">Activaklassen</div>
+          </a>
+          <a class="next" href="am4-obligations.html">
+            <div class="dir" data-lang="fr">Classe suivante →</div><div class="dir" data-lang="en">Next class →</div><div class="dir" data-lang="nl">Volgende klasse →</div>
+            <div class="tt" data-lang="fr">Les obligations</div><div class="tt" data-lang="en">Bonds</div><div class="tt" data-lang="nl">Obligaties</div>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap foot">
+    <div class="brand"><span class="logo">Avenir<b>.</b></span></div>
+    <p data-lang="fr">Asset Management · Classes d'actifs · Actions</p>
+    <p data-lang="en">Asset Management · Asset classes · Equities</p>
+    <p data-lang="nl">Asset Management · Activaklassen · Aandelen</p>
+  </div>
+</footer>
+
+<script src="../assets/script.js"></script>
+<script>
+/* Modèle de Gordon : prix d'une action P = D1/(r-g) en fonction de g */
+(function () {
+  var svg = document.getElementById("eq-chart");
+  if (!svg) return;
+  function v(id){ return parseFloat(document.getElementById(id).value); }
+  function setT(id,t){ var e=document.getElementById(id); if(e) e.textContent=t; }
+  function al(){ return document.body.getAttribute("data-active-lang")||"fr"; }
+
+  function draw(){
+    var D=v("eq-d"), r=v("eq-r")/100, g=v("eq-g")/100;
+    setT("eq-d-o", D.toFixed(1)); setT("eq-r-o",(r*100).toFixed(1)+"%"); setT("eq-g-o",(g*100).toFixed(1)+"%");
+    var price = (g<r) ? D/(r-g) : NaN;
+    if (isFinite(price)) { setT("eq-price", price.toFixed(2)+" €"); setT("eq-yield",(D/price*100).toFixed(2)+"%"); }
+    else { setT("eq-price", (al()==="en"?"undefined (g ≥ r)":(al()==="nl"?"ongedefinieerd (g ≥ r)":"non défini (g ≥ r)"))); setT("eq-yield","—"); }
+
+    var W=520,H=260,L=44,R=14,T=14,B=32, pw=W-L-R, ph=H-T-B;
+    var gmax = r - 0.003;                 // g juste en dessous de r
+    var xmin=0, xmax=Math.max(0.12, r+0.02);
+    // prix max pour l'échelle : cap au prix à g = r-1%
+    var pcap = D/Math.max(0.01, (r-(r-0.01)));  // = D/0.01
+    var ymax = Math.min(D/0.01, D/(r-Math.min(g, r-0.005))*1.3);
+    ymax = Math.max(ymax, D/(r- (r-0.02)) ); // au moins jusqu'à g=r-2%
+    if (!isFinite(ymax) || ymax<=0) ymax = D/0.02;
+    ymax = Math.min(ymax, D/0.005);       // plafond dur
+    function px(x){ return L + (x-xmin)/(xmax-xmin)*pw; }
+    function py(y){ return T + (1-Math.min(y,ymax)/ymax)*ph; }
+
+    var g2="";
+    // axes
+    g2+='<line class="axis" x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+(T+ph)+'"/>';
+    g2+='<line class="axis" x1="'+L+'" y1="'+(T+ph)+'" x2="'+(L+pw)+'" y2="'+(T+ph)+'"/>';
+    // courbe P(g) pour g de 0 à gmax
+    var N=120, d="";
+    for (var i=0;i<=N;i++){
+      var gg = xmin + (gmax-xmin)*i/N;
+      var pp = D/(r-gg);
+      if (pp>ymax*1.05) { d += " M "+px(gg).toFixed(1)+","+py(ymax).toFixed(1); continue; }
+      d += (d===""?"M ":" L ")+px(gg).toFixed(1)+","+py(pp).toFixed(1);
+    }
+    g2+='<path d="'+d+'" fill="none" stroke="var(--teal)" stroke-width="2.6"/>';
+    // asymptote g=r
+    g2+='<line x1="'+px(r).toFixed(1)+'" y1="'+T+'" x2="'+px(r).toFixed(1)+'" y2="'+(T+ph)+'" stroke="var(--crimson)" stroke-width="1.4" stroke-dasharray="4 3"/>';
+    g2+='<text class="lab" x="'+(px(r)-4).toFixed(1)+'" y="'+(T+12)+'" text-anchor="end" fill="var(--crimson)">g = r</text>';
+    // point courant
+    if (g<r && isFinite(price)){
+      g2+='<circle cx="'+px(g).toFixed(1)+'" cy="'+py(price).toFixed(1)+'" r="4" fill="var(--ink)"/>';
+      g2+='<line class="axis" x1="'+px(g).toFixed(1)+'" y1="'+py(price).toFixed(1)+'" x2="'+px(g).toFixed(1)+'" y2="'+(T+ph)+'" stroke-dasharray="3 3" stroke-width="1"/>';
+    }
+    // ticks x
+    g2+='<text class="tick" x="'+L+'" y="'+(H-16)+'" text-anchor="start">0%</text>';
+    g2+='<text class="tick" x="'+(L+pw)+'" y="'+(H-16)+'" text-anchor="end">'+(xmax*100).toFixed(0)+'%</text>';
+    // ticks y
+    g2+='<text class="tick" x="'+(L-6)+'" y="'+(py(ymax)+4).toFixed(1)+'" text-anchor="end">'+ymax.toFixed(0)+'</text>';
+    g2+='<text class="tick" x="'+(L-6)+'" y="'+(py(0)+0).toFixed(1)+'" text-anchor="end">0</text>';
+    var xlab = al()==="en"?"growth rate g":(al()==="nl"?"groeivoet g":"taux de croissance g");
+    var ylab = al()==="en"?"price P₀":(al()==="nl"?"prijs P₀":"prix P₀");
+    g2+='<text class="lab" x="'+(L+pw/2)+'" y="'+(H-3)+'" text-anchor="middle">'+xlab+'</text>';
+    g2+='<text class="lab" x="'+(L-34)+'" y="'+(T+ph/2)+'" text-anchor="middle" transform="rotate(-90 '+(L-34)+' '+(T+ph/2)+')">'+ylab+'</text>';
+    svg.innerHTML=g2;
+  }
+
+  ["eq-d","eq-r","eq-g"].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener("input", draw); });
+  document.querySelectorAll("[data-set-lang]").forEach(function(b){ b.addEventListener("click", function(){ setTimeout(draw,10); }); });
+  document.addEventListener("DOMContentLoaded", draw);
+  draw();
+})();
+</script>
+</body>
+</html>

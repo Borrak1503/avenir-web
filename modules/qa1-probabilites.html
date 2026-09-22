@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Probabilités &amp; variables aléatoires — Avenir</title>
+<meta name="description" content="Module fondateur d'analyse quantitative : espace des résultats et axiomes, probabilité conditionnelle et règle de Bayes, indépendance, variables aléatoires (PMF, PDF, CDF), espérance et inégalité de Jensen, les quatre moments. Calculateur de Bayes interactif, QCM et exercices.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-active-lang="fr">
+
+<div class="progress-bar"></div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <div class="brand">
+      <a href="../index.html"><span class="logo">Avenir<b>.</b></span></a>
+      <span class="tag">Asset Management &amp; Risk</span>
+    </div>
+    <div class="spacer"></div>
+    <nav class="nav-links">
+      <a href="../index.html#parcours"><span data-lang="fr">Parcours</span><span data-lang="en">Tracks</span><span data-lang="nl">Trajecten</span></a>
+      <a href="../index.html#curriculum"><span data-lang="fr">Programme</span><span data-lang="en">Curriculum</span><span data-lang="nl">Programma</span></a>
+      <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a>
+    </nav>
+    <div class="controls">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-set-lang="fr">FR</button>
+        <button data-set-lang="en">EN</button>
+        <button data-set-lang="nl">NL</button>
+      </div>
+      <button id="theme-btn" class="icon-btn" aria-label="Thème">☾</button>
+      <button id="menu-btn" class="icon-btn menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap-mod">
+  <div class="module-shell">
+
+    <aside class="toc">
+      <div class="toc-title" data-lang="fr">Sommaire</div>
+      <div class="toc-title" data-lang="en">Contents</div>
+      <div class="toc-title" data-lang="nl">Inhoud</div>
+      <a href="#pourquoi"><span data-lang="fr">1. Mettre des nombres sur le hasard</span><span data-lang="en">1. Putting numbers on chance</span><span data-lang="nl">1. Getallen op het toeval</span></a>
+      <a href="#espace"><span data-lang="fr">2. Espace, événements, axiomes</span><span data-lang="en">2. Space, events, axioms</span><span data-lang="nl">2. Ruimte, gebeurtenissen, axioma's</span></a>
+      <a href="#bayes"><span data-lang="fr">3. Conditionnelle &amp; Bayes</span><span data-lang="en">3. Conditional &amp; Bayes</span><span data-lang="nl">3. Voorwaardelijk &amp; Bayes</span></a>
+      <a href="#independance"><span data-lang="fr">4. Indépendance</span><span data-lang="en">4. Independence</span><span data-lang="nl">4. Onafhankelijkheid</span></a>
+      <a href="#va"><span data-lang="fr">5. Variables aléatoires</span><span data-lang="en">5. Random variables</span><span data-lang="nl">5. Toevalsvariabelen</span></a>
+      <a href="#esperance"><span data-lang="fr">6. Espérance &amp; Jensen</span><span data-lang="en">6. Expectation &amp; Jensen</span><span data-lang="nl">6. Verwachting &amp; Jensen</span></a>
+      <a href="#moments"><span data-lang="fr">7. Les quatre moments</span><span data-lang="en">7. The four moments</span><span data-lang="nl">7. De vier momenten</span></a>
+      <a href="#ressources"><span data-lang="fr">Ressources</span><span data-lang="en">Resources</span><span data-lang="nl">Bronnen</span></a>
+      <a href="#retenir"><span data-lang="fr">8. À retenir</span><span data-lang="en">8. Key takeaways</span><span data-lang="nl">8. Onthouden</span></a>
+      <a href="#qcm"><span data-lang="fr">9. QCM (15)</span><span data-lang="en">9. MCQ (15)</span><span data-lang="nl">9. MCV (15)</span></a>
+      <a href="#exercices"><span data-lang="fr">10. Exercices</span><span data-lang="en">10. Exercises</span><span data-lang="nl">10. Oefeningen</span></a>
+      <a href="#biblio"><span data-lang="fr">Sources</span><span data-lang="en">Sources</span><span data-lang="nl">Bronnen</span></a>
+    </aside>
+
+    <main>
+      <div class="crumbs">
+        <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a> ·
+        <span>Financial Risk Management</span> ·
+        <span data-lang="fr">Analyse quantitative</span><span data-lang="en">Quantitative Analysis</span><span data-lang="nl">Kwantitatieve analyse</span>
+      </div>
+
+      <div class="module-hero">
+        <span class="badge">Analyse quantitative · <span data-lang="fr">Probabilités</span><span data-lang="en">Probability</span><span data-lang="nl">Kansrekening</span></span>
+        <h1 data-lang="fr">Probabilités &amp; variables aléatoires</h1>
+        <h1 data-lang="en">Probability &amp; random variables</h1>
+        <h1 data-lang="nl">Kansrekening &amp; toevalsvariabelen</h1>
+        <p class="subtitle" data-lang="fr">Toute la mesure du risque repose ici. De l'espace des résultats à la règle de Bayes, puis des variables aléatoires aux quatre moments : les fondations sur lesquelles se construisent la VaR, la volatilité et le risque de crédit.</p>
+        <p class="subtitle" data-lang="en">All risk measurement rests here. From the sample space to Bayes' rule, then from random variables to the four moments: the foundations on which VaR, volatility and credit risk are built.</p>
+        <p class="subtitle" data-lang="nl">Alle risicometing berust hier. Van de uitkomstenruimte tot de regel van Bayes, dan van toevalsvariabelen tot de vier momenten: de grondslagen waarop VaR, volatiliteit en kredietrisico worden gebouwd.</p>
+        <div class="module-meta">
+          <span data-lang="fr">⏱ Lecture ~26 min</span><span data-lang="en">⏱ ~26 min read</span><span data-lang="nl">⏱ ~26 min lezen</span>
+          <span data-lang="fr">📶 Niveau fondamental</span><span data-lang="en">📶 Foundational level</span><span data-lang="nl">📶 Basisniveau</span>
+          <span>🎓 FRM I · QA</span>
+        </div>
+      </div>
+
+      <div class="objectives">
+        <h4 data-lang="fr">Objectifs d'apprentissage</h4>
+        <h4 data-lang="en">Learning objectives</h4>
+        <h4 data-lang="nl">Leerdoelen</h4>
+        <ul>
+          <li data-lang="fr">Poser l'espace des résultats, les axiomes de probabilité et la règle de l'union.</li>
+          <li data-lang="en">Set up the sample space, the probability axioms and the union rule.</li>
+          <li data-lang="nl">De uitkomstenruimte, de kansaxioma's en de somregel opstellen.</li>
+          <li data-lang="fr">Manier la probabilité conditionnelle, la loi des probabilités totales et la règle de Bayes.</li>
+          <li data-lang="en">Handle conditional probability, the law of total probability and Bayes' rule.</li>
+          <li data-lang="nl">Voorwaardelijke kans, de wet van de totale kans en de regel van Bayes hanteren.</li>
+          <li data-lang="fr">Distinguer indépendance et exclusivité mutuelle.</li>
+          <li data-lang="en">Distinguish independence from mutual exclusivity.</li>
+          <li data-lang="nl">Onafhankelijkheid onderscheiden van wederzijdse uitsluiting.</li>
+          <li data-lang="fr">Décrire une variable aléatoire (PMF, PDF, CDF) et calculer une espérance.</li>
+          <li data-lang="en">Describe a random variable (PMF, PDF, CDF) and compute an expectation.</li>
+          <li data-lang="nl">Een toevalsvariabele beschrijven (PMF, PDF, CDF) en een verwachting berekenen.</li>
+          <li data-lang="fr">Interpréter les quatre moments et l'inégalité de Jensen.</li>
+          <li data-lang="en">Interpret the four moments and Jensen's inequality.</li>
+          <li data-lang="nl">De vier momenten en de ongelijkheid van Jensen interpreteren.</li>
+        </ul>
+      </div>
+
+      <div class="module-body">
+
+        <!-- 1. POURQUOI -->
+        <h2 id="pourquoi"><span data-lang="fr">1. Mettre des nombres sur le hasard</span><span data-lang="en">1. Putting numbers on chance</span><span data-lang="nl">1. Getallen op het toeval zetten</span></h2>
+        <p data-lang="fr">Mesurer un risque, c'est d'abord le <strong>quantifier</strong>. Or on ne quantifie que ce qui porte des nombres. Ce module pose les fondations statistiques de tout le parcours risque : si un concept plus loin (VaR, volatilité, risque de crédit) paraît obscur, la cause se trouve presque toujours ici. On part de trois objets simples, l'espace des résultats, l'événement et la probabilité, et on en déduit tout le reste.</p>
+        <p data-lang="en">To measure a risk is first to <strong>quantify</strong> it. And we only quantify what carries numbers. This module lays the statistical foundations of the whole risk track: if a later concept (VaR, volatility, credit risk) seems obscure, the cause almost always lies here. We start from three simple objects, the sample space, the event and the probability, and deduce everything else.</p>
+        <p data-lang="nl">Een risico meten is het eerst <strong>kwantificeren</strong>. En we kwantificeren enkel wat getallen draagt. Deze module legt de statistische grondslagen van het hele risicotraject: als een later begrip (VaR, volatiliteit, kredietrisico) obscuur lijkt, ligt de oorzaak bijna altijd hier. We starten van drie eenvoudige objecten, de uitkomstenruimte, de gebeurtenis en de kans, en leiden al de rest af.</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">Fréquentiste vs subjectif</span><span class="clabel" data-lang="en">Frequentist vs subjective</span><span class="clabel" data-lang="nl">Frequentistisch vs subjectief</span>
+          <span data-lang="fr">Une probabilité s'interprète de deux façons. L'interprétation <strong>fréquentiste</strong> la voit comme la fréquence limite d'un événement répété un grand nombre de fois : objective, mais conceptuelle, car la finance porte souvent sur des événements <em>non répétables</em> (le rendement de la Bourse l'an prochain n'arrive qu'une fois). L'interprétation <strong>subjective</strong> la voit comme un degré de croyance, propre à chacun : c'est le cas quand un dirigeant fixe lui-même la probabilité d'une récession dans un stress test, faute de fréquence observable.</span>
+          <span data-lang="en">A probability is read in two ways. The <strong>frequentist</strong> view sees it as the limiting frequency of an event repeated many times: objective, but conceptual, since finance often deals with <em>non-repeatable</em> events (next year's market return happens only once). The <strong>subjective</strong> view sees it as a degree of belief, specific to each person: this is the case when an executive sets the probability of a recession in a stress test, for lack of an observable frequency.</span>
+          <span data-lang="nl">Een kans wordt op twee manieren gelezen. De <strong>frequentistische</strong> visie ziet ze als de limietfrequentie van een vaak herhaalde gebeurtenis: objectief, maar conceptueel, aangezien finance vaak over <em>niet-herhaalbare</em> gebeurtenissen gaat (het beursrendement van volgend jaar gebeurt maar één keer). De <strong>subjectieve</strong> visie ziet ze als een geloofsgraad, eigen aan elke persoon: zo stelt een bestuurder zelf de kans op een recessie in een stresstest vast, bij gebrek aan een waarneembare frequentie.</span>
+        </div>
+
+        <!-- 2. ESPACE & AXIOMES -->
+        <h2 id="espace"><span data-lang="fr">2. Espace, événements, axiomes</span><span data-lang="en">2. Space, events, axioms</span><span data-lang="nl">2. Ruimte, gebeurtenissen, axioma's</span></h2>
+        <p data-lang="fr">Le <strong>sample space</strong> Ω est l'ensemble de tous les résultats possibles d'une expérience ; son contenu dépend de la question posée. Pour un rendement du S&amp;P 500, c'est l'ensemble des réels (tronqué à −100 %, car on ne perd pas plus que sa mise) ; pour un défaut d'entreprise, c'est simplement {défaut, pas de défaut}. Un <strong>événement</strong> est un sous-ensemble de Ω. Trois opérateurs permettent de les combiner : l'<strong>intersection</strong> (A et B à la fois), l'<strong>union</strong> (A, B, ou les deux) et le <strong>complément</strong> (tout ce qui n'est pas A). Deux événements sont <em>mutuellement exclusifs</em> s'ils ne peuvent pas se produire ensemble.</p>
+        <p data-lang="en">The <strong>sample space</strong> Ω is the set of all possible outcomes of an experiment; its content depends on the question asked. For an S&amp;P 500 return, it is the set of reals (truncated at −100%, since you cannot lose more than your stake); for a corporate default, simply {default, no default}. An <strong>event</strong> is a subset of Ω. Three operators combine them: the <strong>intersection</strong> (A and B together), the <strong>union</strong> (A, B, or both) and the <strong>complement</strong> (everything that is not A). Two events are <em>mutually exclusive</em> if they cannot occur together.</p>
+        <p data-lang="nl">De <strong>uitkomstenruimte</strong> Ω is de verzameling van alle mogelijke uitkomsten van een experiment; de inhoud hangt af van de gestelde vraag. Voor een S&amp;P 500-rendement is het de verzameling van de reële getallen (afgekapt op −100%, want je verliest niet meer dan je inzet); voor een bedrijfsdefault gewoon {default, geen default}. Een <strong>gebeurtenis</strong> is een deelverzameling van Ω. Drie operatoren combineren ze: de <strong>doorsnede</strong> (A en B samen), de <strong>unie</strong> (A, B, of beide) en het <strong>complement</strong> (alles wat niet A is). Twee gebeurtenissen zijn <em>wederzijds uitsluitend</em> als ze niet samen kunnen optreden.</p>
+
+        <div class="formula">
+          <div class="eq">Pr(A) ≥ 0 &nbsp;·&nbsp; Pr(Ω) = 1 &nbsp;·&nbsp; Pr(A ∪ B) = Pr(A) + Pr(B) − Pr(A ∩ B)</div>
+          <div class="caption" data-lang="fr">Les trois axiomes : une probabilité n'est jamais négative, l'événement certain vaut 1, et les événements exclusifs s'additionnent. La <strong>règle de l'union</strong> retranche l'intersection pour ne pas compter deux fois ce qui appartient à A <em>et</em> B. Conséquence utile : Pr(A) + Pr(A<sup>c</sup>) = 1.</div>
+          <div class="caption" data-lang="en">The three axioms: a probability is never negative, the certain event equals 1, and exclusive events add up. The <strong>union rule</strong> subtracts the intersection so as not to double-count what belongs to A <em>and</em> B. Useful corollary: Pr(A) + Pr(A<sup>c</sup>) = 1.</div>
+          <div class="caption" data-lang="nl">De drie axioma's: een kans is nooit negatief, de zekere gebeurtenis is 1, en uitsluitende gebeurtenissen tellen op. De <strong>somregel</strong> trekt de doorsnede af om niet dubbel te tellen wat tot A <em>en</em> B behoort. Nuttig gevolg: Pr(A) + Pr(A<sup>c</sup>) = 1.</div>
+          <div class="caption src">Réf. — GARP FRM Part I, Quantitative Analysis, ch. 1 ; Miller (2018)</div>
+        </div>
+
+        <!-- 3. CONDITIONNELLE & BAYES + INTERACTIF -->
+        <h2 id="bayes"><span data-lang="fr">3. Probabilité conditionnelle &amp; règle de Bayes</span><span data-lang="en">3. Conditional probability &amp; Bayes' rule</span><span data-lang="nl">3. Voorwaardelijke kans &amp; regel van Bayes</span></h2>
+        <p data-lang="fr">La <strong>probabilité conditionnelle</strong> Pr(A | B) répond à « sachant que B s'est produit, quelle est la probabilité de A ? ». Conditionner sur B, c'est faire de <strong>B le nouvel espace</strong> : on ne regarde plus tout Ω, seulement l'intérieur de B, et on rescale en divisant par Pr(B). Exemple : Pr(3) = 1/6 sur un dé ; mais si l'on sait le résultat impair, il ne reste que {1, 3, 5} et Pr(3 | impair) = 1/3.</p>
+        <p data-lang="en">The <strong>conditional probability</strong> Pr(A | B) answers “given that B occurred, what is the probability of A?”. Conditioning on B makes <strong>B the new space</strong>: we no longer look at all of Ω, only inside B, and rescale by dividing by Pr(B). Example: Pr(3) = 1/6 on a die; but knowing the result is odd, only {1, 3, 5} remain and Pr(3 | odd) = 1/3.</p>
+        <p data-lang="nl">De <strong>voorwaardelijke kans</strong> Pr(A | B) beantwoordt “gegeven dat B optrad, wat is de kans op A?”. Conditioneren op B maakt <strong>B de nieuwe ruimte</strong>: we kijken niet meer naar heel Ω, enkel binnen B, en herschalen door te delen door Pr(B). Voorbeeld: Pr(3) = 1/6 op een dobbelsteen; maar wetend dat de uitkomst oneven is, blijven enkel {1, 3, 5} en Pr(3 | oneven) = 1/3.</p>
+
+        <div class="formula">
+          <div class="eq">Pr(A | B) = Pr(A ∩ B) / Pr(B) &nbsp;·&nbsp; Pr(A | B) = Pr(B | A) · Pr(A) / Pr(B)</div>
+          <div class="caption" data-lang="fr">À gauche, la définition. À droite, la <strong>règle de Bayes</strong> : elle <em>renverse</em> le conditionnement et met à jour une croyance (Pr(A), le <em>prior</em>) à la lumière d'une observation B, pour donner le <em>posterior</em> Pr(A | B). Le dénominateur Pr(B) se reconstruit par la loi des probabilités totales : Pr(B) = Pr(B | A)Pr(A) + Pr(B | A<sup>c</sup>)Pr(A<sup>c</sup>).</div>
+          <div class="caption" data-lang="en">On the left, the definition. On the right, <strong>Bayes' rule</strong>: it <em>reverses</em> the conditioning and updates a belief (Pr(A), the <em>prior</em>) in the light of an observation B, giving the <em>posterior</em> Pr(A | B). The denominator Pr(B) is rebuilt by the law of total probability: Pr(B) = Pr(B | A)Pr(A) + Pr(B | A<sup>c</sup>)Pr(A<sup>c</sup>).</div>
+          <div class="caption" data-lang="nl">Links de definitie. Rechts de <strong>regel van Bayes</strong>: hij <em>keert</em> de conditionering om en actualiseert een overtuiging (Pr(A), de <em>prior</em>) in het licht van een waarneming B, wat de <em>posterior</em> Pr(A | B) geeft. De noemer Pr(B) wordt herbouwd door de wet van de totale kans: Pr(B) = Pr(B | A)Pr(A) + Pr(B | A<sup>c</sup>)Pr(A<sup>c</sup>).</div>
+          <div class="caption src">Réf. — Bayes (1763) ; GARP QA ch. 1</div>
+        </div>
+
+        <p data-lang="fr">Le calculateur ci-dessous illustre le <strong>piège des taux de base</strong>, un grand classique d'examen. Un signal (un test, une alerte de fraude, un downgrade) se déclenche avec une bonne <em>sensibilité</em> quand le danger est réel, mais aussi avec un certain taux de <em>fausses alertes</em> quand il ne l'est pas. Quand le danger est <strong>rare</strong>, la plupart des alertes sont fausses : la probabilité <em>a posteriori</em> reste basse, contre l'intuition. Faites varier le taux de base, la sensibilité et le taux de fausses alertes, et observez la barre des alertes se décomposer.</p>
+        <p data-lang="en">The calculator below illustrates the <strong>base-rate trap</strong>, an exam classic. A signal (a test, a fraud alert, a downgrade) fires with good <em>sensitivity</em> when the danger is real, but also with some <em>false-alarm</em> rate when it is not. When the danger is <strong>rare</strong>, most alarms are false: the <em>posterior</em> probability stays low, against intuition. Vary the base rate, the sensitivity and the false-alarm rate, and watch the alarm bar break down.</p>
+        <p data-lang="nl">De calculator hieronder illustreert de <strong>basisratio-val</strong>, een examenklassieker. Een signaal (een test, een fraude-alarm, een downgrade) gaat af met goede <em>gevoeligheid</em> als het gevaar echt is, maar ook met een zeker <em>vals-alarm</em>-percentage als dat niet zo is. Als het gevaar <strong>zeldzaam</strong> is, zijn de meeste alarmen vals: de <em>posterior</em>-kans blijft laag, tegen de intuïtie in. Varieer de basisratio, de gevoeligheid en het vals-alarm-percentage, en kijk hoe de alarmbalk zich opsplitst.</p>
+
+        <style>
+          #by-chart { width:100%; height:auto; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; }
+          #by-chart .lab { fill:var(--ink-soft); font-size:11px; font-family:var(--sans); font-weight:700; }
+          #by-chart .val { fill:#fff; font-size:11px; font-family:var(--mono); font-weight:700; }
+          #by-chart .ax { fill:var(--ink-mute); font-size:10px; font-family:var(--sans); }
+          .by-sliders { display:grid; grid-template-columns:repeat(3,1fr); gap:12px 18px; margin-bottom:16px; }
+          .by-sliders label { display:block; font-size:12.5px; font-weight:600; color:var(--ink-soft); margin-bottom:4px; }
+          .by-out { margin-top:14px; font-size:14.5px; color:var(--ink-soft); display:flex; gap:22px; flex-wrap:wrap; }
+          .by-out b { color:var(--ink); font-family:var(--mono); }
+          @media (max-width:640px){ .by-sliders { grid-template-columns:1fr; } }
+        </style>
+
+        <div class="calc">
+          <div class="chead">
+            <h4 data-lang="fr">Calculateur de Bayes — le piège des taux de base</h4>
+            <h4 data-lang="en">Bayes calculator — the base-rate trap</h4>
+            <h4 data-lang="nl">Bayes-calculator — de basisratio-val</h4>
+            <p data-lang="fr">Posterior = (base × sensibilité) / Pr(alerte)</p>
+            <p data-lang="en">Posterior = (base rate × sensitivity) / Pr(alarm)</p>
+            <p data-lang="nl">Posterior = (basisratio × gevoeligheid) / Pr(alarm)</p>
+          </div>
+          <div class="cbody" style="display:block">
+            <div class="by-sliders">
+              <div>
+                <label><span data-lang="fr">Taux de base Pr(danger)</span><span data-lang="en">Base rate Pr(danger)</span><span data-lang="nl">Basisratio Pr(gevaar)</span></label>
+                <div class="rangewrap"><input type="range" id="by-prior" min="0.5" max="50" step="0.5" value="2"><output id="by-prior-o">2%</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Sensibilité Pr(alerte | danger)</span><span data-lang="en">Sensitivity Pr(alarm | danger)</span><span data-lang="nl">Gevoeligheid Pr(alarm | gevaar)</span></label>
+                <div class="rangewrap"><input type="range" id="by-sens" min="50" max="100" step="1" value="90"><output id="by-sens-o">90%</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Fausses alertes Pr(alerte | sain)</span><span data-lang="en">False alarms Pr(alarm | healthy)</span><span data-lang="nl">Vals alarm Pr(alarm | gezond)</span></label>
+                <div class="rangewrap"><input type="range" id="by-fpr" min="0" max="30" step="0.5" value="8"><output id="by-fpr-o">8%</output></div>
+              </div>
+            </div>
+
+            <svg id="by-chart" viewBox="0 0 520 200" role="img" aria-label="Décomposition des alertes en vraies et fausses"></svg>
+
+            <div class="by-out">
+              <span><span data-lang="fr">Probabilité a posteriori Pr(danger | alerte) :</span><span data-lang="en">Posterior Pr(danger | alarm):</span><span data-lang="nl">Posterior Pr(gevaar | alarm):</span> <b id="by-post">—</b></span>
+              <span><span data-lang="fr">Part des alertes qui sont fausses :</span><span data-lang="en">Share of alarms that are false:</span><span data-lang="nl">Aandeel valse alarmen:</span> <b id="by-fshare">—</b></span>
+            </div>
+          </div>
+        </div>
+
+        <p data-lang="fr">La loi des probabilités totales éclaire le <strong>risque systémique</strong>. Supposons qu'au moins une institution systémique fasse défaut avec une probabilité de 1 % dans l'année, et que « deux ou plus » ait une probabilité de 0,8 %. Comme « deux ou plus » est inclus dans « une ou plus », la conditionnelle se simplifie : Pr(≥ 2 | ≥ 1) = 0,8 % / 1 % = <strong>80 %</strong>. Une défaillance est rare, mais dès qu'une première survient, la deuxième devient quasi certaine : les défaillances arrivent en cascade.</p>
+        <p data-lang="en">The law of total probability sheds light on <strong>systemic risk</strong>. Suppose at least one systemic institution defaults with a 1% probability in the year, and “two or more” has a 0.8% probability. Since “two or more” is included in “one or more”, the conditional simplifies: Pr(≥ 2 | ≥ 1) = 0.8% / 1% = <strong>80%</strong>. A failure is rare, but once a first occurs, the second becomes near-certain: failures come in cascades.</p>
+        <p data-lang="nl">De wet van de totale kans verheldert het <strong>systeemrisico</strong>. Stel dat minstens één systeeminstelling met een kans van 1% in het jaar in gebreke blijft, en dat “twee of meer” een kans van 0,8% heeft. Aangezien “twee of meer” in “één of meer” zit, vereenvoudigt de voorwaardelijke: Pr(≥ 2 | ≥ 1) = 0,8% / 1% = <strong>80%</strong>. Een falen is zeldzaam, maar zodra een eerste optreedt, wordt het tweede bijna zeker: faillissementen komen in cascade.</p>
+
+        <!-- 4. INDÉPENDANCE -->
+        <h2 id="independance"><span data-lang="fr">4. Indépendance</span><span data-lang="en">4. Independence</span><span data-lang="nl">4. Onafhankelijkheid</span></h2>
+        <p data-lang="fr">Deux événements sont <strong>indépendants</strong> quand savoir que l'un s'est produit ne change rien à la probabilité de l'autre : Pr(A ∩ B) = Pr(A) · Pr(B), ce qui équivaut à Pr(A | B) = Pr(A). L'<strong>indépendance conditionnelle</strong> transpose l'idée à l'intérieur d'un troisième événement C. Attention : les deux ne s'impliquent pas l'une l'autre.</p>
+        <p data-lang="en">Two events are <strong>independent</strong> when knowing one occurred changes nothing about the probability of the other: Pr(A ∩ B) = Pr(A) · Pr(B), equivalent to Pr(A | B) = Pr(A). <strong>Conditional independence</strong> carries the idea inside a third event C. Beware: the two do not imply each other.</p>
+        <p data-lang="nl">Twee gebeurtenissen zijn <strong>onafhankelijk</strong> wanneer weten dat de ene optrad niets verandert aan de kans op de andere: Pr(A ∩ B) = Pr(A) · Pr(B), gelijkwaardig aan Pr(A | B) = Pr(A). <strong>Voorwaardelijke onafhankelijkheid</strong> draagt het idee binnen een derde gebeurtenis C. Let op: de twee impliceren elkaar niet.</p>
+
+        <div class="callout warn">
+          <span class="clabel" data-lang="fr">Piège : exclusif ≠ indépendant</span><span class="clabel" data-lang="en">Trap: exclusive ≠ independent</span><span class="clabel" data-lang="nl">Valstrik: uitsluitend ≠ onafhankelijk</span>
+          <span data-lang="fr">Mutuellement exclusifs n'est <strong>pas</strong> synonyme d'indépendants ; c'est presque le contraire (sauf si l'un a une probabilité nulle). L'intuition : si A et B s'excluent, apprendre que A s'est produit vous dit avec certitude que B ne s'est <em>pas</em> produit. L'information apportée est donc <em>maximale</em>, l'exact opposé de l'indépendance, où elle est nulle.</span>
+          <span data-lang="en">Mutually exclusive is <strong>not</strong> the same as independent; it is almost the opposite (unless one has zero probability). Intuition: if A and B exclude each other, learning A occurred tells you with certainty that B did <em>not</em>. The information conveyed is <em>maximal</em>, the exact opposite of independence, where it is zero.</span>
+          <span data-lang="nl">Wederzijds uitsluitend is <strong>niet</strong> hetzelfde als onafhankelijk; het is bijna het tegenovergestelde (tenzij één een nulkans heeft). Intuïtie: als A en B elkaar uitsluiten, vertelt weten dat A optrad je met zekerheid dat B <em>niet</em> optrad. De overgedragen informatie is <em>maximaal</em>, het exacte tegenovergestelde van onafhankelijkheid, waar ze nul is.</span>
+        </div>
+
+        <!-- 5. VARIABLES ALÉATOIRES -->
+        <h2 id="va"><span data-lang="fr">5. Variables aléatoires : PMF, PDF, CDF</span><span data-lang="en">5. Random variables: PMF, PDF, CDF</span><span data-lang="nl">5. Toevalsvariabelen: PMF, PDF, CDF</span></h2>
+        <p data-lang="fr">Une <strong>variable aléatoire</strong> X est une <em>fonction</em> qui associe un nombre à chaque résultat : x = X(ω). C'est ce passage au numérique qui permet d'appliquer sommes et intégrales à l'incertitude. On décrit une variable <strong>discrète</strong> (valeurs distinctes) par sa <strong>PMF</strong>, qui donne Pr(X = x) point par point, et une variable <strong>continue</strong> par sa <strong>PDF</strong>, où seules les <em>aires</em> ont un sens (la probabilité d'une valeur exacte y est nulle). Dans les deux cas, la <strong>CDF</strong> F(x) = Pr(X ≤ x) cumule les probabilités jusqu'à x.</p>
+        <p data-lang="en">A <strong>random variable</strong> X is a <em>function</em> mapping a number to each outcome: x = X(ω). This move to the numerical is what lets us apply sums and integrals to uncertainty. A <strong>discrete</strong> variable (distinct values) is described by its <strong>PMF</strong>, giving Pr(X = x) point by point, and a <strong>continuous</strong> one by its <strong>PDF</strong>, where only <em>areas</em> have meaning (the probability of an exact value is zero). In both cases, the <strong>CDF</strong> F(x) = Pr(X ≤ x) accumulates the probabilities up to x.</p>
+        <p data-lang="nl">Een <strong>toevalsvariabele</strong> X is een <em>functie</em> die aan elke uitkomst een getal koppelt: x = X(ω). Deze stap naar het numerieke laat toe sommen en integralen toe te passen op onzekerheid. Een <strong>discrete</strong> variabele (afzonderlijke waarden) wordt beschreven door haar <strong>PMF</strong>, die Pr(X = x) punt per punt geeft, en een <strong>continue</strong> door haar <strong>PDF</strong>, waar enkel <em>oppervlakten</em> betekenis hebben (de kans op een exacte waarde is nul). In beide gevallen cumuleert de <strong>CDF</strong> F(x) = Pr(X ≤ x) de kansen tot x.</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">La loi de Bernoulli</span><span class="clabel" data-lang="en">The Bernoulli law</span><span class="clabel" data-lang="nl">De Bernoulli-wet</span>
+          <span data-lang="fr">La <strong>Bernoulli</strong> est la variable discrète la plus simple : elle vaut 1 (avec probabilité p) ou 0 (avec 1 − p), idéale pour coder un événement binaire comme le défaut d'un prêt (1 = défaut). Son espérance vaut simplement E[X] = p, sa variance p(1 − p). C'est la brique de base du risque de crédit : additionnez des Bernoulli et vous obtenez le nombre de défauts d'un portefeuille.</span>
+          <span data-lang="en">The <strong>Bernoulli</strong> is the simplest discrete variable: it equals 1 (with probability p) or 0 (with 1 − p), ideal for coding a binary event such as a loan default (1 = default). Its expectation is simply E[X] = p, its variance p(1 − p). It is the building block of credit risk: add up Bernoullis and you get a portfolio's number of defaults.</span>
+          <span data-lang="nl">De <strong>Bernoulli</strong> is de eenvoudigste discrete variabele: ze is 1 (met kans p) of 0 (met 1 − p), ideaal om een binaire gebeurtenis zoals een kredietdefault te coderen (1 = default). Haar verwachting is gewoon E[X] = p, haar variantie p(1 − p). Ze is de bouwsteen van kredietrisico: tel Bernoulli's op en je krijgt het aantal defaults van een portefeuille.</span>
+        </div>
+
+        <!-- 6. ESPÉRANCE & JENSEN -->
+        <h2 id="esperance"><span data-lang="fr">6. Espérance &amp; inégalité de Jensen</span><span data-lang="en">6. Expectation &amp; Jensen's inequality</span><span data-lang="nl">6. Verwachting &amp; ongelijkheid van Jensen</span></h2>
+        <p data-lang="fr">L'<strong>espérance</strong> E[X] est la moyenne des valeurs possibles, chacune pondérée par sa probabilité : le « centre de gravité » de la distribution. Sa propriété-clé est la <strong>linéarité</strong> : E[a + bX + cY] = a + b·E[X] + c·E[Y]. La même formule s'applique à une <em>fonction</em> de X : E[f(X)] pondère les valeurs transformées. Valoriser une option, c'est exactement cela : le payoff d'un call est max(S − K, 0), et son prix est l'espérance de ce payoff sur les scénarios de prix futurs.</p>
+        <p data-lang="en">The <strong>expectation</strong> E[X] is the average of the possible values, each weighted by its probability: the distribution's “centre of gravity”. Its key property is <strong>linearity</strong>: E[a + bX + cY] = a + b·E[X] + c·E[Y]. The same formula applies to a <em>function</em> of X: E[f(X)] weights the transformed values. Valuing an option is exactly this: a call's payoff is max(S − K, 0), and its price is the expectation of that payoff over future price scenarios.</p>
+        <p data-lang="nl">De <strong>verwachting</strong> E[X] is het gemiddelde van de mogelijke waarden, elk gewogen door hun kans: het “zwaartepunt” van de verdeling. De sleuteleigenschap is <strong>lineariteit</strong>: E[a + bX + cY] = a + b·E[X] + c·E[Y]. Dezelfde formule geldt voor een <em>functie</em> van X: E[f(X)] weegt de getransformeerde waarden. Een optie waarderen is precies dit: de payoff van een call is max(S − K, 0), en de prijs is de verwachting van die payoff over toekomstige prijsscenario's.</p>
+
+        <div class="callout warn">
+          <span class="clabel" data-lang="fr">Jensen : convexité paie</span><span class="clabel" data-lang="en">Jensen: convexity pays</span><span class="clabel" data-lang="nl">Jensen: convexiteit loont</span>
+          <span data-lang="fr">L'espérance ne « traverse » pas les fonctions non linéaires : en général E[g(X)] ≠ g(E[X]). L'<strong>inégalité de Jensen</strong> donne le sens de l'écart : si g est <strong>convexe</strong>, E[g(X)] &gt; g(E[X]) ; si elle est concave, l'inégalité se renverse. Exemple : on lance un dé et on reçoit le carré du résultat. La moyenne du dé est 3,5, mais l'espérance du payoff est E[X²] = 15,17, bien plus que 3,5² = 12,25. La plupart des payoffs d'options étant convexes, l'espérance du payoff dépasse toujours le payoff de l'espérance : c'est la valeur de l'optionalité.</span>
+          <span data-lang="en">Expectation does not “pass through” non-linear functions: in general E[g(X)] ≠ g(E[X]). <strong>Jensen's inequality</strong> gives the direction of the gap: if g is <strong>convex</strong>, E[g(X)] &gt; g(E[X]); if concave, it reverses. Example: roll a die and receive the square of the result. The die's mean is 3.5, but the payoff's expectation is E[X²] = 15.17, well above 3.5² = 12.25. Since most option payoffs are convex, the expected payoff always exceeds the payoff of the expectation: this is the value of optionality.</span>
+          <span data-lang="nl">Verwachting “gaat niet door” niet-lineaire functies: in het algemeen E[g(X)] ≠ g(E[X]). De <strong>ongelijkheid van Jensen</strong> geeft de richting van het verschil: als g <strong>convex</strong> is, E[g(X)] &gt; g(E[X]); als concaaf, keert ze om. Voorbeeld: gooi een dobbelsteen en ontvang het kwadraat van de uitkomst. Het gemiddelde is 3,5, maar de verwachting van de payoff is E[X²] = 15,17, ruim boven 3,5² = 12,25. Aangezien de meeste optiepayoffs convex zijn, overtreft de verwachte payoff altijd de payoff van de verwachting: dat is de waarde van optionaliteit.</span>
+        </div>
+
+        <!-- 7. MOMENTS -->
+        <h2 id="moments"><span data-lang="fr">7. Les quatre moments</span><span data-lang="en">7. The four moments</span><span data-lang="nl">7. De vier momenten</span></h2>
+        <p data-lang="fr">Quatre nombres résument une distribution. La <strong>moyenne</strong> (position). La <strong>variance</strong> σ² = E[(X − µ)²] (dispersion), dont la racine, l'écart-type σ, s'exprime dans les mêmes unités que X. L'<strong>asymétrie</strong> (<em>skewness</em>), souvent négative pour les rendements (les krachs sont plus violents que les hausses). La <strong>kurtosis</strong> (épaisseur des queues) : elle vaut 3 pour la loi normale ; au-delà, on parle de queues épaisses (<em>fat tails</em>), le pain quotidien du risque de marché. Sous une transformation linéaire Y = a + bX, la moyenne devient a + bµ et la variance b²σ².</p>
+        <p data-lang="en">Four numbers summarise a distribution. The <strong>mean</strong> (location). The <strong>variance</strong> σ² = E[(X − µ)²] (dispersion), whose square root, the standard deviation σ, is in the same units as X. The <strong>skewness</strong>, often negative for returns (crashes are sharper than rises). The <strong>kurtosis</strong> (tail thickness): it equals 3 for the normal law; beyond that we speak of <em>fat tails</em>, the daily bread of market risk. Under a linear transform Y = a + bX, the mean becomes a + bµ and the variance b²σ².</p>
+        <p data-lang="nl">Vier getallen vatten een verdeling samen. Het <strong>gemiddelde</strong> (positie). De <strong>variantie</strong> σ² = E[(X − µ)²] (spreiding), waarvan de wortel, de standaardafwijking σ, in dezelfde eenheden als X staat. De <strong>scheefheid</strong> (<em>skewness</em>), vaak negatief voor rendementen (crashes zijn scherper dan stijgingen). De <strong>kurtosis</strong> (staartdikte): ze is 3 voor de normale wet; daarboven spreken we van <em>fat tails</em>, het dagelijks brood van het marktrisico. Onder een lineaire transformatie Y = a + bX wordt het gemiddelde a + bµ en de variantie b²σ².</p>
+
+        <!-- RESSOURCES -->
+        <h2 id="ressources"><span data-lang="fr">Ressources à télécharger</span><span data-lang="en">Downloadable resources</span><span data-lang="nl">Downloadbare bronnen</span></h2>
+        <div class="downloads">
+          <div class="dl-list">
+            <a class="dl-item" data-lang="fr" href="@@BASE@@files/qa1-exercice-corrige-fr.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Exercice et corrigé : probabilités &amp; Bayes</span>
+                <span class="dl-sub">PDF, énoncé et solution détaillée (français)</span>
+              </span>
+            </a>
+            <a class="dl-item" data-lang="en" href="@@BASE@@files/qa1-exercice-corrige-en.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Exercise and solution: probability &amp; Bayes</span>
+                <span class="dl-sub">PDF, statement and worked solution (English)</span>
+              </span>
+            </a>
+            <a class="dl-item" data-lang="nl" href="@@BASE@@files/qa1-exercice-corrige-nl.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Oefening en oplossing: kansrekening &amp; Bayes</span>
+                <span class="dl-sub">PDF, opgave en uitgewerkte oplossing (Nederlands)</span>
+              </span>
+            </a>
+          </div>
+          <p class="dl-note" data-lang="fr">Un énoncé progressif suivi de sa correction pas à pas, dans votre langue. Cliquez pour télécharger le PDF.</p>
+          <p class="dl-note" data-lang="en">A progressive problem set followed by its step-by-step solution, in your language. Click to download the PDF.</p>
+          <p class="dl-note" data-lang="nl">Een progressieve opgave gevolgd door de stapsgewijze oplossing, in uw taal. Klik om de PDF te downloaden.</p>
+        </div>
+
+        <!-- 8. À RETENIR -->
+        <h2 id="retenir"><span data-lang="fr">8. À retenir</span><span data-lang="en">8. Key takeaways</span><span data-lang="nl">8. Onthouden</span></h2>
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">L'essentiel</span><span class="clabel" data-lang="en">The essentials</span><span class="clabel" data-lang="nl">De kern</span>
+          <span data-lang="fr">Trois axiomes fondent tout : positivité, Pr(Ω) = 1, additivité des exclusifs ; la règle de l'union retranche l'intersection. Conditionner sur B fait de B le nouvel espace ; Bayes renverse le conditionnement et met à jour un prior. Quand le danger est rare, la plupart des alertes sont fausses (piège des taux de base). Exclusif n'est pas indépendant : c'est presque le contraire. Une variable aléatoire met des nombres sur le hasard (PMF discrète, PDF continue, CDF cumulée). L'espérance est linéaire mais ne traverse pas les fonctions non linéaires (Jensen : la convexité paie). Quatre moments résument une loi : moyenne, variance, asymétrie, kurtosis (3 pour la normale ; au-delà, queues épaisses).</span>
+          <span data-lang="en">Three axioms found everything: positivity, Pr(Ω) = 1, additivity of exclusives; the union rule subtracts the intersection. Conditioning on B makes B the new space; Bayes reverses the conditioning and updates a prior. When the danger is rare, most alarms are false (base-rate trap). Exclusive is not independent: it is almost the opposite. A random variable puts numbers on chance (discrete PMF, continuous PDF, cumulative CDF). Expectation is linear but does not pass through non-linear functions (Jensen: convexity pays). Four moments summarise a law: mean, variance, skewness, kurtosis (3 for the normal; beyond, fat tails).</span>
+          <span data-lang="nl">Drie axioma's funderen alles: positiviteit, Pr(Ω) = 1, additiviteit van uitsluitenden; de somregel trekt de doorsnede af. Conditioneren op B maakt B de nieuwe ruimte; Bayes keert de conditionering om en actualiseert een prior. Als het gevaar zeldzaam is, zijn de meeste alarmen vals (basisratio-val). Uitsluitend is niet onafhankelijk: het is bijna het tegenovergestelde. Een toevalsvariabele zet getallen op het toeval (discrete PMF, continue PDF, cumulatieve CDF). Verwachting is lineair maar gaat niet door niet-lineaire functies (Jensen: convexiteit loont). Vier momenten vatten een wet samen: gemiddelde, variantie, scheefheid, kurtosis (3 voor de normale; daarboven fat tails).</span>
+        </div>
+
+        <!-- 9. QCM -->
+        <h2 id="qcm"><span data-lang="fr">9. QCM — 15 questions</span><span data-lang="en">9. MCQ — 15 questions</span><span data-lang="nl">9. MCV — 15 vragen</span></h2>
+        <div class="quiz">
+          <h4 data-lang="fr">Auto-évaluation</h4><h4 data-lang="en">Self-assessment</h4><h4 data-lang="nl">Zelfevaluatie</h4>
+          <p class="qsub" data-lang="fr">Cliquez sur une réponse : la bonne s'affiche en vert et la justification apparaît.</p>
+          <p class="qsub" data-lang="en">Click an answer: the correct one turns green and the justification appears.</p>
+          <p class="qsub" data-lang="nl">Klik op een antwoord: het juiste kleurt groen en de verantwoording verschijnt.</p>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">1. L'espace des résultats (sample space) Ω est…</div>
+            <div class="qtext" data-lang="en">1. The sample space Ω is…</div>
+            <div class="qtext" data-lang="nl">1. De uitkomstenruimte Ω is…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La probabilité de l'événement le plus probable.</span><span data-lang="en">The probability of the most likely event.</span><span data-lang="nl">De kans op de meest waarschijnlijke gebeurtenis.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La moyenne des résultats.</span><span data-lang="en">The average of the outcomes.</span><span data-lang="nl">Het gemiddelde van de uitkomsten.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">L'ensemble de tous les résultats possibles d'une expérience.</span><span data-lang="en">The set of all possible outcomes of an experiment.</span><span data-lang="nl">De verzameling van alle mogelijke uitkomsten van een experiment.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Ω = tous les résultats possibles ; un événement en est un sous-ensemble. Sa probabilité totale vaut 1.</span><span data-lang="en">✔ Ω = all possible outcomes; an event is a subset of it. Its total probability is 1.</span><span data-lang="nl">✔ Ω = alle mogelijke uitkomsten; een gebeurtenis is een deelverzameling ervan. De totale kans is 1.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">2. La règle de l'union Pr(A ∪ B) s'écrit…</div>
+            <div class="qtext" data-lang="en">2. The union rule Pr(A ∪ B) is…</div>
+            <div class="qtext" data-lang="nl">2. De somregel Pr(A ∪ B) is…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Pr(A) + Pr(B).</span><span data-lang="en">Pr(A) + Pr(B).</span><span data-lang="nl">Pr(A) + Pr(B).</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Pr(A) + Pr(B) − Pr(A ∩ B).</span><span data-lang="en">Pr(A) + Pr(B) − Pr(A ∩ B).</span><span data-lang="nl">Pr(A) + Pr(B) − Pr(A ∩ B).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Pr(A) × Pr(B).</span><span data-lang="en">Pr(A) × Pr(B).</span><span data-lang="nl">Pr(A) × Pr(B).</span></button>
+            <div class="explain"><span data-lang="fr">✔ On retranche l'intersection pour ne pas compter deux fois ce qui est dans A <em>et</em> B. Pr(A)+Pr(B) ne vaut que si A et B sont exclusifs.</span><span data-lang="en">✔ Subtract the intersection to avoid double-counting what is in A <em>and</em> B. Pr(A)+Pr(B) holds only if A and B are exclusive.</span><span data-lang="nl">✔ Trek de doorsnede af om niet dubbel te tellen wat in A <em>en</em> B zit. Pr(A)+Pr(B) geldt enkel als A en B uitsluitend zijn.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">3. Conditionner sur B revient à…</div>
+            <div class="qtext" data-lang="en">3. Conditioning on B amounts to…</div>
+            <div class="qtext" data-lang="nl">3. Conditioneren op B komt neer op…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Faire de B le nouvel espace et rescaler par Pr(B).</span><span data-lang="en">Making B the new space and rescaling by Pr(B).</span><span data-lang="nl">Van B de nieuwe ruimte maken en herschalen door Pr(B).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Ignorer B.</span><span data-lang="en">Ignoring B.</span><span data-lang="nl">B negeren.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Multiplier par Pr(B).</span><span data-lang="en">Multiplying by Pr(B).</span><span data-lang="nl">Vermenigvuldigen met Pr(B).</span></button>
+            <div class="explain"><span data-lang="fr">✔ Pr(A | B) = Pr(A ∩ B) / Pr(B) : on restreint l'univers à B et on divise pour que ce monde totalise 1.</span><span data-lang="en">✔ Pr(A | B) = Pr(A ∩ B) / Pr(B): restrict the universe to B and divide so that world totals 1.</span><span data-lang="nl">✔ Pr(A | B) = Pr(A ∩ B) / Pr(B): beperk het universum tot B en deel zodat die wereld 1 totaliseert.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">4. La règle de Bayes sert avant tout à…</div>
+            <div class="qtext" data-lang="en">4. Bayes' rule mainly serves to…</div>
+            <div class="qtext" data-lang="nl">4. De regel van Bayes dient vooral om…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Additionner des probabilités exclusives.</span><span data-lang="en">Add exclusive probabilities.</span><span data-lang="nl">Uitsluitende kansen op te tellen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Calculer une variance.</span><span data-lang="en">Compute a variance.</span><span data-lang="nl">Een variantie te berekenen.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Renverser le conditionnement et mettre à jour un prior.</span><span data-lang="en">Reverse the conditioning and update a prior.</span><span data-lang="nl">De conditionering om te keren en een prior te actualiseren.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Bayes passe de Pr(B | A) à Pr(A | B) : il met à jour une croyance (prior) à la lumière d'une observation, donnant le posterior.</span><span data-lang="en">✔ Bayes goes from Pr(B | A) to Pr(A | B): it updates a belief (prior) in light of an observation, giving the posterior.</span><span data-lang="nl">✔ Bayes gaat van Pr(B | A) naar Pr(A | B): het actualiseert een overtuiging (prior) in het licht van een waarneming, wat de posterior geeft.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">5. Un test très sensible signale un danger rare. La plupart des alertes sont alors…</div>
+            <div class="qtext" data-lang="en">5. A very sensitive test flags a rare danger. Most alarms are then…</div>
+            <div class="qtext" data-lang="nl">5. Een zeer gevoelige test signaleert een zeldzaam gevaar. De meeste alarmen zijn dan…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Toujours vraies.</span><span data-lang="en">Always true.</span><span data-lang="nl">Altijd waar.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Fausses (piège des taux de base).</span><span data-lang="en">False (the base-rate trap).</span><span data-lang="nl">Vals (de basisratio-val).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Impossibles.</span><span data-lang="en">Impossible.</span><span data-lang="nl">Onmogelijk.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Quand le taux de base est faible, les fausses alertes (nombreux « sains ») dominent les vraies : le posterior reste bas.</span><span data-lang="en">✔ When the base rate is low, false alarms (many “healthy”) dominate the true ones: the posterior stays low.</span><span data-lang="nl">✔ Als de basisratio laag is, domineren valse alarmen (veel “gezonden”) de echte: de posterior blijft laag.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">6. Deux événements mutuellement exclusifs sont…</div>
+            <div class="qtext" data-lang="en">6. Two mutually exclusive events are…</div>
+            <div class="qtext" data-lang="nl">6. Twee wederzijds uitsluitende gebeurtenissen zijn…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">En général dépendants (savoir l'un exclut l'autre).</span><span data-lang="en">Generally dependent (knowing one excludes the other).</span><span data-lang="nl">Doorgaans afhankelijk (de ene kennen sluit de andere uit).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Toujours indépendants.</span><span data-lang="en">Always independent.</span><span data-lang="nl">Altijd onafhankelijk.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Toujours équiprobables.</span><span data-lang="en">Always equally likely.</span><span data-lang="nl">Altijd even waarschijnlijk.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Exclusif ≠ indépendant : si A exclut B, apprendre A dit avec certitude que B n'a pas eu lieu (information maximale), l'opposé de l'indépendance.</span><span data-lang="en">✔ Exclusive ≠ independent: if A excludes B, learning A tells you with certainty B did not happen (maximal information), the opposite of independence.</span><span data-lang="nl">✔ Uitsluitend ≠ onafhankelijk: als A B uitsluit, vertelt weten van A met zekerheid dat B niet gebeurde (maximale info), het tegenovergestelde van onafhankelijkheid.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">7. Deux événements A et B sont indépendants si…</div>
+            <div class="qtext" data-lang="en">7. Two events A and B are independent if…</div>
+            <div class="qtext" data-lang="nl">7. Twee gebeurtenissen A en B zijn onafhankelijk als…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Pr(A ∩ B) = 0.</span><span data-lang="en">Pr(A ∩ B) = 0.</span><span data-lang="nl">Pr(A ∩ B) = 0.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Pr(A) = Pr(B).</span><span data-lang="en">Pr(A) = Pr(B).</span><span data-lang="nl">Pr(A) = Pr(B).</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Pr(A ∩ B) = Pr(A) × Pr(B).</span><span data-lang="en">Pr(A ∩ B) = Pr(A) × Pr(B).</span><span data-lang="nl">Pr(A ∩ B) = Pr(A) × Pr(B).</span></button>
+            <div class="explain"><span data-lang="fr">✔ Indépendance = la jointe se factorise, ce qui équivaut à Pr(A | B) = Pr(A). Pr(A ∩ B) = 0 est l'exclusivité, pas l'indépendance.</span><span data-lang="en">✔ Independence = the joint factorises, equivalent to Pr(A | B) = Pr(A). Pr(A ∩ B) = 0 is exclusivity, not independence.</span><span data-lang="nl">✔ Onafhankelijkheid = de gezamenlijke factoriseert, gelijkwaardig aan Pr(A | B) = Pr(A). Pr(A ∩ B) = 0 is uitsluiting, geen onafhankelijkheid.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">8. Une variable aléatoire est fondamentalement…</div>
+            <div class="qtext" data-lang="en">8. A random variable is fundamentally…</div>
+            <div class="qtext" data-lang="nl">8. Een toevalsvariabele is fundamenteel…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Un nombre fixe.</span><span data-lang="en">A fixed number.</span><span data-lang="nl">Een vast getal.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Une fonction qui associe un nombre à chaque résultat.</span><span data-lang="en">A function mapping a number to each outcome.</span><span data-lang="nl">Een functie die een getal aan elke uitkomst koppelt.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une probabilité.</span><span data-lang="en">A probability.</span><span data-lang="nl">Een kans.</span></button>
+            <div class="explain"><span data-lang="fr">✔ X : ω ↦ x. Ce passage au numérique permet d'appliquer sommes et intégrales à l'incertitude. La réalisation x est le nombre obtenu.</span><span data-lang="en">✔ X : ω ↦ x. This move to the numerical lets us apply sums and integrals to uncertainty. The realisation x is the number obtained.</span><span data-lang="nl">✔ X : ω ↦ x. Deze stap naar het numerieke laat sommen en integralen op onzekerheid toe. De realisatie x is het verkregen getal.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">9. La CDF F(x) d'une variable aléatoire donne…</div>
+            <div class="qtext" data-lang="en">9. The CDF F(x) of a random variable gives…</div>
+            <div class="qtext" data-lang="nl">9. De CDF F(x) van een toevalsvariabele geeft…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Pr(X ≤ x), la probabilité cumulée.</span><span data-lang="en">Pr(X ≤ x), the cumulative probability.</span><span data-lang="nl">Pr(X ≤ x), de cumulatieve kans.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Pr(X = x).</span><span data-lang="en">Pr(X = x).</span><span data-lang="nl">Pr(X = x).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La moyenne de X.</span><span data-lang="en">The mean of X.</span><span data-lang="nl">Het gemiddelde van X.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La CDF cumule : F(x) = Pr(X ≤ x). C'est la PMF (discret) ou la PDF (continu) qui donne la masse/densité en un point.</span><span data-lang="en">✔ The CDF accumulates: F(x) = Pr(X ≤ x). It is the PMF (discrete) or PDF (continuous) that gives the mass/density at a point.</span><span data-lang="nl">✔ De CDF cumuleert: F(x) = Pr(X ≤ x). Het is de PMF (discreet) of PDF (continu) die de massa/dichtheid in een punt geeft.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">10. Pour une variable continue, la probabilité d'une valeur exacte est…</div>
+            <div class="qtext" data-lang="en">10. For a continuous variable, the probability of an exact value is…</div>
+            <div class="qtext" data-lang="nl">10. Voor een continue variabele is de kans op een exacte waarde…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Égale à la PDF en ce point.</span><span data-lang="en">Equal to the PDF at that point.</span><span data-lang="nl">Gelijk aan de PDF in dat punt.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Toujours 1.</span><span data-lang="en">Always 1.</span><span data-lang="nl">Altijd 1.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Nulle : seules les aires (intervalles) ont un sens.</span><span data-lang="en">Zero: only areas (intervals) have meaning.</span><span data-lang="nl">Nul: enkel oppervlakten (intervallen) hebben betekenis.</span></button>
+            <div class="explain"><span data-lang="fr">✔ En continu, Pr(X = x) = 0 ; on ne mesure que Pr(a ≤ X ≤ b) = aire sous la PDF. La PDF n'est pas une probabilité mais une densité.</span><span data-lang="en">✔ In the continuous case, Pr(X = x) = 0; we only measure Pr(a ≤ X ≤ b) = area under the PDF. The PDF is not a probability but a density.</span><span data-lang="nl">✔ In het continue geval is Pr(X = x) = 0; we meten enkel Pr(a ≤ X ≤ b) = oppervlakte onder de PDF. De PDF is geen kans maar een dichtheid.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">11. L'espérance E[X] est un opérateur…</div>
+            <div class="qtext" data-lang="en">11. The expectation E[X] is an operator that is…</div>
+            <div class="qtext" data-lang="nl">11. De verwachting E[X] is een operator die…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Multiplicatif sur les produits.</span><span data-lang="en">Multiplicative over products.</span><span data-lang="nl">Multiplicatief over producten.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Linéaire : E[a + bX + cY] = a + bE[X] + cE[Y].</span><span data-lang="en">Linear: E[a + bX + cY] = a + bE[X] + cE[Y].</span><span data-lang="nl">Lineair: E[a + bX + cY] = a + bE[X] + cE[Y].</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Qui traverse toutes les fonctions.</span><span data-lang="en">That passes through all functions.</span><span data-lang="nl">Die door alle functies gaat.</span></button>
+            <div class="explain"><span data-lang="fr">✔ E est linéaire (constantes et sommes), mais ne traverse pas les fonctions non linéaires : E[g(X)] ≠ g(E[X]) en général (Jensen).</span><span data-lang="en">✔ E is linear (constants and sums) but does not pass through non-linear functions: E[g(X)] ≠ g(E[X]) in general (Jensen).</span><span data-lang="nl">✔ E is lineair (constanten en sommen) maar gaat niet door niet-lineaire functies: E[g(X)] ≠ g(E[X]) in het algemeen (Jensen).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">12. Pour une fonction convexe g, l'inégalité de Jensen donne…</div>
+            <div class="qtext" data-lang="en">12. For a convex function g, Jensen's inequality gives…</div>
+            <div class="qtext" data-lang="nl">12. Voor een convexe functie g geeft Jensens ongelijkheid…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">E[g(X)] ≥ g(E[X]).</span><span data-lang="en">E[g(X)] ≥ g(E[X]).</span><span data-lang="nl">E[g(X)] ≥ g(E[X]).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">E[g(X)] ≤ g(E[X]).</span><span data-lang="en">E[g(X)] ≤ g(E[X]).</span><span data-lang="nl">E[g(X)] ≤ g(E[X]).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">E[g(X)] = g(E[X]).</span><span data-lang="en">E[g(X)] = g(E[X]).</span><span data-lang="nl">E[g(X)] = g(E[X]).</span></button>
+            <div class="explain"><span data-lang="fr">✔ Convexe → l'espérance du payoff dépasse le payoff de l'espérance. La plupart des payoffs d'options sont convexes : c'est la valeur de l'optionalité.</span><span data-lang="en">✔ Convex → the expected payoff exceeds the payoff of the expectation. Most option payoffs are convex: this is the value of optionality.</span><span data-lang="nl">✔ Convex → de verwachte payoff overtreft de payoff van de verwachting. De meeste optiepayoffs zijn convex: dat is de waarde van optionaliteit.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">13. La kurtosis d'une loi normale vaut…</div>
+            <div class="qtext" data-lang="en">13. The kurtosis of a normal law equals…</div>
+            <div class="qtext" data-lang="nl">13. De kurtosis van een normale wet is…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">0.</span><span data-lang="en">0.</span><span data-lang="nl">0.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">1, comme la variance.</span><span data-lang="en">1, like the variance.</span><span data-lang="nl">1, zoals de variantie.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">3 ; au-delà, on parle de queues épaisses.</span><span data-lang="en">3; beyond that, we speak of fat tails.</span><span data-lang="nl">3; daarboven spreken we van fat tails.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Kurtosis = 3 pour la normale. Les rendements financiers dépassent souvent 3 (fat tails) : les événements extrêmes sont plus fréquents que la normale ne le prédit.</span><span data-lang="en">✔ Kurtosis = 3 for the normal. Financial returns often exceed 3 (fat tails): extreme events are more frequent than the normal predicts.</span><span data-lang="nl">✔ Kurtosis = 3 voor de normale. Financiële rendementen overschrijden vaak 3 (fat tails): extreme gebeurtenissen zijn frequenter dan de normale voorspelt.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">14. Une loi de Bernoulli de paramètre p a pour espérance…</div>
+            <div class="qtext" data-lang="en">14. A Bernoulli law with parameter p has expectation…</div>
+            <div class="qtext" data-lang="nl">14. Een Bernoulli-wet met parameter p heeft als verwachting…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">p(1 − p).</span><span data-lang="en">p(1 − p).</span><span data-lang="nl">p(1 − p).</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">p.</span><span data-lang="en">p.</span><span data-lang="nl">p.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">1.</span><span data-lang="en">1.</span><span data-lang="nl">1.</span></button>
+            <div class="explain"><span data-lang="fr">✔ E[X] = p (et variance p(1−p)). La Bernoulli code un défaut de crédit (1 = défaut) : sa somme donne le nombre de défauts d'un portefeuille.</span><span data-lang="en">✔ E[X] = p (and variance p(1−p)). The Bernoulli codes a credit default (1 = default): its sum gives a portfolio's number of defaults.</span><span data-lang="nl">✔ E[X] = p (en variantie p(1−p)). De Bernoulli codeert een kredietdefault (1 = default): de som geeft het aantal defaults van een portefeuille.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">15. Sous une transformation linéaire Y = a + bX, la variance devient…</div>
+            <div class="qtext" data-lang="en">15. Under a linear transform Y = a + bX, the variance becomes…</div>
+            <div class="qtext" data-lang="nl">15. Onder een lineaire transformatie Y = a + bX wordt de variantie…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">b²·σ² (la constante a disparaît).</span><span data-lang="en">b²·σ² (the constant a drops out).</span><span data-lang="nl">b²·σ² (de constante a valt weg).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">b·σ².</span><span data-lang="en">b·σ².</span><span data-lang="nl">b·σ².</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">a + b²·σ².</span><span data-lang="en">a + b²·σ².</span><span data-lang="nl">a + b²·σ².</span></button>
+            <div class="explain"><span data-lang="fr">✔ Var(a + bX) = b²·Var(X) : décaler (a) ne change pas la dispersion, seul le facteur d'échelle b compte, au carré. La moyenne devient a + bµ.</span><span data-lang="en">✔ Var(a + bX) = b²·Var(X): shifting (a) does not change dispersion, only the scale factor b counts, squared. The mean becomes a + bµ.</span><span data-lang="nl">✔ Var(a + bX) = b²·Var(X): verschuiven (a) verandert de spreiding niet, enkel de schaalfactor b telt, in het kwadraat. Het gemiddelde wordt a + bµ.</span></div>
+          </div>
+        </div>
+
+        <!-- 10. EXERCICES -->
+        <h2 id="exercices"><span data-lang="fr">10. Exercices chiffrés</span><span data-lang="en">10. Numerical exercises</span><span data-lang="nl">10. Cijferoefeningen</span></h2>
+        <p data-lang="fr">Réponses courtes à révéler ; corrigés détaillés sur la page « Solutions » et dans le PDF.</p>
+        <p data-lang="en">Short answers to reveal; full solutions on the “Solutions” page and in the PDF.</p>
+        <p data-lang="nl">Korte antwoorden te onthullen; uitgewerkte oplossingen op de “Oplossingen”-pagina en in de PDF.</p>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice PB-1</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Pr(A) = 0,3, Pr(B) = 0,5, Pr(A ∩ B) = 0,2. Calculez Pr(A ∪ B) et Pr(A | B).</p>
+          <p class="estatement" data-lang="en">Pr(A) = 0.3, Pr(B) = 0.5, Pr(A ∩ B) = 0.2. Compute Pr(A ∪ B) and Pr(A | B).</p>
+          <p class="estatement" data-lang="nl">Pr(A) = 0,3, Pr(B) = 0,5, Pr(A ∩ B) = 0,2. Bereken Pr(A ∪ B) en Pr(A | B).</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Pr(A ∪ B) = 0,3 + 0,5 − 0,2 = <b>0,6</b>. Pr(A | B) = 0,2 / 0,5 = <b>0,4</b>.</div>
+            <div class="ans" data-lang="en">Pr(A ∪ B) = 0.3 + 0.5 − 0.2 = <b>0.6</b>. Pr(A | B) = 0.2 / 0.5 = <b>0.4</b>.</div>
+            <div class="ans" data-lang="nl">Pr(A ∪ B) = 0,3 + 0,5 − 0,2 = <b>0,6</b>. Pr(A | B) = 0,2 / 0,5 = <b>0,4</b>.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice PB-2</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Un défaut touche 2 % des emprunteurs. Un modèle d'alerte détecte 90 % des vrais défauts, mais se déclenche aussi sur 8 % des sains. Une alerte se déclenche : quelle est la probabilité que l'emprunteur fasse réellement défaut ?</p>
+          <p class="estatement" data-lang="en">A default hits 2% of borrowers. An alert model catches 90% of true defaults, but also fires on 8% of the healthy. An alert fires: what is the probability the borrower truly defaults?</p>
+          <p class="estatement" data-lang="nl">Een default treft 2% van de leners. Een alarmmodel vangt 90% van de echte defaults, maar gaat ook af op 8% van de gezonden. Een alarm gaat af: wat is de kans dat de lener echt in gebreke blijft?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Bayes : posterior = (0,02×0,90) / (0,02×0,90 + 0,98×0,08) = 0,018 / (0,018 + 0,0784) = 0,018 / 0,0964 ≈ <b>18,7 %</b>. Malgré une alerte, moins d'un cas sur cinq est un vrai défaut : le piège des taux de base.</div>
+            <div class="ans" data-lang="en">Bayes: posterior = (0.02×0.90) / (0.02×0.90 + 0.98×0.08) = 0.018 / (0.018 + 0.0784) = 0.018 / 0.0964 ≈ <b>18.7%</b>. Despite an alert, fewer than one in five is a true default: the base-rate trap.</div>
+            <div class="ans" data-lang="nl">Bayes: posterior = (0,02×0,90) / (0,02×0,90 + 0,98×0,08) = 0,018 / (0,018 + 0,0784) = 0,018 / 0,0964 ≈ <b>18,7%</b>. Ondanks een alarm is minder dan één op vijf een echte default: de basisratio-val.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice PB-3</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Le prix futur d'un actif vaudra 20, 50 ou 100 avec les probabilités 0,2, 0,5 et 0,3. Un call de strike 40 paie max(S − 40, 0). Calculez l'espérance du payoff.</p>
+          <p class="estatement" data-lang="en">An asset's future price will be 20, 50 or 100 with probabilities 0.2, 0.5 and 0.3. A call with strike 40 pays max(S − 40, 0). Compute the expected payoff.</p>
+          <p class="estatement" data-lang="nl">De toekomstige prijs van een actief wordt 20, 50 of 100 met kansen 0,2, 0,5 en 0,3. Een call met strike 40 betaalt max(S − 40, 0). Bereken de verwachte payoff.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Payoffs : 0 ; 10 ; 60. E[payoff] = 0,2×0 + 0,5×10 + 0,3×60 = 0 + 5 + 18 = <b>23</b>. Valoriser une option = espérance d'une fonction (le payoff) d'une variable aléatoire (le prix).</div>
+            <div class="ans" data-lang="en">Payoffs: 0; 10; 60. E[payoff] = 0.2×0 + 0.5×10 + 0.3×60 = 0 + 5 + 18 = <b>23</b>. Valuing an option = expectation of a function (the payoff) of a random variable (the price).</div>
+            <div class="ans" data-lang="nl">Payoffs: 0; 10; 60. E[payoff] = 0,2×0 + 0,5×10 + 0,3×60 = 0 + 5 + 18 = <b>23</b>. Een optie waarderen = verwachting van een functie (de payoff) van een toevalsvariabele (de prijs).</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice PB-4</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Au moins une institution systémique fait défaut avec Pr = 1 % dans l'année ; « deux défauts ou plus » a Pr = 0,8 %. Sachant qu'au moins une a fait défaut, quelle est la probabilité qu'il y en ait au moins deux ?</p>
+          <p class="estatement" data-lang="en">At least one systemic institution defaults with Pr = 1% in the year; “two or more defaults” has Pr = 0.8%. Given at least one has defaulted, what is the probability there are at least two?</p>
+          <p class="estatement" data-lang="nl">Minstens één systeeminstelling gaat in gebreke met Pr = 1% in het jaar; “twee of meer defaults” heeft Pr = 0,8%. Gegeven dat minstens één in gebreke bleef, wat is de kans op minstens twee?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">« ≥ 2 » est inclus dans « ≥ 1 », donc l'intersection est « ≥ 2 ». Pr(≥ 2 | ≥ 1) = 0,8 % / 1 % = <b>80 %</b>. Rare seul, la première défaillance rend la deuxième quasi certaine : le risque systémique en cascade.</div>
+            <div class="ans" data-lang="en">“≥ 2” is included in “≥ 1”, so the intersection is “≥ 2”. Pr(≥ 2 | ≥ 1) = 0.8% / 1% = <b>80%</b>. Rare alone, the first failure makes the second near-certain: systemic risk in cascade.</div>
+            <div class="ans" data-lang="nl">“≥ 2” zit in “≥ 1”, dus de doorsnede is “≥ 2”. Pr(≥ 2 | ≥ 1) = 0,8% / 1% = <b>80%</b>. Zeldzaam alleen, maakt het eerste falen het tweede bijna zeker: systeemrisico in cascade.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice PB-5</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Un rendement mensuel a une moyenne de 1 % et un écart-type de 4 %. On l'annualise en multipliant par 12 la moyenne et par √12 l'écart-type. Donnez la moyenne et l'écart-type annualisés.</p>
+          <p class="estatement" data-lang="en">A monthly return has a mean of 1% and a standard deviation of 4%. It is annualised by multiplying the mean by 12 and the standard deviation by √12. Give the annualised mean and standard deviation.</p>
+          <p class="estatement" data-lang="nl">Een maandrendement heeft een gemiddelde van 1% en een standaardafwijking van 4%. Het wordt geannualiseerd door het gemiddelde met 12 en de standaardafwijking met √12 te vermenigvuldigen. Geef het geannualiseerde gemiddelde en de standaardafwijking.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Moyenne : 1 % × 12 = <b>12 %</b>. Écart-type : 4 % × √12 ≈ 4 % × 3,46 = <b>13,86 %</b>. La moyenne s'échelonne en t, la volatilité en √t : la variance (b²σ²) est additive dans le temps, pas l'écart-type.</div>
+            <div class="ans" data-lang="en">Mean: 1% × 12 = <b>12%</b>. Standard deviation: 4% × √12 ≈ 4% × 3.46 = <b>13.86%</b>. The mean scales in t, volatility in √t: variance (b²σ²) is additive over time, not the standard deviation.</div>
+            <div class="ans" data-lang="nl">Gemiddelde: 1% × 12 = <b>12%</b>. Standaardafwijking: 4% × √12 ≈ 4% × 3,46 = <b>13,86%</b>. Het gemiddelde schaalt in t, de volatiliteit in √t: variantie (b²σ²) is optelbaar in de tijd, niet de standaardafwijking.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice PB-6</span><span class="diff" data-lang="fr">Réflexion</span><span class="diff" data-lang="en">Conceptual</span><span class="diff" data-lang="nl">Reflectie</span></div>
+          <p class="estatement" data-lang="fr">Pourquoi une kurtosis supérieure à 3 est-elle une mauvaise nouvelle pour un gestionnaire de risque qui utilise une VaR calculée sous hypothèse normale ?</p>
+          <p class="estatement" data-lang="en">Why is a kurtosis above 3 bad news for a risk manager using a VaR computed under a normal assumption?</p>
+          <p class="estatement" data-lang="nl">Waarom is een kurtosis boven 3 slecht nieuws voor een risicobeheerder die een VaR onder normale aanname gebruikt?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Une kurtosis &gt; 3 signale des <b>queues épaisses</b> : les événements extrêmes sont plus fréquents que ne le prédit la loi normale. Une VaR normale place le quantile trop près du centre et <b>sous-estime</b> donc la perte extrême, précisément là où le capital doit protéger. C'est une source majeure de risque de modèle, et la raison pour laquelle on complète la VaR par l'expected shortfall et les stress tests, qui regardent au-delà du quantile.</div>
+            <div class="ans" data-lang="en">A kurtosis &gt; 3 signals <b>fat tails</b>: extreme events are more frequent than the normal law predicts. A normal VaR places the quantile too close to the centre and thus <b>understates</b> the extreme loss, exactly where capital must protect. This is a major source of model risk, and why VaR is complemented by expected shortfall and stress tests, which look beyond the quantile.</div>
+            <div class="ans" data-lang="nl">Een kurtosis &gt; 3 wijst op <b>fat tails</b>: extreme gebeurtenissen zijn frequenter dan de normale wet voorspelt. Een normale VaR plaatst het kwantiel te dicht bij het centrum en <b>onderschat</b> dus het extreme verlies, net waar kapitaal moet beschermen. Dit is een belangrijke bron van modelrisico, en de reden waarom VaR wordt aangevuld met expected shortfall en stresstests, die voorbij het kwantiel kijken.</div>
+          </details>
+        </div>
+
+        <section class="biblio">
+          <h2 id="biblio"><span data-lang="fr">Bibliographie &amp; pour aller plus loin</span><span data-lang="en">Bibliography &amp; further reading</span><span data-lang="nl">Bibliografie &amp; verder lezen</span></h2>
+          <div class="bcol">
+            <h4 data-lang="fr">Références</h4><h4 data-lang="en">References</h4><h4 data-lang="nl">Referenties</h4>
+            <ol>
+      <li>GARP (2024). <em>Financial Risk Manager (FRM) Part I: Quantitative Analysis</em>. Pearson.</li>
+      <li>Miller, M. B. (2018). <em>Mathematics and Statistics for Financial Risk Management</em> (2nd ed.). Wiley.</li>
+      <li>Bayes, T. (1763). An Essay towards Solving a Problem in the Doctrine of Chances. <em>Philosophical Transactions</em>, 53, 370–418. <a href="https://doi.org/10.1098/rstl.1763.0053" target="_blank" rel="noopener">doi:10.1098/rstl.1763.0053</a></li>
+      <li>Knight, F. H. (1921). <em>Risk, Uncertainty and Profit</em>. Houghton Mifflin.</li>
+      <li>Wooldridge, J. M. (2019). <em>Introductory Econometrics: A Modern Approach</em> (7th ed.), ch. B. Cengage.</li>
+            </ol>
+          </div>
+          <div class="bcol">
+            <h4 data-lang="fr">Pour aller plus loin</h4><h4 data-lang="en">Further reading</h4><h4 data-lang="nl">Verder lezen</h4>
+            <ul>
+      <li>Investopedia — <a href="https://www.investopedia.com/terms/b/bayes-theorem.asp" target="_blank" rel="noopener">Bayes' Theorem</a> · <a href="https://www.investopedia.com/terms/k/kurtosis.asp" target="_blank" rel="noopener">Kurtosis</a> · <a href="https://www.investopedia.com/terms/e/expected-value.asp" target="_blank" rel="noopener">Expected Value</a>.</li>
+      <li><span data-lang="fr">Suite du parcours : ce module prépare directement la VaR, la volatilité et le risque de crédit.</span><span data-lang="en">Next in the track: this module directly prepares VaR, volatility and credit risk.</span><span data-lang="nl">Verder in het traject: deze module bereidt rechtstreeks VaR, volatiliteit en kredietrisico voor.</span></li>
+            </ul>
+          </div>
+        </section>
+
+        <div class="module-nav">
+          <a class="prev" href="../index.html#curriculum">
+            <div class="dir" data-lang="fr">← Programme</div><div class="dir" data-lang="en">← Curriculum</div><div class="dir" data-lang="nl">← Programma</div>
+            <div class="tt" data-lang="fr">Analyse quantitative</div><div class="tt" data-lang="en">Quantitative Analysis</div><div class="tt" data-lang="nl">Kwantitatieve analyse</div>
+          </a>
+          <a class="next" href="../index.html#curriculum">
+            <div class="dir" data-lang="fr">Module suivant →</div><div class="dir" data-lang="en">Next module →</div><div class="dir" data-lang="nl">Volgende module →</div>
+            <div class="tt" data-lang="fr">Échantillons &amp; tests</div><div class="tt" data-lang="en">Samples &amp; testing</div><div class="tt" data-lang="nl">Steekproeven &amp; toetsen</div>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap foot">
+    <div class="brand"><span class="logo">Avenir<b>.</b></span></div>
+    <p data-lang="fr">Financial Risk Management · Analyse quantitative · Probabilités &amp; variables aléatoires</p>
+    <p data-lang="en">Financial Risk Management · Quantitative Analysis · Probability &amp; random variables</p>
+    <p data-lang="nl">Financial Risk Management · Kwantitatieve analyse · Kansrekening &amp; toevalsvariabelen</p>
+  </div>
+</footer>
+
+<script src="../assets/script.js"></script>
+<script>
+/* Calculateur de Bayes : décomposition des alertes en vraies/fausses */
+(function () {
+  var svg = document.getElementById("by-chart");
+  if (!svg) return;
+  function v(id){ return parseFloat(document.getElementById(id).value); }
+  function setT(id,t){ var e=document.getElementById(id); if(e) e.textContent=t; }
+  function al(){ return document.body.getAttribute("data-active-lang")||"fr"; }
+
+  function draw(){
+    var prior=v("by-prior")/100, sens=v("by-sens")/100, fpr=v("by-fpr")/100;
+    setT("by-prior-o",(prior*100).toFixed(1)+"%"); setT("by-sens-o",(sens*100).toFixed(0)+"%"); setT("by-fpr-o",(fpr*100).toFixed(1)+"%");
+    var tp = prior*sens;                 // vrais positifs
+    var fp = (1-prior)*fpr;              // faux positifs
+    var pplus = tp+fp;                   // Pr(alerte)
+    var post = pplus>0 ? tp/pplus : 0;
+    setT("by-post",(post*100).toFixed(1)+"%");
+    setT("by-fshare", pplus>0 ? ((fp/pplus)*100).toFixed(1)+"%" : "—");
+
+    var W=520,H=200,L=12,R=12,T=24,B=28, pw=W-L-R;
+    var g="";
+    // Rangée 1 : population (danger vs sain)
+    var y1=T, h=34;
+    var wD = Math.max(prior*pw, 0);
+    g+='<text class="lab" x="'+L+'" y="'+(y1-6)+'">'+(al()==="en"?"Population":(al()==="nl"?"Populatie":"Population"))+'</text>';
+    g+='<rect x="'+L+'" y="'+y1+'" width="'+wD.toFixed(1)+'" height="'+h+'" fill="var(--crimson)"/>';
+    g+='<rect x="'+(L+wD).toFixed(1)+'" y="'+y1+'" width="'+(pw-wD).toFixed(1)+'" height="'+h+'" fill="var(--surface)" stroke="var(--border)"/>';
+    if (wD>34) g+='<text class="val" x="'+(L+4)+'" y="'+(y1+h/2+4)+'">'+(prior*100).toFixed(1)+'%</text>';
+    g+='<text class="ax" x="'+(L+wD+4).toFixed(1)+'" y="'+(y1+h/2+4)+'" fill="var(--ink-mute)">'+(al()==="en"?"healthy":(al()==="nl"?"gezond":"sains"))+'</text>';
+
+    // Rangée 2 : alertes (vraies vs fausses), rescalées pour remplir la largeur
+    var y2=T+h+40;
+    var wTP = pplus>0 ? (tp/pplus)*pw : 0;
+    g+='<text class="lab" x="'+L+'" y="'+(y2-6)+'">'+(al()==="en"?"Alarms":(al()==="nl"?"Alarmen":"Alertes"))+' (Pr='+(pplus*100).toFixed(1)+'%)</text>';
+    g+='<rect x="'+L+'" y="'+y2+'" width="'+wTP.toFixed(1)+'" height="'+h+'" fill="var(--teal)"/>';
+    g+='<rect x="'+(L+wTP).toFixed(1)+'" y="'+y2+'" width="'+(pw-wTP).toFixed(1)+'" height="'+h+'" fill="var(--gold)"/>';
+    if (wTP>44) g+='<text class="val" x="'+(L+4)+'" y="'+(y2+h/2+4)+'">'+(post*100).toFixed(1)+'%</text>';
+    var lblTrue = al()==="en"?"true":(al()==="nl"?"echt":"vraies");
+    var lblFalse = al()==="en"?"false":(al()==="nl"?"vals":"fausses");
+    g+='<text class="ax" x="'+(L+2)+'" y="'+(y2+h+16)+'" fill="var(--teal)" text-anchor="start">'+lblTrue+'</text>';
+    g+='<text class="ax" x="'+(L+pw-2)+'" y="'+(y2+h+16)+'" fill="var(--gold)" text-anchor="end">'+lblFalse+'</text>';
+    svg.innerHTML=g;
+  }
+  ["by-prior","by-sens","by-fpr"].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener("input", draw); });
+  document.querySelectorAll("[data-set-lang]").forEach(function(b){ b.addEventListener("click", function(){ setTimeout(draw,10); }); });
+  document.addEventListener("DOMContentLoaded", draw);
+  draw();
+})();
+</script>
+</body>
+</html>

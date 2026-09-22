@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Obligations — classe d'actifs — Avenir</title>
+<meta name="description" content="Sous-module de la classe d'actifs Obligations : titre de créance, coupon et nominal, relation prix-taux, pair/prime/décote, YTM, risques (taux, crédit, inflation), types et rôle en portefeuille. Vidéo, calculateur de prix obligataire interactif, QCM, exercices et ressources téléchargeables.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-active-lang="fr" class="track-am">
+
+<div class="progress-bar"></div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <div class="brand">
+      <a href="../index.html"><span class="logo">Avenir<b>.</b></span></a>
+      <span class="tag">Asset Management &amp; Risk</span>
+    </div>
+    <div class="spacer"></div>
+    <nav class="nav-links">
+      <a href="../index.html#parcours"><span data-lang="fr">Parcours</span><span data-lang="en">Tracks</span><span data-lang="nl">Trajecten</span></a>
+      <a href="../index.html#curriculum"><span data-lang="fr">Programme</span><span data-lang="en">Curriculum</span><span data-lang="nl">Programma</span></a>
+      <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a>
+    </nav>
+    <div class="controls">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-set-lang="fr">FR</button>
+        <button data-set-lang="en">EN</button>
+        <button data-set-lang="nl">NL</button>
+      </div>
+      <button id="theme-btn" class="icon-btn" aria-label="Thème">☾</button>
+      <button id="menu-btn" class="icon-btn menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap-mod">
+  <div class="module-shell">
+
+    <aside class="toc">
+      <div class="toc-title" data-lang="fr">Sommaire</div>
+      <div class="toc-title" data-lang="en">Contents</div>
+      <div class="toc-title" data-lang="nl">Inhoud</div>
+      <a href="#video"><span data-lang="fr">Vidéo</span><span data-lang="en">Video</span><span data-lang="nl">Video</span></a>
+      <a href="#definition"><span data-lang="fr">1. Qu'est-ce qu'une obligation ?</span><span data-lang="en">1. What is a bond?</span><span data-lang="nl">1. Wat is een obligatie?</span></a>
+      <a href="#prix"><span data-lang="fr">2. Prix &amp; rendement</span><span data-lang="en">2. Price &amp; yield</span><span data-lang="nl">2. Prijs &amp; rendement</span></a>
+      <a href="#risques"><span data-lang="fr">3. Les risques</span><span data-lang="en">3. The risks</span><span data-lang="nl">3. De risico's</span></a>
+      <a href="#types"><span data-lang="fr">4. Types d'obligations</span><span data-lang="en">4. Types of bonds</span><span data-lang="nl">4. Types obligaties</span></a>
+      <a href="#role"><span data-lang="fr">5. Rôle en portefeuille</span><span data-lang="en">5. Role in the portfolio</span><span data-lang="nl">5. Rol in de portefeuille</span></a>
+      <a href="#ressources"><span data-lang="fr">Ressources</span><span data-lang="en">Resources</span><span data-lang="nl">Bronnen</span></a>
+      <a href="#retenir"><span data-lang="fr">6. À retenir</span><span data-lang="en">6. Key takeaways</span><span data-lang="nl">6. Onthouden</span></a>
+      <a href="#qcm"><span data-lang="fr">7. QCM (15)</span><span data-lang="en">7. MCQ (15)</span><span data-lang="nl">7. MCV (15)</span></a>
+      <a href="#exercices"><span data-lang="fr">8. Exercices</span><span data-lang="en">8. Exercises</span><span data-lang="nl">8. Oefeningen</span></a>
+      <a href="#biblio"><span data-lang="fr">Sources</span><span data-lang="en">Sources</span><span data-lang="nl">Bronnen</span></a>
+    </aside>
+
+    <main>
+      <div class="crumbs">
+        <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a> ·
+        <span>Asset Management</span> ·
+        <a href="am4-classes-actifs.html"><span data-lang="fr">Classes d'actifs</span><span data-lang="en">Asset classes</span><span data-lang="nl">Activaklassen</span></a> ·
+        <span data-lang="fr">Obligations</span><span data-lang="en">Bonds</span><span data-lang="nl">Obligaties</span>
+      </div>
+
+      <div class="module-hero">
+        <span class="badge">Asset Management · <span data-lang="fr">Obligations</span><span data-lang="en">Bonds</span><span data-lang="nl">Obligaties</span></span>
+        <h1 data-lang="fr">Les obligations</h1>
+        <h1 data-lang="en">Bonds</h1>
+        <h1 data-lang="nl">Obligaties</h1>
+        <p class="subtitle" data-lang="fr">Prêter plutôt que posséder : l'obligation promet des flux fixes et un remboursement. Revenu régulier, amortisseur des portefeuilles — mais prisonnière des taux d'intérêt. Prix, rendement, risques et rôle.</p>
+        <p class="subtitle" data-lang="en">Lending rather than owning: a bond promises fixed cash flows and repayment. Regular income, a portfolio cushion — but a prisoner of interest rates. Price, yield, risks and role.</p>
+        <p class="subtitle" data-lang="nl">Lenen in plaats van bezitten: een obligatie belooft vaste kasstromen en terugbetaling. Regelmatig inkomen, een portefeuillebuffer — maar gevangene van de rente. Prijs, rendement, risico's en rol.</p>
+        <div class="module-meta">
+          <span data-lang="fr">⏱ Lecture ~22 min</span><span data-lang="en">⏱ ~22 min read</span><span data-lang="nl">⏱ ~22 min lezen</span>
+          <span data-lang="fr">📶 Niveau intermédiaire</span><span data-lang="en">📶 Intermediate level</span><span data-lang="nl">📶 Gemiddeld niveau</span>
+          <span>🎓 AM · <span data-lang="fr">Classe d'actifs</span><span data-lang="en">Asset class</span><span data-lang="nl">Activaklasse</span></span>
+        </div>
+      </div>
+
+      <div class="module-body">
+
+        <!-- VIDÉO -->
+        <h2 id="video"><span data-lang="fr">Vidéo — l'essentiel en quelques minutes</span><span data-lang="en">Video — the essentials in a few minutes</span><span data-lang="nl">Video — de essentie in enkele minuten</span></h2>
+        <div class="video-embed placeholder">
+          <div class="ph-inner">
+            <div class="ph-play">▶</div>
+            <div class="ph-t" data-lang="fr">Vidéo explicative à venir</div><div class="ph-t" data-lang="en">Explanatory video coming soon</div><div class="ph-t" data-lang="nl">Uitlegvideo binnenkort</div>
+            <div class="ph-s" data-lang="fr">Remplacez ce bloc par l'embed YouTube/Vimeo (voir le commentaire dans le code).</div><div class="ph-s" data-lang="en">Replace this block with the YouTube/Vimeo embed (see the comment in the code).</div><div class="ph-s" data-lang="nl">Vervang dit blok door de YouTube/Vimeo-embed (zie de opmerking in de code).</div>
+          </div>
+        </div>
+        <!-- ▶ POUR ACTIVER LA VIDÉO : remplacer tout le bloc <div class="video-embed placeholder">…</div> ci-dessus par :
+        <div class="video-embed"><iframe src="https://www.youtube.com/embed/IDENTIFIANT_VIDEO" title="Obligations — Avenir" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div> -->
+
+        <!-- 1. DÉFINITION -->
+        <h2 id="definition"><span data-lang="fr">1. Qu'est-ce qu'une obligation ?</span><span data-lang="en">1. What is a bond?</span><span data-lang="nl">1. Wat is een obligatie?</span></h2>
+        <p data-lang="fr">Une <strong>obligation</strong> est un <strong>titre de créance</strong> : en l'achetant, on <em>prête</em> de l'argent à un émetteur (État, entreprise) qui s'engage à verser des <strong>coupons</strong> périodiques puis à rembourser le <strong>nominal</strong> à l'échéance. Contrairement à l'actionnaire, l'obligataire n'est pas copropriétaire : c'est un <em>créancier</em>. Il ne profite pas de la croissance de l'entreprise au-delà du coupon promis, mais il est payé <strong>avant</strong> les actionnaires — un profil de risque radicalement différent.</p>
+        <p data-lang="en">A <strong>bond</strong> is a <strong>debt security</strong>: by buying it, you <em>lend</em> money to an issuer (a state, a company) that commits to paying periodic <strong>coupons</strong> and then repaying the <strong>face value</strong> at maturity. Unlike the shareholder, the bondholder is not a co-owner: they are a <em>creditor</em>. They do not share in the company's growth beyond the promised coupon, but they are paid <strong>before</strong> shareholders — a radically different risk profile.</p>
+        <p data-lang="nl">Een <strong>obligatie</strong> is een <strong>schuldbewijs</strong>: door ze te kopen, <em>leen</em> je geld aan een uitgever (staat, onderneming) die zich verbindt periodieke <strong>coupons</strong> te betalen en daarna de <strong>nominale waarde</strong> op vervaldag terug te betalen. Anders dan de aandeelhouder is de obligatiehouder geen mede-eigenaar: hij is een <em>schuldeiser</em>. Hij deelt niet in de groei van de onderneming buiten de beloofde coupon, maar wordt <strong>vóór</strong> de aandeelhouders betaald — een radicaal ander risicoprofiel.</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">Le vocabulaire de base</span><span class="clabel" data-lang="en">The basic vocabulary</span><span class="clabel" data-lang="nl">De basiswoordenschat</span>
+          <span data-lang="fr">Le <strong>nominal</strong> (valeur faciale) est le montant remboursé à l'échéance (souvent 100). Le <strong>coupon</strong> est l'intérêt périodique, exprimé en % du nominal. L'<strong>échéance</strong> (maturité) est la date de remboursement. Le <strong>rendement à l'échéance</strong> (YTM, <em>yield to maturity</em>) est le taux qui égalise le prix payé et la valeur actualisée de tous les flux : c'est le vrai rendement si l'on garde l'obligation jusqu'au bout.</span>
+          <span data-lang="en">The <strong>face value</strong> (par) is the amount repaid at maturity (often 100). The <strong>coupon</strong> is the periodic interest, expressed as a % of face. The <strong>maturity</strong> is the repayment date. The <strong>yield to maturity</strong> (YTM) is the rate that equates the price paid with the present value of all flows: the true return if held to the end.</span>
+          <span data-lang="nl">De <strong>nominale waarde</strong> (par) is het bedrag terugbetaald op vervaldag (vaak 100). De <strong>coupon</strong> is de periodieke rente, uitgedrukt als % van de nominale waarde. De <strong>looptijd</strong> is de terugbetalingsdatum. Het <strong>rendement op vervaldag</strong> (YTM) is de voet die de betaalde prijs gelijkstelt aan de contante waarde van alle stromen: het echte rendement bij aanhouden tot het einde.</span>
+        </div>
+
+        <!-- 2. PRIX & RENDEMENT + INTERACTIF -->
+        <h2 id="prix"><span data-lang="fr">2. Prix &amp; rendement</span><span data-lang="en">2. Price &amp; yield</span><span data-lang="nl">2. Prijs &amp; rendement</span></h2>
+        <p data-lang="fr">Le prix d'une obligation est la <strong>valeur actualisée</strong> de ses flux (coupons + nominal), escomptés au rendement de marché <em>y</em>. D'où la loi fondamentale (approfondie au module « Risque de taux ») : <strong>quand les taux montent, le prix baisse</strong>, et inversement. Trois cas :</p>
+        <p data-lang="en">A bond's price is the <strong>present value</strong> of its flows (coupons + face), discounted at the market yield <em>y</em>. Hence the fundamental law (deepened in the “Interest-rate risk” module): <strong>when rates rise, the price falls</strong>, and vice versa. Three cases:</p>
+        <p data-lang="nl">De prijs van een obligatie is de <strong>contante waarde</strong> van haar stromen (coupons + nominale waarde), verdisconteerd tegen het marktrendement <em>y</em>. Vandaar de grondwet (uitgediept in de module “Renterisico”): <strong>wanneer de rente stijgt, daalt de prijs</strong>, en omgekeerd. Drie gevallen:</p>
+
+        <div class="formula">
+          <div class="eq">P = Σ<sub>t</sub> C / (1+y)<sup>t</sup> + N / (1+y)<sup>T</sup></div>
+          <div class="caption" data-lang="fr"><strong>Au pair</strong> : coupon = rendement → prix = nominal (100). <strong>Prime</strong> : coupon &gt; rendement → prix &gt; 100. <strong>Décote</strong> : coupon &lt; rendement → prix &lt; 100. Le <em>current yield</em> = coupon annuel / prix (à ne pas confondre avec le YTM, qui intègre aussi la plus/moins-value au remboursement).</div>
+          <div class="caption" data-lang="en"><strong>At par</strong>: coupon = yield → price = face (100). <strong>Premium</strong>: coupon &gt; yield → price &gt; 100. <strong>Discount</strong>: coupon &lt; yield → price &lt; 100. The <em>current yield</em> = annual coupon / price (not to be confused with YTM, which also captures the gain/loss at redemption).</div>
+          <div class="caption" data-lang="nl"><strong>À pari</strong>: coupon = rendement → prijs = nominale (100). <strong>Premie</strong>: coupon &gt; rendement → prijs &gt; 100. <strong>Disagio</strong>: coupon &lt; rendement → prijs &lt; 100. Het <em>current yield</em> = jaarcoupon / prijs (niet te verwarren met YTM, dat ook de winst/verlies bij terugbetaling meeneemt).</div>
+          <div class="caption src">Réf. — Fabozzi (2012) ; cf. module « Risque de taux &amp; duration »</div>
+        </div>
+
+        <p data-lang="fr">Le calculateur ci-dessous montre le prix d'une obligation à coupon annuel (nominal 100) en fonction du rendement de marché. Observez la courbe décroissante et le point d'équilibre au pair (quand coupon = rendement).</p>
+        <p data-lang="en">The calculator below shows the price of an annual-coupon bond (face 100) as a function of the market yield. Watch the decreasing curve and the par point (when coupon = yield).</p>
+        <p data-lang="nl">De calculator hieronder toont de prijs van een obligatie met jaarcoupon (nominaal 100) als functie van het marktrendement. Kijk naar de dalende curve en het pari-punt (wanneer coupon = rendement).</p>
+
+        <style>
+          #ob-chart { width:100%; height:auto; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; }
+          #ob-chart .axis { stroke:var(--ink-mute); stroke-width:1.4; }
+          #ob-chart .tick { fill:var(--ink-mute); font-size:10px; font-family:var(--sans); }
+          #ob-chart .lab { fill:var(--ink-soft); font-size:11px; font-family:var(--sans); font-weight:700; }
+          .ob-sliders { display:grid; grid-template-columns:repeat(3,1fr); gap:12px 18px; margin-bottom:16px; }
+          .ob-sliders label { display:block; font-size:12.5px; font-weight:600; color:var(--ink-soft); margin-bottom:4px; }
+          .ob-out { margin-top:14px; font-size:14.5px; color:var(--ink-soft); display:flex; gap:22px; flex-wrap:wrap; }
+          .ob-out b { color:var(--ink); font-family:var(--mono); }
+          @media (max-width:640px){ .ob-sliders { grid-template-columns:1fr 1fr; } }
+        </style>
+
+        <div class="calc">
+          <div class="chead">
+            <h4 data-lang="fr">Calculateur de prix obligataire</h4>
+            <h4 data-lang="en">Bond price calculator</h4>
+            <h4 data-lang="nl">Obligatieprijscalculator</h4>
+            <p data-lang="fr">Coupon annuel · nominal 100 · composition annuelle</p>
+            <p data-lang="en">Annual coupon · face 100 · annual compounding</p>
+            <p data-lang="nl">Jaarcoupon · nominaal 100 · jaarlijkse samenstelling</p>
+          </div>
+          <div class="cbody" style="display:block">
+            <div class="ob-sliders">
+              <div>
+                <label><span data-lang="fr">Coupon</span><span data-lang="en">Coupon</span><span data-lang="nl">Coupon</span></label>
+                <div class="rangewrap"><input type="range" id="ob-c" min="0" max="8" step="0.25" value="4"><output id="ob-c-o">4%</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Échéance</span><span data-lang="en">Maturity</span><span data-lang="nl">Looptijd</span></label>
+                <div class="rangewrap"><input type="range" id="ob-t" min="1" max="30" step="1" value="8"><output id="ob-t-o">8</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Rendement de marché (y)</span><span data-lang="en">Market yield (y)</span><span data-lang="nl">Marktrendement (y)</span></label>
+                <div class="rangewrap"><input type="range" id="ob-y" min="1" max="10" step="0.25" value="4"><output id="ob-y-o">4%</output></div>
+              </div>
+            </div>
+
+            <svg id="ob-chart" viewBox="0 0 520 260" role="img" aria-label="Prix obligataire en fonction du rendement"></svg>
+
+            <div class="ob-out">
+              <span><span data-lang="fr">Prix :</span><span data-lang="en">Price:</span><span data-lang="nl">Prijs:</span> <b id="ob-price">—</b></span>
+              <span><span data-lang="fr">Statut :</span><span data-lang="en">Status:</span><span data-lang="nl">Status:</span> <b id="ob-status">—</b></span>
+              <span><span data-lang="fr">Rendement courant :</span><span data-lang="en">Current yield:</span><span data-lang="nl">Lopend rendement:</span> <b id="ob-cy">—</b></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. RISQUES -->
+        <h2 id="risques"><span data-lang="fr">3. Les risques</span><span data-lang="en">3. The risks</span><span data-lang="nl">3. De risico's</span></h2>
+        <p data-lang="fr">« Sûre » ne veut pas dire « sans risque ». Une obligation porte plusieurs risques, détaillés dans le parcours Risk Management.</p>
+        <p data-lang="en">“Safe” does not mean “risk-free”. A bond carries several risks, detailed in the Risk Management track.</p>
+        <p data-lang="nl">“Veilig” betekent niet “risicovrij”. Een obligatie draagt verscheidene risico's, gedetailleerd in het Risk Management-traject.</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th data-lang="fr">Risque</th><th data-lang="en">Risk</th><th data-lang="nl">Risico</th>
+                <th data-lang="fr">En quoi</th><th data-lang="en">What it is</th><th data-lang="nl">Wat het is</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-lang="fr">De taux</td><td data-lang="en">Interest-rate</td><td data-lang="nl">Rente</td>
+                <td data-lang="fr">La hausse des taux fait baisser le prix (mesuré par la duration).</td><td data-lang="en">Rising rates lower the price (measured by duration).</td><td data-lang="nl">Stijgende rente verlaagt de prijs (gemeten door duration).</td>
+              </tr>
+              <tr>
+                <td data-lang="fr">De crédit</td><td data-lang="en">Credit</td><td data-lang="nl">Krediet</td>
+                <td data-lang="fr">L'émetteur peut faire défaut ; sa note peut se dégrader (spread).</td><td data-lang="en">The issuer may default; its rating may deteriorate (spread).</td><td data-lang="nl">De uitgever kan in gebreke blijven; zijn rating kan verslechteren (spread).</td>
+              </tr>
+              <tr>
+                <td data-lang="fr">De liquidité</td><td data-lang="en">Liquidity</td><td data-lang="nl">Liquiditeit</td>
+                <td data-lang="fr">Certaines obligations sont difficiles à revendre sans décote.</td><td data-lang="en">Some bonds are hard to sell without a discount.</td><td data-lang="nl">Sommige obligaties zijn moeilijk te verkopen zonder korting.</td>
+              </tr>
+              <tr>
+                <td data-lang="fr">D'inflation</td><td data-lang="en">Inflation</td><td data-lang="nl">Inflatie</td>
+                <td data-lang="fr">L'inflation érode la valeur réelle des coupons fixes.</td><td data-lang="en">Inflation erodes the real value of fixed coupons.</td><td data-lang="nl">Inflatie erodeert de reële waarde van vaste coupons.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p data-lang="fr">L'année <strong>2022</strong> l'a brutalement rappelé : la remontée rapide des taux a infligé aux obligations l'une de leurs pires années historiques — preuve que le risque de taux est bien réel, même sur de la dette souveraine « sans risque de crédit ».</p>
+        <p data-lang="en"><strong>2022</strong> was a brutal reminder: the rapid rise in rates inflicted one of the worst years on record for bonds — proof that interest-rate risk is very real, even on “credit-risk-free” sovereign debt.</p>
+        <p data-lang="nl"><strong>2022</strong> was een brute herinnering: de snelle rentestijging bezorgde obligaties een van hun slechtste jaren ooit — bewijs dat renterisico zeer reëel is, zelfs op “kredietrisicovrije” staatsschuld.</p>
+
+        <!-- 4. TYPES -->
+        <h2 id="types"><span data-lang="fr">4. Types d'obligations</span><span data-lang="en">4. Types of bonds</span><span data-lang="nl">4. Types obligaties</span></h2>
+        <p data-lang="fr">On distingue selon l'<strong>émetteur</strong> : les <em>souveraines</em> (États — faible risque de crédit dans les pays solides, mais pleine sensibilité aux taux) et les <em>corporate</em> (entreprises — un spread de crédit s'ajoute, plus élevé pour le high yield). Selon le <strong>coupon</strong> : taux fixe, taux variable (coupon indexé sur un taux de référence, donc peu sensible aux taux), zéro-coupon (aucun coupon, vendu sous le pair). Selon la <strong>protection</strong> : les obligations indexées sur l'inflation (« linkers ») protègent le pouvoir d'achat en ajustant le nominal.</p>
+        <p data-lang="en">We distinguish by <strong>issuer</strong>: <em>sovereign</em> (states — low credit risk in solid countries, but full rate sensitivity) and <em>corporate</em> (companies — a credit spread is added, higher for high yield). By <strong>coupon</strong>: fixed rate, floating rate (coupon indexed to a reference rate, hence little rate sensitivity), zero-coupon (no coupon, sold below par). By <strong>protection</strong>: inflation-linked bonds (“linkers”) protect purchasing power by adjusting the principal.</p>
+        <p data-lang="nl">We onderscheiden naar <strong>uitgever</strong>: <em>soeverein</em> (staten — laag kredietrisico in solide landen, maar volledige rentegevoeligheid) en <em>corporate</em> (ondernemingen — een kredietspread komt erbij, hoger voor high yield). Naar <strong>coupon</strong>: vaste rente, variabele rente (coupon geïndexeerd op een referentierente, dus weinig rentegevoelig), nulcoupon (geen coupon, onder pari verkocht). Naar <strong>bescherming</strong>: inflatiegekoppelde obligaties (“linkers”) beschermen de koopkracht door de hoofdsom aan te passen.</p>
+
+        <!-- 5. RÔLE -->
+        <h2 id="role"><span data-lang="fr">5. Le rôle en portefeuille</span><span data-lang="en">5. Role in the portfolio</span><span data-lang="nl">5. Rol in de portefeuille</span></h2>
+        <p data-lang="fr">Les obligations jouent deux rôles complémentaires : un <strong>revenu régulier</strong> (les coupons) et un rôle d'<strong>amortisseur</strong>. Historiquement, lors des chocs de croissance, les investisseurs fuient vers la qualité : les taux souverains baissent, le prix des obligations d'État monte — souvent au moment où les actions chutent. Cette corrélation faible, voire négative, fait des obligations le grand diversificateur du portefeuille « 60/40 ». Nuance importante : cette relation n'est pas garantie — en 2022, choc d'inflation oblige, actions <em>et</em> obligations ont baissé ensemble.</p>
+        <p data-lang="en">Bonds play two complementary roles: <strong>regular income</strong> (the coupons) and a <strong>cushion</strong> role. Historically, in growth shocks, investors flee to quality: sovereign yields fall, government bond prices rise — often just as equities drop. This low, even negative, correlation makes bonds the great diversifier of the “60/40” portfolio. Important caveat: this relationship is not guaranteed — in 2022, driven by an inflation shock, equities <em>and</em> bonds fell together.</p>
+        <p data-lang="nl">Obligaties spelen twee complementaire rollen: <strong>regelmatig inkomen</strong> (de coupons) en een <strong>buffer</strong>rol. Historisch, bij groeischokken, vluchten beleggers naar kwaliteit: soevereine rentes dalen, staatsobligatieprijzen stijgen — vaak net wanneer aandelen dalen. Deze lage, zelfs negatieve correlatie maakt obligaties de grote diversificator van de “60/40”-portefeuille. Belangrijke nuance: deze relatie is niet gegarandeerd — in 2022, door een inflatieschok, daalden aandelen <em>en</em> obligaties samen.</p>
+
+        <!-- RESSOURCES -->
+        <h2 id="ressources"><span data-lang="fr">Ressources à télécharger</span><span data-lang="en">Downloadable resources</span><span data-lang="nl">Downloadbare bronnen</span></h2>
+        <div class="downloads">
+          <div class="dl-list">
+            <a class="dl-item" href="@@BASE@@files/am4-obligations-fiche.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name" data-lang="fr">Fiche de synthèse — Obligations</span><span class="dl-name" data-lang="en">Summary sheet — Bonds</span><span class="dl-name" data-lang="nl">Samenvatting — Obligaties</span>
+                <span class="dl-sub">PDF</span>
+              </span>
+            </a>
+            <a class="dl-item" href="@@BASE@@files/am4-obligations-donnees.xlsx" download>
+              <span class="dl-ic xls">XLS</span>
+              <span class="dl-meta">
+                <span class="dl-name" data-lang="fr">Données &amp; exercices</span><span class="dl-name" data-lang="en">Data &amp; exercises</span><span class="dl-name" data-lang="nl">Data &amp; oefeningen</span>
+                <span class="dl-sub">Excel</span>
+              </span>
+            </a>
+          </div>
+          <p class="dl-note" data-lang="fr">Les fichiers seront disponibles une fois déposés dans le dossier <code>public/files/</code>.</p>
+          <p class="dl-note" data-lang="en">Files will be available once placed in the <code>public/files/</code> folder.</p>
+          <p class="dl-note" data-lang="nl">Bestanden komen beschikbaar zodra ze in de map <code>public/files/</code> staan.</p>
+        </div>
+
+        <!-- 6. À RETENIR -->
+        <h2 id="retenir"><span data-lang="fr">6. À retenir</span><span data-lang="en">6. Key takeaways</span><span data-lang="nl">6. Onthouden</span></h2>
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">L'essentiel</span><span class="clabel" data-lang="en">The essentials</span><span class="clabel" data-lang="nl">De kern</span>
+          <span data-lang="fr">Une obligation est un titre de créance : coupons + remboursement du nominal, l'obligataire est payé avant l'actionnaire. Le prix = valeur actualisée des flux ; il évolue en sens inverse des taux. Au pair (coupon = YTM), prime (coupon &gt; YTM) ou décote (coupon &lt; YTM). Risques : taux (duration), crédit (spread/défaut), liquidité, inflation. Types : souverain/corporate, IG/HY, fixe/variable/zéro-coupon, indexées inflation. En portefeuille : revenu + amortisseur (corrélation souvent faible/négative avec les actions), mais 2022 rappelle que ce n'est pas garanti.</span>
+          <span data-lang="en">A bond is a debt security: coupons + repayment of face, the bondholder is paid before the shareholder. Price = present value of flows; it moves inversely to rates. At par (coupon = YTM), premium (coupon &gt; YTM) or discount (coupon &lt; YTM). Risks: rate (duration), credit (spread/default), liquidity, inflation. Types: sovereign/corporate, IG/HY, fixed/floating/zero-coupon, inflation-linked. In a portfolio: income + cushion (often low/negative correlation with equities), but 2022 reminds us it is not guaranteed.</span>
+          <span data-lang="nl">Een obligatie is een schuldbewijs: coupons + terugbetaling van de nominale waarde, de obligatiehouder wordt vóór de aandeelhouder betaald. Prijs = contante waarde van de stromen; ze beweegt invers met de rente. À pari (coupon = YTM), premie (coupon &gt; YTM) of disagio (coupon &lt; YTM). Risico's: rente (duration), krediet (spread/default), liquiditeit, inflatie. Types: soeverein/corporate, IG/HY, vast/variabel/nulcoupon, inflatiegekoppeld. In een portefeuille: inkomen + buffer (vaak lage/negatieve correlatie met aandelen), maar 2022 herinnert eraan dat het niet gegarandeerd is.</span>
+        </div>
+
+        <!-- 7. QCM -->
+        <h2 id="qcm"><span data-lang="fr">7. QCM — 15 questions</span><span data-lang="en">7. MCQ — 15 questions</span><span data-lang="nl">7. MCV — 15 vragen</span></h2>
+        <div class="quiz">
+          <h4 data-lang="fr">Auto-évaluation</h4><h4 data-lang="en">Self-assessment</h4><h4 data-lang="nl">Zelfevaluatie</h4>
+          <p class="qsub" data-lang="fr">Cliquez sur une réponse : la bonne s'affiche en vert et la justification apparaît.</p>
+          <p class="qsub" data-lang="en">Click an answer: the correct one turns green and the justification appears.</p>
+          <p class="qsub" data-lang="nl">Klik op een antwoord: het juiste kleurt groen en de verantwoording verschijnt.</p>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">1. Une obligation est…</div>
+            <div class="qtext" data-lang="en">1. A bond is…</div>
+            <div class="qtext" data-lang="nl">1. Een obligatie is…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une part de propriété de l'entreprise.</span><span data-lang="en">A slice of ownership of the company.</span><span data-lang="nl">Een deel van de eigendom van de onderneming.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Un titre de créance (un prêt à l'émetteur).</span><span data-lang="en">A debt security (a loan to the issuer).</span><span data-lang="nl">Een schuldbewijs (een lening aan de uitgever).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Un contrat d'assurance.</span><span data-lang="en">An insurance contract.</span><span data-lang="nl">Een verzekeringscontract.</span></button>
+            <div class="explain"><span data-lang="fr">✔ L'obligataire prête ; l'actionnaire possède. C'est la distinction fondatrice entre dette et capital.</span><span data-lang="en">✔ The bondholder lends; the shareholder owns. This is the founding distinction between debt and equity.</span><span data-lang="nl">✔ De obligatiehouder leent; de aandeelhouder bezit. Dit is het grondleggende onderscheid tussen schuld en kapitaal.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">2. Quand les taux d'intérêt du marché montent, le prix d'une obligation à taux fixe…</div>
+            <div class="qtext" data-lang="en">2. When market rates rise, the price of a fixed-rate bond…</div>
+            <div class="qtext" data-lang="nl">2. Wanneer de marktrente stijgt, doet de prijs van een vastrentende obligatie…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Baisse.</span><span data-lang="en">Falls.</span><span data-lang="nl">Dalen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Monte.</span><span data-lang="en">Rises.</span><span data-lang="nl">Stijgen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Ne bouge pas.</span><span data-lang="en">Doesn't move.</span><span data-lang="nl">Niet bewegen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Prix et taux évoluent en sens inverse : on actualise les mêmes flux à un taux plus élevé. C'est le risque de taux (cf. module Duration).</span><span data-lang="en">✔ Price and yield move inversely: the same flows are discounted at a higher rate. That's interest-rate risk (see the Duration module).</span><span data-lang="nl">✔ Prijs en rente bewegen invers: dezelfde stromen worden tegen een hogere rente verdisconteerd. Dat is renterisico (zie de Duration-module).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">3. Une obligation cote « au pair » lorsque…</div>
+            <div class="qtext" data-lang="en">3. A bond trades “at par” when…</div>
+            <div class="qtext" data-lang="nl">3. Een obligatie noteert “à pari” wanneer…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Son coupon dépasse son rendement.</span><span data-lang="en">Its coupon exceeds its yield.</span><span data-lang="nl">De coupon het rendement overtreft.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Elle est en défaut.</span><span data-lang="en">It is in default.</span><span data-lang="nl">Ze in default is.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Son coupon est égal à son rendement (prix = nominal).</span><span data-lang="en">Its coupon equals its yield (price = face).</span><span data-lang="nl">De coupon gelijk is aan het rendement (prijs = nominale).</span></button>
+            <div class="explain"><span data-lang="fr">✔ Au pair : coupon = YTM → prix = 100. Coupon &gt; YTM → prime (&gt;100) ; coupon &lt; YTM → décote (&lt;100).</span><span data-lang="en">✔ At par: coupon = YTM → price = 100. Coupon &gt; YTM → premium (&gt;100); coupon &lt; YTM → discount (&lt;100).</span><span data-lang="nl">✔ À pari: coupon = YTM → prijs = 100. Coupon &gt; YTM → premie (&gt;100); coupon &lt; YTM → disagio (&lt;100).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">4. Le rendement à l'échéance (YTM) est…</div>
+            <div class="qtext" data-lang="en">4. The yield to maturity (YTM) is…</div>
+            <div class="qtext" data-lang="nl">4. Het rendement op vervaldag (YTM) is…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le coupon divisé par le nominal.</span><span data-lang="en">The coupon divided by the face.</span><span data-lang="nl">De coupon gedeeld door de nominale.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le taux qui égalise le prix et la valeur actualisée des flux.</span><span data-lang="en">The rate that equates price with the present value of flows.</span><span data-lang="nl">De voet die de prijs gelijkstelt aan de contante waarde van de stromen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le taux de la banque centrale.</span><span data-lang="en">The central bank's rate.</span><span data-lang="nl">De rente van de centrale bank.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le YTM est le rendement effectif si l'on garde l'obligation jusqu'au bout et réinvestit les coupons ; il intègre coupons ET plus/moins-value au remboursement.</span><span data-lang="en">✔ YTM is the effective return if held to maturity with coupons reinvested; it captures both coupons AND the gain/loss at redemption.</span><span data-lang="nl">✔ YTM is het effectieve rendement bij aanhouden tot vervaldag met herbelegde coupons; het omvat zowel coupons ALS winst/verlies bij terugbetaling.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">5. Le « current yield » (rendement courant) se calcule par…</div>
+            <div class="qtext" data-lang="en">5. The “current yield” is computed as…</div>
+            <div class="qtext" data-lang="nl">5. Het “lopend rendement” wordt berekend als…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Coupon annuel / prix.</span><span data-lang="en">Annual coupon / price.</span><span data-lang="nl">Jaarcoupon / prijs.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Prix / coupon.</span><span data-lang="en">Price / coupon.</span><span data-lang="nl">Prijs / coupon.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Coupon × échéance.</span><span data-lang="en">Coupon × maturity.</span><span data-lang="nl">Coupon × looptijd.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Current yield = coupon annuel / prix. Simple, mais incomplet : il ignore la plus/moins-value au remboursement (le YTM, lui, l'intègre).</span><span data-lang="en">✔ Current yield = annual coupon / price. Simple but incomplete: it ignores the gain/loss at redemption (YTM captures it).</span><span data-lang="nl">✔ Lopend rendement = jaarcoupon / prijs. Eenvoudig maar onvolledig: het negeert de winst/verlies bij terugbetaling (YTM neemt die mee).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">6. Le risque de taux d'une obligation se mesure surtout par…</div>
+            <div class="qtext" data-lang="en">6. A bond's interest-rate risk is mainly measured by…</div>
+            <div class="qtext" data-lang="nl">6. Het renterisico van een obligatie wordt vooral gemeten door…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Sa notation de crédit.</span><span data-lang="en">Its credit rating.</span><span data-lang="nl">Zijn kredietrating.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Son current yield.</span><span data-lang="en">Its current yield.</span><span data-lang="nl">Zijn lopend rendement.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Sa duration.</span><span data-lang="en">Its duration.</span><span data-lang="nl">Zijn duration.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La duration mesure la sensibilité du prix aux taux (ΔP/P ≈ −D·Δy). La notation, elle, concerne le risque de crédit. Voir le module Duration.</span><span data-lang="en">✔ Duration measures price sensitivity to rates (ΔP/P ≈ −D·Δy). The rating concerns credit risk. See the Duration module.</span><span data-lang="nl">✔ Duration meet de prijsgevoeligheid voor de rente (ΔP/P ≈ −D·Δy). De rating betreft kredietrisico. Zie de Duration-module.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">7. Une obligation « corporate » high yield offre un rendement plus élevé qu'une souveraine solide parce que…</div>
+            <div class="qtext" data-lang="en">7. A high-yield “corporate” bond offers a higher yield than a solid sovereign because…</div>
+            <div class="qtext" data-lang="nl">7. Een high-yield “corporate”-obligatie biedt een hoger rendement dan een solide soevereine omdat…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Elle a une échéance plus courte.</span><span data-lang="en">It has a shorter maturity.</span><span data-lang="nl">Ze een kortere looptijd heeft.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Elle porte un spread de crédit (risque de défaut plus élevé).</span><span data-lang="en">It carries a credit spread (higher default risk).</span><span data-lang="nl">Ze een kredietspread draagt (hoger defaultrisico).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Elle est garantie par l'État.</span><span data-lang="en">It is guaranteed by the state.</span><span data-lang="nl">Ze door de staat gegarandeerd is.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le rendement supplémentaire (spread) rémunère le risque de crédit accru. Plus l'émetteur est risqué, plus le spread est large (cf. module Crédit).</span><span data-lang="en">✔ The extra yield (spread) compensates the higher credit risk. The riskier the issuer, the wider the spread (see the Credit module).</span><span data-lang="nl">✔ Het extra rendement (spread) vergoedt het hogere kredietrisico. Hoe risicovoller de uitgever, hoe breder de spread (zie de Krediet-module).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">8. Une obligation zéro-coupon…</div>
+            <div class="qtext" data-lang="en">8. A zero-coupon bond…</div>
+            <div class="qtext" data-lang="nl">8. Een nulcouponobligatie…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Ne verse aucun coupon et se vend sous le pair.</span><span data-lang="en">Pays no coupon and sells below par.</span><span data-lang="nl">Betaalt geen coupon en verkoopt onder pari.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Verse le coupon le plus élevé du marché.</span><span data-lang="en">Pays the highest coupon on the market.</span><span data-lang="nl">Betaalt de hoogste coupon op de markt.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">N'est jamais remboursée.</span><span data-lang="en">Is never repaid.</span><span data-lang="nl">Nooit wordt terugbetaald.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le rendement vient entièrement de l'écart entre le prix d'achat (sous le pair) et le remboursement au nominal. Sa duration égale son échéance.</span><span data-lang="en">✔ The return comes entirely from the gap between the purchase price (below par) and redemption at face. Its duration equals its maturity.</span><span data-lang="nl">✔ Het rendement komt volledig uit het verschil tussen de aankoopprijs (onder pari) en terugbetaling aan de nominale. De duration is gelijk aan de looptijd.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">9. En cas de faillite de l'émetteur, l'obligataire est payé…</div>
+            <div class="qtext" data-lang="en">9. If the issuer goes bankrupt, the bondholder is paid…</div>
+            <div class="qtext" data-lang="nl">9. Als de uitgever failliet gaat, wordt de obligatiehouder betaald…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Après les actionnaires.</span><span data-lang="en">After shareholders.</span><span data-lang="nl">Na de aandeelhouders.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Jamais.</span><span data-lang="en">Never.</span><span data-lang="nl">Nooit.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Avant les actionnaires.</span><span data-lang="en">Before shareholders.</span><span data-lang="nl">Vóór de aandeelhouders.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La dette prime sur le capital : les créanciers (obligataires) passent avant les actionnaires, selon le rang (senior avant subordonné).</span><span data-lang="en">✔ Debt ranks above equity: creditors (bondholders) come before shareholders, by seniority (senior before subordinated).</span><span data-lang="nl">✔ Schuld gaat boven kapitaal: schuldeisers (obligatiehouders) komen vóór aandeelhouders, naar rang (senior vóór achtergesteld).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">10. Une obligation à taux variable est peu sensible aux taux parce que…</div>
+            <div class="qtext" data-lang="en">10. A floating-rate bond is barely sensitive to rates because…</div>
+            <div class="qtext" data-lang="nl">10. Een variabelrentende obligatie is nauwelijks rentegevoelig omdat…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Elle n'a pas d'échéance.</span><span data-lang="en">It has no maturity.</span><span data-lang="nl">Ze geen looptijd heeft.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Son coupon s'ajuste au taux de référence.</span><span data-lang="en">Its coupon adjusts to the reference rate.</span><span data-lang="nl">De coupon zich aanpast aan de referentierente.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Elle est garantie contre le défaut.</span><span data-lang="en">It is guaranteed against default.</span><span data-lang="nl">Ze gegarandeerd is tegen default.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le coupon suivant les taux, le prix reste proche du pair : la duration est courte. Elle protège du risque de taux, pas du risque de crédit.</span><span data-lang="en">✔ With the coupon tracking rates, the price stays near par: duration is short. It protects from rate risk, not credit risk.</span><span data-lang="nl">✔ Doordat de coupon de rente volgt, blijft de prijs nabij pari: de duration is kort. Het beschermt tegen renterisico, niet tegen kredietrisico.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">11. Une obligation indexée sur l'inflation (« linker ») sert surtout à…</div>
+            <div class="qtext" data-lang="en">11. An inflation-linked bond (“linker”) mainly serves to…</div>
+            <div class="qtext" data-lang="nl">11. Een inflatiegekoppelde obligatie (“linker”) dient vooral om…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Protéger le pouvoir d'achat contre l'inflation.</span><span data-lang="en">Protect purchasing power against inflation.</span><span data-lang="nl">De koopkracht te beschermen tegen inflatie.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Éliminer le risque de crédit.</span><span data-lang="en">Eliminate credit risk.</span><span data-lang="nl">Het kredietrisico te elimineren.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Garantir un cours boursier.</span><span data-lang="en">Guarantee a share price.</span><span data-lang="nl">Een aandelenkoers te garanderen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le nominal (et donc les coupons) s'ajuste à l'inflation : le rendement réel est protégé, contrairement à une obligation nominale à taux fixe.</span><span data-lang="en">✔ The principal (and thus coupons) adjusts to inflation: the real return is protected, unlike a fixed-rate nominal bond.</span><span data-lang="nl">✔ De hoofdsom (en dus de coupons) past zich aan de inflatie aan: het reële rendement is beschermd, anders dan een nominale vastrentende obligatie.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">12. Le rôle d'« amortisseur » des obligations dans un portefeuille vient de…</div>
+            <div class="qtext" data-lang="en">12. Bonds' “cushion” role in a portfolio comes from…</div>
+            <div class="qtext" data-lang="nl">12. De “buffer”-rol van obligaties in een portefeuille komt van…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Leur corrélation parfaite avec les actions.</span><span data-lang="en">Their perfect correlation with equities.</span><span data-lang="nl">Hun perfecte correlatie met aandelen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Leur rendement toujours supérieur aux actions.</span><span data-lang="en">Their return always above equities.</span><span data-lang="nl">Hun rendement altijd boven aandelen.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Leur corrélation souvent faible/négative avec les actions (fuite vers la qualité).</span><span data-lang="en">Their often low/negative correlation with equities (flight to quality).</span><span data-lang="nl">Hun vaak lage/negatieve correlatie met aandelen (vlucht naar kwaliteit).</span></button>
+            <div class="explain"><span data-lang="fr">✔ En cas de choc, les taux souverains baissent (fuite vers la qualité) → prix des obligations en hausse, souvent quand les actions chutent. D'où le « 60/40 ».</span><span data-lang="en">✔ In a shock, sovereign yields fall (flight to quality) → bond prices rise, often as equities drop. Hence the “60/40”.</span><span data-lang="nl">✔ Bij een schok dalen soevereine rentes (vlucht naar kwaliteit) → obligatieprijzen stijgen, vaak wanneer aandelen dalen. Vandaar de “60/40”.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">13. Toutes choses égales, une obligation d'échéance plus longue est…</div>
+            <div class="qtext" data-lang="en">13. All else equal, a longer-maturity bond is…</div>
+            <div class="qtext" data-lang="nl">13. Ceteris paribus is een obligatie met langere looptijd…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Moins sensible aux variations de taux.</span><span data-lang="en">Less sensitive to rate changes.</span><span data-lang="nl">Minder gevoelig voor renteveranderingen.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Plus sensible aux variations de taux.</span><span data-lang="en">More sensitive to rate changes.</span><span data-lang="nl">Gevoeliger voor renteveranderingen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Insensible aux taux.</span><span data-lang="en">Insensitive to rates.</span><span data-lang="nl">Ongevoelig voor de rente.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Plus l'échéance est longue, plus la duration est élevée, donc plus le prix réagit aux taux (les flux lointains sont plus déformés par l'actualisation).</span><span data-lang="en">✔ The longer the maturity, the higher the duration, so the more the price reacts to rates (distant flows are more distorted by discounting).</span><span data-lang="nl">✔ Hoe langer de looptijd, hoe hoger de duration, dus hoe meer de prijs op de rente reageert (verre stromen worden meer vervormd door verdiscontering).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">14. En 2022, les obligations ont connu l'une de leurs pires années à cause de…</div>
+            <div class="qtext" data-lang="en">14. In 2022, bonds had one of their worst years because of…</div>
+            <div class="qtext" data-lang="nl">14. In 2022 kenden obligaties een van hun slechtste jaren door…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">La remontée rapide des taux d'intérêt.</span><span data-lang="en">The rapid rise in interest rates.</span><span data-lang="nl">De snelle rentestijging.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une vague de défauts souverains.</span><span data-lang="en">A wave of sovereign defaults.</span><span data-lang="nl">Een golf van soevereine defaults.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La baisse des taux.</span><span data-lang="en">Falling rates.</span><span data-lang="nl">Dalende rente.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Face à l'inflation, les banques centrales ont relevé les taux brutalement → chute des prix obligataires. Actions et obligations ont baissé ensemble, cassant la diversification habituelle.</span><span data-lang="en">✔ Facing inflation, central banks hiked rates sharply → bond prices fell. Equities and bonds fell together, breaking the usual diversification.</span><span data-lang="nl">✔ Tegenover inflatie verhoogden centrale banken de rente bruusk → obligatieprijzen daalden. Aandelen en obligaties daalden samen, wat de gebruikelijke diversificatie brak.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">15. Par rapport aux actions, les obligations offrent en général…</div>
+            <div class="qtext" data-lang="en">15. Compared with equities, bonds generally offer…</div>
+            <div class="qtext" data-lang="nl">15. Vergeleken met aandelen bieden obligaties doorgaans…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Un rendement attendu plus élevé et plus de risque.</span><span data-lang="en">A higher expected return and more risk.</span><span data-lang="nl">Een hoger verwacht rendement en meer risico.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Exactement le même profil.</span><span data-lang="en">Exactly the same profile.</span><span data-lang="nl">Precies hetzelfde profiel.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Un rendement attendu plus faible mais plus de stabilité.</span><span data-lang="en">A lower expected return but more stability.</span><span data-lang="nl">Een lager verwacht rendement maar meer stabiliteit.</span></button>
+            <div class="explain"><span data-lang="fr">✔ La dette est prioritaire et à flux fixes : moins de rendement attendu que les actions, mais moins de volatilité — d'où sa fonction d'amortisseur.</span><span data-lang="en">✔ Debt is senior and fixed-flow: lower expected return than equities, but less volatility — hence its cushion function.</span><span data-lang="nl">✔ Schuld is bevoorrecht en met vaste stromen: lager verwacht rendement dan aandelen, maar minder volatiliteit — vandaar de bufferfunctie.</span></div>
+          </div>
+        </div>
+
+        <!-- 8. EXERCICES -->
+        <h2 id="exercices"><span data-lang="fr">8. Exercices chiffrés</span><span data-lang="en">8. Numerical exercises</span><span data-lang="nl">8. Cijferoefeningen</span></h2>
+        <p data-lang="fr">Réponses courtes à révéler ; corrigés détaillés sur la page « Solutions ».</p>
+        <p data-lang="en">Short answers to reveal; full solutions on the “Solutions” page.</p>
+        <p data-lang="nl">Korte antwoorden te onthullen; uitgewerkte oplossingen op de “Oplossingen”-pagina.</p>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice OB-1</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Une obligation de nominal 100 verse un coupon de 5 € et cote 95 €. Quel est son rendement courant ?</p>
+          <p class="estatement" data-lang="en">A bond with face 100 pays a €5 coupon and trades at €95. What is its current yield?</p>
+          <p class="estatement" data-lang="nl">Een obligatie met nominale 100 betaalt een coupon van €5 en noteert €95. Wat is het lopend rendement?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Rendement courant = 5 / 95 = <b>5,26 %</b> (supérieur au coupon nominal de 5 % car l'obligation cote en décote).</div>
+            <div class="ans" data-lang="en">Current yield = 5 / 95 = <b>5.26%</b> (above the 5% nominal coupon because the bond trades at a discount).</div>
+            <div class="ans" data-lang="nl">Lopend rendement = 5 / 95 = <b>5,26%</b> (boven de nominale coupon van 5% omdat de obligatie met disagio noteert).</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice OB-2</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Une obligation à 5 ans a un coupon de 4 % et le rendement de marché est de 4 %. Sans calcul détaillé, quel est son prix ?</p>
+          <p class="estatement" data-lang="en">A 5-year bond has a 4% coupon and the market yield is 4%. Without detailed calculation, what is its price?</p>
+          <p class="estatement" data-lang="nl">Een 5-jarige obligatie heeft een coupon van 4% en het marktrendement is 4%. Zonder gedetailleerde berekening, wat is de prijs?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Coupon = rendement → l'obligation cote <b>au pair = 100</b>.</div>
+            <div class="ans" data-lang="en">Coupon = yield → the bond trades <b>at par = 100</b>.</div>
+            <div class="ans" data-lang="nl">Coupon = rendement → de obligatie noteert <b>à pari = 100</b>.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice OB-3</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Obligation à 3 ans, coupon annuel 3 %, nominal 100, rendement de marché 5 %. Calculez le prix et dites s'il s'agit d'une prime ou d'une décote.</p>
+          <p class="estatement" data-lang="en">3-year bond, 3% annual coupon, face 100, market yield 5%. Compute the price and say whether it is a premium or a discount.</p>
+          <p class="estatement" data-lang="nl">3-jarige obligatie, 3% jaarcoupon, nominaal 100, marktrendement 5%. Bereken de prijs en zeg of het een premie of disagio is.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">P = 3/1,05 + 3/1,05² + 103/1,05³ = 2,857 + 2,721 + 88,975 = <b>94,55</b> → <b>décote</b> (coupon 3 % &lt; rendement 5 %).</div>
+            <div class="ans" data-lang="en">P = 3/1.05 + 3/1.05² + 103/1.05³ = 2.857 + 2.721 + 88.975 = <b>94.55</b> → <b>discount</b> (coupon 3% &lt; yield 5%).</div>
+            <div class="ans" data-lang="nl">P = 3/1,05 + 3/1,05² + 103/1,05³ = 2,857 + 2,721 + 88,975 = <b>94,55</b> → <b>disagio</b> (coupon 3% &lt; rendement 5%).</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice OB-4</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Une obligation a une duration modifiée de 7. Les taux montent de 1 %. Estimez la variation de son prix.</p>
+          <p class="estatement" data-lang="en">A bond has a modified duration of 7. Rates rise 1%. Estimate the change in its price.</p>
+          <p class="estatement" data-lang="nl">Een obligatie heeft een gemodificeerde duration van 7. De rente stijgt 1%. Schat de prijsverandering.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">ΔP/P ≈ −D × Δy = −7 × 0,01 = <b>−7 %</b> (approximation de la duration ; voir le module « Risque de taux »).</div>
+            <div class="ans" data-lang="en">ΔP/P ≈ −D × Δy = −7 × 0.01 = <b>−7%</b> (duration approximation; see the “Interest-rate risk” module).</div>
+            <div class="ans" data-lang="nl">ΔP/P ≈ −D × Δy = −7 × 0,01 = <b>−7%</b> (duration-benadering; zie de module “Renterisico”).</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice OB-5</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Une obligation zéro-coupon à 5 ans, de nominal 100, a un rendement de 4 %. Quel est son prix aujourd'hui ?</p>
+          <p class="estatement" data-lang="en">A 5-year zero-coupon bond with face 100 has a 4% yield. What is its price today?</p>
+          <p class="estatement" data-lang="nl">Een 5-jarige nulcouponobligatie met nominale 100 heeft een rendement van 4%. Wat is de prijs vandaag?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">P = 100 / 1,04⁵ = 100 / 1,2167 = <b>82,19</b>. Le rendement vient entièrement de la remontée vers 100 à l'échéance.</div>
+            <div class="ans" data-lang="en">P = 100 / 1.04⁵ = 100 / 1.2167 = <b>82.19</b>. The return comes entirely from the pull to 100 at maturity.</div>
+            <div class="ans" data-lang="nl">P = 100 / 1,04⁵ = 100 / 1,2167 = <b>82,19</b>. Het rendement komt volledig uit de aantrekking naar 100 op vervaldag.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice OB-6</span><span class="diff" data-lang="fr">Réflexion</span><span class="diff" data-lang="en">Conceptual</span><span class="diff" data-lang="nl">Reflectie</span></div>
+          <p class="estatement" data-lang="fr">Pourquoi les obligations d'État amortissent-elles généralement un portefeuille d'actions — et pourquoi cela a-t-il échoué en 2022 ?</p>
+          <p class="estatement" data-lang="en">Why do government bonds usually cushion an equity portfolio — and why did that fail in 2022?</p>
+          <p class="estatement" data-lang="nl">Waarom bufferen staatsobligaties doorgaans een aandelenportefeuille — en waarom faalde dat in 2022?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">En temps normal, un choc de <b>croissance</b> fait fuir vers la qualité : les taux baissent, le prix des obligations monte quand les actions chutent (corrélation négative) → amortissement. En 2022, le choc était un choc d'<b>inflation/taux</b> : les banques centrales ont monté les taux, ce qui a fait baisser <em>à la fois</em> les obligations (prix ↓) et les actions (valorisations ↓). Même moteur (les taux) → corrélation positive → la diversification a temporairement disparu.</div>
+            <div class="ans" data-lang="en">In normal times, a <b>growth</b> shock triggers a flight to quality: rates fall, bond prices rise as equities drop (negative correlation) → cushioning. In 2022 the shock was an <b>inflation/rate</b> shock: central banks hiked rates, which pushed <em>both</em> bonds (price ↓) and equities (valuations ↓) down. Same driver (rates) → positive correlation → diversification temporarily vanished.</div>
+            <div class="ans" data-lang="nl">In normale tijden lokt een <b>groei</b>schok een vlucht naar kwaliteit uit: rentes dalen, obligatieprijzen stijgen wanneer aandelen dalen (negatieve correlatie) → buffering. In 2022 was de schok een <b>inflatie/rente</b>schok: centrale banken verhoogden de rente, wat <em>zowel</em> obligaties (prijs ↓) als aandelen (waarderingen ↓) deed dalen. Zelfde aandrijver (rente) → positieve correlatie → diversificatie verdween tijdelijk.</div>
+          </details>
+        </div>
+
+        <section class="biblio">
+          <h2 id="biblio"><span data-lang="fr">Bibliographie &amp; pour aller plus loin</span><span data-lang="en">Bibliography &amp; further reading</span><span data-lang="nl">Bibliografie &amp; verder lezen</span></h2>
+          <div class="bcol">
+            <h4 data-lang="fr">Références</h4><h4 data-lang="en">References</h4><h4 data-lang="nl">Referenties</h4>
+            <ol>
+      <li>Fabozzi, F. J. (2012). <em>Bond Markets, Analysis, and Strategies</em> (8th ed.). Pearson.</li>
+      <li>Tuckman, B. &amp; Serrat, A. (2011). <em>Fixed Income Securities: Tools for Today's Markets</em> (3rd ed.). Wiley.</li>
+      <li>Bodie, Z., Kane, A. &amp; Marcus, A. (2018). <em>Investments</em> (11th ed.), ch. sur les titres à revenu fixe. McGraw-Hill.</li>
+      <li>Dimson, E., Marsh, P. &amp; Staunton, M. (2002). <em>Triumph of the Optimists</em>. Princeton University Press.</li>
+            </ol>
+          </div>
+          <div class="bcol">
+            <h4 data-lang="fr">Pour aller plus loin</h4><h4 data-lang="en">Further reading</h4><h4 data-lang="nl">Verder lezen</h4>
+            <ul>
+      <li><a href="am4-classes-actifs.html"><span data-lang="fr">← Retour au module « Classes d'actifs »</span><span data-lang="en">← Back to the “Asset classes” module</span><span data-lang="nl">← Terug naar de module “Activaklassen”</span></a> · <a href="frm4-taux-duration.html"><span data-lang="fr">Risque de taux &amp; duration →</span><span data-lang="en">Interest-rate risk &amp; duration →</span><span data-lang="nl">Renterisico &amp; duration →</span></a></li>
+      <li>Investopedia — <a href="https://www.investopedia.com/terms/b/bond.asp" target="_blank" rel="noopener">Bond</a> · <a href="https://www.investopedia.com/terms/y/yieldtomaturity.asp" target="_blank" rel="noopener">Yield to Maturity</a> · <a href="https://www.investopedia.com/terms/z/zero-couponbond.asp" target="_blank" rel="noopener">Zero-Coupon Bond</a>.</li>
+            </ul>
+          </div>
+        </section>
+
+        <div class="module-nav">
+          <a class="prev" href="am4-actions.html">
+            <div class="dir" data-lang="fr">← Classe précédente</div><div class="dir" data-lang="en">← Previous class</div><div class="dir" data-lang="nl">← Vorige klasse</div>
+            <div class="tt" data-lang="fr">Actions</div><div class="tt" data-lang="en">Equities</div><div class="tt" data-lang="nl">Aandelen</div>
+          </a>
+          <a class="next" href="am4-immobilier.html">
+            <div class="dir" data-lang="fr">Classe suivante →</div><div class="dir" data-lang="en">Next class →</div><div class="dir" data-lang="nl">Volgende klasse →</div>
+            <div class="tt" data-lang="fr">Immobilier</div><div class="tt" data-lang="en">Real estate</div><div class="tt" data-lang="nl">Vastgoed</div>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap foot">
+    <div class="brand"><span class="logo">Avenir<b>.</b></span></div>
+    <p data-lang="fr">Asset Management · Classes d'actifs · Obligations</p>
+    <p data-lang="en">Asset Management · Asset classes · Bonds</p>
+    <p data-lang="nl">Asset Management · Activaklassen · Obligaties</p>
+  </div>
+</footer>
+
+<script src="../assets/script.js"></script>
+<script>
+/* Prix d'une obligation à coupon annuel en fonction du rendement */
+(function () {
+  var svg = document.getElementById("ob-chart");
+  if (!svg) return;
+  function v(id){ return parseFloat(document.getElementById(id).value); }
+  function setT(id,t){ var e=document.getElementById(id); if(e) e.textContent=t; }
+  function al(){ return document.body.getAttribute("data-active-lang")||"fr"; }
+  function price(c,T,y){ var P=0; for(var t=1;t<=T;t++){ var cf=(t<T)?c:(c+100); P+=cf/Math.pow(1+y,t); } return P; }
+
+  function draw(){
+    var c=v("ob-c"), T=Math.round(v("ob-t")), y=v("ob-y")/100;
+    setT("ob-c-o", c.toFixed(2)+"%"); setT("ob-t-o", T); setT("ob-y-o",(y*100).toFixed(2)+"%");
+    var P=price(c,T,y);
+    setT("ob-price", P.toFixed(2));
+    var st = Math.abs(P-100)<0.05 ? (al()==="en"?"at par":(al()==="nl"?"à pari":"au pair"))
+           : (P>100 ? (al()==="en"?"premium":(al()==="nl"?"premie":"prime")) : (al()==="en"?"discount":(al()==="nl"?"disagio":"décote")));
+    setT("ob-status", st);
+    setT("ob-cy", c>0 ? (c/P*100).toFixed(2)+"%" : "—");
+
+    var W=520,H=260,L=42,R=14,T2=14,B=32, pw=W-L-R, ph=H-T2-B;
+    var ymin=0.01, ymax=0.10;
+    var N=90, xs=[], pv=[];
+    for (var i=0;i<=N;i++){ var yy=ymin+(ymax-ymin)*i/N; xs.push(yy); pv.push(price(c,T,yy)); }
+    var pmin=Infinity,pmax=-Infinity; for (var j=0;j<=N;j++){ pmin=Math.min(pmin,pv[j]); pmax=Math.max(pmax,pv[j]); }
+    pmin=Math.min(pmin,100); pmax=Math.max(pmax,100); var pad=(pmax-pmin)*0.08; pmin-=pad; pmax+=pad;
+    function px(yy){ return L + (yy-ymin)/(ymax-ymin)*pw; }
+    function py(pp){ return T2 + (1-(pp-pmin)/(pmax-pmin))*ph; }
+
+    var g="";
+    g+='<line class="axis" x1="'+L+'" y1="'+T2+'" x2="'+L+'" y2="'+(T2+ph)+'"/>';
+    g+='<line class="axis" x1="'+L+'" y1="'+(T2+ph)+'" x2="'+(L+pw)+'" y2="'+(T2+ph)+'"/>';
+    // ligne pair = 100
+    g+='<line x1="'+L+'" y1="'+py(100).toFixed(1)+'" x2="'+(L+pw)+'" y2="'+py(100).toFixed(1)+'" stroke="var(--ink-mute)" stroke-width="1" stroke-dasharray="2 3"/>';
+    g+='<text class="tick" x="'+(L+pw)+'" y="'+(py(100)-3).toFixed(1)+'" text-anchor="end">100</text>';
+    // courbe prix-taux
+    var tp="M "+px(xs[0]).toFixed(1)+","+py(pv[0]).toFixed(1);
+    for (var k=1;k<=N;k++) tp+=" L "+px(xs[k]).toFixed(1)+","+py(pv[k]).toFixed(1);
+    g+='<path d="'+tp+'" fill="none" stroke="var(--teal)" stroke-width="2.6"/>';
+    // point courant
+    g+='<circle cx="'+px(y).toFixed(1)+'" cy="'+py(P).toFixed(1)+'" r="4" fill="var(--ink)"/>';
+    g+='<line class="axis" x1="'+px(y).toFixed(1)+'" y1="'+py(P).toFixed(1)+'" x2="'+px(y).toFixed(1)+'" y2="'+(T2+ph)+'" stroke-dasharray="3 3" stroke-width="1"/>';
+    // ticks
+    g+='<text class="tick" x="'+L+'" y="'+(H-16)+'" text-anchor="start">1%</text>';
+    g+='<text class="tick" x="'+px(y).toFixed(1)+'" y="'+(H-16)+'" text-anchor="middle">'+(y*100).toFixed(1)+'%</text>';
+    g+='<text class="tick" x="'+(L+pw)+'" y="'+(H-16)+'" text-anchor="end">10%</text>';
+    g+='<text class="tick" x="'+(L-6)+'" y="'+(py(pmax)+4).toFixed(1)+'" text-anchor="end">'+pmax.toFixed(0)+'</text>';
+    g+='<text class="tick" x="'+(L-6)+'" y="'+(py(pmin)+4).toFixed(1)+'" text-anchor="end">'+pmin.toFixed(0)+'</text>';
+    var xlab = al()==="en"?"market yield":(al()==="nl"?"marktrendement":"rendement de marché");
+    var ylab = al()==="en"?"price":(al()==="nl"?"prijs":"prix");
+    g+='<text class="lab" x="'+(L+pw/2)+'" y="'+(H-3)+'" text-anchor="middle">'+xlab+'</text>';
+    g+='<text class="lab" x="'+(L-32)+'" y="'+(T2+ph/2)+'" text-anchor="middle" transform="rotate(-90 '+(L-32)+' '+(T2+ph/2)+')">'+ylab+'</text>';
+    svg.innerHTML=g;
+  }
+
+  ["ob-c","ob-t","ob-y"].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener("input", draw); });
+  document.querySelectorAll("[data-set-lang]").forEach(function(b){ b.addEventListener("click", function(){ setTimeout(draw,10); }); });
+  document.addEventListener("DOMContentLoaded", draw);
+  draw();
+})();
+</script>
+</body>
+</html>

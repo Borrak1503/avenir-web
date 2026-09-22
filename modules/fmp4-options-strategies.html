@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Options &amp; stratégies · Avenir</title>
+<meta name="description" content="Les options de A à Z : marchés et vocabulaire (call/put, moneyness ITM/ATM/OTM, intrinsic et time value, LEAPS, OCC, marges), les six facteurs de prix et leurs bornes, l'exercice anticipé (jamais un call américain sans dividende, parfois un put), la put-call parity C + PV(K) = P + S et les positions synthétiques, puis les stratégies (bull/bear/box spread, butterfly, calendar, straddle, strangle, covered call, protective put) et enfin les options exotiques (binary, Asian, lookback, barrier, compound). Constructeur de payoff de stratégie interactif, QCM et exercices.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-active-lang="fr">
+
+<div class="progress-bar"></div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <div class="brand">
+      <a href="../index.html"><span class="logo">Avenir<b>.</b></span></a>
+      <span class="tag">Asset Management &amp; Risk</span>
+    </div>
+    <div class="spacer"></div>
+    <nav class="nav-links">
+      <a href="../index.html#parcours"><span data-lang="fr">Parcours</span><span data-lang="en">Tracks</span><span data-lang="nl">Trajecten</span></a>
+      <a href="../index.html#curriculum"><span data-lang="fr">Programme</span><span data-lang="en">Curriculum</span><span data-lang="nl">Programma</span></a>
+      <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a>
+    </nav>
+    <div class="controls">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-set-lang="fr">FR</button>
+        <button data-set-lang="en">EN</button>
+        <button data-set-lang="nl">NL</button>
+      </div>
+      <button id="theme-btn" class="icon-btn" aria-label="Thème">☾</button>
+      <button id="menu-btn" class="icon-btn menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap-mod">
+  <div class="module-shell">
+
+    <aside class="toc">
+      <div class="toc-title" data-lang="fr">Sommaire</div>
+      <div class="toc-title" data-lang="en">Contents</div>
+      <div class="toc-title" data-lang="nl">Inhoud</div>
+      <a href="#marches"><span data-lang="fr">1. Marchés d'options</span><span data-lang="en">1. Options markets</span><span data-lang="nl">1. Optiemarkten</span></a>
+      <a href="#facteurs"><span data-lang="fr">2. Facteurs de prix &amp; bornes</span><span data-lang="en">2. Price factors &amp; bounds</span><span data-lang="nl">2. Prijsfactoren &amp; grenzen</span></a>
+      <a href="#exercice"><span data-lang="fr">3. Exercice anticipé</span><span data-lang="en">3. Early exercise</span><span data-lang="nl">3. Vervroegde uitoefening</span></a>
+      <a href="#parity"><span data-lang="fr">4. Put-call parity</span><span data-lang="en">4. Put-call parity</span><span data-lang="nl">4. Put-call parity</span></a>
+      <a href="#strategies"><span data-lang="fr">5. Stratégies de trading</span><span data-lang="en">5. Trading strategies</span><span data-lang="nl">5. Handelsstrategieën</span></a>
+      <a href="#exotiques"><span data-lang="fr">6. Options exotiques</span><span data-lang="en">6. Exotic options</span><span data-lang="nl">6. Exotische opties</span></a>
+      <a href="#ressources"><span data-lang="fr">Ressources</span><span data-lang="en">Resources</span><span data-lang="nl">Bronnen</span></a>
+      <a href="#retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></a>
+      <a href="#qcm"><span data-lang="fr">8. QCM (15)</span><span data-lang="en">8. MCQ (15)</span><span data-lang="nl">8. MCV (15)</span></a>
+      <a href="#exercices"><span data-lang="fr">9. Exercices</span><span data-lang="en">9. Exercises</span><span data-lang="nl">9. Oefeningen</span></a>
+      <a href="#biblio"><span data-lang="fr">Sources</span><span data-lang="en">Sources</span><span data-lang="nl">Bronnen</span></a>
+    </aside>
+
+    <main>
+      <div class="crumbs">
+        <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a> ·
+        <span>Financial Risk Management</span> ·
+        <span data-lang="fr">Marchés &amp; produits</span><span data-lang="en">Financial Markets &amp; Products</span><span data-lang="nl">Financiële markten &amp; producten</span>
+      </div>
+
+      <div class="module-hero">
+        <span class="badge">Marchés &amp; produits · <span data-lang="fr">Options &amp; stratégies</span><span data-lang="en">Options &amp; strategies</span><span data-lang="nl">Opties &amp; strategieën</span></span>
+        <h1 data-lang="fr">Options &amp; stratégies</h1>
+        <h1 data-lang="en">Options &amp; strategies</h1>
+        <h1 data-lang="nl">Opties &amp; strategieën</h1>
+        <p class="subtitle" data-lang="fr">Le droit, mais pas l'obligation. On part du vocabulaire et des profils de gain, on comprend ce qui fait bouger le prix d'une option et pourquoi on ne l'exerce presque jamais tôt, puis un seul pont, la put-call parity, relie tout et fabrique les stratégies : spreads, butterfly, straddle, et jusqu'aux options exotiques.</p>
+        <p class="subtitle" data-lang="en">The right, but not the obligation. We start from the vocabulary and the payoff profiles, understand what moves an option's price and why it is almost never exercised early, then a single bridge, put-call parity, links everything and builds the strategies: spreads, butterfly, straddle, and on to exotic options.</p>
+        <p class="subtitle" data-lang="nl">Het recht, maar niet de plicht. We starten van de woordenschat en de payoffprofielen, begrijpen wat de prijs van een optie beweegt en waarom ze bijna nooit vroeg wordt uitgeoefend, en dan verbindt één brug, put-call parity, alles en bouwt de strategieën: spreads, butterfly, straddle, tot de exotische opties toe.</p>
+        <div class="module-meta">
+          <span data-lang="fr">⏱ Lecture ~34 min</span><span data-lang="en">⏱ ~34 min read</span><span data-lang="nl">⏱ ~34 min lezen</span>
+          <span data-lang="fr">📶 Niveau avancé</span><span data-lang="en">📶 Advanced level</span><span data-lang="nl">📶 Gevorderd niveau</span>
+          <span>🎓 FRM I · FMP</span>
+        </div>
+      </div>
+
+      <div class="objectives">
+        <h4 data-lang="fr">Objectifs d'apprentissage</h4>
+        <h4 data-lang="en">Learning objectives</h4>
+        <h4 data-lang="nl">Leerdoelen</h4>
+        <ul>
+          <li data-lang="fr">Maîtriser le vocabulaire : call/put, moneyness, intrinsic et time value.</li>
+          <li data-lang="en">Master the vocabulary: call/put, moneyness, intrinsic and time value.</li>
+          <li data-lang="nl">De woordenschat beheersen: call/put, moneyness, intrinsic en time value.</li>
+          <li data-lang="fr">Décrire l'effet des six facteurs sur le prix d'un call et d'un put.</li>
+          <li data-lang="en">Describe the effect of the six factors on a call's and a put's price.</li>
+          <li data-lang="nl">Het effect van de zes factoren op de prijs van een call en een put beschrijven.</li>
+          <li data-lang="fr">Expliquer pourquoi on n'exerce jamais un call américain sans dividende tôt.</li>
+          <li data-lang="en">Explain why an American call on a non-dividend stock is never exercised early.</li>
+          <li data-lang="nl">Uitleggen waarom een Amerikaanse call op een dividendloos aandeel nooit vroeg wordt uitgeoefend.</li>
+          <li data-lang="fr">Démontrer et appliquer la put-call parity et les positions synthétiques.</li>
+          <li data-lang="en">Derive and apply put-call parity and synthetic positions.</li>
+          <li data-lang="nl">Put-call parity en synthetische posities afleiden en toepassen.</li>
+          <li data-lang="fr">Construire spreads, butterfly, straddle et strangle, et lire leur payoff.</li>
+          <li data-lang="en">Build spreads, butterfly, straddle and strangle, and read their payoff.</li>
+          <li data-lang="nl">Spreads, butterfly, straddle en strangle bouwen, en hun payoff lezen.</li>
+          <li data-lang="fr">Reconnaître les options exotiques et leur ordre de prix.</li>
+          <li data-lang="en">Recognise exotic options and their price ordering.</li>
+          <li data-lang="nl">Exotische opties en hun prijsvolgorde herkennen.</li>
+        </ul>
+      </div>
+
+      <div class="module-body">
+
+        <!-- 1. MARCHES -->
+        <h2 id="marches"><span data-lang="fr">1. Marchés d'options</span><span data-lang="en">1. Options markets</span><span data-lang="nl">1. Optiemarkten</span></h2>
+        <p data-lang="fr">Une option donne un <strong>droit</strong>, jamais une obligation : c'est toute la différence avec un forward. Un <strong>call</strong> donne le droit d'acheter au strike K ; un <strong>put</strong>, celui de vendre. Quatre positions de base : long call et long put (l'acheteur, qui paie une <em>prime</em> et a un downside plafonné à cette prime), short call et short put (le vendeur, qui encaisse la prime et porte le risque). La <strong>moneyness</strong> décrit l'option par rapport au spot : <em>in the money</em> (ITM) si l'exercer rapporterait, <em>at the money</em> (ATM) si S ≈ K, <em>out of the money</em> (OTM) sinon. La valeur d'une option se décompose toujours en <strong>intrinsic value</strong> (max(S − K, 0) pour un call, la partie déjà gagnée) plus <strong>time value</strong> (ce qu'on paie pour la chance que ça s'améliore, nulle à l'échéance).</p>
+        <p data-lang="en">An option gives a <strong>right</strong>, never an obligation: that is the whole difference from a forward. A <strong>call</strong> gives the right to buy at strike K; a <strong>put</strong>, to sell. Four basic positions: long call and long put (the buyer, who pays a <em>premium</em> and has downside capped at that premium), short call and short put (the seller, who collects the premium and bears the risk). <strong>Moneyness</strong> describes the option relative to spot: <em>in the money</em> (ITM) if exercising would pay, <em>at the money</em> (ATM) if S ≈ K, <em>out of the money</em> (OTM) otherwise. An option's value always splits into <strong>intrinsic value</strong> (max(S − K, 0) for a call, the part already earned) plus <strong>time value</strong> (what is paid for the chance it improves, zero at expiry).</p>
+        <p data-lang="nl">Een optie geeft een <strong>recht</strong>, nooit een plicht: dat is het hele verschil met een forward. Een <strong>call</strong> geeft het recht te kopen tegen strike K; een <strong>put</strong>, te verkopen. Vier basisposities: long call en long put (de koper, die een <em>premie</em> betaalt en een downside begrensd tot die premie heeft), short call en short put (de verkoper, die de premie int en het risico draagt). <strong>Moneyness</strong> beschrijft de optie tegenover de spot: <em>in the money</em> (ITM) als uitoefenen zou lonen, <em>at the money</em> (ATM) als S ≈ K, <em>out of the money</em> (OTM) anders. De waarde van een optie splitst altijd in <strong>intrinsic value</strong> (max(S − K, 0) voor een call, het reeds verdiende deel) plus <strong>time value</strong> (wat men betaalt voor de kans dat het verbetert, nul op vervaldag).</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">La zoologie des options &amp; l'OCC</span><span class="clabel" data-lang="en">The zoology of options &amp; the OCC</span><span class="clabel" data-lang="nl">De zoölogie van opties &amp; de OCC</span>
+          <span data-lang="fr">Au delà de l'option cotée standard (souvent américaine sur actions, européenne sur indices, réglée en cash), on trouve les <strong>LEAPS</strong> (échéances longues, plusieurs années), les <strong>warrants</strong> (émis par une entreprise, dilutifs), les <strong>employee stock options</strong> (rémunération, non transférables), les <strong>FLEX</strong> (strike, maturité et style sur mesure) et les convertibles (obligation plus call implicite). La <strong>CBOE</strong> est la bourse d'options historique et éditrice du VIX. Côté compensation, l'<strong>OCC</strong> (Options Clearing Corporation) est la chambre de compensation : elle se substitue aux contreparties et exige des marges. Vendre une option nue mobilise une marge (le vendeur porte le risque) ; l'acheter ne coûte que la prime, payée d'avance.</span>
+          <span data-lang="en">Beyond the standard listed option (often American on stocks, European on indices, cash-settled), there are <strong>LEAPS</strong> (long maturities, several years), <strong>warrants</strong> (issued by a company, dilutive), <strong>employee stock options</strong> (compensation, non-transferable), <strong>FLEX</strong> (bespoke strike, maturity and style) and convertibles (a bond plus an implicit call). The <strong>CBOE</strong> is the historic options exchange and publisher of the VIX. On clearing, the <strong>OCC</strong> (Options Clearing Corporation) is the clearing house: it stands between counterparties and requires margins. Writing a naked option ties up margin (the writer bears the risk); buying one costs only the premium, paid upfront.</span>
+          <span data-lang="nl">Naast de standaard genoteerde optie (vaak Amerikaans op aandelen, Europees op indexen, cash afgerekend) zijn er <strong>LEAPS</strong> (lange looptijden, meerdere jaren), <strong>warrants</strong> (uitgegeven door een bedrijf, verwaterend), <strong>employee stock options</strong> (verloning, niet overdraagbaar), <strong>FLEX</strong> (strike, looptijd en stijl op maat) en convertibles (een obligatie plus een impliciete call). De <strong>CBOE</strong> is de historische optiebeurs en uitgever van de VIX. Voor clearing is de <strong>OCC</strong> (Options Clearing Corporation) de clearinginstelling: ze staat tussen de tegenpartijen en eist marges. Een naakte optie schrijven bindt marge (de schrijver draagt het risico); er een kopen kost enkel de premie, vooraf betaald.</span>
+        </div>
+
+        <!-- 2. FACTEURS -->
+        <h2 id="facteurs"><span data-lang="fr">2. Les six facteurs de prix &amp; les bornes</span><span data-lang="en">2. The six price factors &amp; the bounds</span><span data-lang="nl">2. De zes prijsfactoren &amp; de grenzen</span></h2>
+        <p data-lang="fr">Six variables déterminent le prix d'une option, et l'examen teste sans relâche le <em>sens</em> de chaque effet. Le <strong>spot S</strong> : un call monte avec S, un put baisse. Le <strong>strike K</strong> : l'inverse (call baisse, put monte). La <strong>volatilité σ</strong> : elle fait monter <em>les deux</em> (plus d'incertitude, plus de chance de finir profondément ITM, alors que la perte reste plafonnée). La <strong>maturité T</strong> : pour une américaine elle augmente les deux ; pour une européenne c'est en général vrai mais pas garanti (un gros dividende ou un put peuvent inverser). Le <strong>taux r</strong> : un call monte (le strike à payer plus tard vaut moins en PV), un put baisse. Les <strong>dividendes</strong> : ils font baisser le call et monter le put (le sous-jacent décroche du montant du dividende).</p>
+        <p data-lang="en">Six variables set an option's price, and the exam relentlessly tests the <em>direction</em> of each effect. The <strong>spot S</strong>: a call rises with S, a put falls. The <strong>strike K</strong>: the reverse (call falls, put rises). <strong>Volatility σ</strong>: it lifts <em>both</em> (more uncertainty, more chance of finishing deep ITM, while the loss stays capped). <strong>Maturity T</strong>: for an American option it raises both; for a European one it is generally true but not guaranteed (a large dividend or a put can reverse it). The <strong>rate r</strong>: a call rises (the strike paid later is worth less in PV), a put falls. <strong>Dividends</strong>: they lower the call and raise the put (the underlying drops by the dividend amount).</p>
+        <p data-lang="nl">Zes variabelen bepalen de prijs van een optie, en het examen test onophoudelijk de <em>richting</em> van elk effect. De <strong>spot S</strong>: een call stijgt met S, een put daalt. De <strong>strike K</strong>: omgekeerd (call daalt, put stijgt). De <strong>volatiliteit σ</strong>: ze tilt <em>beide</em> op (meer onzekerheid, meer kans om diep ITM te eindigen, terwijl het verlies begrensd blijft). De <strong>looptijd T</strong>: voor een Amerikaanse optie verhoogt ze beide; voor een Europese is dat doorgaans waar maar niet gegarandeerd (een groot dividend of een put kan het omkeren). De <strong>rente r</strong>: een call stijgt (de later betaalde strike is minder waard in PV), een put daalt. <strong>Dividenden</strong>: ze verlagen de call en verhogen de put (de onderliggende zakt met het dividendbedrag).</p>
+
+        <p data-lang="fr">Sans même modéliser, l'absence d'arbitrage impose des <strong>bornes</strong>. Un call vaut au plus le sous-jacent (c &le; S), un put au plus le strike (p &le; K, et p &le; PV(K) en européen). Pour le bas, un call européen sans dividende vaut au moins <strong>S − PV(K)</strong>, et comme une option ne peut jamais valoir moins que zéro, c ≥ max(S − PV(K), 0). Cette borne basse dépasse l'intrinsic S − K (car PV(K) &lt; K) : c'est exactement pourquoi un call vaut plus vivant que mort.</p>
+        <p data-lang="en">Even without modelling, no-arbitrage imposes <strong>bounds</strong>. A call is worth at most the underlying (c &le; S), a put at most the strike (p &le; K, and p &le; PV(K) for European). On the downside, a European call on a non-dividend stock is worth at least <strong>S − PV(K)</strong>, and since an option can never be worth less than zero, c ≥ max(S − PV(K), 0). This lower bound exceeds the intrinsic S − K (because PV(K) &lt; K): this is exactly why a call is worth more alive than dead.</p>
+        <p data-lang="nl">Zelfs zonder te modelleren legt no-arbitrage <strong>grenzen</strong> op. Een call is hoogstens de onderliggende waard (c &le; S), een put hoogstens de strike (p &le; K, en p &le; PV(K) voor Europees). Aan de onderkant is een Europese call op een dividendloos aandeel minstens <strong>S − PV(K)</strong> waard, en aangezien een optie nooit minder dan nul waard kan zijn, c ≥ max(S − PV(K), 0). Deze ondergrens overtreft de intrinsic S − K (want PV(K) &lt; K): dat is precies waarom een call meer waard is levend dan dood.</p>
+
+        <!-- 3. EXERCICE ANTICIPE -->
+        <h2 id="exercice"><span data-lang="fr">3. L'exercice anticipé</span><span data-lang="en">3. Early exercise</span><span data-lang="nl">3. Vervroegde uitoefening</span></h2>
+        <p data-lang="fr">Voici l'un des résultats les plus contre-intuitifs du programme : on <strong>n'exerce jamais</strong> tôt un call américain sur une action sans dividende. Exercer, c'est encaisser l'intrinsic S − K et rien d'autre ; <em>vendre</em> l'option sur le marché rapporte l'intrinsic <em>plus la time value</em>. Celui qui veut l'action l'achète moins cher au marché ; celui qui veut sortir vend l'option. Dans les deux cas, exercer jette la time value. La borne le confirme : un call américain garde c ≥ S − PV(K) &gt; S − K, donc vendre bat toujours exercer. Le put, lui, peut mériter un exercice anticipé : exercer un put profondément ITM rapporte K tout de suite, un cash qu'on place au taux sans risque, et cet intérêt peut dépasser l'optionalité abandonnée. Un dividende, enfin, peut justifier d'exercer un call juste avant le détachement.</p>
+        <p data-lang="en">Here is one of the most counter-intuitive results in the syllabus: one <strong>never exercises</strong> an American call on a non-dividend stock early. Exercising captures the intrinsic S − K and nothing else; <em>selling</em> the option on the market yields the intrinsic <em>plus the time value</em>. Whoever wants the stock buys it cheaper in the market; whoever wants out sells the option. Either way, exercising throws away the time value. The bound confirms it: an American call keeps c ≥ S − PV(K) &gt; S − K, so selling always beats exercising. The put, however, can deserve early exercise: exercising a deep-ITM put yields K at once, cash invested at the risk-free rate, and this interest can exceed the optionality given up. A dividend, finally, can justify exercising a call just before the ex-date.</p>
+        <p data-lang="nl">Hier is een van de meest contra-intuïtieve resultaten van het programma: men <strong>oefent nooit</strong> een Amerikaanse call op een dividendloos aandeel vroeg uit. Uitoefenen vangt de intrinsic S − K en niets anders; de optie <em>verkopen</em> op de markt levert de intrinsic <em>plus de time value</em>. Wie het aandeel wil, koopt het goedkoper op de markt; wie eruit wil, verkoopt de optie. Hoe dan ook gooit uitoefenen de time value weg. De grens bevestigt het: een Amerikaanse call houdt c ≥ S − PV(K) &gt; S − K, dus verkopen verslaat altijd uitoefenen. De put echter kan vervroegde uitoefening verdienen: een diep-ITM put uitoefenen levert K meteen op, cash belegd tegen de risicovrije rente, en die rente kan de opgegeven optionaliteit overtreffen. Een dividend ten slotte kan het uitoefenen van een call net vóór de ex-datum rechtvaardigen.</p>
+
+        <div class="callout warn">
+          <span class="clabel" data-lang="fr">Le call américain qui vaut plus que sa borne européenne</span><span class="clabel" data-lang="en">The American call worth more than its European bound</span><span class="clabel" data-lang="nl">De Amerikaanse call die meer waard is dan zijn Europese grens</span>
+          <span data-lang="fr">Exemple GARP : avec S un peu au-dessus de K, la borne inférieure européenne peut donner par exemple <strong>3,37</strong>, alors que l'intrinsic vaut <strong>4</strong>. Un call <em>américain</em>, exerçable immédiatement, ne peut pas valoir moins que son intrinsic : il vaut donc <em>au moins 4</em>. La leçon n'est pas qu'il faut l'exercer (vendre reste meilleur si l'option se négocie au-dessus de 4), mais que la valeur de l'américaine est bornée par le bas par max(borne européenne, intrinsic). Sans dividende, call américain et européen valent la même chose ; avec dividende, l'américain peut valoir davantage.</span>
+          <span data-lang="en">GARP example: with S a bit above K, the European lower bound can give for instance <strong>3.37</strong>, while the intrinsic is <strong>4</strong>. An <em>American</em> call, exercisable immediately, cannot be worth less than its intrinsic: so it is worth <em>at least 4</em>. The lesson is not that one should exercise it (selling is still better if the option trades above 4), but that the American value is bounded below by max(European bound, intrinsic). Without a dividend, American and European calls are worth the same; with a dividend, the American can be worth more.</span>
+          <span data-lang="nl">GARP-voorbeeld: met S iets boven K kan de Europese ondergrens bijvoorbeeld <strong>3,37</strong> geven, terwijl de intrinsic <strong>4</strong> is. Een <em>Amerikaanse</em> call, onmiddellijk uitoefenbaar, kan niet minder dan zijn intrinsic waard zijn: hij is dus <em>minstens 4</em> waard. De les is niet dat men hem moet uitoefenen (verkopen is nog beter als de optie boven 4 noteert), maar dat de Amerikaanse waarde van onderen begrensd is door max(Europese grens, intrinsic). Zonder dividend zijn Amerikaanse en Europese calls evenveel waard; met dividend kan de Amerikaanse meer waard zijn.</span>
+        </div>
+
+        <!-- 4. PUT-CALL PARITY -->
+        <h2 id="parity"><span data-lang="fr">4. La put-call parity</span><span data-lang="en">4. Put-call parity</span><span data-lang="nl">4. Put-call parity</span></h2>
+        <p data-lang="fr">Une seule relation relie call, put, action et cash : <strong>C + PV(K) + PV(Divs) = P + S</strong> (options européennes de mêmes K et T), ou en version forward C + PV(K) = P + PV(F). La preuve compare deux portefeuilles. Le portefeuille A (un call plus un cash de PV(K)) et le portefeuille B (un put plus l'action) valent tous deux exactement <strong>max(Sₜ, K)</strong> à l'échéance : si Sₜ &gt; K, A exerce le call et B laisse mourir le put, chacun finit avec l'action ; si Sₜ &lt; K, A garde son cash K et B exerce le put pour toucher K. Deux portefeuilles au payoff identique dans <em>tous</em> les états doivent coûter pareil aujourd'hui : c'est la parity. Elle ne vaut que pour des européennes de mêmes K et T.</p>
+        <p data-lang="en">A single relation links call, put, stock and cash: <strong>C + PV(K) + PV(Divs) = P + S</strong> (European options with the same K and T), or in forward form C + PV(K) = P + PV(F). The proof compares two portfolios. Portfolio A (a call plus cash of PV(K)) and portfolio B (a put plus the stock) are both worth exactly <strong>max(Sₜ, K)</strong> at maturity: if Sₜ &gt; K, A exercises the call and B lets the put die, each ends with the stock; if Sₜ &lt; K, A keeps its cash K and B exercises the put to receive K. Two portfolios with identical payoff in <em>every</em> state must cost the same today: that is parity. It holds only for European options with the same K and T.</p>
+        <p data-lang="nl">Eén enkele relatie verbindt call, put, aandeel en cash: <strong>C + PV(K) + PV(Divs) = P + S</strong> (Europese opties met dezelfde K en T), of in forwardvorm C + PV(K) = P + PV(F). Het bewijs vergelijkt twee portefeuilles. Portefeuille A (een call plus cash van PV(K)) en portefeuille B (een put plus het aandeel) zijn beide exact <strong>max(Sₜ, K)</strong> waard op vervaldag: als Sₜ &gt; K oefent A de call uit en laat B de put sterven, elk eindigt met het aandeel; als Sₜ &lt; K houdt A zijn cash K en oefent B de put uit om K te ontvangen. Twee portefeuilles met identieke payoff in <em>elke</em> toestand moeten vandaag evenveel kosten: dat is parity. Ze geldt enkel voor Europese opties met dezelfde K en T.</p>
+
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">Les positions synthétiques</span><span class="clabel" data-lang="en">Synthetic positions</span><span class="clabel" data-lang="nl">Synthetische posities</span>
+          <span data-lang="fr">Réarranger la parity fabrique n'importe quelle position à partir des autres. <strong>Protective put</strong> (action + put) = call + cash : assurer son action équivaut à détenir un call et du cash. <strong>Covered call</strong> (action + short call) = short put + cash : vendre un call couvert, c'est vendre un put. On peut ainsi créer un <em>call synthétique</em> (long put + long action + emprunt), utile quand le call réel est cher ou illiquide. Attention : la parity ne tient qu'en <em>européen</em> ; en américain elle devient une double inégalité. C'est le moteur de toutes les équivalences de la section suivante : chaque stratégie a un jumeau construit avec l'autre type d'option et du cash.</span>
+          <span data-lang="en">Rearranging parity builds any position from the others. <strong>Protective put</strong> (stock + put) = call + cash: insuring your stock is equivalent to holding a call and cash. <strong>Covered call</strong> (stock + short call) = short put + cash: writing a covered call is selling a put. One can thus create a <em>synthetic call</em> (long put + long stock + borrowing), useful when the real call is dear or illiquid. Note: parity holds only in <em>European</em> style; in American it becomes a double inequality. It is the engine of all the equivalences in the next section: each strategy has a twin built from the other option type plus cash.</span>
+          <span data-lang="nl">Parity herschikken bouwt elke positie uit de andere. <strong>Protective put</strong> (aandeel + put) = call + cash: je aandeel verzekeren staat gelijk aan een call en cash aanhouden. <strong>Covered call</strong> (aandeel + short call) = short put + cash: een covered call schrijven is een put verkopen. Zo kan men een <em>synthetische call</em> creëren (long put + long aandeel + lenen), nuttig als de echte call duur of illiquide is. Let op: parity geldt enkel in <em>Europese</em> stijl; in het Amerikaanse wordt ze een dubbele ongelijkheid. Het is de motor van alle equivalenties in de volgende sectie: elke strategie heeft een tweeling gebouwd uit het andere optietype plus cash.</span>
+        </div>
+
+        <!-- 5. STRATEGIES + INTERACTIF -->
+        <h2 id="strategies"><span data-lang="fr">5. Les stratégies de trading</span><span data-lang="en">5. Trading strategies</span><span data-lang="nl">5. Handelsstrategieën</span></h2>
+        <p data-lang="fr">En combinant options et sous-jacent, on dessine le profil de gain que l'on veut. Un <strong>bull spread</strong> (long call K1, short call K2 &gt; K1) parie sur une hausse modérée : le payoff plafonne à K2 − K1, et l'économie réalisée est exactement la prime du call vendu. Le <strong>bear spread</strong> est son miroir baissier. Le <strong>box spread</strong> (bull en calls + bear en puts, mêmes strikes) donne un payoff <em>certain</em> de K2 − K1 : il doit donc coûter PV(K2 − K1), sinon arbitrage. Le <strong>butterfly</strong> (long K1, short 2 K2, long K3, strikes équidistants) parie que le prix restera près de K2 ; son coût positif impose c1 + c3 &gt; 2c2 (le prix du call est convexe en K). Deux combinaisons pour parier sur le <em>mouvement</em> : le <strong>straddle</strong> (call + put même strike) et le <strong>strangle</strong> (strikes écartés, moins cher mais breakevens plus lointains). Enfin, <strong>covered call</strong> (action + short call, pour doper le rendement d'un titre détenu) et <strong>protective put</strong> (action + put, une assurance).</p>
+        <p data-lang="en">By combining options and the underlying, one draws the payoff profile wanted. A <strong>bull spread</strong> (long call K1, short call K2 &gt; K1) bets on a moderate rise: the payoff caps at K2 − K1, and the saving is exactly the premium of the sold call. The <strong>bear spread</strong> is its bearish mirror. The <strong>box spread</strong> (bull in calls + bear in puts, same strikes) gives a <em>certain</em> payoff of K2 − K1: it must therefore cost PV(K2 − K1), else arbitrage. The <strong>butterfly</strong> (long K1, short 2 K2, long K3, equidistant strikes) bets the price will stay near K2; its positive cost imposes c1 + c3 &gt; 2c2 (the call price is convex in K). Two combinations to bet on <em>movement</em>: the <strong>straddle</strong> (call + put, same strike) and the <strong>strangle</strong> (spread strikes, cheaper but farther break-evens). Finally, <strong>covered call</strong> (stock + short call, to boost the yield of a held share) and <strong>protective put</strong> (stock + put, an insurance).</p>
+        <p data-lang="nl">Door opties en de onderliggende te combineren tekent men het gewenste payoffprofiel. Een <strong>bull spread</strong> (long call K1, short call K2 &gt; K1) wedt op een gematigde stijging: de payoff plafonneert op K2 − K1, en de besparing is exact de premie van de verkochte call. De <strong>bear spread</strong> is zijn bearish spiegel. De <strong>box spread</strong> (bull in calls + bear in puts, dezelfde strikes) geeft een <em>zekere</em> payoff van K2 − K1: hij moet dus PV(K2 − K1) kosten, anders arbitrage. De <strong>butterfly</strong> (long K1, short 2 K2, long K3, equidistante strikes) wedt dat de prijs dicht bij K2 blijft; zijn positieve kost legt c1 + c3 &gt; 2c2 op (de callprijs is convex in K). Twee combinaties om op <em>beweging</em> te wedden: de <strong>straddle</strong> (call + put, dezelfde strike) en de <strong>strangle</strong> (gespreide strikes, goedkoper maar verdere break-evens). Ten slotte <strong>covered call</strong> (aandeel + short call, om het rendement van een aangehouden aandeel op te krikken) en <strong>protective put</strong> (aandeel + put, een verzekering).</p>
+
+        <p data-lang="fr">Le graphe trace le <strong>profit à l'échéance</strong> de la stratégie choisie, en fonction du prix final Sₜ (primes comprises). Choisissez la stratégie, puis déplacez le curseur Sₜ pour lire le profit à ce prix. Le straddle reproduit l'exemple GARP (S = K = 50, call 2,12 et put 1,87, soit 3,99 au total) : il faut sortir de l'intervalle [46 ; 54] pour gagner. Le strangle (put 45, call 55) ne coûte que 0,84 mais exige un mouvement plus grand, breakevens [44,16 ; 55,84]. Repérez ce que chaque profil plafonne : le gain, la perte, ou aucun des deux.</p>
+        <p data-lang="en">The chart plots the <strong>profit at maturity</strong> of the chosen strategy, against the final price Sₜ (premiums included). Pick the strategy, then move the Sₜ cursor to read the profit at that price. The straddle reproduces the GARP example (S = K = 50, call 2.12 and put 1.87, i.e. 3.99 total): the price must leave the interval [46 ; 54] to profit. The strangle (put 45, call 55) costs only 0.84 but needs a bigger move, break-evens [44.16 ; 55.84]. Spot what each profile caps: the gain, the loss, or neither.</p>
+        <p data-lang="nl">De grafiek tekent de <strong>winst op vervaldag</strong> van de gekozen strategie, tegen de finale prijs Sₜ (premies inbegrepen). Kies de strategie, en beweeg dan de Sₜ-cursor om de winst bij die prijs te lezen. De straddle reproduceert het GARP-voorbeeld (S = K = 50, call 2,12 en put 1,87, dus 3,99 totaal): de prijs moet het interval [46 ; 54] verlaten om te winnen. De strangle (put 45, call 55) kost slechts 0,84 maar vergt een grotere beweging, break-evens [44,16 ; 55,84]. Spot wat elk profiel plafonneert: de winst, het verlies, of geen van beide.</p>
+
+        <style>
+          #st-chart { width:100%; height:auto; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; }
+          #st-chart .axis { stroke:var(--ink-mute); stroke-width:1.4; }
+          #st-chart .tick { fill:var(--ink-mute); font-size:10px; font-family:var(--sans); }
+          #st-chart .lab { fill:var(--ink-soft); font-size:11px; font-family:var(--sans); font-weight:700; }
+          .st-sliders { display:grid; grid-template-columns:2fr 1fr; gap:12px 18px; margin-bottom:16px; }
+          .st-sliders label { display:block; font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:4px; }
+          .st-out { margin-top:14px; font-size:14.5px; color:var(--ink-soft); display:flex; gap:20px; flex-wrap:wrap; }
+          .st-out b { color:var(--ink); font-family:var(--mono); }
+          .st-name { font-weight:800; color:var(--teal); }
+          @media (max-width:640px){ .st-sliders { grid-template-columns:1fr; } }
+        </style>
+
+        <div class="calc">
+          <div class="chead">
+            <h4 data-lang="fr">Constructeur de payoff : profit d'une stratégie à l'échéance</h4>
+            <h4 data-lang="en">Payoff builder : a strategy's profit at maturity</h4>
+            <h4 data-lang="nl">Payoff-bouwer : de winst van een strategie op vervaldag</h4>
+            <p data-lang="fr">Choisissez la stratégie et lisez breakevens, gain max et perte max.</p>
+            <p data-lang="en">Pick the strategy and read break-evens, max gain and max loss.</p>
+            <p data-lang="nl">Kies de strategie en lees break-evens, max winst en max verlies.</p>
+          </div>
+          <div class="cbody" style="display:block">
+            <div class="st-sliders">
+              <div>
+                <label><span data-lang="fr">Stratégie</span><span data-lang="en">Strategy</span><span data-lang="nl">Strategie</span></label>
+                <div class="rangewrap"><input type="range" id="st-strat" min="0" max="5" step="1" value="2"><output id="st-strat-o">Straddle</output></div>
+              </div>
+              <div>
+                <label><span data-lang="fr">Prix final Sₜ</span><span data-lang="en">Final price Sₜ</span><span data-lang="nl">Finale prijs Sₜ</span></label>
+                <div class="rangewrap"><input type="range" id="st-s" min="30" max="70" step="0.5" value="50"><output id="st-s-o">50</output></div>
+              </div>
+            </div>
+
+            <svg id="st-chart" viewBox="0 0 520 300" role="img" aria-label="Profil de profit d'une stratégie d'options à l'échéance"></svg>
+
+            <div class="st-out">
+              <span><span data-lang="fr">Stratégie :</span><span data-lang="en">Strategy:</span><span data-lang="nl">Strategie:</span> <b id="st-name" class="st-name">·</b></span>
+              <span><span data-lang="fr">Seuil(s) :</span><span data-lang="en">Break-even(s):</span><span data-lang="nl">Break-even(s):</span> <b id="st-be">·</b></span>
+              <span><span data-lang="fr">Gain max :</span><span data-lang="en">Max gain:</span><span data-lang="nl">Max winst:</span> <b id="st-max">·</b></span>
+              <span><span data-lang="fr">Perte max :</span><span data-lang="en">Max loss:</span><span data-lang="nl">Max verlies:</span> <b id="st-min">·</b></span>
+              <span><span data-lang="fr">Profit à Sₜ :</span><span data-lang="en">Profit at Sₜ:</span><span data-lang="nl">Winst bij Sₜ:</span> <b id="st-at">·</b></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. EXOTIQUES -->
+        <h2 id="exotiques"><span data-lang="fr">6. Les options exotiques</span><span data-lang="en">6. Exotic options</span><span data-lang="nl">6. Exotische opties</span></h2>
+        <p data-lang="fr">Au delà des vanilles, une ménagerie d'options sur mesure change une brique du contrat. Les <strong>binary</strong> (ou digitales) paient un montant fixe si une condition est remplie, rien sinon : leur payoff en marche d'escalier est discontinu, donc difficile à hedger près du strike et manipulable. Les <strong>Asian</strong> paient sur la <em>moyenne</em> du prix pendant la vie de l'option : comme une moyenne fluctue moins que le prix final, elles sont <strong>moins chères</strong> qu'une vanille (utile pour couvrir un flux régulier de devises). Les <strong>lookback</strong> paient sur le <em>maximum ou le minimum</em> atteint : c'est le rêve de l'acheteur, donc <strong>plus cher</strong>. Les <strong>barrier</strong> (knock-in / knock-out) apparaissent ou disparaissent quand une barrière est touchée : une knock-out est moins chère qu'une vanille, et knock-in + knock-out = vanille. Les <strong>compound</strong> sont des options sur options, et les <strong>chooser</strong> laissent choisir plus tard entre call et put.</p>
+        <p data-lang="en">Beyond vanillas, a menagerie of bespoke options changes one building block of the contract. <strong>Binary</strong> (or digital) options pay a fixed amount if a condition is met, nothing otherwise: their step payoff is discontinuous, so hard to hedge near the strike and manipulable. <strong>Asian</strong> options pay on the <em>average</em> price over the option's life: since an average fluctuates less than the final price, they are <strong>cheaper</strong> than a vanilla (useful to hedge a regular currency flow). <strong>Lookback</strong> options pay on the <em>maximum or minimum</em> reached: the buyer's dream, hence <strong>dearer</strong>. <strong>Barrier</strong> options (knock-in / knock-out) appear or disappear when a barrier is touched: a knock-out is cheaper than a vanilla, and knock-in + knock-out = vanilla. <strong>Compound</strong> options are options on options, and <strong>chooser</strong> options let you decide later between call and put.</p>
+        <p data-lang="nl">Naast vanillas verandert een menagerie van maatopties één bouwsteen van het contract. <strong>Binary</strong> (of digitale) opties betalen een vast bedrag als een voorwaarde vervuld is, anders niets: hun traptreden-payoff is discontinu, dus moeilijk te hedgen nabij de strike en manipuleerbaar. <strong>Asian</strong>-opties betalen op de <em>gemiddelde</em> prijs over de looptijd: aangezien een gemiddelde minder fluctueert dan de finale prijs, zijn ze <strong>goedkoper</strong> dan een vanilla (nuttig om een regelmatige valutastroom te dekken). <strong>Lookback</strong>-opties betalen op het <em>maximum of minimum</em> dat bereikt wordt: de droom van de koper, dus <strong>duurder</strong>. <strong>Barrier</strong>-opties (knock-in / knock-out) verschijnen of verdwijnen wanneer een barrière geraakt wordt: een knock-out is goedkoper dan een vanilla, en knock-in + knock-out = vanilla. <strong>Compound</strong>-opties zijn opties op opties, en <strong>chooser</strong>-opties laten je later kiezen tussen call en put.</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">L'ordre des prix à connaître</span><span class="clabel" data-lang="en">The price ordering to know</span><span class="clabel" data-lang="nl">De prijsvolgorde om te kennen</span>
+          <span data-lang="fr">Un classement revient à l'examen : <strong>Asian &lt; vanille &lt; lookback</strong>, parce que la moyenne bouge moins que le prix final (Asian moins chère) tandis que le meilleur point atteint bouge plus (lookback plus chère). Plus la fréquence d'observation d'une lookback augmente, plus elle coûte cher (elle a plus d'occasions d'atteindre un extrême). Pour les Asian, à mesure que l'échéance approche, une part croissante de la moyenne est déjà figée, ce qui rend l'option de plus en plus facile à hedger. Une astuce de couverture : une seule Asian sur la moyenne d'un an peut remplacer une série de 52 options vanilles hebdomadaires, pour bien moins cher.</span>
+          <span data-lang="en">One ranking recurs on the exam: <strong>Asian &lt; vanilla &lt; lookback</strong>, because the average moves less than the final price (Asian cheaper) while the best point reached moves more (lookback dearer). The higher a lookback's observation frequency, the dearer it is (more chances to reach an extreme). For Asians, as maturity nears, a growing part of the average is already fixed, making the option ever easier to hedge. A hedging trick: a single Asian on a one-year average can replace a series of 52 weekly vanilla options, for much less.</span>
+          <span data-lang="nl">Eén rangschikking keert terug op het examen: <strong>Asian &lt; vanilla &lt; lookback</strong>, omdat het gemiddelde minder beweegt dan de finale prijs (Asian goedkoper) terwijl het beste bereikte punt meer beweegt (lookback duurder). Hoe hoger de observatiefrequentie van een lookback, hoe duurder (meer kansen om een extreem te bereiken). Voor Asians is, naarmate de vervaldag nadert, een groeiend deel van het gemiddelde al vastgelegd, wat de optie steeds makkelijker te hedgen maakt. Een hedgingtruc: één enkele Asian op een eenjaarsgemiddelde kan een reeks van 52 wekelijkse vanilla-opties vervangen, voor veel minder.</span>
+        </div>
+
+        <!-- RESSOURCES -->
+        <h2 id="ressources"><span data-lang="fr">Ressources à télécharger</span><span data-lang="en">Downloadable resources</span><span data-lang="nl">Downloadbare bronnen</span></h2>
+        <div class="downloads">
+          <div class="dl-list">
+            <a class="dl-item" data-lang="fr" href="@@BASE@@files/fmp4-exercice-corrige-fr.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Exercice et corrigé : options &amp; stratégies</span>
+                <span class="dl-sub">PDF, énoncé et solution détaillée (français)</span>
+              </span>
+            </a>
+            <a class="dl-item" data-lang="en" href="@@BASE@@files/fmp4-exercice-corrige-en.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Exercise and solution: options &amp; strategies</span>
+                <span class="dl-sub">PDF, statement and worked solution (English)</span>
+              </span>
+            </a>
+            <a class="dl-item" data-lang="nl" href="@@BASE@@files/fmp4-exercice-corrige-nl.pdf" download>
+              <span class="dl-ic pdf">PDF</span>
+              <span class="dl-meta">
+                <span class="dl-name">Oefening en oplossing: opties &amp; strategieën</span>
+                <span class="dl-sub">PDF, opgave en uitgewerkte oplossing (Nederlands)</span>
+              </span>
+            </a>
+          </div>
+          <p class="dl-note" data-lang="fr">Un énoncé progressif suivi de sa correction pas à pas, dans votre langue. Cliquez pour télécharger le PDF.</p>
+          <p class="dl-note" data-lang="en">A progressive problem set followed by its step-by-step solution, in your language. Click to download the PDF.</p>
+          <p class="dl-note" data-lang="nl">Een progressieve opgave gevolgd door de stapsgewijze oplossing, in uw taal. Klik om de PDF te downloaden.</p>
+        </div>
+
+        <!-- 7. A RETENIR -->
+        <h2 id="retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></h2>
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">L'essentiel</span><span class="clabel" data-lang="en">The essentials</span><span class="clabel" data-lang="nl">De kern</span>
+          <span data-lang="fr">Option = droit sans obligation : call (acheter à K), put (vendre à K) ; 4 positions ; prix = intrinsic + time value ; moneyness ITM/ATM/OTM. Zoologie : LEAPS, warrants (dilutifs), FLEX, employee options ; CBOE, compensation par l'OCC ; vendre une option nue mobilise une marge. Six facteurs : S (call +, put −), K (call −, put +), σ (les deux +), T (américaine + ; européenne en général + mais pas garanti), r (call +, put −), dividendes (call −, put +). Bornes : c ≤ S, p ≤ K, c ≥ max(S − PV(K), 0). Exercice anticipé : jamais un call américain sans dividende (vendre rend intrinsic + time value) ; un put ITM peut mériter l'exercice (intérêt sur K) ; dividende → call parfois exercé avant détachement. Put-call parity (européen) : C + PV(K) + PV(Divs) = P + S ; synthétiques : protective put = call + cash, covered call = short put + cash. Stratégies : bull/bear spread (plafonné à K2 − K1), box = K2 − K1 certain → PV(K2 − K1), butterfly (près de K2, convexité c1 + c3 &gt; 2c2), straddle et strangle (parier le mouvement), covered call et protective put. Exotiques : binary (discontinu), Asian (moyenne, moins chère), lookback (extrême, plus chère), barrier (knock-in + knock-out = vanille), compound, chooser ; ordre Asian &lt; vanille &lt; lookback.</span>
+          <span data-lang="en">Option = right without obligation: call (buy at K), put (sell at K); 4 positions; price = intrinsic + time value; moneyness ITM/ATM/OTM. Zoology: LEAPS, warrants (dilutive), FLEX, employee options; CBOE, clearing by the OCC; writing a naked option ties up margin. Six factors: S (call +, put −), K (call −, put +), σ (both +), T (American +; European generally + but not guaranteed), r (call +, put −), dividends (call −, put +). Bounds: c ≤ S, p ≤ K, c ≥ max(S − PV(K), 0). Early exercise: never an American call on a non-dividend stock (selling gives intrinsic + time value); an ITM put can deserve exercise (interest on K); dividend → a call sometimes exercised before the ex-date. Put-call parity (European): C + PV(K) + PV(Divs) = P + S; synthetics: protective put = call + cash, covered call = short put + cash. Strategies: bull/bear spread (capped at K2 − K1), box = K2 − K1 certain → PV(K2 − K1), butterfly (near K2, convexity c1 + c3 &gt; 2c2), straddle and strangle (bet on movement), covered call and protective put. Exotics: binary (discontinuous), Asian (average, cheaper), lookback (extreme, dearer), barrier (knock-in + knock-out = vanilla), compound, chooser; ordering Asian &lt; vanilla &lt; lookback.</span>
+          <span data-lang="nl">Optie = recht zonder plicht: call (kopen tegen K), put (verkopen tegen K); 4 posities; prijs = intrinsic + time value; moneyness ITM/ATM/OTM. Zoölogie: LEAPS, warrants (verwaterend), FLEX, employee options; CBOE, clearing door de OCC; een naakte optie schrijven bindt marge. Zes factoren: S (call +, put −), K (call −, put +), σ (beide +), T (Amerikaans +; Europees doorgaans + maar niet gegarandeerd), r (call +, put −), dividenden (call −, put +). Grenzen: c ≤ S, p ≤ K, c ≥ max(S − PV(K), 0). Vervroegde uitoefening: nooit een Amerikaanse call op een dividendloos aandeel (verkopen geeft intrinsic + time value); een ITM put kan uitoefening verdienen (rente op K); dividend → een call soms uitgeoefend vóór de ex-datum. Put-call parity (Europees): C + PV(K) + PV(Divs) = P + S; synthetisch: protective put = call + cash, covered call = short put + cash. Strategieën: bull/bear spread (begrensd op K2 − K1), box = K2 − K1 zeker → PV(K2 − K1), butterfly (nabij K2, convexiteit c1 + c3 &gt; 2c2), straddle en strangle (op beweging wedden), covered call en protective put. Exotics: binary (discontinu), Asian (gemiddelde, goedkoper), lookback (extreem, duurder), barrier (knock-in + knock-out = vanilla), compound, chooser; volgorde Asian &lt; vanilla &lt; lookback.</span>
+        </div>
+
+        <!-- 8. QCM -->
+        <h2 id="qcm"><span data-lang="fr">8. QCM (15 questions)</span><span data-lang="en">8. MCQ (15 questions)</span><span data-lang="nl">8. MCV (15 vragen)</span></h2>
+        <div class="quiz">
+          <h4 data-lang="fr">Auto-évaluation</h4><h4 data-lang="en">Self-assessment</h4><h4 data-lang="nl">Zelfevaluatie</h4>
+          <p class="qsub" data-lang="fr">Cliquez sur une réponse : la bonne s'affiche en vert et la justification apparaît.</p>
+          <p class="qsub" data-lang="en">Click an answer: the correct one turns green and the justification appears.</p>
+          <p class="qsub" data-lang="nl">Klik op een antwoord: het juiste kleurt groen en de verantwoording verschijnt.</p>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">1. Un call européen donne à son détenteur…</div>
+            <div class="qtext" data-lang="en">1. A European call gives its holder…</div>
+            <div class="qtext" data-lang="nl">1. Een Europese call geeft zijn houder…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">L'obligation d'acheter le sous-jacent à K.</span><span data-lang="en">The obligation to buy the underlying at K.</span><span data-lang="nl">De plicht de onderliggende te kopen tegen K.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le droit d'acheter le sous-jacent à K, à l'échéance.</span><span data-lang="en">The right to buy the underlying at K, at maturity.</span><span data-lang="nl">Het recht de onderliggende te kopen tegen K, op vervaldag.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le droit de vendre le sous-jacent à K, à tout moment.</span><span data-lang="en">The right to sell the underlying at K, at any time.</span><span data-lang="nl">Het recht de onderliggende te verkopen tegen K, op elk moment.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Call = droit d'acheter ; put = droit de vendre. « Droit », pas « obligation » (c'est le forward qui oblige). « Européen » = exerçable seulement à l'échéance, « américain » = à tout moment.</span><span data-lang="en">✔ Call = right to buy; put = right to sell. "Right", not "obligation" (the forward obliges). "European" = exercisable only at maturity, "American" = at any time.</span><span data-lang="nl">✔ Call = recht te kopen; put = recht te verkopen. "Recht", geen "plicht" (de forward verplicht). "Europees" = enkel uitoefenbaar op vervaldag, "Amerikaans" = op elk moment.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">2. Une action cote 53, un call de strike 50 se négocie 4,5. Sa time value vaut…</div>
+            <div class="qtext" data-lang="en">2. A stock trades at 53, a call with strike 50 trades at 4.5. Its time value is…</div>
+            <div class="qtext" data-lang="nl">2. Een aandeel noteert 53, een call met strike 50 noteert 4,5. Zijn time value is…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">1,5 : prix 4,5 moins intrinsic 3.</span><span data-lang="en">1.5: price 4.5 minus intrinsic 3.</span><span data-lang="nl">1,5: prijs 4,5 min intrinsic 3.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">3 (l'intrinsic value).</span><span data-lang="en">3 (the intrinsic value).</span><span data-lang="nl">3 (de intrinsic value).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">4,5 : tout le prix est de la time value.</span><span data-lang="en">4.5: the whole price is time value.</span><span data-lang="nl">4,5: de hele prijs is time value.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Intrinsic = max(53 − 50, 0) = 3. Prix = intrinsic + time value, donc time value = 4,5 − 3 = 1,5. L'option est ITM (S &gt; K). À l'échéance la time value tombe à zéro et le prix se réduit à l'intrinsic.</span><span data-lang="en">✔ Intrinsic = max(53 − 50, 0) = 3. Price = intrinsic + time value, so time value = 4.5 − 3 = 1.5. The option is ITM (S &gt; K). At maturity the time value falls to zero and the price reduces to the intrinsic.</span><span data-lang="nl">✔ Intrinsic = max(53 − 50, 0) = 3. Prijs = intrinsic + time value, dus time value = 4,5 − 3 = 1,5. De optie is ITM (S &gt; K). Op vervaldag valt de time value naar nul en herleidt de prijs zich tot de intrinsic.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">3. Une hausse de la volatilité σ du sous-jacent…</div>
+            <div class="qtext" data-lang="en">3. A rise in the underlying's volatility σ…</div>
+            <div class="qtext" data-lang="nl">3. Een stijging van de volatiliteit σ van de onderliggende…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Fait monter le call et baisser le put.</span><span data-lang="en">Raises the call and lowers the put.</span><span data-lang="nl">Verhoogt de call en verlaagt de put.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">N'a aucun effet sur les primes.</span><span data-lang="en">Has no effect on premiums.</span><span data-lang="nl">Heeft geen effect op de premies.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Fait monter le call ET le put.</span><span data-lang="en">Raises both the call AND the put.</span><span data-lang="nl">Verhoogt zowel de call ALS de put.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Plus de volatilité = plus de chance de finir profondément ITM, alors que la perte reste plafonnée à la prime. L'asymétrie profite au détenteur, call comme put. σ est le seul des six facteurs à jouer dans le même sens pour les deux.</span><span data-lang="en">✔ More volatility = more chance of finishing deep ITM, while the loss stays capped at the premium. The asymmetry benefits the holder, call and put alike. σ is the only one of the six factors to act the same way for both.</span><span data-lang="nl">✔ Meer volatiliteit = meer kans om diep ITM te eindigen, terwijl het verlies begrensd blijft tot de premie. De asymmetrie bevoordeelt de houder, call zowel als put. σ is de enige van de zes factoren die voor beide dezelfde kant op werkt.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">4. Une hausse du taux sans risque r, toutes choses égales par ailleurs…</div>
+            <div class="qtext" data-lang="en">4. A rise in the risk-free rate r, all else equal…</div>
+            <div class="qtext" data-lang="nl">4. Een stijging van de risicovrije rente r, ceteris paribus…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Fait baisser le call et monter le put.</span><span data-lang="en">Lowers the call and raises the put.</span><span data-lang="nl">Verlaagt de call en verhoogt de put.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Fait monter le call et baisser le put.</span><span data-lang="en">Raises the call and lowers the put.</span><span data-lang="nl">Verhoogt de call en verlaagt de put.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Fait monter les deux.</span><span data-lang="en">Raises both.</span><span data-lang="nl">Verhoogt beide.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le call s'apprécie : le strike se paie plus tard, donc sa PV baisse quand r monte. Le put se déprécie : il rapporte K plus tard, dont la PV baisse. Intuition via la parity C − P = S − PV(K) : PV(K) ↓ quand r ↑, donc C − P ↑.</span><span data-lang="en">✔ The call appreciates: the strike is paid later, so its PV falls when r rises. The put depreciates: it pays K later, whose PV falls. Intuition via parity C − P = S − PV(K): PV(K) ↓ when r ↑, so C − P ↑.</span><span data-lang="nl">✔ De call apprecieert: de strike wordt later betaald, dus zijn PV daalt als r stijgt. De put deprecieert: hij betaalt K later, waarvan de PV daalt. Intuïtie via parity C − P = S − PV(K): PV(K) ↓ als r ↑, dus C − P ↑.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">5. Faut-il exercer tôt un call américain sur une action qui ne verse pas de dividende ?</div>
+            <div class="qtext" data-lang="en">5. Should one exercise an American call on a non-dividend stock early?</div>
+            <div class="qtext" data-lang="nl">5. Moet men een Amerikaanse call op een dividendloos aandeel vroeg uitoefenen?</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Non : vendre l'option rend l'intrinsic plus la time value.</span><span data-lang="en">No: selling the option yields the intrinsic plus the time value.</span><span data-lang="nl">Nee: de optie verkopen levert de intrinsic plus de time value.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Oui, dès qu'il est ITM, pour sécuriser le gain.</span><span data-lang="en">Yes, as soon as it is ITM, to secure the gain.</span><span data-lang="nl">Ja, zodra hij ITM is, om de winst veilig te stellen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Oui, pour toucher les dividendes du titre.</span><span data-lang="en">Yes, to collect the stock's dividends.</span><span data-lang="nl">Ja, om de dividenden van het aandeel te innen.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Exercer ne rend que l'intrinsic S − K ; vendre rend intrinsic + time value. La borne le prouve : c ≥ S − PV(K) &gt; S − K. Sans dividende, jamais tôt. (Un put ITM peut, lui, mériter l'exercice pour l'intérêt sur K.)</span><span data-lang="en">✔ Exercising yields only the intrinsic S − K; selling yields intrinsic + time value. The bound proves it: c ≥ S − PV(K) &gt; S − K. Without a dividend, never early. (An ITM put, though, can deserve exercise for the interest on K.)</span><span data-lang="nl">✔ Uitoefenen levert enkel de intrinsic S − K; verkopen levert intrinsic + time value. De grens bewijst het: c ≥ S − PV(K) &gt; S − K. Zonder dividend, nooit vroeg. (Een ITM put kan wel uitoefening verdienen voor de rente op K.)</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">6. La put-call parity pour des options européennes (sans dividende) s'écrit…</div>
+            <div class="qtext" data-lang="en">6. Put-call parity for European options (no dividend) reads…</div>
+            <div class="qtext" data-lang="nl">6. Put-call parity voor Europese opties (geen dividend) luidt…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">C + S = P + PV(K).</span><span data-lang="en">C + S = P + PV(K).</span><span data-lang="nl">C + S = P + PV(K).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">C + K = P + S (sans actualiser).</span><span data-lang="en">C + K = P + S (undiscounted).</span><span data-lang="nl">C + K = P + S (niet verdisconteerd).</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">C + PV(K) = P + S.</span><span data-lang="en">C + PV(K) = P + S.</span><span data-lang="nl">C + PV(K) = P + S.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Portefeuille A (call + PV(K)) et B (put + action) valent tous deux max(Sₜ, K) à l'échéance, donc coûtent pareil aujourd'hui. Le piège classique est d'oublier d'actualiser K (utiliser K et non PV(K)).</span><span data-lang="en">✔ Portfolio A (call + PV(K)) and B (put + stock) are both worth max(Sₜ, K) at maturity, so cost the same today. The classic trap is forgetting to discount K (using K instead of PV(K)).</span><span data-lang="nl">✔ Portefeuille A (call + PV(K)) en B (put + aandeel) zijn beide max(Sₜ, K) waard op vervaldag, dus kosten vandaag evenveel. De klassieke valstrik is K niet te verdisconteren (K gebruiken in plaats van PV(K)).</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">7. Un covered call (détenir l'action et vendre un call) équivaut, par la parity, à…</div>
+            <div class="qtext" data-lang="en">7. A covered call (hold the stock and sell a call) is equivalent, by parity, to…</div>
+            <div class="qtext" data-lang="nl">7. Een covered call (het aandeel aanhouden en een call verkopen) is, via parity, gelijk aan…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Un long call plus du cash.</span><span data-lang="en">A long call plus cash.</span><span data-lang="nl">Een long call plus cash.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Un short put plus du cash.</span><span data-lang="en">A short put plus cash.</span><span data-lang="nl">Een short put plus cash.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Un long put plus l'action.</span><span data-lang="en">A long put plus the stock.</span><span data-lang="nl">Een long put plus het aandeel.</span></button>
+            <div class="explain"><span data-lang="fr">✔ S − C = PV(K) − P (parity réarrangée), donc action + short call = short put + cash : le profil plafonné à la hausse et exposé à la baisse est celui d'un vendeur de put. À l'inverse, protective put (action + put) = long call + cash.</span><span data-lang="en">✔ S − C = PV(K) − P (rearranged parity), so stock + short call = short put + cash: the profile capped on the upside and exposed on the downside is that of a put writer. Conversely, protective put (stock + put) = long call + cash.</span><span data-lang="nl">✔ S − C = PV(K) − P (herschikte parity), dus aandeel + short call = short put + cash: het profiel begrensd aan de bovenkant en blootgesteld aan de onderkant is dat van een put-schrijver. Omgekeerd, protective put (aandeel + put) = long call + cash.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">8. Un bull call spread (long call K1, short call K2 &gt; K1) a un payoff…</div>
+            <div class="qtext" data-lang="en">8. A bull call spread (long call K1, short call K2 &gt; K1) has a payoff…</div>
+            <div class="qtext" data-lang="nl">8. Een bull call spread (long call K1, short call K2 &gt; K1) heeft een payoff…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Plafonné à K2 − K1 au-dessus de K2.</span><span data-lang="en">Capped at K2 − K1 above K2.</span><span data-lang="nl">Begrensd op K2 − K1 boven K2.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Illimité à la hausse comme un call sec.</span><span data-lang="en">Unlimited on the upside like a plain call.</span><span data-lang="nl">Onbeperkt aan de bovenkant zoals een gewone call.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Toujours négatif quelle que soit l'issue.</span><span data-lang="en">Always negative whatever the outcome.</span><span data-lang="nl">Altijd negatief ongeacht de uitkomst.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Sous K1 rien ; entre K1 et K2 le call long paie Sₜ − K1 ; au-dessus de K2 le call vendu annule le surplus et le payoff plafonne à K2 − K1. On vend l'upside au-delà de K2, ce qui réduit la mise du montant de la prime encaissée.</span><span data-lang="en">✔ Below K1 nothing; between K1 and K2 the long call pays Sₜ − K1; above K2 the sold call cancels the excess and the payoff caps at K2 − K1. One sells the upside beyond K2, which cuts the outlay by the premium collected.</span><span data-lang="nl">✔ Onder K1 niets; tussen K1 en K2 betaalt de long call Sₜ − K1; boven K2 annuleert de verkochte call het surplus en plafonneert de payoff op K2 − K1. Men verkoopt de upside boven K2, wat de inleg vermindert met de geïnde premie.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">9. Un box spread (bull en calls + bear en puts, mêmes strikes) doit coûter…</div>
+            <div class="qtext" data-lang="en">9. A box spread (bull in calls + bear in puts, same strikes) must cost…</div>
+            <div class="qtext" data-lang="nl">9. Een box spread (bull in calls + bear in puts, dezelfde strikes) moet kosten…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Zéro, car les jambes se compensent.</span><span data-lang="en">Zero, since the legs offset.</span><span data-lang="nl">Nul, want de poten heffen elkaar op.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">K2 − K1, non actualisé.</span><span data-lang="en">K2 − K1, undiscounted.</span><span data-lang="nl">K2 − K1, niet verdisconteerd.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">PV(K2 − K1) : le payoff est certain, égal à K2 − K1.</span><span data-lang="en">PV(K2 − K1): the payoff is certain, equal to K2 − K1.</span><span data-lang="nl">PV(K2 − K1): de payoff is zeker, gelijk aan K2 − K1.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le box paie K2 − K1 quel que soit Sₜ : un payoff certain vaut sa PV, donc PV(K2 − K1). S'il se vend moins cher, l'acheter bat le sans-risque ; plus cher, le shorter revient à emprunter sous le taux sans risque. Vrai seulement en européen.</span><span data-lang="en">✔ The box pays K2 − K1 whatever Sₜ: a certain payoff is worth its PV, so PV(K2 − K1). If it sells for less, buying it beats the risk-free rate; for more, shorting it is like borrowing below the risk-free rate. True only in European style.</span><span data-lang="nl">✔ De box betaalt K2 − K1 ongeacht Sₜ: een zekere payoff is zijn PV waard, dus PV(K2 − K1). Verkoopt hij goedkoper, dan verslaat kopen de risicovrije rente; duurder, dan is shorten als lenen onder de risicovrije rente. Enkel waar in Europese stijl.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">10. Un butterfly (long K1, short 2 K2, long K3) est un pari sur…</div>
+            <div class="qtext" data-lang="en">10. A butterfly (long K1, short 2 K2, long K3) is a bet on…</div>
+            <div class="qtext" data-lang="nl">10. Een butterfly (long K1, short 2 K2, long K3) is een weddenschap op…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Un très grand mouvement, direction inconnue.</span><span data-lang="en">A very large movement, unknown direction.</span><span data-lang="nl">Een zeer grote beweging, onbekende richting.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Un prix qui reste proche de K2 (faible mouvement).</span><span data-lang="en">A price staying near K2 (small movement).</span><span data-lang="nl">Een prijs die dicht bij K2 blijft (kleine beweging).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une hausse forte et durable.</span><span data-lang="en">A strong, lasting rise.</span><span data-lang="nl">Een sterke, blijvende stijging.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le payoff dessine un triangle : nul hors [K1, K3], maximal (K2 − K1) en K2. C'est le pari du calme, avec une perte plafonnée au coût initial. Ce coût est positif, ce qui impose c1 + c3 &gt; 2c2 : le prix du call est convexe en K.</span><span data-lang="en">✔ The payoff draws a triangle: zero outside [K1, K3], maximal (K2 − K1) at K2. It is the bet on calm, with a loss capped at the initial cost. That cost is positive, imposing c1 + c3 &gt; 2c2: the call price is convex in K.</span><span data-lang="nl">✔ De payoff tekent een driehoek: nul buiten [K1, K3], maximaal (K2 − K1) bij K2. Het is de weddenschap op rust, met een verlies begrensd tot de initiële kost. Die kost is positief, wat c1 + c3 &gt; 2c2 oplegt: de callprijs is convex in K.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">11. Un straddle long (call + put, même strike K, même échéance) est rentable si…</div>
+            <div class="qtext" data-lang="en">11. A long straddle (call + put, same strike K, same maturity) profits if…</div>
+            <div class="qtext" data-lang="nl">11. Een long straddle (call + put, dezelfde strike K, dezelfde vervaldag) is winstgevend als…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le prix s'éloigne fortement de K, dans un sens ou l'autre.</span><span data-lang="en">The price moves far from K, either way.</span><span data-lang="nl">De prijs sterk van K afwijkt, in beide richtingen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le prix reste exactement à K.</span><span data-lang="en">The price stays exactly at K.</span><span data-lang="nl">De prijs exact op K blijft.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le prix monte, mais jamais s'il baisse.</span><span data-lang="en">The price rises, but never if it falls.</span><span data-lang="nl">De prijs stijgt, maar nooit als hij daalt.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Payoff |Sₜ − K|, moins les deux primes. Exemple GARP (S = K = 50, primes 2,12 + 1,87 = 3,99) : il faut sortir de [46 ; 54] pour gagner. C'est le pari du mouvement, direction inconnue ; le revers est de payer deux primes.</span><span data-lang="en">✔ Payoff |Sₜ − K|, minus the two premiums. GARP example (S = K = 50, premiums 2.12 + 1.87 = 3.99): the price must leave [46 ; 54] to profit. It is the bet on movement, unknown direction; the downside is paying two premiums.</span><span data-lang="nl">✔ Payoff |Sₜ − K|, min de twee premies. GARP-voorbeeld (S = K = 50, premies 2,12 + 1,87 = 3,99): de prijs moet [46 ; 54] verlaten om te winnen. Het is de weddenschap op beweging, onbekende richting; het nadeel is twee premies betalen.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">12. Par rapport à un straddle, un strangle (strikes écartés)…</div>
+            <div class="qtext" data-lang="en">12. Compared to a straddle, a strangle (spread strikes)…</div>
+            <div class="qtext" data-lang="nl">12. Vergeleken met een straddle, een strangle (gespreide strikes)…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Coûte plus cher mais gagne plus facilement.</span><span data-lang="en">Costs more but wins more easily.</span><span data-lang="nl">Kost meer maar wint makkelijker.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">A exactement le même coût et les mêmes seuils.</span><span data-lang="en">Has exactly the same cost and break-evens.</span><span data-lang="nl">Heeft exact dezelfde kost en break-evens.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Coûte moins cher mais exige un mouvement plus grand.</span><span data-lang="en">Costs less but needs a bigger move.</span><span data-lang="nl">Kost minder maar vergt een grotere beweging.</span></button>
+            <div class="explain"><span data-lang="fr">✔ En écartant les strikes (put 45, call 55), les primes tombent à 0,84 (moins du quart du straddle), mais les seuils s'éloignent à [44,16 ; 55,84] : il faut un mouvement encore plus grand. On paie moins pour parier sur un choc plus violent.</span><span data-lang="en">✔ By spreading the strikes (put 45, call 55), premiums drop to 0.84 (under a quarter of the straddle), but break-evens widen to [44.16 ; 55.84]: an even bigger move is needed. One pays less to bet on a more violent shock.</span><span data-lang="nl">✔ Door de strikes te spreiden (put 45, call 55), dalen de premies naar 0,84 (minder dan een kwart van de straddle), maar de break-evens verbreden naar [44,16 ; 55,84]: een nog grotere beweging is nodig. Men betaalt minder om op een hevigere schok te wedden.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">13. Une option Asian, comparée à une vanille de mêmes caractéristiques, est…</div>
+            <div class="qtext" data-lang="en">13. An Asian option, compared to a vanilla with the same features, is…</div>
+            <div class="qtext" data-lang="nl">13. Een Asian-optie, vergeleken met een vanilla met dezelfde kenmerken, is…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Plus chère, car elle observe le prix plus souvent.</span><span data-lang="en">Dearer, since it observes the price more often.</span><span data-lang="nl">Duurder, want ze observeert de prijs vaker.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Moins chère, car la moyenne fluctue moins que le prix final.</span><span data-lang="en">Cheaper, since the average fluctuates less than the final price.</span><span data-lang="nl">Goedkoper, want het gemiddelde fluctueert minder dan de finale prijs.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Du même prix qu'une vanille.</span><span data-lang="en">The same price as a vanilla.</span><span data-lang="nl">Dezelfde prijs als een vanilla.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le payoff porte sur la moyenne du prix, moins volatile que le prix final, donc l'option vaut moins. Ordre à retenir : Asian &lt; vanille &lt; lookback. Une seule Asian annuelle peut remplacer 52 vanilles hebdomadaires pour bien moins cher.</span><span data-lang="en">✔ The payoff is on the average price, less volatile than the final price, so the option is worth less. Ordering to remember: Asian &lt; vanilla &lt; lookback. A single annual Asian can replace 52 weekly vanillas for much less.</span><span data-lang="nl">✔ De payoff slaat op de gemiddelde prijs, minder volatiel dan de finale prijs, dus de optie is minder waard. Volgorde om te onthouden: Asian &lt; vanilla &lt; lookback. Eén jaarlijkse Asian kan 52 wekelijkse vanillas vervangen voor veel minder.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">14. Pour une option barrier, la relation knock-in + knock-out (mêmes termes) donne…</div>
+            <div class="qtext" data-lang="en">14. For a barrier option, the knock-in + knock-out relation (same terms) gives…</div>
+            <div class="qtext" data-lang="nl">14. Voor een barrier-optie geeft de knock-in + knock-out relatie (dezelfde termen)…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Une option vanille équivalente.</span><span data-lang="en">An equivalent vanilla option.</span><span data-lang="nl">Een equivalente vanilla-optie.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Zéro, les deux s'annulent toujours.</span><span data-lang="en">Zero, the two always cancel.</span><span data-lang="nl">Nul, de twee heffen altijd op.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Deux fois la valeur d'une vanille.</span><span data-lang="en">Twice the value of a vanilla.</span><span data-lang="nl">Tweemaal de waarde van een vanilla.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Soit la barrière est touchée (la knock-in s'active), soit elle ne l'est pas (la knock-out survit) : dans tous les cas l'une des deux réplique la vanille. Donc knock-in + knock-out = vanille, et une knock-out seule est moins chère qu'une vanille.</span><span data-lang="en">✔ Either the barrier is touched (the knock-in activates) or it is not (the knock-out survives): in all cases one of the two replicates the vanilla. So knock-in + knock-out = vanilla, and a knock-out alone is cheaper than a vanilla.</span><span data-lang="nl">✔ Ofwel wordt de barrière geraakt (de knock-in activeert), ofwel niet (de knock-out overleeft): in alle gevallen repliceert een van beide de vanilla. Dus knock-in + knock-out = vanilla, en een knock-out alleen is goedkoper dan een vanilla.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">15. La compensation des options cotées aux États-Unis est assurée par…</div>
+            <div class="qtext" data-lang="en">15. The clearing of listed options in the United States is handled by…</div>
+            <div class="qtext" data-lang="nl">15. De clearing van genoteerde opties in de Verenigde Staten gebeurt door…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Chaque courtier, sans chambre centrale.</span><span data-lang="en">Each broker, with no central house.</span><span data-lang="nl">Elke makelaar, zonder centrale instelling.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La banque centrale.</span><span data-lang="en">The central bank.</span><span data-lang="nl">De centrale bank.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">L'OCC (Options Clearing Corporation).</span><span data-lang="en">The OCC (Options Clearing Corporation).</span><span data-lang="nl">De OCC (Options Clearing Corporation).</span></button>
+            <div class="explain"><span data-lang="fr">✔ L'OCC se substitue aux contreparties et garantit l'exécution, à l'image d'un CCP. Elle exige des marges des vendeurs (position nue = risque). La CBOE est la bourse historique et l'éditrice du VIX, à ne pas confondre avec la chambre de compensation.</span><span data-lang="en">✔ The OCC stands between counterparties and guarantees execution, like a CCP. It requires margin from writers (a naked position = risk). The CBOE is the historic exchange and publisher of the VIX, not to be confused with the clearing house.</span><span data-lang="nl">✔ De OCC staat tussen de tegenpartijen en garandeert de uitvoering, zoals een CCP. Ze eist marge van schrijvers (een naakte positie = risico). De CBOE is de historische beurs en uitgever van de VIX, niet te verwarren met de clearinginstelling.</span></div>
+          </div>
+
+        </div>
+
+        <!-- 9. EXERCICES -->
+        <h2 id="exercices"><span data-lang="fr">9. Exercices</span><span data-lang="en">9. Exercises</span><span data-lang="nl">9. Oefeningen</span></h2>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice EO-1</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Une action cote S = 53. Un call de strike K = 50 se négocie 4,5, un put de même strike et même échéance se négocie 0,8. (a) Décomposez chaque prime en intrinsic et time value. (b) Quelle est la moneyness de chaque option ?</p>
+          <p class="estatement" data-lang="en">A stock trades at S = 53. A call with strike K = 50 trades at 4.5, a put of the same strike and maturity trades at 0.8. (a) Split each premium into intrinsic and time value. (b) What is each option's moneyness?</p>
+          <p class="estatement" data-lang="nl">Een aandeel noteert S = 53. Een call met strike K = 50 noteert 4,5, een put met dezelfde strike en vervaldag noteert 0,8. (a) Splits elke premie in intrinsic en time value. (b) Wat is de moneyness van elke optie?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">(a) Call : intrinsic = max(53 − 50, 0) = 3, time value = 4,5 − 3 = <b>1,5</b>. Put : intrinsic = max(50 − 53, 0) = 0, time value = 0,8 − 0 = <b>0,8</b> (un put OTM est <em>tout</em> time value). (b) Le call est <b>ITM</b> (S &gt; K), le put est <b>OTM</b> (S &gt; K). Une même paire strike/échéance ne peut avoir les deux options ITM en même temps : l'une est ITM, l'autre OTM (ou les deux ATM si S = K).</div>
+            <div class="ans" data-lang="en">(a) Call: intrinsic = max(53 − 50, 0) = 3, time value = 4.5 − 3 = <b>1.5</b>. Put: intrinsic = max(50 − 53, 0) = 0, time value = 0.8 − 0 = <b>0.8</b> (an OTM put is <em>all</em> time value). (b) The call is <b>ITM</b> (S &gt; K), the put is <b>OTM</b> (S &gt; K). A single strike/maturity pair cannot have both options ITM at once: one is ITM, the other OTM (or both ATM if S = K).</div>
+            <div class="ans" data-lang="nl">(a) Call: intrinsic = max(53 − 50, 0) = 3, time value = 4,5 − 3 = <b>1,5</b>. Put: intrinsic = max(50 − 53, 0) = 0, time value = 0,8 − 0 = <b>0,8</b> (een OTM put is <em>helemaal</em> time value). (b) De call is <b>ITM</b> (S &gt; K), de put is <b>OTM</b> (S &gt; K). Eén strike/vervaldag-paar kan niet beide opties tegelijk ITM hebben: de ene is ITM, de andere OTM (of beide ATM als S = K).</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice EO-2</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Un call européen de strike K = 50, échéance 1 an, se négocie C = 5. L'action cote S = 52, le taux sans risque annuel est R = 4 % (pas de dividende). Par la put-call parity, quel est le prix du put de mêmes strike et échéance ?</p>
+          <p class="estatement" data-lang="en">A European call with strike K = 50, maturity 1 year, trades at C = 5. The stock is at S = 52, the annual risk-free rate is R = 4% (no dividend). By put-call parity, what is the price of the put with the same strike and maturity?</p>
+          <p class="estatement" data-lang="nl">Een Europese call met strike K = 50, looptijd 1 jaar, noteert C = 5. Het aandeel staat op S = 52, de jaarlijkse risicovrije rente is R = 4% (geen dividend). Bereken via put-call parity de prijs van de put met dezelfde strike en vervaldag.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Parity : C + PV(K) = P + S, donc P = C + PV(K) − S. PV(K) = 50/1,04 = <b>48,08</b>. P = 5 + 48,08 − 52 = <b>1,08</b>. Vérification d'intuition : le call est ITM (S &gt; K) et vaut plus que le put OTM, cohérent. Piège classique : oublier d'actualiser K et écrire P = 5 + 50 − 52 = 3, ce qui est faux.</div>
+            <div class="ans" data-lang="en">Parity: C + PV(K) = P + S, so P = C + PV(K) − S. PV(K) = 50/1.04 = <b>48.08</b>. P = 5 + 48.08 − 52 = <b>1.08</b>. Intuition check: the call is ITM (S &gt; K) and worth more than the OTM put, consistent. Classic trap: forgetting to discount K and writing P = 5 + 50 − 52 = 3, which is wrong.</div>
+            <div class="ans" data-lang="nl">Parity: C + PV(K) = P + S, dus P = C + PV(K) − S. PV(K) = 50/1,04 = <b>48,08</b>. P = 5 + 48,08 − 52 = <b>1,08</b>. Intuïtiecheck: de call is ITM (S &gt; K) en meer waard dan de OTM put, coherent. Klassieke valstrik: K niet verdisconteren en P = 5 + 50 − 52 = 3 schrijven, wat fout is.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice EO-3</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Un investisseur monte un bull call spread : long un call de strike 48 à 3,0, short un call de strike 52 à 1,2 (même échéance). Calculez (a) le coût net, (b) le gain maximal, (c) la perte maximale, (d) le seuil de rentabilité.</p>
+          <p class="estatement" data-lang="en">An investor sets up a bull call spread: long a call with strike 48 at 3.0, short a call with strike 52 at 1.2 (same maturity). Compute (a) the net cost, (b) the maximum gain, (c) the maximum loss, (d) the break-even.</p>
+          <p class="estatement" data-lang="nl">Een belegger zet een bull call spread op: long een call met strike 48 op 3,0, short een call met strike 52 op 1,2 (dezelfde vervaldag). Bereken (a) de nettokost, (b) de maximale winst, (c) het maximale verlies, (d) het break-evenpunt.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">(a) Coût net = 3,0 − 1,2 = <b>1,8</b> (débit, on paie plus qu'on n'encaisse). (b) Gain max au-dessus de 52 : (52 − 48) − 1,8 = 4 − 1,8 = <b>2,2</b>. (c) Perte max sous 48 : les deux calls expirent sans valeur, on perd le coût net = <b>1,8</b>. (d) Seuil : K1 + coût net = 48 + 1,8 = <b>49,8</b>. Le profil est plafonné des deux côtés, ce qui est exactement le prix à payer pour réduire la mise via la prime encaissée sur le call vendu.</div>
+            <div class="ans" data-lang="en">(a) Net cost = 3.0 − 1.2 = <b>1.8</b> (debit, one pays more than one collects). (b) Max gain above 52: (52 − 48) − 1.8 = 4 − 1.8 = <b>2.2</b>. (c) Max loss below 48: both calls expire worthless, one loses the net cost = <b>1.8</b>. (d) Break-even: K1 + net cost = 48 + 1.8 = <b>49.8</b>. The profile is capped on both sides, exactly the price paid to cut the outlay via the premium collected on the sold call.</div>
+            <div class="ans" data-lang="nl">(a) Nettokost = 3,0 − 1,2 = <b>1,8</b> (debet, men betaalt meer dan men int). (b) Max winst boven 52: (52 − 48) − 1,8 = 4 − 1,8 = <b>2,2</b>. (c) Max verlies onder 48: beide calls verlopen waardeloos, men verliest de nettokost = <b>1,8</b>. (d) Break-even: K1 + nettokost = 48 + 1,8 = <b>49,8</b>. Het profiel is aan beide zijden begrensd, exact de prijs om de inleg te verminderen via de op de verkochte call geïnde premie.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice EO-4</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Un trader anticipe un résultat très incertain et monte un straddle ATM : S = K = 50, un call à 2,12 et un put à 1,87 (même échéance). (a) Coût total ? (b) Seuils de rentabilité ? (c) Profit si l'action finit à 58 ? à 50 ? (d) Perte maximale ?</p>
+          <p class="estatement" data-lang="en">A trader expects a very uncertain result and sets up an ATM straddle: S = K = 50, a call at 2.12 and a put at 1.87 (same maturity). (a) Total cost? (b) Break-evens? (c) Profit if the stock ends at 58? at 50? (d) Maximum loss?</p>
+          <p class="estatement" data-lang="nl">Een trader verwacht een zeer onzeker resultaat en zet een ATM straddle op: S = K = 50, een call op 2,12 en een put op 1,87 (dezelfde vervaldag). (a) Totale kost? (b) Break-evens? (c) Winst als het aandeel eindigt op 58? op 50? (d) Maximaal verlies?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">(a) Coût = 2,12 + 1,87 = <b>3,99</b>. (b) Payoff = |Sₜ − 50| − 3,99 ; seuils à 50 ± 3,99 = <b>46,01 et 53,99</b> (≈ [46 ; 54]). (c) À 58 : |58 − 50| − 3,99 = 8 − 3,99 = <b>+4,01</b>. À 50 : 0 − 3,99 = <b>−3,99</b> (le pire cas). (d) Perte max = les deux primes = <b>3,99</b>, atteinte quand Sₜ = K = 50. C'est le pari du grand mouvement : direction indifférente, mais il faut sortir de l'intervalle pour gagner.</div>
+            <div class="ans" data-lang="en">(a) Cost = 2.12 + 1.87 = <b>3.99</b>. (b) Payoff = |Sₜ − 50| − 3.99; break-evens at 50 ± 3.99 = <b>46.01 and 53.99</b> (≈ [46 ; 54]). (c) At 58: |58 − 50| − 3.99 = 8 − 3.99 = <b>+4.01</b>. At 50: 0 − 3.99 = <b>−3.99</b> (the worst case). (d) Max loss = the two premiums = <b>3.99</b>, reached when Sₜ = K = 50. It is the bet on a large move: direction irrelevant, but the price must leave the interval to profit.</div>
+            <div class="ans" data-lang="nl">(a) Kost = 2,12 + 1,87 = <b>3,99</b>. (b) Payoff = |Sₜ − 50| − 3,99; break-evens op 50 ± 3,99 = <b>46,01 en 53,99</b> (≈ [46 ; 54]). (c) Bij 58: |58 − 50| − 3,99 = 8 − 3,99 = <b>+4,01</b>. Bij 50: 0 − 3,99 = <b>−3,99</b> (het slechtste geval). (d) Max verlies = de twee premies = <b>3,99</b>, bereikt wanneer Sₜ = K = 50. Het is de weddenschap op een grote beweging: richting onbelangrijk, maar de prijs moet het interval verlaten om te winnen.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice EO-5</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Un call américain de strike 40 sur une action sans dividende cote S = 44, échéance 3 mois, taux 5 %. Sa borne inférieure européenne calculée vaut 4,49. (a) Vaut-il mieux l'exercer ou le vendre ? (b) Un investisseur trouve ce call à 4,20 sur le marché : que faire ? (c) La conclusion change-t-elle avec un gros dividende avant l'échéance ?</p>
+          <p class="estatement" data-lang="en">An American call with strike 40 on a non-dividend stock is at S = 44, maturity 3 months, rate 5%. Its computed European lower bound is 4.49. (a) Better to exercise or sell it? (b) An investor finds this call at 4.20 in the market: what to do? (c) Does the conclusion change with a large dividend before maturity?</p>
+          <p class="estatement" data-lang="nl">Een Amerikaanse call met strike 40 op een dividendloos aandeel staat op S = 44, looptijd 3 maanden, rente 5%. Zijn berekende Europese ondergrens is 4,49. (a) Beter uitoefenen of verkopen? (b) Een belegger vindt deze call op 4,20 op de markt: wat te doen? (c) Verandert de conclusie met een groot dividend vóór de vervaldag?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">(a) Exercer ne rend que l'intrinsic 44 − 40 = 4. Le vendre rend au moins la borne 4,49 (intrinsic + time value). Donc <b>vendre, jamais exercer</b> : sans dividende, on ne jette pas la time value. (b) À 4,20, le call se négocie <em>sous</em> sa borne inférieure de 4,49 : c'est un <b>arbitrage</b>. On achète le call, on shorte l'action et on place le cash ; à l'échéance la position dégage un profit sans risque. (c) <b>Oui</b> : un dividende récompense la détention de l'action, il peut alors devenir optimal d'exercer le call juste avant le détachement pour capter le dividende. Sans dividende, jamais ; avec dividende, parfois.</div>
+            <div class="ans" data-lang="en">(a) Exercising yields only the intrinsic 44 − 40 = 4. Selling yields at least the bound 4.49 (intrinsic + time value). So <b>sell, never exercise</b>: without a dividend, one does not throw away the time value. (b) At 4.20, the call trades <em>below</em> its lower bound of 4.49: this is an <b>arbitrage</b>. Buy the call, short the stock and invest the cash; at maturity the position yields a riskless profit. (c) <b>Yes</b>: a dividend rewards holding the stock, so it can become optimal to exercise the call just before the ex-date to capture the dividend. Without a dividend, never; with a dividend, sometimes.</div>
+            <div class="ans" data-lang="nl">(a) Uitoefenen levert enkel de intrinsic 44 − 40 = 4. Verkopen levert minstens de grens 4,49 (intrinsic + time value). Dus <b>verkopen, nooit uitoefenen</b>: zonder dividend gooit men de time value niet weg. (b) Op 4,20 noteert de call <em>onder</em> zijn ondergrens van 4,49: dit is een <b>arbitrage</b>. Koop de call, short het aandeel en beleg de cash; op vervaldag levert de positie een risicovrije winst. (c) <b>Ja</b>: een dividend beloont het aanhouden van het aandeel, dus kan het optimaal worden de call net vóór de ex-datum uit te oefenen om het dividend te vangen. Zonder dividend, nooit; met dividend, soms.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice EO-6</span><span class="diff" data-lang="fr">Réflexion</span><span class="diff" data-lang="en">Reflection</span><span class="diff" data-lang="nl">Reflectie</span></div>
+          <p class="estatement" data-lang="fr">Une trésorière doit couvrir un flux mensuel régulier de dollars sur un an. (a) Pourquoi une seule option Asian sur la moyenne annuelle est-elle plus adaptée et moins chère que douze options vanilles ? (b) Classez du moins cher au plus cher : Asian, vanille, lookback. (c) Elle envisage une knock-out barrier pour réduire le coût : quel risque accepte-t-elle en échange de l'économie ?</p>
+          <p class="estatement" data-lang="en">A treasurer must hedge a regular monthly dollar flow over one year. (a) Why is a single Asian option on the annual average more suitable and cheaper than twelve vanilla options? (b) Rank from cheapest to dearest: Asian, vanilla, lookback. (c) She considers a knock-out barrier to cut the cost: what risk does she accept in exchange for the saving?</p>
+          <p class="estatement" data-lang="nl">Een thesaurier moet een regelmatige maandelijkse dollarstroom over een jaar dekken. (a) Waarom is één enkele Asian-optie op het jaargemiddelde geschikter en goedkoper dan twaalf vanilla-opties? (b) Rangschik van goedkoopst naar duurst: Asian, vanilla, lookback. (c) Ze overweegt een knock-out barrier om de kost te drukken: welk risico aanvaardt ze in ruil voor de besparing?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">(a) Le flux est étalé dans le temps, donc l'exposition porte sur le <b>taux moyen</b> de l'année, exactement ce que paie une Asian. Une moyenne fluctue moins que le prix final, l'option vaut donc moins ; et une seule Asian remplace la douzaine de vanilles, réduisant primes et frais. (b) <b>Asian &lt; vanille &lt; lookback</b> : la moyenne bouge moins (moins chère), l'extrême atteint bouge plus (plus chère). (c) Une knock-out disparaît si le taux touche la barrière : elle est moins chère, mais la trésorière accepte le risque de se retrouver <b>non couverte</b> juste au moment d'un mouvement violent, précisément quand la protection compterait le plus. L'économie se paie en risque de gap.</div>
+            <div class="ans" data-lang="en">(a) The flow is spread over time, so the exposure is on the <b>average rate</b> of the year, exactly what an Asian pays. An average fluctuates less than the final price, so the option is worth less; and a single Asian replaces the dozen vanillas, cutting premiums and fees. (b) <b>Asian &lt; vanilla &lt; lookback</b>: the average moves less (cheaper), the extreme reached moves more (dearer). (c) A knock-out disappears if the rate touches the barrier: it is cheaper, but the treasurer accepts the risk of being <b>unhedged</b> right at a violent move, precisely when protection would matter most. The saving is paid in gap risk.</div>
+            <div class="ans" data-lang="nl">(a) De stroom is gespreid in de tijd, dus de blootstelling slaat op het <b>gemiddelde tarief</b> van het jaar, precies wat een Asian betaalt. Een gemiddelde fluctueert minder dan de finale prijs, dus de optie is minder waard; en één Asian vervangt het dozijn vanillas, wat premies en kosten drukt. (b) <b>Asian &lt; vanilla &lt; lookback</b>: het gemiddelde beweegt minder (goedkoper), het bereikte extreem beweegt meer (duurder). (c) Een knock-out verdwijnt als het tarief de barrière raakt: hij is goedkoper, maar de thesaurier aanvaardt het risico <b>ongedekt</b> te zijn net bij een hevige beweging, precies wanneer bescherming het meest zou tellen. De besparing wordt betaald in gap-risico.</div>
+          </details>
+        </div>
+
+        <section>
+          <h2 id="biblio"><span data-lang="fr">Bibliographie &amp; pour aller plus loin</span><span data-lang="en">Bibliography &amp; further reading</span><span data-lang="nl">Bibliografie &amp; verder lezen</span></h2>
+          <div class="bcol">
+            <h4 data-lang="fr">Références</h4><h4 data-lang="en">References</h4><h4 data-lang="nl">Referenties</h4>
+            <ol>
+      <li>GARP (2024). <em>Financial Risk Manager (FRM) Part I: Financial Markets and Products</em>. Pearson.</li>
+      <li>Hull, J. C. (2021). <em>Options, Futures, and Other Derivatives</em> (11th ed.). Pearson.</li>
+      <li>Stoll, H. R. (1969). The Relationship between Put and Call Option Prices. <em>Journal of Finance</em>, 24(5), 801–824.</li>
+      <li>Merton, R. C. (1973). Theory of Rational Option Pricing. <em>Bell Journal of Economics</em>, 4(1), 141–183.</li>
+      <li>Cox, J. &amp; Rubinstein, M. (1985). <em>Options Markets</em>. Prentice-Hall.</li>
+            </ol>
+          </div>
+          <div class="bcol">
+            <h4 data-lang="fr">Pour aller plus loin</h4><h4 data-lang="en">Further reading</h4><h4 data-lang="nl">Verder lezen</h4>
+            <ul>
+      <li>Investopedia : <a href="https://www.investopedia.com/terms/p/putcallparity.asp" target="_blank" rel="noopener">Put-Call Parity</a> · <a href="https://www.investopedia.com/terms/s/straddle.asp" target="_blank" rel="noopener">Straddle</a> · <a href="https://www.investopedia.com/terms/e/exoticoption.asp" target="_blank" rel="noopener">Exotic Option</a>.</li>
+      <li><span data-lang="fr">Module précédent : Futures &amp; forwards. Suite : Produits de taux, obligations &amp; swaps.</span><span data-lang="en">Previous module: Futures &amp; forwards. Next: Interest rate products, bonds &amp; swaps.</span><span data-lang="nl">Vorige module: Futures &amp; forwards. Volgende: Renteproducten, obligaties &amp; swaps.</span></li>
+            </ul>
+          </div>
+        </section>
+
+        <div class="module-nav">
+          <a class="prev" href="fmp3-futures-forwards.html">
+            <div class="dir" data-lang="fr">← Module précédent</div><div class="dir" data-lang="en">← Previous module</div><div class="dir" data-lang="nl">← Vorige module</div>
+            <div class="tt" data-lang="fr">Futures &amp; forwards</div><div class="tt" data-lang="en">Futures &amp; forwards</div><div class="tt" data-lang="nl">Futures &amp; forwards</div>
+          </a>
+          <a class="next" href="../index.html#curriculum">
+            <div class="dir" data-lang="fr">Module suivant →</div><div class="dir" data-lang="en">Next module →</div><div class="dir" data-lang="nl">Volgende module →</div>
+            <div class="tt" data-lang="fr">Produits de taux &amp; swaps</div><div class="tt" data-lang="en">Rate products &amp; swaps</div><div class="tt" data-lang="nl">Renteproducten &amp; swaps</div>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap foot">
+    <div class="brand"><span class="logo">Avenir<b>.</b></span></div>
+    <p data-lang="fr">Financial Risk Management · Marchés &amp; produits · Options &amp; stratégies</p>
+    <p data-lang="en">Financial Risk Management · Financial Markets &amp; Products · Options &amp; strategies</p>
+    <p data-lang="nl">Financial Risk Management · Financiële markten &amp; producten · Opties &amp; strategieën</p>
+  </div>
+</footer>
+
+<script src="../assets/script.js"></script>
+<script>
+/* Constructeur de payoff : profit d'une stratégie d'options à l'échéance */
+(function () {
+  var svg = document.getElementById("st-chart");
+  if (!svg) return;
+  function v(id){ return parseFloat(document.getElementById(id).value); }
+  function setT(id,t){ var e=document.getElementById(id); if(e) e.textContent=t; }
+  function al(){ return document.body.getAttribute("data-active-lang")||"fr"; }
+
+  // Chaque stratégie : liste de jambes { t:'c'|'p'|'s', p:position, K:strike, pr:prime }
+  var STRATS = [
+    { key:"bullcall",  names:{fr:"Bull call spread",en:"Bull call spread",nl:"Bull call spread"},
+      legs:[{t:"c",p:1,K:48,pr:3.0},{t:"c",p:-1,K:52,pr:1.2}] },
+    { key:"bearput",   names:{fr:"Bear put spread",en:"Bear put spread",nl:"Bear put spread"},
+      legs:[{t:"p",p:1,K:52,pr:3.0},{t:"p",p:-1,K:48,pr:1.2}] },
+    { key:"straddle",  names:{fr:"Straddle (long)",en:"Straddle (long)",nl:"Straddle (long)"},
+      legs:[{t:"c",p:1,K:50,pr:2.12},{t:"p",p:1,K:50,pr:1.87}] },
+    { key:"strangle",  names:{fr:"Strangle (long)",en:"Strangle (long)",nl:"Strangle (long)"},
+      legs:[{t:"p",p:1,K:45,pr:0.52},{t:"c",p:1,K:55,pr:0.32}] },
+    { key:"butterfly", names:{fr:"Butterfly (long)",en:"Butterfly (long)",nl:"Butterfly (long)"},
+      legs:[{t:"c",p:1,K:45,pr:6.0},{t:"c",p:-2,K:50,pr:2.5},{t:"c",p:1,K:55,pr:1.0}] },
+    { key:"coveredcall", names:{fr:"Covered call",en:"Covered call",nl:"Covered call"},
+      legs:[{t:"s",p:1,K:50,pr:0},{t:"c",p:-1,K:52,pr:1.5}] }
+  ];
+
+  function profit(S, legs){
+    var t=0;
+    for (var i=0;i<legs.length;i++){
+      var L=legs[i];
+      if (L.t==="c") t += L.p*(Math.max(S-L.K,0) - L.pr);
+      else if (L.t==="p") t += L.p*(Math.max(L.K-S,0) - L.pr);
+      else if (L.t==="s") t += L.p*(S - L.K);
+    }
+    return t;
+  }
+  function unl(){ var a=al(); return a==="en"?"unlimited":(a==="nl"?"onbeperkt":"illimité"); }
+  function none(){ var a=al(); return a==="en"?"none":(a==="nl"?"geen":"aucun"); }
+
+  function draw(){
+    var si=Math.round(v("st-strat")), ST=v("st-s");
+    var strat=STRATS[si];
+    setT("st-strat-o", strat.names[al()]||strat.names.fr);
+    setT("st-s-o", ST.toFixed(1));
+    setT("st-name", strat.names[al()]||strat.names.fr);
+
+    // balayage pour breakevens / min / max
+    var lo=0, hi=100, step=0.25, prev=null, prevP=null, bes=[];
+    var minP=Infinity, maxP=-Infinity;
+    for (var S=lo; S<=hi+1e-9; S+=step){
+      var P=profit(S, strat.legs);
+      if (P<minP) minP=P; if (P>maxP) maxP=P;
+      if (prev!==null && ((prevP<0&&P>=0)||(prevP>0&&P<=0)) && prevP!==P){
+        var bx = prev + (0-prevP)*(S-prev)/(P-prevP);
+        bes.push(bx);
+      }
+      prev=S; prevP=P;
+    }
+    // pente aux bords pour détecter l'illimité
+    var slopeR = profit(hi,strat.legs)-profit(hi-step,strat.legs);
+    var slopeL = profit(lo,strat.legs)-profit(lo+step,strat.legs); // vers la gauche
+    var gainUnl = slopeR>0.02;
+    var lossUnl = slopeR<-0.02;
+
+    setT("st-be", bes.length? bes.map(function(x){return x.toFixed(1);}).join(" / ") : none());
+    setT("st-max", gainUnl? unl() : ("+"+maxP.toFixed(2)));
+    setT("st-min", lossUnl? ("-"+unl()) : (minP.toFixed(2)));
+    var atP=profit(ST, strat.legs);
+    setT("st-at", (atP>=0?"+":"")+atP.toFixed(2));
+
+    // échelle graphe
+    var W=520,H=300,L=46,R0=16,T0=16,B=34, pw=W-L-R0, ph=H-T0-B;
+    var xlo=30, xhi=70;
+    var ys=[]; for (var s2=xlo;s2<=xhi;s2+=0.5) ys.push(profit(s2,strat.legs));
+    var ymin=Math.min.apply(null,ys), ymax=Math.max.apply(null,ys);
+    var pad=(ymax-ymin)*0.18||1; ymin-=pad; ymax+=pad;
+    if (ymin>0) ymin=-pad; if (ymax<0) ymax=pad;
+    function px(s){ return L + (s-xlo)/(xhi-xlo)*pw; }
+    function py(val){ return T0 + (1-(val-ymin)/(ymax-ymin))*ph; }
+
+    var g="";
+    // zone gain/perte : ligne zéro
+    var y0=py(0);
+    g+='<rect x="'+L+'" y="'+T0+'" width="'+pw+'" height="'+(y0-T0).toFixed(1)+'" fill="var(--teal)" opacity="0.06"/>';
+    g+='<rect x="'+L+'" y="'+y0.toFixed(1)+'" width="'+pw+'" height="'+(T0+ph-y0).toFixed(1)+'" fill="var(--crimson)" opacity="0.06"/>';
+    g+='<line x1="'+L+'" y1="'+y0.toFixed(1)+'" x2="'+(L+pw)+'" y2="'+y0.toFixed(1)+'" stroke="var(--ink-mute)" stroke-width="1.1" stroke-dasharray="4 4"/>';
+    // strikes (repères verticaux légers)
+    var seen={};
+    strat.legs.forEach(function(L2){ if(L2.t!=="s" && !seen[L2.K] && L2.K>=xlo && L2.K<=xhi){ seen[L2.K]=1;
+      g+='<line x1="'+px(L2.K).toFixed(1)+'" y1="'+T0+'" x2="'+px(L2.K).toFixed(1)+'" y2="'+(T0+ph)+'" stroke="var(--ink-mute)" stroke-width="0.7" stroke-dasharray="2 4" opacity="0.6"/>';
+    }});
+    // courbe profit
+    var d="";
+    for (var i=0;i<=160;i++){ var s=xlo+(xhi-xlo)*i/160; d+=(i===0?"M ":" L ")+px(s).toFixed(1)+","+py(profit(s,strat.legs)).toFixed(1); }
+    g+='<path d="'+d+'" fill="none" stroke="var(--teal)" stroke-width="2.6"/>';
+    // marqueur Sₜ
+    var mp=profit(ST,strat.legs);
+    g+='<line x1="'+px(ST).toFixed(1)+'" y1="'+T0+'" x2="'+px(ST).toFixed(1)+'" y2="'+(T0+ph)+'" stroke="var(--gold)" stroke-width="1.4"/>';
+    g+='<circle cx="'+px(ST).toFixed(1)+'" cy="'+py(mp).toFixed(1)+'" r="4.5" fill="var(--gold)"/>';
+    // axes
+    g+='<line class="axis" x1="'+L+'" y1="'+(T0+ph)+'" x2="'+(L+pw)+'" y2="'+(T0+ph)+'"/>';
+    g+='<line class="axis" x1="'+L+'" y1="'+T0+'" x2="'+L+'" y2="'+(T0+ph)+'"/>';
+    // libellés axes
+    var xl = al()==="en"?"final price Sₜ":(al()==="nl"?"finale prijs Sₜ":"prix final Sₜ");
+    var yl = al()==="en"?"profit":(al()==="nl"?"winst":"profit");
+    g+='<text class="lab" x="'+(L+pw)+'" y="'+(T0+ph+16)+'" text-anchor="end">'+xl+'</text>';
+    g+='<text class="lab" x="'+L+'" y="'+(T0-4)+'" text-anchor="start">'+yl+'</text>';
+    [40,50,60,70].forEach(function(t){ if(t>=xlo&&t<=xhi){ g+='<text class="tick" x="'+px(t).toFixed(1)+'" y="'+(T0+ph+14)+'" text-anchor="middle">'+t+'</text>'; }});
+    g+='<text class="tick" x="'+(L-6)+'" y="'+(y0+3).toFixed(1)+'" text-anchor="end">0</text>';
+    svg.innerHTML=g;
+  }
+  ["st-strat","st-s"].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener("input", draw); });
+  document.querySelectorAll("[data-set-lang]").forEach(function(b){ b.addEventListener("click", function(){ setTimeout(draw,10); }); });
+  document.addEventListener("DOMContentLoaded", draw);
+  draw();
+})();
+</script>
+</body>
+</html>

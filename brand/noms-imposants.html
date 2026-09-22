@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noms qui en imposent</title>
+<style>
+  :root{
+    --navy:#0c1e3a; --navy2:#12294a; --deep:#0a1424;
+    --gold:#c6a15b; --gold-hi:#dcbd76; --paper:#f5f2ea; --ink:#0f1b2d;
+    --muted:#93a3ba; --line:rgba(255,255,255,.12);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:var(--sans);color:#eaf0f8;
+    background:radial-gradient(1100px 520px at 78% -8%,rgba(198,161,91,.14),transparent 60%),linear-gradient(160deg,#0b1a30,#0a1424 72%);}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px;}
+  header{padding:54px 0 24px;border-bottom:1px solid var(--line);}
+  .eyebrow{font-size:12px;letter-spacing:2.6px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+  h1{font-family:var(--serif);font-size:clamp(28px,4.6vw,44px);margin:0 0 12px;}
+  header p{color:#c8d3e3;max-width:64ch;font-size:16.5px;margin:0;}
+
+  .card{border:1px solid var(--line);border-radius:18px;padding:6px;margin-top:26px;overflow:hidden;}
+  .card.reco{border-color:rgba(198,161,91,.5);}
+  .band{background:linear-gradient(160deg,var(--navy2),var(--navy));border-radius:14px;padding:40px 36px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;}
+  .wm{display:flex;flex-direction:column;}
+  .wm .nm{font-family:var(--serif);font-weight:700;letter-spacing:.2em;font-size:clamp(30px,5vw,52px);color:#fff;}
+  .rule{height:2px;width:70px;background:var(--gold);margin:14px 0 10px;}
+  .wm .sub{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);}
+  .meta{padding:20px 30px 24px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:flex-start;}
+  .meta .say{color:#cdd8e8;font-size:15px;max-width:60ch;line-height:1.6;margin:0;}
+  .meta .say b{color:#fff;}
+  .flags{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+  .flag{font-size:11px;letter-spacing:.3px;color:#bfe6cf;border:1px solid rgba(120,200,150,.3);border-radius:999px;padding:3px 10px;white-space:nowrap;}
+  .flag.reco{color:var(--gold);border-color:rgba(198,161,91,.45);}
+
+  footer{padding:32px 0 60px;color:#c3cfe0;font-size:15px;max-width:74ch;}
+  footer b{color:#eaf0f8;}
+  @media(max-width:620px){.band{flex-direction:column;text-align:center;align-items:center;}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#dcbd76"/><stop offset="1" stop-color="#b6863b"/></linearGradient>
+  <g id="falcon">
+    <path d="M60 58 C50 50 40 46 22 30 C26 46 34 56 46 60 C40 62 34 63 30 66 C40 66 52 64 60 60 Z" fill="url(#gg)"/>
+    <path d="M60 58 C70 50 80 46 98 30 C94 46 86 56 74 60 C80 62 86 63 90 66 C80 66 68 64 60 60 Z" fill="url(#gg)"/>
+    <circle cx="60" cy="46" r="6" fill="url(#gg)"/>
+    <path d="M60 60 L56 84 L60 78 L64 84 Z" fill="url(#gg)"/>
+  </g>
+  <g id="badge"><rect x="3" y="3" width="114" height="114" rx="27" fill="#0a1424" stroke="#2b466f" stroke-width="1.5"/><use href="#falcon"/></g>
+</defs></svg>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Avenir · Noms qui en imposent</div>
+    <h1>De la prestance, et vérifiés libres</h1>
+    <p>Deux noms inventés à forte présence — puissance et autorité — qu'aucune société financière ne porte aujourd'hui. Posés sur ton faucon.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- VALDARIS -->
+  <div class="card reco">
+    <div class="band">
+      <svg width="96" height="96" viewBox="0 0 120 120" aria-label="Valdaris"><use href="#badge"/></svg>
+      <div class="wm">
+        <span class="nm">VALDARIS</span>
+        <div class="rule"></div>
+        <span class="sub">Financial Risk &amp; Portfolio Management</span>
+      </div>
+    </div>
+    <div class="meta">
+      <p class="say">Une cadence de grande institution — ample, assurée, qui impose le respect. Écho discret à <em>valor</em> (la valeur, la bravoure), sans le dire. Élégant et puissant à la fois.</p>
+      <div class="flags"><span class="flag reco">★ Ma recommandation</span><span class="flag">✓ Libre côté finance</span></div>
+    </div>
+  </div>
+
+  <!-- KORVATH -->
+  <div class="card">
+    <div class="band">
+      <svg width="96" height="96" viewBox="0 0 120 120" aria-label="Korvath"><use href="#badge"/></svg>
+      <div class="wm">
+        <span class="nm">KORVATH</span>
+        <div class="rule"></div>
+        <span class="sub">Financial Risk &amp; Portfolio Management</span>
+      </div>
+    </div>
+    <div class="meta">
+      <p class="say">Plus dur, plus « forteresse » : une puissance brute, minérale. Pour une marque qui veut frapper fort et se retenir sans effort. Consonance nordique, très mémorable.</p>
+      <div class="flags"><span class="flag">✓ Libre côté finance</span></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    Mon conseil : <b>Valdaris</b> — il en impose sans être agressif, et vieillira bien comme une maison de gestion. <b>Korvath</b> si tu veux quelque chose de plus tranchant. Petite transparence : « libre côté finance » = aucune société financière connue ne les porte (Valdaris est distinct de « Valaris », un foreur pétrolier coté, autre secteur). Dis-moi lequel — ou si tu veux d'autres pistes dans la même veine imposante — et je finalise le logo complet (faucon + wordmark, monochrome, fond bleu, PNG, favicon) pour remplacer le placeholder sur le site.
+  </div>
+</footer>
+
+</body>
+</html>

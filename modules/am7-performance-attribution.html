@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mesure de performance &amp; attribution — Avenir</title>
+<meta name="description" content="Module performance : rendements pondérés temps (TWR) vs argent (MWR), ratios de Sharpe, Treynor, Information et Sortino, choix du benchmark, attribution de Brinson, pièges (biais du survivant), comparateur de ratios interactif, QCM et exercices.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-active-lang="fr" class="track-am">
+
+<div class="progress-bar"></div>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <div class="brand">
+      <a href="../index.html"><span class="logo">Avenir<b>.</b></span></a>
+      <span class="tag">Asset Management &amp; Risk</span>
+    </div>
+    <div class="spacer"></div>
+    <nav class="nav-links">
+      <a href="../index.html#parcours"><span data-lang="fr">Parcours</span><span data-lang="en">Tracks</span><span data-lang="nl">Trajecten</span></a>
+      <a href="../index.html#curriculum"><span data-lang="fr">Programme</span><span data-lang="en">Curriculum</span><span data-lang="nl">Programma</span></a>
+      <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a>
+    </nav>
+    <div class="controls">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button data-set-lang="fr">FR</button>
+        <button data-set-lang="en">EN</button>
+        <button data-set-lang="nl">NL</button>
+      </div>
+      <button id="theme-btn" class="icon-btn" aria-label="Thème">☾</button>
+      <button id="menu-btn" class="icon-btn menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap-mod">
+  <div class="module-shell">
+
+    <aside class="toc">
+      <div class="toc-title" data-lang="fr">Sommaire</div>
+      <div class="toc-title" data-lang="en">Contents</div>
+      <div class="toc-title" data-lang="nl">Inhoud</div>
+      <a href="#pourquoi"><span data-lang="fr">1. Pourquoi mesurer ?</span><span data-lang="en">1. Why measure?</span><span data-lang="nl">1. Waarom meten?</span></a>
+      <a href="#rendement"><span data-lang="fr">2. TWR vs MWR</span><span data-lang="en">2. TWR vs MWR</span><span data-lang="nl">2. TWR vs MWR</span></a>
+      <a href="#ratios"><span data-lang="fr">3. Les ratios ajustés du risque</span><span data-lang="en">3. Risk-adjusted ratios</span><span data-lang="nl">3. Risicogecorrigeerde ratio's</span></a>
+      <a href="#benchmark"><span data-lang="fr">4. Le choix du benchmark</span><span data-lang="en">4. Choosing the benchmark</span><span data-lang="nl">4. De benchmark kiezen</span></a>
+      <a href="#attribution"><span data-lang="fr">5. L'attribution (Brinson)</span><span data-lang="en">5. Attribution (Brinson)</span><span data-lang="nl">5. Attributie (Brinson)</span></a>
+      <a href="#pieges"><span data-lang="fr">6. Chance ou talent ?</span><span data-lang="en">6. Luck or skill?</span><span data-lang="nl">6. Geluk of talent?</span></a>
+      <a href="#retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></a>
+      <a href="#qcm"><span data-lang="fr">8. QCM (15)</span><span data-lang="en">8. MCQ (15)</span><span data-lang="nl">8. MCV (15)</span></a>
+      <a href="#exercices"><span data-lang="fr">9. Exercices</span><span data-lang="en">9. Exercises</span><span data-lang="nl">9. Oefeningen</span></a>
+      <a href="#biblio"><span data-lang="fr">Sources</span><span data-lang="en">Sources</span><span data-lang="nl">Bronnen</span></a>
+    </aside>
+
+    <main>
+      <div class="crumbs">
+        <a href="../index.html"><span data-lang="fr">Accueil</span><span data-lang="en">Home</span><span data-lang="nl">Home</span></a> ·
+        <span>Asset Management</span> ·
+        <span data-lang="fr">Module 7</span><span data-lang="en">Module 7</span><span data-lang="nl">Module 7</span>
+      </div>
+
+      <div class="module-hero">
+        <span class="badge">Asset Management · 07</span>
+        <h1 data-lang="fr">Mesure de performance &amp; attribution</h1>
+        <h1 data-lang="en">Performance measurement &amp; attribution</h1>
+        <h1 data-lang="nl">Prestatiemeting &amp; attributie</h1>
+        <p class="subtitle" data-lang="fr">Un rendement ne veut rien dire seul. Le juger exige d'ajuster pour le risque, de le comparer au bon repère — et de comprendre <em>d'où</em> il vient.</p>
+        <p class="subtitle" data-lang="en">A return means nothing on its own. Judging it requires adjusting for risk, comparing to the right benchmark — and understanding <em>where</em> it came from.</p>
+        <p class="subtitle" data-lang="nl">Een rendement zegt op zichzelf niets. Het beoordelen vereist corrigeren voor risico, vergelijken met de juiste benchmark — en begrijpen <em>waar</em> het vandaan komt.</p>
+        <div class="module-meta">
+          <span data-lang="fr">⏱ Lecture ~30 min</span><span data-lang="en">⏱ ~30 min read</span><span data-lang="nl">⏱ ~30 min lezen</span>
+          <span data-lang="fr">📶 Niveau intermédiaire+</span><span data-lang="en">📶 Intermediate+ level</span><span data-lang="nl">📶 Gemiddeld+ niveau</span>
+          <span>🎓 CFA I–II</span>
+        </div>
+      </div>
+
+      <div class="objectives">
+        <h4 data-lang="fr">Objectifs d'apprentissage</h4>
+        <h4 data-lang="en">Learning objectives</h4>
+        <h4 data-lang="nl">Leerdoelen</h4>
+        <ul>
+          <li data-lang="fr">Distinguer rendement pondéré par le temps (TWR) et par l'argent (MWR).</li>
+          <li data-lang="en">Distinguish time-weighted (TWR) from money-weighted (MWR) returns.</li>
+          <li data-lang="nl">Tijdgewogen (TWR) van geldgewogen (MWR) rendement onderscheiden.</li>
+          <li data-lang="fr">Calculer et interpréter les ratios de Sharpe, Treynor, Information et Sortino.</li>
+          <li data-lang="en">Compute and interpret the Sharpe, Treynor, Information and Sortino ratios.</li>
+          <li data-lang="nl">De Sharpe-, Treynor-, Information- en Sortino-ratio's berekenen en interpreteren.</li>
+          <li data-lang="fr">Choisir un benchmark pertinent et décomposer la performance (attribution de Brinson).</li>
+          <li data-lang="en">Choose a relevant benchmark and decompose performance (Brinson attribution).</li>
+          <li data-lang="nl">Een relevante benchmark kiezen en de prestatie ontleden (Brinson-attributie).</li>
+          <li data-lang="fr">Distinguer chance et talent et repérer les pièges (biais du survivant).</li>
+          <li data-lang="en">Tell luck from skill and spot the pitfalls (survivorship bias).</li>
+          <li data-lang="nl">Geluk van talent onderscheiden en de valkuilen herkennen (survivorship bias).</li>
+        </ul>
+      </div>
+
+      <div class="module-body">
+
+        <!-- 1. POURQUOI -->
+        <h2 id="pourquoi"><span data-lang="fr">1. Pourquoi mesurer la performance ?</span><span data-lang="en">1. Why measure performance?</span><span data-lang="nl">1. Waarom prestatie meten?</span></h2>
+        <p data-lang="fr">Un fonds a gagné 15 % : est-ce bon ? Impossible à dire seul. S'il a pris deux fois plus de risque que le marché, ou si l'indice a fait 20 %, ce 15 % est décevant. Juger une performance suppose trois corrections : <strong>l'ajuster au risque pris</strong>, la <strong>comparer au bon repère</strong> (benchmark), et comprendre <strong>d'où elle vient</strong> (attribution). C'est l'objet de ce module.</p>
+        <p data-lang="en">A fund earned 15%: is that good? Impossible to say alone. If it took twice the market's risk, or if the index returned 20%, that 15% is disappointing. Judging performance requires three corrections: <strong>adjust for the risk taken</strong>, <strong>compare to the right benchmark</strong>, and understand <strong>where it came from</strong> (attribution). That is this module's subject.</p>
+        <p data-lang="nl">Een fonds behaalde 15%: is dat goed? Onmogelijk om alleen te zeggen. Als het tweemaal het marktrisico nam, of als de index 20% deed, is die 15% teleurstellend. Prestatie beoordelen vereist drie correcties: <strong>corrigeren voor het genomen risico</strong>, <strong>vergelijken met de juiste benchmark</strong>, en begrijpen <strong>waar het vandaan komt</strong> (attributie). Dat is het onderwerp van deze module.</p>
+
+        <div class="callout def">
+          <span class="clabel" data-lang="fr">L'idée-clé</span><span class="clabel" data-lang="en">The key idea</span><span class="clabel" data-lang="nl">Het kernidee</span>
+          <span data-lang="fr">Le rendement brut est trompeur. Ce qui compte, c'est le <strong>rendement par unité de risque</strong>, mesuré contre un repère pertinent, et décomposé pour savoir si la valeur ajoutée vient de l'allocation, de la sélection… ou de la chance.</span>
+          <span data-lang="en">Raw return is misleading. What matters is the <strong>return per unit of risk</strong>, measured against a relevant benchmark, and decomposed to know whether the value added came from allocation, selection… or luck.</span>
+          <span data-lang="nl">Brutorendement is misleidend. Wat telt is het <strong>rendement per eenheid risico</strong>, gemeten tegen een relevante benchmark, en ontleed om te weten of de toegevoegde waarde uit allocatie, selectie… of geluk kwam.</span>
+        </div>
+
+        <!-- 2. TWR vs MWR -->
+        <h2 id="rendement"><span data-lang="fr">2. Mesurer le rendement : TWR vs MWR</span><span data-lang="en">2. Measuring return: TWR vs MWR</span><span data-lang="nl">2. Rendement meten: TWR vs MWR</span></h2>
+        <p data-lang="fr">Dès qu'il y a des dépôts ou retraits, deux façons de mesurer le rendement s'opposent. Le <strong>rendement pondéré par le temps</strong> (TWR) enchaîne géométriquement les rendements de chaque sous-période, en <em>neutralisant</em> l'effet du calendrier des flux. Le <strong>rendement pondéré par l'argent</strong> (MWR, ou TRI) est le taux qui égalise la valeur actuelle de tous les flux : il <em>intègre</em> le moment où l'argent a été investi.</p>
+        <p data-lang="en">As soon as there are deposits or withdrawals, two ways of measuring return diverge. The <strong>time-weighted return</strong> (TWR) geometrically links each sub-period's return, <em>neutralising</em> the effect of cash-flow timing. The <strong>money-weighted return</strong> (MWR, or IRR) is the rate that equates the present value of all flows: it <em>embeds</em> when the money was invested.</p>
+        <p data-lang="nl">Zodra er stortingen of opnames zijn, lopen twee manieren om rendement te meten uiteen. Het <strong>tijdgewogen rendement</strong> (TWR) koppelt geometrisch het rendement van elke deelperiode en <em>neutraliseert</em> het effect van de timing van kasstromen. Het <strong>geldgewogen rendement</strong> (MWR, of IRR) is de rente die de contante waarde van alle stromen gelijkstelt: het <em>bevat</em> wanneer het geld werd belegd.</p>
+
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">Lequel utiliser ?</span><span class="clabel" data-lang="en">Which to use?</span><span class="clabel" data-lang="nl">Welke gebruiken?</span>
+          <span data-lang="fr">Pour <strong>juger le gérant</strong>, on utilise le <strong>TWR</strong> : le gérant ne contrôle pas quand le client verse ou retire de l'argent, il ne faut donc pas l'en tenir responsable. Pour mesurer <strong>l'expérience réelle de l'investisseur</strong> (ce que son capital a effectivement rapporté), c'est le <strong>MWR</strong> qui compte. Les standards professionnels (GIPS) imposent le TWR pour présenter la performance d'un gérant.</span>
+          <span data-lang="en">To <strong>judge the manager</strong>, use the <strong>TWR</strong>: the manager doesn't control when the client adds or withdraws money, so they shouldn't be held responsible for it. To measure the <strong>investor's actual experience</strong> (what their capital really earned), the <strong>MWR</strong> is what counts. Professional standards (GIPS) require the TWR to present a manager's performance.</span>
+          <span data-lang="nl">Om de <strong>beheerder te beoordelen</strong>, gebruik het <strong>TWR</strong>: de beheerder bepaalt niet wanneer de klant geld toevoegt of opneemt, dus mag hij er niet verantwoordelijk voor worden gehouden. Om de <strong>werkelijke ervaring van de belegger</strong> te meten (wat zijn kapitaal echt opbracht), telt het <strong>MWR</strong>. Professionele standaarden (GIPS) vereisen het TWR om de prestatie van een beheerder te presenteren.</span>
+        </div>
+
+        <!-- 3. RATIOS -->
+        <h2 id="ratios"><span data-lang="fr">3. Les ratios ajustés du risque</span><span data-lang="en">3. Risk-adjusted ratios</span><span data-lang="nl">3. Risicogecorrigeerde ratio's</span></h2>
+        <p data-lang="fr">Un rendement se juge net du risque pris. Plusieurs ratios existent — ils diffèrent par la <em>mesure de risque</em> au dénominateur :</p>
+        <p data-lang="en">A return is judged net of the risk taken. Several ratios exist — they differ by the <em>risk measure</em> in the denominator:</p>
+        <p data-lang="nl">Een rendement wordt beoordeeld netto van het genomen risico. Er bestaan meerdere ratio's — ze verschillen in de <em>risicomaatstaf</em> in de noemer:</p>
+
+        <div class="formula">
+          <div class="eq">Sharpe = (<em>r</em><sub>p</sub> − <em>r</em><sub>f</sub>) / <em>σ</em><sub>p</sub> &nbsp;·&nbsp; Treynor = (<em>r</em><sub>p</sub> − <em>r</em><sub>f</sub>) / <em>β</em><sub>p</sub> &nbsp;·&nbsp; IR = (<em>r</em><sub>p</sub> − <em>r</em><sub>b</sub>) / TE</div>
+          <div class="caption" data-lang="fr">Sharpe : risque <em>total</em> (σ). Treynor : risque <em>systématique</em> (β). Ratio d'information (IR) : rendement actif par unité de <em>tracking error</em> (TE).</div>
+          <div class="caption" data-lang="en">Sharpe: <em>total</em> risk (σ). Treynor: <em>systematic</em> risk (β). Information ratio (IR): active return per unit of <em>tracking error</em> (TE).</div>
+          <div class="caption" data-lang="nl">Sharpe: <em>totaal</em> risico (σ). Treynor: <em>systematisch</em> risico (β). Informatieratio (IR): actief rendement per eenheid <em>tracking error</em> (TE).</div>
+          <div class="caption src">Réf. — Sharpe (1966) ; Treynor (1965)</div>
+        </div>
+
+        <p data-lang="fr">Le choix du ratio dépend du contexte. Pour un investisseur qui ne détient <em>que</em> ce fonds, tout le risque compte : le <strong>Sharpe</strong> s'impose. Pour un fonds ajouté à un portefeuille déjà diversifié, seul le risque systématique importe : le <strong>Treynor</strong> est plus juste. Pour juger un gérant <em>actif</em> face à son indice, le <strong>ratio d'information</strong> mesure sa surperformance par unité de risque pris <em>vs le benchmark</em>. Le <strong>ratio de Sortino</strong>, enfin, ne pénalise que la volatilité <em>à la baisse</em> (downside), plus proche de la vraie aversion des investisseurs.</p>
+        <p data-lang="en">The choice of ratio depends on context. For an investor holding <em>only</em> this fund, all risk counts: the <strong>Sharpe</strong> applies. For a fund added to an already-diversified portfolio, only systematic risk matters: <strong>Treynor</strong> is fairer. To judge an <em>active</em> manager against their index, the <strong>information ratio</strong> measures outperformance per unit of risk taken <em>vs the benchmark</em>. The <strong>Sortino ratio</strong>, finally, penalises only <em>downside</em> volatility, closer to investors' true aversion.</p>
+        <p data-lang="nl">De keuze van de ratio hangt af van de context. Voor een belegger die <em>enkel</em> dit fonds aanhoudt, telt alle risico: de <strong>Sharpe</strong> geldt. Voor een fonds toegevoegd aan een al gediversifieerde portefeuille telt enkel systematisch risico: <strong>Treynor</strong> is eerlijker. Om een <em>actieve</em> beheerder tegen zijn index te beoordelen, meet de <strong>informatieratio</strong> de outperformance per eenheid risico <em>vs de benchmark</em>. De <strong>Sortino-ratio</strong> ten slotte bestraft enkel <em>neerwaartse</em> volatiliteit, dichter bij de echte aversie van beleggers.</p>
+
+        <p data-lang="fr">Le comparateur ci-dessous met deux fonds face à face. Observez que le classement peut <strong>s'inverser</strong> selon qu'on regarde le Sharpe (risque total) ou le Treynor (risque systématique) — un fonds très volatil mais peu corrélé au marché peut être médiocre au Sharpe et excellent au Treynor.</p>
+        <p data-lang="en">The comparator below pits two funds against each other. Notice that the ranking can <strong>flip</strong> depending on whether you look at the Sharpe (total risk) or the Treynor (systematic risk) — a highly volatile but weakly market-correlated fund can be poor on Sharpe and excellent on Treynor.</p>
+        <p data-lang="nl">De vergelijker hieronder zet twee fondsen tegenover elkaar. Merk op dat de rangschikking kan <strong>omslaan</strong> naargelang je naar de Sharpe (totaal risico) of de Treynor (systematisch risico) kijkt — een zeer volatiel maar zwak met de markt gecorreleerd fonds kan zwak zijn op Sharpe en uitstekend op Treynor.</p>
+
+        <style>
+          #rt-chart { width:100%; height:auto; }
+          .rt-cols { display:grid; grid-template-columns:1fr 1fr; gap:14px 24px; margin-bottom:18px; }
+          .rt-cols h5 { margin:0 0 8px; font-size:13px; text-transform:uppercase; letter-spacing:.5px; }
+          .rt-cols .fa { color:var(--navy); } .rt-cols .fb { color:#9a7a1e; }
+          .rt-row label { display:block; font-size:12.5px; font-weight:600; color:var(--ink-soft); margin-bottom:3px; }
+          .rt-row { margin-bottom:9px; }
+          .rt-out { margin-top:6px; font-size:14px; color:var(--ink-soft); }
+          .rt-out b { color:var(--ink); font-family:var(--mono); }
+          .rt-verdict { font-weight:700; margin-top:12px; font-size:14.5px; }
+          @media (max-width:640px){ .rt-cols { grid-template-columns:1fr; } }
+        </style>
+
+        <div class="calc">
+          <div class="chead">
+            <h4 data-lang="fr">Comparateur de ratios — deux fonds</h4>
+            <h4 data-lang="en">Ratio comparator — two funds</h4>
+            <h4 data-lang="nl">Ratiovergelijker — twee fondsen</h4>
+            <p data-lang="fr">Rendement &amp; volatilité en % · bêta sans unité · taux sans risque commun</p>
+            <p data-lang="en">Return &amp; volatility in % · beta unitless · common risk-free rate</p>
+            <p data-lang="nl">Rendement &amp; volatiliteit in % · bèta zonder eenheid · gemeenschappelijke risicovrije rente</p>
+          </div>
+          <div class="cbody" style="display:block">
+            <div class="rt-cols">
+              <div>
+                <h5 class="fa"><span data-lang="fr">Fonds A</span><span data-lang="en">Fund A</span><span data-lang="nl">Fonds A</span></h5>
+                <div class="rt-row"><label><span data-lang="fr">Rendement</span><span data-lang="en">Return</span><span data-lang="nl">Rendement</span></label><div class="rangewrap"><input type="range" id="rt-ra" min="0" max="20" step="0.5" value="11"><output id="rt-ra-o">11%</output></div></div>
+                <div class="rt-row"><label><span data-lang="fr">Volatilité σ</span><span data-lang="en">Volatility σ</span><span data-lang="nl">Volatiliteit σ</span></label><div class="rangewrap"><input type="range" id="rt-sa" min="4" max="35" step="1" value="20"><output id="rt-sa-o">20%</output></div></div>
+                <div class="rt-row"><label><span data-lang="fr">Bêta β</span><span data-lang="en">Beta β</span><span data-lang="nl">Bèta β</span></label><div class="rangewrap"><input type="range" id="rt-ba" min="0.2" max="2" step="0.05" value="0.8"><output id="rt-ba-o">0.80</output></div></div>
+              </div>
+              <div>
+                <h5 class="fb"><span data-lang="fr">Fonds B</span><span data-lang="en">Fund B</span><span data-lang="nl">Fonds B</span></h5>
+                <div class="rt-row"><label><span data-lang="fr">Rendement</span><span data-lang="en">Return</span><span data-lang="nl">Rendement</span></label><div class="rangewrap"><input type="range" id="rt-rb" min="0" max="20" step="0.5" value="9"><output id="rt-rb-o">9%</output></div></div>
+                <div class="rt-row"><label><span data-lang="fr">Volatilité σ</span><span data-lang="en">Volatility σ</span><span data-lang="nl">Volatiliteit σ</span></label><div class="rangewrap"><input type="range" id="rt-sb" min="4" max="35" step="1" value="10"><output id="rt-sb-o">10%</output></div></div>
+                <div class="rt-row"><label><span data-lang="fr">Bêta β</span><span data-lang="en">Beta β</span><span data-lang="nl">Bèta β</span></label><div class="rangewrap"><input type="range" id="rt-bb" min="0.2" max="2" step="0.05" value="1.1"><output id="rt-bb-o">1.10</output></div></div>
+              </div>
+            </div>
+            <div class="rt-row" style="max-width:280px">
+              <label><span data-lang="fr">Taux sans risque r<sub>f</sub></span><span data-lang="en">Risk-free rate r<sub>f</sub></span><span data-lang="nl">Risicovrije rente r<sub>f</sub></span></label>
+              <div class="rangewrap"><input type="range" id="rt-rf" min="0" max="6" step="0.25" value="2"><output id="rt-rf-o">2%</output></div>
+            </div>
+
+            <svg id="rt-chart" viewBox="0 0 520 170" role="img" aria-label="Sharpe et Treynor"></svg>
+
+            <div class="rt-out">
+              <span>Sharpe — A <b id="rt-sha">—</b> · B <b id="rt-shb">—</b></span> &nbsp;|&nbsp;
+              <span>Treynor — A <b id="rt-tra">—</b> · B <b id="rt-trb">—</b></span>
+            </div>
+            <div class="rt-verdict" id="rt-verdict">—</div>
+          </div>
+        </div>
+
+        <!-- 4. BENCHMARK -->
+        <h2 id="benchmark"><span data-lang="fr">4. Le choix du benchmark</span><span data-lang="en">4. Choosing the benchmark</span><span data-lang="nl">4. De benchmark kiezen</span></h2>
+        <p data-lang="fr">Toute mesure relative dépend du repère choisi. Un bon benchmark doit être <strong>spécifié à l'avance</strong>, <strong>investissable</strong> (on pourrait réellement le détenir), <strong>représentatif</strong> du style du gérant et <strong>mesurable</strong>. Comparer un fonds de petites capitalisations au S&amp;P 500 (grandes caps) fausse tout : on mélange un effet de style avec le talent. Le benchmark doit refléter l'univers réel dans lequel le gérant opère.</p>
+        <p data-lang="en">Any relative measure depends on the chosen benchmark. A good benchmark must be <strong>specified in advance</strong>, <strong>investable</strong> (you could actually hold it), <strong>representative</strong> of the manager's style and <strong>measurable</strong>. Comparing a small-cap fund to the S&amp;P 500 (large caps) distorts everything: it mixes a style effect with skill. The benchmark must reflect the real universe the manager operates in.</p>
+        <p data-lang="nl">Elke relatieve maatstaf hangt af van de gekozen benchmark. Een goede benchmark moet <strong>vooraf gespecificeerd</strong>, <strong>belegbaar</strong> (je zou hem echt kunnen aanhouden), <strong>representatief</strong> voor de stijl van de beheerder en <strong>meetbaar</strong> zijn. Een smallcapfonds vergelijken met de S&amp;P 500 (largecaps) vertekent alles: het mengt een stijleffect met talent. De benchmark moet het echte universum weerspiegelen waarin de beheerder opereert.</p>
+
+        <!-- 5. ATTRIBUTION -->
+        <h2 id="attribution"><span data-lang="fr">5. L'attribution de performance (Brinson)</span><span data-lang="en">5. Performance attribution (Brinson)</span><span data-lang="nl">5. Prestatieattributie (Brinson)</span></h2>
+        <p data-lang="fr">Savoir <em>qu'un</em> gérant a battu son indice ne dit pas <em>pourquoi</em>. L'<strong>attribution</strong> décompose le rendement actif (<em>r</em><sub>p</sub> − <em>r</em><sub>b</sub>) en ses sources. Le modèle de Brinson en distingue trois :</p>
+        <p data-lang="en">Knowing <em>that</em> a manager beat their index doesn't say <em>why</em>. <strong>Attribution</strong> decomposes the active return (<em>r</em><sub>p</sub> − <em>r</em><sub>b</sub>) into its sources. The Brinson model distinguishes three:</p>
+        <p data-lang="nl">Weten <em>dat</em> een beheerder zijn index versloeg zegt niet <em>waarom</em>. <strong>Attributie</strong> ontleedt het actieve rendement (<em>r</em><sub>p</sub> − <em>r</em><sub>b</sub>) in zijn bronnen. Het Brinson-model onderscheidt er drie:</p>
+
+        <div class="formula">
+          <div class="eq"><span data-lang="fr">Allocation</span><span data-lang="en">Allocation</span><span data-lang="nl">Allocatie</span> = Σ (<em>w</em><sub>p</sub> − <em>w</em><sub>b</sub>)(<em>r</em><sub>b,i</sub> − <em>r</em><sub>b</sub>) &nbsp;·&nbsp; <span data-lang="fr">Sélection</span><span data-lang="en">Selection</span><span data-lang="nl">Selectie</span> = Σ <em>w</em><sub>b</sub>(<em>r</em><sub>p,i</sub> − <em>r</em><sub>b,i</sub>)</div>
+          <div class="caption" data-lang="fr">Allocation : avoir surpondéré les secteurs qui ont battu l'indice. Sélection : avoir choisi de meilleurs titres <em>dans</em> chaque secteur. Un terme d'interaction complète l'égalité.</div>
+          <div class="caption" data-lang="en">Allocation: overweighting the sectors that beat the index. Selection: picking better securities <em>within</em> each sector. An interaction term completes the identity.</div>
+          <div class="caption" data-lang="nl">Allocatie: de sectoren overwegen die de index versloegen. Selectie: betere effecten <em>binnen</em> elke sector kiezen. Een interactieterm vervolledigt de identiteit.</div>
+          <div class="caption src">Réf. — Brinson, Hood &amp; Beebower (1986)</div>
+        </div>
+
+        <div class="worked">
+          <div class="whead">
+            <span data-lang="fr">📋 Exemple — Attribution à deux poches</span>
+            <span data-lang="en">📋 Example — Two-bucket attribution</span>
+            <span data-lang="nl">📋 Voorbeeld — Attributie met twee emmers</span>
+          </div>
+          <div class="wbody">
+            <p data-lang="fr">Benchmark : 60 % actions (rend. 10 %) / 40 % obligations (4 %) → <em>r</em><sub>b</sub> = 7,6 %. Portefeuille : 70 % actions (11 %) / 30 % obligations (3 %) → <em>r</em><sub>p</sub> = 8,6 %. Rendement actif = <strong>+1,0 %</strong>.</p>
+            <p data-lang="en">Benchmark: 60% equities (ret. 10%) / 40% bonds (4%) → <em>r</em><sub>b</sub> = 7.6%. Portfolio: 70% equities (11%) / 30% bonds (3%) → <em>r</em><sub>p</sub> = 8.6%. Active return = <strong>+1.0%</strong>.</p>
+            <p data-lang="nl">Benchmark: 60% aandelen (rend. 10%) / 40% obligaties (4%) → <em>r</em><sub>b</sub> = 7,6%. Portefeuille: 70% aandelen (11%) / 30% obligaties (3%) → <em>r</em><sub>p</sub> = 8,6%. Actief rendement = <strong>+1,0%</strong>.</p>
+            <div class="step">
+              <div class="sn" data-lang="fr">Allocation</div><div class="sn" data-lang="en">Allocation</div><div class="sn" data-lang="nl">Allocatie</div>
+              <p>(0,7−0,6)(10−7,6) + (0,3−0,4)(4−7,6) = 0,24 + 0,36 = <strong>+0,60 %</strong></p>
+            </div>
+            <div class="step">
+              <div class="sn" data-lang="fr">Sélection</div><div class="sn" data-lang="en">Selection</div><div class="sn" data-lang="nl">Selectie</div>
+              <p>0,6×(11−10) + 0,4×(3−4) = 0,60 − 0,40 = <strong>+0,20 %</strong></p>
+            </div>
+            <div class="step">
+              <div class="sn" data-lang="fr">Interaction</div><div class="sn" data-lang="en">Interaction</div><div class="sn" data-lang="nl">Interactie</div>
+              <p>0,1×(11−10) + (−0,1)×(3−4) = 0,10 + 0,10 = <strong>+0,20 %</strong> → total 0,60+0,20+0,20 = <strong>+1,0 %</strong> ✓</p>
+            </div>
+            <div class="callout tip" style="margin:16px 0 0">
+              <span class="clabel" data-lang="fr">Lecture</span><span class="clabel" data-lang="en">Reading</span><span class="clabel" data-lang="nl">Interpretatie</span>
+              <span data-lang="fr">La majeure partie de la surperformance (+0,60 %) vient de l'<em>allocation</em> (surpondérer les actions, qui ont battu l'indice) ; la sélection de titres n'a ajouté que +0,20 %. On sait désormais <em>où</em> le gérant a créé de la valeur.</span>
+              <span data-lang="en">Most of the outperformance (+0.60%) came from <em>allocation</em> (overweighting equities, which beat the index); security selection added only +0.20%. We now know <em>where</em> the manager added value.</span>
+              <span data-lang="nl">Het grootste deel van de outperformance (+0,60%) kwam van <em>allocatie</em> (aandelen overwegen, die de index versloegen); effectenselectie voegde slechts +0,20% toe. We weten nu <em>waar</em> de beheerder waarde creëerde.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. PIÈGES -->
+        <h2 id="pieges"><span data-lang="fr">6. Chance ou talent ? Les pièges</span><span data-lang="en">6. Luck or skill? The pitfalls</span><span data-lang="nl">6. Geluk of talent? De valkuilen</span></h2>
+        <p data-lang="fr">Une bonne performance passée peut n'être que de la chance. Distinguer les deux exige du <strong>temps</strong> (un historique long) et de la <strong>cohérence</strong> (un ratio d'information stable, une attribution qui montre une source répétable). Plusieurs biais brouillent l'analyse.</p>
+        <p data-lang="en">Good past performance may be nothing but luck. Telling the two apart requires <strong>time</strong> (a long track record) and <strong>consistency</strong> (a stable information ratio, an attribution showing a repeatable source). Several biases cloud the analysis.</p>
+        <p data-lang="nl">Goede prestaties uit het verleden kunnen louter geluk zijn. De twee onderscheiden vereist <strong>tijd</strong> (een lang trackrecord) en <strong>consistentie</strong> (een stabiele informatieratio, een attributie die een herhaalbare bron toont). Verschillende biases vertroebelen de analyse.</p>
+
+        <div class="callout warn">
+          <span class="clabel" data-lang="fr">Le biais du survivant</span><span class="clabel" data-lang="en">Survivorship bias</span><span class="clabel" data-lang="nl">Survivorship bias</span>
+          <span data-lang="fr">Les statistiques de performance ne portent souvent que sur les fonds <em>encore en vie</em> : les mauvais ont été fermés et disparaissent des bases. La performance moyenne affichée du secteur est donc <strong>surestimée</strong>. Ajoutez le <em>backfill</em> (on n'inclut un fonds qu'après un bon départ) et le <em>data mining</em> (chercher le gérant chanceux parmi des milliers) : la « surperformance » observée est souvent un artefact statistique.</span>
+          <span data-lang="en">Performance statistics often cover only <em>surviving</em> funds: the bad ones were closed and vanish from the databases. The industry's reported average performance is therefore <strong>overstated</strong>. Add <em>backfill</em> (a fund is only included after a good start) and <em>data mining</em> (searching for the lucky manager among thousands): the observed “outperformance” is often a statistical artefact.</span>
+          <span data-lang="nl">Prestatiestatistieken dekken vaak enkel <em>overlevende</em> fondsen: de slechte werden gesloten en verdwijnen uit de databases. De gerapporteerde gemiddelde prestatie van de sector is dus <strong>overschat</strong>. Voeg <em>backfill</em> toe (een fonds wordt pas na een goede start opgenomen) en <em>data mining</em> (de gelukkige beheerder zoeken tussen duizenden): de waargenomen “outperformance” is vaak een statistisch artefact.</span>
+        </div>
+
+        <!-- 7. À RETENIR -->
+        <h2 id="retenir"><span data-lang="fr">7. À retenir</span><span data-lang="en">7. Key takeaways</span><span data-lang="nl">7. Onthouden</span></h2>
+        <div class="callout tip">
+          <span class="clabel" data-lang="fr">L'essentiel</span><span class="clabel" data-lang="en">The essentials</span><span class="clabel" data-lang="nl">De kern</span>
+          <span data-lang="fr">Le rendement brut ne suffit pas. TWR pour juger le gérant, MWR pour l'expérience de l'investisseur. Ajustez du risque : Sharpe (risque total), Treynor (systématique), ratio d'information (vs benchmark), Sortino (baisse seule) — le classement peut s'inverser selon la mesure. Choisissez un benchmark investissable et représentatif. L'attribution de Brinson dit <em>d'où</em> vient la surperformance (allocation vs sélection). Enfin, méfiez-vous de la chance et du biais du survivant.</span>
+          <span data-lang="en">Raw return is not enough. TWR to judge the manager, MWR for the investor's experience. Adjust for risk: Sharpe (total risk), Treynor (systematic), information ratio (vs benchmark), Sortino (downside only) — the ranking can flip by measure. Choose an investable, representative benchmark. Brinson attribution says <em>where</em> outperformance came from (allocation vs selection). Finally, beware of luck and survivorship bias.</span>
+          <span data-lang="nl">Brutorendement volstaat niet. TWR om de beheerder te beoordelen, MWR voor de ervaring van de belegger. Corrigeer voor risico: Sharpe (totaal risico), Treynor (systematisch), informatieratio (vs benchmark), Sortino (enkel neerwaarts) — de rangschikking kan per maatstaf omslaan. Kies een belegbare, representatieve benchmark. Brinson-attributie zegt <em>waar</em> de outperformance vandaan kwam (allocatie vs selectie). Wees ten slotte op je hoede voor geluk en survivorship bias.</span>
+        </div>
+
+        <!-- 8. QCM -->
+        <h2 id="qcm"><span data-lang="fr">8. QCM — 15 questions</span><span data-lang="en">8. MCQ — 15 questions</span><span data-lang="nl">8. MCV — 15 vragen</span></h2>
+        <div class="quiz">
+          <h4 data-lang="fr">Auto-évaluation</h4><h4 data-lang="en">Self-assessment</h4><h4 data-lang="nl">Zelfevaluatie</h4>
+          <p class="qsub" data-lang="fr">Cliquez sur une réponse : la bonne s'affiche en vert et la justification apparaît.</p>
+          <p class="qsub" data-lang="en">Click an answer: the correct one turns green and the justification appears.</p>
+          <p class="qsub" data-lang="nl">Klik op een antwoord: het juiste kleurt groen en de verantwoording verschijnt.</p>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">1. Pour juger le talent d'un gérant, quel rendement utilise-t-on ?</div>
+            <div class="qtext" data-lang="en">1. To judge a manager's skill, which return is used?</div>
+            <div class="qtext" data-lang="nl">1. Om het talent van een beheerder te beoordelen, welk rendement gebruikt men?</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le rendement pondéré par l'argent (MWR).</span><span data-lang="en">The money-weighted return (MWR).</span><span data-lang="nl">Het geldgewogen rendement (MWR).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le rendement brut non ajusté.</span><span data-lang="en">The raw, unadjusted return.</span><span data-lang="nl">Het ruwe, niet-gecorrigeerde rendement.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le rendement pondéré par le temps (TWR).</span><span data-lang="en">The time-weighted return (TWR).</span><span data-lang="nl">Het tijdgewogen rendement (TWR).</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le TWR neutralise le calendrier des dépôts/retraits, que le gérant ne contrôle pas — c'est le standard GIPS pour évaluer un gérant.</span><span data-lang="en">✔ TWR neutralises the timing of deposits/withdrawals, which the manager doesn't control — it's the GIPS standard for evaluating a manager.</span><span data-lang="nl">✔ TWR neutraliseert de timing van stortingen/opnames, die de beheerder niet controleert — het is de GIPS-standaard om een beheerder te evalueren.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">2. Le rendement pondéré par l'argent (MWR) reflète surtout…</div>
+            <div class="qtext" data-lang="en">2. The money-weighted return (MWR) mainly reflects…</div>
+            <div class="qtext" data-lang="nl">2. Het geldgewogen rendement (MWR) weerspiegelt vooral…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Uniquement le talent du gérant.</span><span data-lang="en">Only the manager's skill.</span><span data-lang="nl">Enkel het talent van de beheerder.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">L'expérience réelle de l'investisseur (timing des flux inclus).</span><span data-lang="en">The investor's actual experience (flow timing included).</span><span data-lang="nl">De werkelijke ervaring van de belegger (timing van stromen inbegrepen).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le rendement du benchmark.</span><span data-lang="en">The benchmark's return.</span><span data-lang="nl">Het rendement van de benchmark.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le MWR (un TRI) intègre le moment des versements/retraits : c'est ce que le capital a réellement rapporté à l'investisseur.</span><span data-lang="en">✔ The MWR (an IRR) embeds the timing of contributions/withdrawals: what the capital actually earned the investor.</span><span data-lang="nl">✔ Het MWR (een IRR) bevat de timing van stortingen/opnames: wat het kapitaal de belegger echt opbracht.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">3. Le ratio de Sharpe rapporte le rendement excédentaire au…</div>
+            <div class="qtext" data-lang="en">3. The Sharpe ratio relates excess return to…</div>
+            <div class="qtext" data-lang="nl">3. De Sharpe-ratio zet het overrendement af tegen…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Risque total (volatilité σ).</span><span data-lang="en">Total risk (volatility σ).</span><span data-lang="nl">Totaal risico (volatiliteit σ).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Risque systématique (bêta).</span><span data-lang="en">Systematic risk (beta).</span><span data-lang="nl">Systematisch risico (bèta).</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Tracking error.</span><span data-lang="en">Tracking error.</span><span data-lang="nl">Tracking error.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Sharpe = (r<sub>p</sub>−r<sub>f</sub>)/σ<sub>p</sub> : rendement excédentaire par unité de risque <em>total</em>. Adapté si le fonds est détenu seul.</span><span data-lang="en">✔ Sharpe = (r<sub>p</sub>−r<sub>f</sub>)/σ<sub>p</sub>: excess return per unit of <em>total</em> risk. Suited when the fund is held alone.</span><span data-lang="nl">✔ Sharpe = (r<sub>p</sub>−r<sub>f</sub>)/σ<sub>p</sub>: overrendement per eenheid <em>totaal</em> risico. Geschikt als het fonds alleen wordt aangehouden.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">4. Le ratio de Treynor utilise au dénominateur…</div>
+            <div class="qtext" data-lang="en">4. The Treynor ratio uses in the denominator…</div>
+            <div class="qtext" data-lang="nl">4. De Treynor-ratio gebruikt in de noemer…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La volatilité totale.</span><span data-lang="en">Total volatility.</span><span data-lang="nl">De totale volatiliteit.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le rendement du marché.</span><span data-lang="en">The market return.</span><span data-lang="nl">Het marktrendement.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le bêta (risque systématique).</span><span data-lang="en">Beta (systematic risk).</span><span data-lang="nl">De bèta (systematisch risico).</span></button>
+            <div class="explain"><span data-lang="fr">✔ Treynor = (r<sub>p</sub>−r<sub>f</sub>)/β : pertinent quand le fonds n'est qu'une brique d'un portefeuille déjà diversifié.</span><span data-lang="en">✔ Treynor = (r<sub>p</sub>−r<sub>f</sub>)/β: relevant when the fund is just one brick of an already-diversified portfolio.</span><span data-lang="nl">✔ Treynor = (r<sub>p</sub>−r<sub>f</sub>)/β: relevant wanneer het fonds slechts één baksteen is van een al gediversifieerde portefeuille.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">5. Deux fonds : A a un meilleur Treynor, B un meilleur Sharpe. Comment est-ce possible ?</div>
+            <div class="qtext" data-lang="en">5. Two funds: A has a better Treynor, B a better Sharpe. How is that possible?</div>
+            <div class="qtext" data-lang="nl">5. Twee fondsen: A heeft een betere Treynor, B een betere Sharpe. Hoe kan dat?</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">C'est impossible.</span><span data-lang="en">It's impossible.</span><span data-lang="nl">Het is onmogelijk.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">A a beaucoup de risque spécifique (σ élevé) mais un faible bêta.</span><span data-lang="en">A has much specific risk (high σ) but a low beta.</span><span data-lang="nl">A heeft veel specifiek risico (hoge σ) maar een lage bèta.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">L'un des deux a un rendement négatif.</span><span data-lang="en">One of them has a negative return.</span><span data-lang="nl">Een van beide heeft een negatief rendement.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Sharpe pénalise le risque total (σ), Treynor le seul risque systématique (β). Un fonds volatil mais peu corrélé peut diverger entre les deux.</span><span data-lang="en">✔ Sharpe penalises total risk (σ), Treynor only systematic risk (β). A volatile but weakly correlated fund can diverge between the two.</span><span data-lang="nl">✔ Sharpe bestraft totaal risico (σ), Treynor enkel systematisch risico (β). Een volatiel maar zwak gecorreleerd fonds kan tussen beide uiteenlopen.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">6. Le ratio d'information mesure…</div>
+            <div class="qtext" data-lang="en">6. The information ratio measures…</div>
+            <div class="qtext" data-lang="nl">6. De informatieratio meet…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le rendement actif par unité de tracking error.</span><span data-lang="en">Active return per unit of tracking error.</span><span data-lang="nl">Actief rendement per eenheid tracking error.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le rendement total par unité de bêta.</span><span data-lang="en">Total return per unit of beta.</span><span data-lang="nl">Totaal rendement per eenheid bèta.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les frais du fonds.</span><span data-lang="en">The fund's fees.</span><span data-lang="nl">De kosten van het fonds.</span></button>
+            <div class="explain"><span data-lang="fr">✔ IR = (r<sub>p</sub>−r<sub>b</sub>)/TE : la surperformance vs le benchmark rapportée au risque actif pris. Idéal pour juger un gérant actif.</span><span data-lang="en">✔ IR = (r<sub>p</sub>−r<sub>b</sub>)/TE: outperformance vs benchmark relative to the active risk taken. Ideal to judge an active manager.</span><span data-lang="nl">✔ IR = (r<sub>p</sub>−r<sub>b</sub>)/TE: outperformance vs benchmark t.o.v. het genomen actieve risico. Ideaal om een actieve beheerder te beoordelen.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">7. Le ratio de Sortino se distingue du Sharpe car il…</div>
+            <div class="qtext" data-lang="en">7. The Sortino ratio differs from Sharpe because it…</div>
+            <div class="qtext" data-lang="nl">7. De Sortino-ratio verschilt van Sharpe omdat hij…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Ignore le rendement.</span><span data-lang="en">Ignores return.</span><span data-lang="nl">Het rendement negeert.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Utilise le bêta.</span><span data-lang="en">Uses beta.</span><span data-lang="nl">De bèta gebruikt.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Ne pénalise que la volatilité à la baisse (downside).</span><span data-lang="en">Penalises only downside volatility.</span><span data-lang="nl">Enkel neerwaartse volatiliteit bestraft.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Sortino remplace σ par la « downside deviation » : il ne compte que les mauvaises surprises, plus proche de la vraie aversion.</span><span data-lang="en">✔ Sortino replaces σ with the “downside deviation”: it counts only bad surprises, closer to true aversion.</span><span data-lang="nl">✔ Sortino vervangt σ door de “downside deviation”: het telt enkel slechte verrassingen, dichter bij de echte aversie.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">8. Une propriété attendue d'un bon benchmark est d'être…</div>
+            <div class="qtext" data-lang="en">8. An expected property of a good benchmark is being…</div>
+            <div class="qtext" data-lang="nl">8. Een verwachte eigenschap van een goede benchmark is…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Toujours le S&amp;P 500.</span><span data-lang="en">Always the S&amp;P 500.</span><span data-lang="nl">Altijd de S&amp;P 500.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Spécifié à l'avance, investissable et représentatif du style.</span><span data-lang="en">Specified in advance, investable and representative of the style.</span><span data-lang="nl">Vooraf gespecificeerd, belegbaar en representatief voor de stijl.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Choisi après coup pour flatter le fonds.</span><span data-lang="en">Chosen afterwards to flatter the fund.</span><span data-lang="nl">Achteraf gekozen om het fonds te flatteren.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Un bon benchmark est fixé ex ante, réplicable et fidèle au style du gérant ; le choisir après coup fausse le jugement.</span><span data-lang="en">✔ A good benchmark is set ex ante, replicable and true to the manager's style; choosing it afterwards distorts judgement.</span><span data-lang="nl">✔ Een goede benchmark is ex ante vastgelegd, repliceerbaar en trouw aan de stijl van de beheerder; hem achteraf kiezen vertekent het oordeel.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">9. Dans l'attribution de Brinson, l'effet d'<em>allocation</em> mesure…</div>
+            <div class="qtext" data-lang="en">9. In Brinson attribution, the <em>allocation</em> effect measures…</div>
+            <div class="qtext" data-lang="nl">9. In Brinson-attributie meet het <em>allocatie</em>-effect…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">L'effet d'avoir sur/sous-pondéré les secteurs.</span><span data-lang="en">The effect of over/underweighting sectors.</span><span data-lang="nl">Het effect van sectoren over/onder te wegen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le choix des titres dans chaque secteur.</span><span data-lang="en">Security choice within each sector.</span><span data-lang="nl">De effectenkeuze binnen elke sector.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les frais de gestion.</span><span data-lang="en">Management fees.</span><span data-lang="nl">De beheerkosten.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Allocation = Σ(w<sub>p</sub>−w<sub>b</sub>)(r<sub>b,i</sub>−r<sub>b</sub>) : gagner en surpondérant les secteurs qui ont battu l'indice. La sélection, c'est le choix des titres.</span><span data-lang="en">✔ Allocation = Σ(w<sub>p</sub>−w<sub>b</sub>)(r<sub>b,i</sub>−r<sub>b</sub>): gaining by overweighting sectors that beat the index. Selection is the security choice.</span><span data-lang="nl">✔ Allocatie = Σ(w<sub>p</sub>−w<sub>b</sub>)(r<sub>b,i</sub>−r<sub>b</sub>): winnen door sectoren te overwegen die de index versloegen. Selectie is de effectenkeuze.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">10. L'effet de <em>sélection</em> mesure…</div>
+            <div class="qtext" data-lang="en">10. The <em>selection</em> effect measures…</div>
+            <div class="qtext" data-lang="nl">10. Het <em>selectie</em>-effect meet…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La sur/sous-pondération des secteurs.</span><span data-lang="en">Over/underweighting sectors.</span><span data-lang="nl">Sectoren over/onder wegen.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le rendement du taux sans risque.</span><span data-lang="en">The risk-free return.</span><span data-lang="nl">Het risicovrije rendement.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le choix de meilleurs titres à l'intérieur des secteurs.</span><span data-lang="en">Choosing better securities within sectors.</span><span data-lang="nl">Betere effecten kiezen binnen sectoren.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Sélection = Σ w<sub>b</sub>(r<sub>p,i</sub>−r<sub>b,i</sub>) : la valeur ajoutée par le choix des titres, à pondération de secteur donnée.</span><span data-lang="en">✔ Selection = Σ w<sub>b</sub>(r<sub>p,i</sub>−r<sub>b,i</sub>): the value added by security choice, at given sector weights.</span><span data-lang="nl">✔ Selectie = Σ w<sub>b</sub>(r<sub>p,i</sub>−r<sub>b,i</sub>): de waarde toegevoegd door effectenkeuze, bij gegeven sectorgewichten.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">11. Le rendement actif total (r<sub>p</sub> − r<sub>b</sub>) est égal à…</div>
+            <div class="qtext" data-lang="en">11. The total active return (r<sub>p</sub> − r<sub>b</sub>) equals…</div>
+            <div class="qtext" data-lang="nl">11. Het totale actieve rendement (r<sub>p</sub> − r<sub>b</sub>) is gelijk aan…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Sharpe − Treynor.</span><span data-lang="en">Sharpe − Treynor.</span><span data-lang="nl">Sharpe − Treynor.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Allocation + sélection + interaction.</span><span data-lang="en">Allocation + selection + interaction.</span><span data-lang="nl">Allocatie + selectie + interactie.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La tracking error au carré.</span><span data-lang="en">The tracking error squared.</span><span data-lang="nl">De tracking error in het kwadraat.</span></button>
+            <div class="explain"><span data-lang="fr">✔ L'attribution de Brinson décompose exactement le rendement actif en trois termes qui, sommés, redonnent r<sub>p</sub>−r<sub>b</sub>.</span><span data-lang="en">✔ Brinson attribution exactly decomposes active return into three terms that, summed, give back r<sub>p</sub>−r<sub>b</sub>.</span><span data-lang="nl">✔ Brinson-attributie ontleedt het actieve rendement exact in drie termen die, opgeteld, r<sub>p</sub>−r<sub>b</sub> teruggeven.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">12. Les statistiques de performance moyennes du secteur des fonds sont souvent…</div>
+            <div class="qtext" data-lang="en">12. The fund industry's average performance statistics are often…</div>
+            <div class="qtext" data-lang="nl">12. De gemiddelde prestatiestatistieken van de fondsensector zijn vaak…</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Surestimées à cause du biais du survivant.</span><span data-lang="en">Overstated due to survivorship bias.</span><span data-lang="nl">Overschat door survivorship bias.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Sous-estimées à cause des frais.</span><span data-lang="en">Understated due to fees.</span><span data-lang="nl">Onderschat door kosten.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Parfaitement exactes.</span><span data-lang="en">Perfectly accurate.</span><span data-lang="nl">Volkomen accuraat.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Les fonds fermés (les mauvais) disparaissent des bases : la moyenne des survivants surestime la performance réelle du secteur.</span><span data-lang="en">✔ Closed (poor) funds vanish from databases: the survivors' average overstates the industry's true performance.</span><span data-lang="nl">✔ Gesloten (slechte) fondsen verdwijnen uit databases: het gemiddelde van de overlevenden overschat de echte prestatie van de sector.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">13. Pour distinguer chance et talent, il faut avant tout…</div>
+            <div class="qtext" data-lang="en">13. To tell luck from skill, one needs above all…</div>
+            <div class="qtext" data-lang="nl">13. Om geluk van talent te onderscheiden, heeft men vooral nodig…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Une seule très bonne année.</span><span data-lang="en">One very good year.</span><span data-lang="nl">Eén heel goed jaar.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le rendement brut le plus élevé.</span><span data-lang="en">The highest raw return.</span><span data-lang="nl">Het hoogste ruwe rendement.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Un historique long et une performance cohérente.</span><span data-lang="en">A long track record and consistent performance.</span><span data-lang="nl">Een lang trackrecord en consistente prestatie.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Un seul bon résultat peut être de la chance ; seuls la durée et la régularité (IR stable, source d'alpha répétable) signalent un talent.</span><span data-lang="en">✔ A single good result can be luck; only duration and consistency (stable IR, repeatable alpha source) signal skill.</span><span data-lang="nl">✔ Eén goed resultaat kan geluk zijn; enkel duur en consistentie (stabiele IR, herhaalbare alfabron) wijzen op talent.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">14. Comparer un fonds de <em>petites capitalisations</em> au S&amp;P 500 (grandes caps) est problématique car…</div>
+            <div class="qtext" data-lang="en">14. Comparing a <em>small-cap</em> fund to the S&amp;P 500 (large caps) is problematic because…</div>
+            <div class="qtext" data-lang="nl">14. Een <em>smallcap</em>fonds vergelijken met de S&amp;P 500 (largecaps) is problematisch omdat…</div>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le S&amp;P 500 n'existe plus.</span><span data-lang="en">The S&amp;P 500 no longer exists.</span><span data-lang="nl">De S&amp;P 500 niet meer bestaat.</span></button>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">On mélange un effet de style avec le talent du gérant.</span><span data-lang="en">It mixes a style effect with the manager's skill.</span><span data-lang="nl">Het een stijleffect mengt met het talent van de beheerder.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Les petites caps n'ont pas de rendement.</span><span data-lang="en">Small caps have no return.</span><span data-lang="nl">Smallcaps geen rendement hebben.</span></button>
+            <div class="explain"><span data-lang="fr">✔ Le benchmark doit refléter l'univers réel du gérant ; sinon la « surperformance » n'est qu'un écart de style, pas du talent.</span><span data-lang="en">✔ The benchmark must reflect the manager's real universe; otherwise “outperformance” is just a style gap, not skill.</span><span data-lang="nl">✔ De benchmark moet het echte universum van de beheerder weerspiegelen; anders is “outperformance” slechts een stijlverschil, geen talent.</span></div>
+          </div>
+
+          <div class="q">
+            <div class="qtext" data-lang="fr">15. Un fonds a fait +15 %. Quelle information manque-t-il <em>impérativement</em> pour juger ?</div>
+            <div class="qtext" data-lang="en">15. A fund returned +15%. What information is <em>essential</em> to still judge it?</div>
+            <div class="qtext" data-lang="nl">15. Een fonds behaalde +15%. Welke informatie is <em>onmisbaar</em> om het te beoordelen?</div>
+            <button class="opt" data-correct="1" onclick="avenirAnswer(this,true)"><span data-lang="fr">Le risque pris et le rendement du benchmark.</span><span data-lang="en">The risk taken and the benchmark's return.</span><span data-lang="nl">Het genomen risico en het rendement van de benchmark.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">Le nom du gérant.</span><span data-lang="en">The manager's name.</span><span data-lang="nl">De naam van de beheerder.</span></button>
+            <button class="opt" onclick="avenirAnswer(this,false)"><span data-lang="fr">La couleur du rapport annuel.</span><span data-lang="en">The colour of the annual report.</span><span data-lang="nl">De kleur van het jaarverslag.</span></button>
+            <div class="explain"><span data-lang="fr">✔ +15 % ne dit rien seul : il faut le risque (pour l'ajuster) et le repère (l'indice a-t-il fait mieux ?). C'est tout l'objet du module.</span><span data-lang="en">✔ +15% says nothing alone: you need the risk (to adjust) and the benchmark (did the index do better?). That's the whole point of the module.</span><span data-lang="nl">✔ +15% zegt op zichzelf niets: je hebt het risico nodig (om te corrigeren) en de benchmark (deed de index beter?). Dat is de hele kern van de module.</span></div>
+          </div>
+        </div>
+
+        <!-- 9. EXERCICES -->
+        <h2 id="exercices"><span data-lang="fr">9. Exercices chiffrés</span><span data-lang="en">9. Numerical exercises</span><span data-lang="nl">9. Cijferoefeningen</span></h2>
+        <p data-lang="fr">Réponses courtes à révéler ; corrigés détaillés sur la future page « Solutions ».</p>
+        <p data-lang="en">Short answers to reveal; full solutions on the upcoming “Solutions” page.</p>
+        <p data-lang="nl">Korte antwoorden te onthullen; uitgewerkte oplossingen op de toekomstige “Oplossingen”-pagina.</p>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM7-1</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Un fonds a un rendement de 9 %, une volatilité de 12 %, r<sub>f</sub> = 2 %. Calculez son ratio de Sharpe.</p>
+          <p class="estatement" data-lang="en">A fund returns 9%, volatility 12%, r<sub>f</sub> = 2%. Compute its Sharpe ratio.</p>
+          <p class="estatement" data-lang="nl">Een fonds heeft een rendement van 9%, volatiliteit 12%, r<sub>f</sub> = 2%. Bereken de Sharpe-ratio.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Sharpe = (9 − 2) / 12 = <b>0,58</b>.</div>
+            <div class="ans" data-lang="en">Sharpe = (9 − 2) / 12 = <b>0.58</b>.</div>
+            <div class="ans" data-lang="nl">Sharpe = (9 − 2) / 12 = <b>0,58</b>.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM7-2</span><span class="diff" data-lang="fr">Facile</span><span class="diff" data-lang="en">Easy</span><span class="diff" data-lang="nl">Makkelijk</span></div>
+          <p class="estatement" data-lang="fr">Portefeuille : rendement 11 %, benchmark 9 %, tracking error 4 %. Calculez le ratio d'information.</p>
+          <p class="estatement" data-lang="en">Portfolio: return 11%, benchmark 9%, tracking error 4%. Compute the information ratio.</p>
+          <p class="estatement" data-lang="nl">Portefeuille: rendement 11%, benchmark 9%, tracking error 4%. Bereken de informatieratio.</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">IR = (11 − 9) / 4 = <b>0,50</b>. Une surperformance de 0,5 unité par unité de risque actif — correct, sans plus.</div>
+            <div class="ans" data-lang="en">IR = (11 − 9) / 4 = <b>0.50</b>. Outperformance of 0.5 unit per unit of active risk — decent, no more.</div>
+            <div class="ans" data-lang="nl">IR = (11 − 9) / 4 = <b>0,50</b>. Outperformance van 0,5 eenheid per eenheid actief risico — behoorlijk, niet meer.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM7-3</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Fonds A : rendement 11 %, σ 20 %, β 0,8. Fonds B : 9 %, σ 10 %, β 1,1. r<sub>f</sub> = 2 %. Comparez au Sharpe et au Treynor : lequel gagne sur chaque mesure ?</p>
+          <p class="estatement" data-lang="en">Fund A: return 11%, σ 20%, β 0.8. Fund B: 9%, σ 10%, β 1.1. r<sub>f</sub> = 2%. Compare on Sharpe and Treynor: which wins on each?</p>
+          <p class="estatement" data-lang="nl">Fonds A: rendement 11%, σ 20%, β 0,8. Fonds B: 9%, σ 10%, β 1,1. r<sub>f</sub> = 2%. Vergelijk op Sharpe en Treynor: welke wint op elk?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Sharpe : A = 9/20 = 0,45 ; B = 7/10 = 0,70 → <b>B</b>. Treynor : A = 9/0,8 = 11,25 ; B = 7/1,1 = 6,36 → <b>A</b>. Classement inversé : A a beaucoup de risque spécifique (mauvais Sharpe) mais un faible bêta (bon Treynor).</div>
+            <div class="ans" data-lang="en">Sharpe: A = 9/20 = 0.45; B = 7/10 = 0.70 → <b>B</b>. Treynor: A = 9/0.8 = 11.25; B = 7/1.1 = 6.36 → <b>A</b>. Ranking flips: A carries much specific risk (poor Sharpe) but a low beta (good Treynor).</div>
+            <div class="ans" data-lang="nl">Sharpe: A = 9/20 = 0,45; B = 7/10 = 0,70 → <b>B</b>. Treynor: A = 9/0,8 = 11,25; B = 7/1,1 = 6,36 → <b>A</b>. Rangschikking slaat om: A draagt veel specifiek risico (zwakke Sharpe) maar een lage bèta (goede Treynor).</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM7-4</span><span class="diff" data-lang="fr">Moyen</span><span class="diff" data-lang="en">Medium</span><span class="diff" data-lang="nl">Gemiddeld</span></div>
+          <p class="estatement" data-lang="fr">Benchmark : 50 % actions (8 %) / 50 % obligations (3 %). Portefeuille : 60 % actions / 40 % obligations, avec les <em>mêmes</em> rendements de poche que le benchmark. Décomposez le rendement actif (allocation vs sélection).</p>
+          <p class="estatement" data-lang="en">Benchmark: 50% equities (8%) / 50% bonds (3%). Portfolio: 60% equities / 40% bonds, with the <em>same</em> bucket returns as the benchmark. Decompose the active return (allocation vs selection).</p>
+          <p class="estatement" data-lang="nl">Benchmark: 50% aandelen (8%) / 50% obligaties (3%). Portefeuille: 60% aandelen / 40% obligaties, met <em>dezelfde</em> emmerrendementen als de benchmark. Ontleed het actieve rendement (allocatie vs selectie).</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">r<sub>b</sub> = 5,5 % ; r<sub>p</sub> = 0,6×8 + 0,4×3 = 6,0 % → actif +0,5 %. Sélection = 0 (mêmes rendements de poche). Tout vient de l'<b>allocation</b> : (0,1)(8−5,5) + (−0,1)(3−5,5) = 0,25 + 0,25 = <b>+0,50 %</b>.</div>
+            <div class="ans" data-lang="en">r<sub>b</sub> = 5.5%; r<sub>p</sub> = 0.6×8 + 0.4×3 = 6.0% → active +0.5%. Selection = 0 (same bucket returns). All from <b>allocation</b>: (0.1)(8−5.5) + (−0.1)(3−5.5) = 0.25 + 0.25 = <b>+0.50%</b>.</div>
+            <div class="ans" data-lang="nl">r<sub>b</sub> = 5,5%; r<sub>p</sub> = 0,6×8 + 0,4×3 = 6,0% → actief +0,5%. Selectie = 0 (zelfde emmerrendementen). Alles uit <b>allocatie</b>: (0,1)(8−5,5) + (−0,1)(3−5,5) = 0,25 + 0,25 = <b>+0,50%</b>.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM7-5</span><span class="diff" data-lang="fr">Réflexion</span><span class="diff" data-lang="en">Conceptual</span><span class="diff" data-lang="nl">Reflectie</span></div>
+          <p class="estatement" data-lang="fr">Un client verse une grosse somme juste avant une chute du marché ; le TWR du gérant est bon mais le MWR du client est médiocre. Qui juger sur quoi, et pourquoi ?</p>
+          <p class="estatement" data-lang="en">A client invests a large sum just before a market drop; the manager's TWR is good but the client's MWR is poor. Who to judge on what, and why?</p>
+          <p class="estatement" data-lang="nl">Een klant belegt een groot bedrag net vóór een marktdaling; de TWR van de beheerder is goed maar de MWR van de klant is zwak. Wie beoordelen op wat, en waarom?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">On juge le <b>gérant au TWR</b> (bon) : il ne contrôle pas le moment du versement. Le <b>MWR</b> médiocre décrit l'<b>expérience du client</b>, plombée par un mauvais timing de flux — qui n'est pas la faute du gérant.</div>
+            <div class="ans" data-lang="en">Judge the <b>manager on TWR</b> (good): they don't control when the client invests. The poor <b>MWR</b> describes the <b>client's experience</b>, dragged down by bad flow timing — which is not the manager's fault.</div>
+            <div class="ans" data-lang="nl">Beoordeel de <b>beheerder op TWR</b> (goed): hij controleert het stortingsmoment niet. De zwakke <b>MWR</b> beschrijft de <b>ervaring van de klant</b>, gedrukt door slechte stroomtiming — niet de schuld van de beheerder.</div>
+          </details>
+        </div>
+
+        <div class="exo">
+          <div class="ehead"><span class="eid">Exercice AM7-6</span><span class="diff" data-lang="fr">Réflexion</span><span class="diff" data-lang="en">Conceptual</span><span class="diff" data-lang="nl">Reflectie</span></div>
+          <p class="estatement" data-lang="fr">Un vendeur affirme : « nos fonds ont battu le marché en moyenne sur 10 ans ». Quel biais soupçonnez-vous, et quelle question posez-vous ?</p>
+          <p class="estatement" data-lang="en">A salesperson claims: “our funds beat the market on average over 10 years.” What bias do you suspect, and what question do you ask?</p>
+          <p class="estatement" data-lang="nl">Een verkoper beweert: “onze fondsen versloegen de markt gemiddeld over 10 jaar.” Welke bias vermoed je, en welke vraag stel je?</p>
+          <details>
+            <summary><span data-lang="fr">Réponse</span><span data-lang="en">Answer</span><span data-lang="nl">Antwoord</span></summary>
+            <div class="ans" data-lang="fr">Le <b>biais du survivant</b> : la moyenne ne porte peut-être que sur les fonds encore ouverts. Question : « inclut-elle les fonds fermés/fusionnés sur la période ? » Sinon, le chiffre est surestimé.</div>
+            <div class="ans" data-lang="en"><b>Survivorship bias</b>: the average may cover only funds still open. Question: “does it include funds closed/merged over the period?” If not, the figure is overstated.</div>
+            <div class="ans" data-lang="nl"><b>Survivorship bias</b>: het gemiddelde dekt misschien enkel nog open fondsen. Vraag: “bevat het de gesloten/gefuseerde fondsen over de periode?” Zo niet, is het cijfer overschat.</div>
+          </details>
+        </div>
+
+        <section class="biblio">
+          <h2 id="biblio"><span data-lang="fr">Bibliographie &amp; pour aller plus loin</span><span data-lang="en">Bibliography &amp; further reading</span><span data-lang="nl">Bibliografie &amp; verder lezen</span></h2>
+          <div class="bcol">
+            <h4 data-lang="fr">Références</h4><h4 data-lang="en">References</h4><h4 data-lang="nl">Referenties</h4>
+            <ol>
+      <li>Treynor, J. L. (1965). How to Rate Management of Investment Funds. <em>Harvard Business Review</em>, 43(1), 63–75.</li>
+      <li>Sharpe, W. F. (1966). Mutual Fund Performance. <em>The Journal of Business</em>, 39(1), 119–138. <a href="https://doi.org/10.1086/294846" target="_blank" rel="noopener">doi.org/10.1086/294846</a></li>
+      <li>Brinson, G. P., Hood, L. R. &amp; Beebower, G. L. (1986). Determinants of Portfolio Performance. <em>Financial Analysts Journal</em>, 42(4), 39–44. <a href="https://doi.org/10.2469/faj.v42.n4.39" target="_blank" rel="noopener">doi.org/10.2469/faj.v42.n4.39</a></li>
+      <li>Sharpe, W. F. (1994). The Sharpe Ratio. <em>The Journal of Portfolio Management</em>, 21(1), 49–58. <a href="https://doi.org/10.3905/jpm.1994.409501" target="_blank" rel="noopener">doi.org/10.3905/jpm.1994.409501</a></li>
+      <li>Modigliani, F. &amp; Modigliani, L. (1997). Risk-Adjusted Performance. <em>The Journal of Portfolio Management</em>, 23(2), 45–54. <a href="https://doi.org/10.3905/jpm.23.2.45" target="_blank" rel="noopener">doi.org/10.3905/jpm.23.2.45</a></li>
+      <li>Sortino, F. A. &amp; Price, L. N. (1994). Performance Measurement in a Downside Risk Framework. <em>The Journal of Investing</em>, 3(3), 59–64.</li>
+            </ol>
+          </div>
+          <div class="bcol">
+            <h4 data-lang="fr">Pour aller plus loin</h4><h4 data-lang="en">Further reading</h4><h4 data-lang="nl">Verder lezen</h4>
+            <ul>
+      <li>CFA Institute — <a href="https://www.cfainstitute.org/en/programs/gips" target="_blank" rel="noopener">GIPS Standards</a> (présentation de la performance).</li>
+      <li>Grinold, R. C. &amp; Kahn, R. N. (1999). <em>Active Portfolio Management</em> (2nd ed.). McGraw-Hill (ratio d'information, attribution).</li>
+      <li>Investopedia — <a href="https://www.investopedia.com/terms/s/sharperatio.asp" target="_blank" rel="noopener">Sharpe</a> · <a href="https://www.investopedia.com/terms/t/treynorratio.asp" target="_blank" rel="noopener">Treynor</a> · <a href="https://www.investopedia.com/terms/i/informationratio.asp" target="_blank" rel="noopener">Information Ratio</a> · <a href="https://www.investopedia.com/terms/s/survivorshipbias.asp" target="_blank" rel="noopener">Survivorship Bias</a>.</li>
+            </ul>
+          </div>
+        </section>
+
+        <div class="module-nav">
+          <a class="prev" href="am6-actif-passif.html">
+            <div class="dir" data-lang="fr">← Module précédent</div><div class="dir" data-lang="en">← Previous module</div><div class="dir" data-lang="nl">← Vorige module</div>
+            <div class="tt" data-lang="fr">6. Gestion active vs passive</div><div class="tt" data-lang="en">6. Active vs passive management</div><div class="tt" data-lang="nl">6. Actief vs passief beheer</div>
+          </a>
+          <a class="next" href="../index.html#curriculum">
+            <div class="dir" data-lang="fr">Module suivant →</div><div class="dir" data-lang="en">Next module →</div><div class="dir" data-lang="nl">Volgende module →</div>
+            <div class="tt" data-lang="fr">8. Styles &amp; primes de facteurs</div><div class="tt" data-lang="en">8. Styles &amp; factor premia</div><div class="tt" data-lang="nl">8. Stijlen &amp; factorpremies</div>
+          </a>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap foot">
+    <div class="brand"><span class="logo">Avenir<b>.</b></span></div>
+    <p data-lang="fr">Asset Management · Module 7 · Mesure de performance &amp; attribution</p>
+    <p data-lang="en">Asset Management · Module 7 · Performance measurement &amp; attribution</p>
+    <p data-lang="nl">Asset Management · Module 7 · Prestatiemeting &amp; attributie</p>
+  </div>
+</footer>
+
+<script src="../assets/script.js"></script>
+<script>
+/* Comparateur de ratios — Sharpe vs Treynor, deux fonds */
+(function () {
+  var svg = document.getElementById("rt-chart");
+  if (!svg) return;
+  function v(id){ return parseFloat(document.getElementById(id).value); }
+  function setT(id,t){ var e=document.getElementById(id); if(e) e.textContent=t; }
+  function activeLang(){ return document.body.getAttribute("data-active-lang") || "fr"; }
+
+  var VERD = {
+    agreeA: {fr:"→ Fonds A domine sur les deux mesures.", en:"→ Fund A wins on both measures.", nl:"→ Fonds A wint op beide maatstaven."},
+    agreeB: {fr:"→ Fonds B domine sur les deux mesures.", en:"→ Fund B wins on both measures.", nl:"→ Fonds B wint op beide maatstaven."},
+    flip:   {fr:"⚠ Classement inversé : un fonds gagne au Sharpe (risque total), l'autre au Treynor (risque systématique). Le « meilleur » dépend de si on le détient seul ou dans un portefeuille diversifié.",
+             en:"⚠ Ranking flips: one wins on Sharpe (total risk), the other on Treynor (systematic risk). The “best” depends on holding it alone or in a diversified portfolio.",
+             nl:"⚠ Rangschikking slaat om: de één wint op Sharpe (totaal risico), de ander op Treynor (systematisch risico). De “beste” hangt af van alleen aanhouden of in een gediversifieerde portefeuille."}
+  };
+
+  function draw() {
+    var ra=v("rt-ra"), sa=v("rt-sa"), ba=v("rt-ba"), rb=v("rt-rb"), sb=v("rt-sb"), bb=v("rt-bb"), rf=v("rt-rf");
+    setT("rt-ra-o", v("rt-ra")+"%"); setT("rt-sa-o", v("rt-sa")+"%"); setT("rt-ba-o", v("rt-ba").toFixed(2));
+    setT("rt-rb-o", v("rt-rb")+"%"); setT("rt-sb-o", v("rt-sb")+"%"); setT("rt-bb-o", v("rt-bb").toFixed(2));
+    setT("rt-rf-o", v("rt-rf")+"%");
+
+    var shA=(ra-rf)/sa, shB=(rb-rf)/sb, trA=(ra-rf)/ba, trB=(rb-rf)/bb;
+    setT("rt-sha", shA.toFixed(2)); setT("rt-shb", shB.toFixed(2));
+    setT("rt-tra", trA.toFixed(2)); setT("rt-trb", trB.toFixed(2));
+
+    var L=activeLang();
+    var shWin = shA>shB ? "A" : "B", trWin = trA>trB ? "A" : "B";
+    var vk = (shWin===trWin) ? (shWin==="A"?"agreeA":"agreeB") : "flip";
+    var vEl=document.getElementById("rt-verdict");
+    vEl.textContent = VERD[vk][L];
+    vEl.style.color = vk==="flip" ? "var(--crimson, #b23a48)" : "var(--ink-soft)";
+
+    // two rows of paired bars, normalised within each metric
+    var W=520,H=170,L0=92,R=16,T=16, rowH=54, gap=26, barH=17;
+    function bars(y, label, va, vb, winA){
+      var mx=Math.max(va,vb,0.0001), full=W-L0-R;
+      var wa=(va/mx)*full, wb=(vb/mx)*full;
+      var g="";
+      g+='<text x="'+(L0-10)+'" y="'+(y+barH)+'" text-anchor="end" fill="var(--ink-soft)" font-size="12" font-weight="700" font-family="var(--sans)">'+label+'</text>';
+      function barLabel(x, yy, w, txt){
+        // place label outside the bar end, or inside (white, right-aligned) if it would overflow
+        if (L0+w+52 > W) return '<text x="'+(L0+w-6)+'" y="'+(yy+barH-4)+'" text-anchor="end" fill="#fff" font-size="11" font-family="var(--mono)">'+txt+'</text>';
+        return '<text x="'+(L0+w+6)+'" y="'+(yy+barH-4)+'" fill="var(--ink-soft)" font-size="11" font-family="var(--mono)">'+txt+'</text>';
+      }
+      g+='<rect x="'+L0+'" y="'+y+'" width="'+wa.toFixed(1)+'" height="'+barH+'" fill="var(--navy)"/>';
+      g+=barLabel(y, y, wa, 'A '+va.toFixed(2));
+      var y2=y+barH+7;
+      g+='<rect x="'+L0+'" y="'+y2+'" width="'+wb.toFixed(1)+'" height="'+barH+'" fill="#c19a3e"/>';
+      g+=barLabel(y2, y2, wb, 'B '+vb.toFixed(2));
+      return g;
+    }
+    var out="";
+    out+=bars(T, "Sharpe", shA, shB);
+    out+=bars(T+rowH+gap, "Treynor", trA, trB);
+    svg.innerHTML=out;
+  }
+
+  ["rt-ra","rt-sa","rt-ba","rt-rb","rt-sb","rt-bb","rt-rf"].forEach(function(id){ var e=document.getElementById(id); if(e) e.addEventListener("input", draw); });
+  document.querySelectorAll("[data-set-lang]").forEach(function(b){ b.addEventListener("click", function(){ setTimeout(draw,10); }); });
+  document.addEventListener("DOMContentLoaded", draw);
+  draw();
+})();
+</script>
+</body>
+</html>
